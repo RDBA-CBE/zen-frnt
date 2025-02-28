@@ -1,0 +1,37 @@
+import moment from "moment";
+import * as Yup from "yup";
+
+export const createCoupon = Yup.object().shape({
+  code: Yup.string().required("Discount code is required"),
+  discount_type: Yup.string().required("Discount type is required"),
+  discount_value: Yup.string()
+    .required("Discount value is required"),
+  valid_from: Yup.date()
+    .required("Valid from date is required")
+    .typeError("Valid from date must be a valid date"),
+  valid_to: Yup.date()
+    .required("Valid to date is required")
+    .typeError("Valid to date must be a valid date")
+});
+
+export const createSession = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  start_date: Yup.date().required("Start date is required").typeError("Invalid start date"),
+  end_date: Yup.date().required("End date is required").typeError("Invalid end date"),
+  start_time: Yup.string().required("Start time is required"),
+  end_time: Yup.string().required("End time is required"),
+  session_link: Yup.string().required("Session link is required").url("Invalid session link"),
+  lounge_type: Yup.string().required("Lounge type is required"),
+});
+
+
+export const createUser = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  phone_number: Yup.string().required("Phone number is required"),
+  address: Yup.string().nullable(), // Optional field, allows empty string
+  user_type:Yup.string().required("User type is required"), 
+  dob:Yup.string().required("Date of birth is required"), // Optional array of strings
+});
+
+

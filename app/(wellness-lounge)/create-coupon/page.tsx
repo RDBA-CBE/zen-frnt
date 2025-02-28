@@ -1,0 +1,141 @@
+"use client";
+
+import Models from "@/imports/models.import";
+import { useRouter } from "next/navigation";
+import { useSetState } from "@/utils/function.utils";
+import { DatePicker } from "@/components/common-components/datePicker";
+import CustomSelect from "@/components/common-components/dropdown";
+import { TextInput } from "@/components/common-components/textInput";
+import * as Yup from "yup";
+import * as Validation from "../../../utils/validation.utils";
+import { Success } from "@/components/common-components/toast";
+import PrimaryButton from "@/components/common-components/primaryButton";
+
+export default function CreateWellnessLounge() {
+  const router = useRouter();
+
+  const [state, setState] = useSetState({
+    code: "",
+    discount_type: null,
+    discount_value: "",
+    valid_from: null,
+    valid_to: null,
+    errors: {},
+    submitLoading: false,
+  });
+
+  const onSubmit = async () => {
+    try {
+      setState({ submitLoading: true });
+      const body = {
+        code: state?.code,
+        discount_type: state?.discount_type?.value,
+        discount_value: state?.discount_value,
+        valid_from: state?.valid_from,
+        valid_to: state?.valid_to,
+      };
+
+      await Validation.createCoupon.validate(body, {
+        abortEarly: false,
+      });
+      const res = await Models.coupon.create(body);
+      console.log("res: ", res);
+      setState({ submitLoading: false });
+
+      router.push("/coupon-list");
+      Success("Coupon created successfully");
+    } catch (error: any) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors: any = {};
+        error.inner.forEach((err: any) => {
+          validationErrors[err.path] = err?.message;
+        });
+
+        setState({ errors: validationErrors });
+        setState({ submitLoading: false });
+      } else {
+        setState({ submitLoading: false });
+      }
+    }
+  };
+
+  const options = [
+    { value: "fixed", label: "Fixed" },
+    { value: "percentage", label: "Percentage" },
+  ];
+
+  return (
+    <div className="container mx-auto">
+      <div className="font-bold text-lg mb-3">Create Coupon</div>
+      <div className="grid auto-rows-min gap-4 md:grid-cols-1">
+        <TextInput
+          value={state.code}
+          onChange={(e) => {
+            setState({ code: e.target.value });
+          }}
+          placeholder="Code"
+          title="Code"
+          error={state.errors?.code}
+        />
+
+        <CustomSelect
+          options={options}
+          value={state.discount_type?.value || ""}
+          onChange={(value: any) => setState({ discount_type: value })}
+          title="Coupon Type"
+          error={state.errors?.discount_type}
+        />
+
+        <TextInput
+          value={state.discount_value}
+          onChange={(e) => {
+            setState({ discount_value: e.target.value });
+          }}
+          placeholder="Value"
+          title="Value"
+          error={state.errors?.discount_value}
+        />
+
+        <div className="grid auto-rows-min gap-4 grid-cols-2">
+          <DatePicker
+            placeholder="Start date"
+            title="Start date"
+            selectedDate={state.valid_from}
+            onChange={(date: any) => {
+              console.log("date: ", date);
+              setState({
+                valid_from: date,
+              });
+            }}
+            error={state.errors?.valid_from}
+          />
+          <DatePicker
+            placeholder="End date"
+            title="End date"
+            selectedDate={state.valid_to}
+            onChange={(date: any) =>
+              setState({
+                valid_to: date,
+              })
+            }
+            error={state.errors?.valid_to}
+          />
+        </div>
+
+        <div className="flex justify-end gap-5">
+          <PrimaryButton
+            variant={"outline"}
+            name="Cancel"
+            onClick={() => router.push("/coupon-list")}
+          />
+
+          <PrimaryButton
+            name="Submit"
+            onClick={() => onSubmit()}
+            loading={state.submitLoading}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
