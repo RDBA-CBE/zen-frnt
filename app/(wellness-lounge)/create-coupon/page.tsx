@@ -76,6 +76,7 @@ export default function CreateWellnessLounge() {
           placeholder="Code"
           title="Code"
           error={state.errors?.code}
+          required
         />
 
         <CustomSelect
@@ -84,6 +85,8 @@ export default function CreateWellnessLounge() {
           onChange={(value: any) => setState({ discount_type: value })}
           title="Coupon Type"
           error={state.errors?.discount_type}
+          required
+
         />
 
         <TextInput
@@ -94,6 +97,8 @@ export default function CreateWellnessLounge() {
           placeholder="Value"
           title="Value"
           error={state.errors?.discount_value}
+          required
+
         />
 
         <div className="grid auto-rows-min gap-4 grid-cols-2">
@@ -108,6 +113,8 @@ export default function CreateWellnessLounge() {
               });
             }}
             error={state.errors?.valid_from}
+          required
+
           />
           <DatePicker
             placeholder="End date"
@@ -119,6 +126,8 @@ export default function CreateWellnessLounge() {
               })
             }
             error={state.errors?.valid_to}
+          required
+
           />
         </div>
 

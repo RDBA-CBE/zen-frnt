@@ -34,4 +34,16 @@ export const createUser = Yup.object().shape({
   dob:Yup.string().required("Date of birth is required"), // Optional array of strings
 });
 
+export const createPaymetGayway = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  secret_key: Yup.string().required("Secret key is required"),
+  public_key: Yup.string().required("Public key is required"),
+});
+
+
+export const createCategory = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+
+});
+
 

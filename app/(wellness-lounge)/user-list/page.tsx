@@ -24,6 +24,8 @@ import CustomSelect from "@/components/common-components/dropdown";
 import moment from "moment";
 import { Label } from "@radix-ui/react-label";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import useDebounce from "@/components/common-components/useDebounce";
+import Loading from "@/components/common-components/Loading";
 
 const UserList = () => {
   const router = useRouter();
@@ -35,19 +37,43 @@ const UserList = () => {
     categoryName: "",
     userList: [],
     editData: {},
-    submitLoading:false
+    submitLoading: false,
+    search: "",
+    currentPage: 1,
+    loading: false,
   });
 
-  useEffect(() => {
-    getUserList();
-  }, []);
+  const debouncedSearch = useDebounce(state.search, 500);
 
-  const getUserList = async () => {
+  useEffect(() => {
+    getUserList(state.currentPage);
+  }, []);
+  useEffect(() => {
+    getUserList(state.currentPage);
+  }, [debouncedSearch]);
+
+  const getUserList = async (page: number) => {
     try {
-      const res: any = await Models.user.userList(1);
+      setState({ loading: true });
+
+      const body = bodyData();
+      let pages = 1;
+      if (objIsEmpty(body)) {
+        pages = page;
+      } else {
+        pages = 1;
+      }
+      const res: any = await Models.user.userList(pages, body);
       console.log("res: ", res);
-      setState({ userList: res?.results });
+      setState({
+        userList: res?.results,
+        next: res.next,
+        previous: res.previous,
+        currentPage: pages,
+        loading: false,
+      });
     } catch (error) {
+      setState({ loading: false });
       console.log("error: ", error);
     }
   };
@@ -120,7 +146,7 @@ const UserList = () => {
       };
 
       const res = await Models.category.create(body);
-      await getUserList();
+      await getUserList(state.currentPage);
       clearRecord();
       setState({ submitLoading: false });
     } catch (error) {
@@ -131,11 +157,10 @@ const UserList = () => {
   };
 
   const deleteUser = async (row: any) => {
-    console.log("row: ", row);
     try {
       await Models.user.delete(row?.row?.id);
       Success("User deleted successfully");
-      await getUserList();
+      await getUserList(state.currentPage);
     } catch (error) {
       console.log("error: ", error);
     }
@@ -175,17 +200,22 @@ const UserList = () => {
     if (state.search) {
       body.search = state.search;
     }
-    if (state.start_date) {
-      body.start_date = moment(state.start_date).format("YYYY-MM-DD");
-    }
-    if (state.end_date) {
-      body.end_date = moment(state.end_date).format("YYYY-MM-DD");
-    }
-    if (state.lounge_type) {
-      body.lounge_type = state.lounge_type?.value;
-    }
 
     return body;
+  };
+
+  const handleNextPage = () => {
+    if (state.next) {
+      const newPage = state.currentPage + 1;
+      getUserList(newPage);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (state.previous) {
+      const newPage = state.currentPage - 1;
+      getUserList(newPage);
+    }
   };
 
   return (
@@ -209,7 +239,7 @@ const UserList = () => {
         </Card>
 
         <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-4">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-2">
             <div>
               <TextInput
                 value={state.search}
@@ -221,56 +251,41 @@ const UserList = () => {
                 className="w-full"
               />
             </div>
-            {/* <CustomSelect
-              options={state.categoryList}
-              value={state.lounge_type?.value || ""}
-              onChange={(value: any) => setState({ lounge_type: value })}
-              placeholder="Lounge Type"
-            /> */}
-
-            {/* <div>
-                            <Select>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Price" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="20000">20,000</SelectItem>
-                                    <SelectItem value="40000">40,000</SelectItem>
-                                    <SelectItem value="50000">50,000</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div> */}
-            <div>
-              <DatePicker
-                placeholder="Start date"
-                closeIcon={true}
-                selectedDate={state.start_date}
-                onChange={(date: any) => {
-                  setState({
-                    start_date: date,
-                  });
-                }}
-              />
-            </div>
-            <div>
-              <DatePicker
-                placeholder="End date"
-                closeIcon={true}
-                selectedDate={state.end_date}
-                onChange={(date: any) => {
-                  setState({
-                    end_date: date,
-                  });
-                }}
-              />
-            </div>
           </div>
         </Card>
-
-        <div className="rounded-lg border">
-          <DataTable columns={columns} data={state.userList} />
-        </div>
-
+        {state.loading ? (
+          <Loading />
+        ) : state.userList?.length > 0 ? (
+          <>
+            <div className="rounded-lg border">
+              <DataTable columns={columns} data={state.userList} />
+            </div>
+            <div className="mt-5 flex justify-center gap-3">
+              <Button
+                disabled={!state.previous}
+                onClick={handlePreviousPage}
+                className={`btn ${
+                  !state.previous ? "btn-disabled" : "btn-primary"
+                }`}
+              >
+                Prev
+              </Button>
+              <Button
+                disabled={!state.next}
+                onClick={handleNextPage}
+                className={`btn ${
+                  !state.next ? "btn-disabled" : "btn-primary"
+                }`}
+              >
+                Next
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="items-center justify-center flex">
+            <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
+          </div>
+        )}
         {/* <div>
           <Pagination>
             <PaginationContent>

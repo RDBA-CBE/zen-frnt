@@ -1,12 +1,9 @@
 import instance from "@/utils/axios.utils";
 
-const user = {
-  userList: (page: any,body:any) => {
+const payment_gateway = {
+  list: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/?page=${page}&group_name=Student`;
-      if (body.search) {
-        url += `&search=${encodeURIComponent(body.search)}`;
-      }
+      let url = "auth/payment-gateways/";
       instance()
         .get(url)
         .then((res) => {
@@ -23,28 +20,9 @@ const user = {
     return promise;
   },
 
-  updateUser: (data: any, id: any) => {
+  create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
-      instance()
-        .patch(url, data)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response.data.message);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
-
-  addUser: (data: any) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = "auth/users/";
+      let url = `auth/payment-gateways/`;
       instance()
         .post(url, data)
         .then((res) => {
@@ -61,11 +39,12 @@ const user = {
     return promise;
   },
 
-  getUserId: (id: any) => {
+  update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
+      let url = `auth/payment-gateways/${id}/`;
+
       instance()
-        .get(url)
+        .patch(url, data)
         .then((res) => {
           resolve(res.data);
         })
@@ -82,7 +61,8 @@ const user = {
 
   delete: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
+      let url = `auth/payment-gateways/${id}/`;
+
       instance()
         .delete(url)
         .then((res) => {
@@ -99,7 +79,24 @@ const user = {
     return promise;
   },
 
-  
+  details: (id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `auth/payment-gateways/${id}/`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 };
 
-export default user;
+export default payment_gateway;

@@ -109,13 +109,13 @@ const data = {
       ],
     },
     {
-      title: "Payments",
+      title: "Payment Gateways",
       url: "/payment",
       icon: Bot,
       items: [
         {
-          title: "Payment List",
-          url: "/payment",
+          title: "Payment Gateway List",
+          url: "/payment-gateway-list",
         },
       ],
     },

@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
-
+import * as Yup from "yup";
+import * as Validation from "../../../utils/validation.utils";
 import { objIsEmpty, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useEffect } from "react";
@@ -22,16 +23,15 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 
 const WellnessLoungeList = () => {
   const [state, setState] = useSetState({
-    name: "",
     description: "",
     isOpen: false,
-    categoryName: "",
+    name: "",
     categoryList: [],
     editData: {},
     deleteId: null,
     isOpenDelete: false,
     deleteLoading: false,
-    submitLoading:false
+    submitLoading: false,
   });
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const WellnessLoungeList = () => {
   const handleEdit = (item: any) => {
     setState({
       editData: item,
-      categoryName: item.name,
+      name: item.name,
       description: item.description,
       isOpen: true,
     });
@@ -105,10 +105,12 @@ const WellnessLoungeList = () => {
     try {
       setState({ submitLoading: true });
       const body = {
-        name: state.categoryName,
+        name: state.name,
         description: state.description,
       };
-
+      await Validation.createCategory.validate(body, {
+        abortEarly: false,
+      });
       await Models.category.create(body);
       await getCategoryList();
       clearRecord();
@@ -117,7 +119,17 @@ const WellnessLoungeList = () => {
       Success("Category created successfully");
       setState({ submitLoading: false });
     } catch (error) {
-      console.log("error: ", error);
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors: any = {};
+        error.inner.forEach((err: any) => {
+          validationErrors[err.path] = err?.message;
+        });
+
+        setState({ errors: validationErrors });
+        setState({ submitLoading: false });
+      } else {
+        setState({ submitLoading: false });
+      }
     }
   };
 
@@ -130,7 +142,6 @@ const WellnessLoungeList = () => {
       Success("Category deleted successfully");
     } catch (error) {
       setState({ deleteLoading: false });
-
       console.log("error: ", error);
     }
   };
@@ -140,10 +151,12 @@ const WellnessLoungeList = () => {
       setState({ submitLoading: true });
 
       const body = {
-        name: state.categoryName,
+        name: state.name,
         description: state.description,
       };
-
+      await Validation.createCategory.validate(body, {
+        abortEarly: false,
+      });
       await Models.category.update(state.editData?.id, body);
       await getCategoryList();
       clearRecord();
@@ -151,9 +164,17 @@ const WellnessLoungeList = () => {
 
       Success("Category updated successfully");
     } catch (error) {
-      setState({ submitLoading: false });
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors: any = {};
+        error.inner.forEach((err: any) => {
+          validationErrors[err.path] = err?.message;
+        });
 
-      console.log("error: ", error);
+        setState({ errors: validationErrors });
+        setState({ submitLoading: false });
+      } else {
+        setState({ submitLoading: false });
+      }
     }
   };
 
@@ -161,8 +182,9 @@ const WellnessLoungeList = () => {
     setState({
       isOpen: false,
       editData: {},
-      categoryName: "",
+      name: "",
       description: "",
+      errors: {},
     });
   };
 
@@ -182,7 +204,7 @@ const WellnessLoungeList = () => {
                   setState({
                     isOpen: true,
                     editData: {},
-                    categoryName: "",
+                    name: "",
                     description: "",
                   })
                 }
@@ -267,12 +289,14 @@ const WellnessLoungeList = () => {
         renderComponent={() => (
           <>
             <TextInput
-              value={state.categoryName}
+              value={state.name}
               onChange={(e) => {
-                setState({ categoryName: e.target.value });
+                setState({ name: e.target.value });
               }}
               placeholder="Name"
               title="Name"
+              required
+              error={state.errors?.name}
             />
             <TextArea
               name="Description"

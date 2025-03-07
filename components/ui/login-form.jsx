@@ -1,4 +1,7 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,21 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import useToast from "@/components/ui/toast"; 
-import { useRouter } from "next/navigation";
+import useToast from "@/components/ui/toast";
 import { Success } from "../common-components/toast";
 
 const LoginForm = ({ className, ...props }) => {
-
   const router = useRouter();
-  
-  const { showToast } = useToast();
+  const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
   const [state, setState] = useSetState({
     username: "",
     password: "",
   });
 
+  useEffect(() => {
+    setIsMounted(true); // Ensure component is only rendered on client
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -34,20 +37,27 @@ const LoginForm = ({ className, ...props }) => {
         email: state.username,
         password: state.password,
       };
-      console.log("body: ", body);
       const res = await Models.auth.login(body);
-      console.log("res: ", res);
+
       localStorage.setItem("token", res.access);
       localStorage.setItem("refreshToken", res.refresh);
-Success("Login successfully")
+      Success("Login successfully");
+
+      // ✅ Trigger storage event to notify other tabs
+      window.dispatchEvent(new Event("storage"));
+
       router.push("/");
     } catch (error) {
       console.log("error: ", error);
     }
   };
+
+  // 🚀 Prevent hydration errors by ensuring the component renders only after mount
+  if (!isMounted) return null;
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+    <div className="flex items-center justify-center h-screen">
+      <Card className="w-[400px]">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
@@ -86,11 +96,7 @@ Success("Login successfully")
                   onChange={(e) => setState({ password: e.target.value })}
                 />
               </div>
-              <Button
-                type="button"
-                className="w-full"
-                onClick={() => handleSubmit()}
-              >
+              <Button type="button" className="w-full" onClick={handleSubmit}>
                 Login
               </Button>
               <Button variant="outline" className="w-full">

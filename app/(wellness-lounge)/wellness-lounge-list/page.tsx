@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card,  } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
@@ -22,6 +22,7 @@ import { DatePicker } from "@/components/common-components/datePicker";
 import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import Loading from "@/components/common-components/Loading";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -34,7 +35,8 @@ const WellnessLoungeList = () => {
     previous: null,
     next: null,
     deleteId: null,
-    submitLoading:false
+    submitLoading: false,
+    loading: false,
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -50,6 +52,7 @@ const WellnessLoungeList = () => {
 
   const getLoungeList = async (page: number) => {
     try {
+      setState({ loading: true });
       let pages = 1;
       let body = bodyData();
       if (objIsEmpty(body)) {
@@ -63,18 +66,25 @@ const WellnessLoungeList = () => {
         next: res.next,
         previous: res.previous,
         currentPage: pages,
+        loading: false,
       });
     } catch (error) {
+      setState({ loading: false });
+
       console.log("error: ", error);
     }
   };
 
   const getCategoryList = async () => {
     try {
+      setState({ loading: true });
+
       const res: any = await Models.category.list();
       const dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: dropdowns });
+      setState({ categoryList: dropdowns, loading: false });
     } catch (error) {
+      setState({ loading: false });
+
       console.log("error: ", error);
     }
   };
@@ -122,11 +132,6 @@ const WellnessLoungeList = () => {
   };
 
   const columns = [
-    // {
-    //     Header: "Image",
-    //     accessor: "img",
-    //     Cell: ({ value }) => <img src={value} alt="Thumbnail" className="w-10 h-10 rounded-lg" />,
-    // },
     {
       Header: "Title",
       accessor: "title",
@@ -245,19 +250,6 @@ const WellnessLoungeList = () => {
               onChange={(value: any) => setState({ lounge_type: value })}
               placeholder="Lounge Type"
             />
-
-            {/* <div>
-                            <Select>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Price" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="20000">20,000</SelectItem>
-                                    <SelectItem value="40000">40,000</SelectItem>
-                                    <SelectItem value="50000">50,000</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div> */}
             <div>
               <DatePicker
                 placeholder="Start date"
@@ -285,40 +277,42 @@ const WellnessLoungeList = () => {
           </div>
         </Card>
 
-        {/* <div className="flex gap-2">
-          <p className="text-[14px]">Selected Filters:</p>
-          <p className="text-[14px] bg-gray-600 text-white px-2 flex items-center gap-1 rounded-sm">
-            Online <X className="w-4 h-4 cursor-pointer" />{" "}
-          </p>
-          <p className="text-[14px] bg-gray-600 text-white px-2 flex items-center gap-1 rounded-sm">
-            20,000 <X className="w-4 h-4 cursor-pointer" />{" "}
-          </p>
-        </div> */}
+        {state.loading ? (
+          <Loading />
+        ) : state.loungeList?.length > 0 ? (
+          <>
+            <div className=" mt-2 overflow-x-auto">
+              <Card className="w-[100%] p-4">
+                <DataTable columns={columns} data={state.loungeList} />
+              </Card>
+            </div>
 
-        <div className=" mt-2 overflow-x-auto">
-          <Card className="w-[100%] p-4">
-            <DataTable columns={columns} data={state.loungeList} />
-          </Card>
-        </div>
-
-        <div className="mt-5 flex justify-center gap-3">
-          <Button
-            disabled={!state.previous}
-            onClick={handlePreviousPage}
-            className={`btn ${
-              !state.previous ? "btn-disabled" : "btn-primary"
-            }`}
-          >
-            Prev
-          </Button>
-          <Button
-            disabled={!state.next}
-            onClick={handleNextPage}
-            className={`btn ${!state.next ? "btn-disabled" : "btn-primary"}`}
-          >
-            Next
-          </Button>
-        </div>
+            <div className="mt-5 flex justify-center gap-3">
+              <Button
+                disabled={!state.previous}
+                onClick={handlePreviousPage}
+                className={`btn ${
+                  !state.previous ? "btn-disabled" : "btn-primary"
+                }`}
+              >
+                Prev
+              </Button>
+              <Button
+                disabled={!state.next}
+                onClick={handleNextPage}
+                className={`btn ${
+                  !state.next ? "btn-disabled" : "btn-primary"
+                }`}
+              >
+                Next
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="items-center justify-center flex">
+            <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
+          </div>
+        )}
       </div>
       <Modal
         isOpen={state.isOpen}
@@ -327,7 +321,6 @@ const WellnessLoungeList = () => {
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">
-
               <PrimaryButton
                 variant={"outline"}
                 name="Cancel"
