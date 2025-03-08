@@ -22,6 +22,25 @@ const user = {
     });
     return promise;
   },
+  dropdownUserserList: () => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `auth/users/?&group_name=Student`;
+    
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 
   updateUser: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {

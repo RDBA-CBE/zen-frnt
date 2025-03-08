@@ -109,6 +109,137 @@ const session = {
     });
     return promise;
   },
+
+  dropdownLoungelist: () => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?&is_future=true`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  registrationList: (page: any, body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/?page=${page}`;
+      if (body.search) {
+        url += `&event=${encodeURIComponent(body.search)}`;
+      }
+      if (body.end_date) {
+        url += `&amount=${encodeURIComponent(body.end_date)}`;
+      }
+      if (body.start_date) {
+        url += `&payment_status=${encodeURIComponent(body.start_date)}`;
+      }
+      if (body.lounge_type) {
+        url += `&registration_date=${encodeURIComponent(body.lounge_type)}`;
+      }
+
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  createRegistration: (data: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/`;
+      instance()
+        .post(url, data)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  updateRegistration: (data: any, id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/${id}/`;
+
+      instance()
+        .patch(url, data)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  
+  deleteRegistration: (id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/${id}/`;
+      instance()
+        .delete(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  
+  detailsRegistration: (id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/${id}/`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
 };
 
 export default session;

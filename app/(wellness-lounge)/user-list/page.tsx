@@ -176,7 +176,7 @@ const UserList = () => {
       };
 
       const res = await Models.category.update(state.editData?.id, body);
-      await getUserList();
+      await getUserList(state.currentPage);
       clearRecord();
       setState({ submitLoading: false });
     } catch (error) {

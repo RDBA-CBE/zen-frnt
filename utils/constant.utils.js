@@ -203,3 +203,19 @@ export const categories_data = [
         status: "Publish"
     }
 ];
+
+
+export const orderStatusList = [
+    {
+        label: "Pending",
+        value: "Pending"
+    },
+    {
+        label: "Completed",
+        value: "Completed"
+    },
+    {
+        label: "Failed",
+        value: "Failed"
+    },
+]

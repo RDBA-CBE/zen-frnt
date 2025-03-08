@@ -80,12 +80,12 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Orders List",
+          url: "/order-list",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Create order",
+          url: "/create-order",
         },
         {
           title: "Quantum",

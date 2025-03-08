@@ -24,14 +24,26 @@ export const createSession = Yup.object().shape({
   lounge_type: Yup.string().required("Lounge type is required"),
 });
 
+export const createSessionOrder = Yup.object().shape({
+  user: Yup.string().required("User is required"),
+  registration_status: Yup.string().required("Registration  is required"),
+  event: Yup.array().required("Event is required"),
 
+});
+
+export const updateSessionOrder = Yup.object().shape({
+  user: Yup.string().required("User is required"),
+  registration_status: Yup.string().required("Registration  is required"),
+  event: Yup.string().required("Event is required"),
+
+});
 export const createUser = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phone_number: Yup.string().required("Phone number is required"),
   address: Yup.string().nullable(), // Optional field, allows empty string
-  user_type:Yup.string().required("User type is required"), 
-  dob:Yup.string().required("Date of birth is required"), // Optional array of strings
+  user_type: Yup.string().required("User type is required"),
+  dob: Yup.string().required("Date of birth is required"), // Optional array of strings
 });
 
 export const createPaymetGayway = Yup.object().shape({
