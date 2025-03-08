@@ -133,16 +133,19 @@ const session = {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/?page=${page}`;
       if (body.search) {
-        url += `&event=${encodeURIComponent(body.search)}`;
+        url += `&registration_id=${encodeURIComponent(body.search)}`;
       }
-      if (body.end_date) {
-        url += `&amount=${encodeURIComponent(body.end_date)}`;
+      if (body.event) {
+        url += `&event=${encodeURIComponent(body.event)}`;
       }
       if (body.start_date) {
-        url += `&payment_status=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_before=${encodeURIComponent(body.start_date)}`;
       }
-      if (body.lounge_type) {
-        url += `&registration_date=${encodeURIComponent(body.lounge_type)}`;
+      if (body.start_date) {
+        url += `&registration_date_after=${encodeURIComponent(body.start_date)}`;
+      }
+      if (body.lounge_status) {
+        url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
       }
 
       instance()

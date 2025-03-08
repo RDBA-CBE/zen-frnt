@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -116,10 +116,10 @@ const UserList = () => {
               <Edit size={16} className="mr-2" />
               Edit
             </DropdownMenuItem>
-            {/* <DropdownMenuItem onClick={() => handleView(row.original)}>
+            <DropdownMenuItem onClick={() => handleView(row.row)}>
               <Eye size={16} className="mr-2" />
               View
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => deleteUser(row)}
               className="text-red-500"
@@ -136,6 +136,9 @@ const UserList = () => {
   const handleEdit = (item: any) => {
     router.push(`/update-user/?id=${item.id}`);
   };
+  const handleView = (item: any) => {
+    router.push(`/view-user/?id=${item.id}`);
+  }
 
   const createCategory = async () => {
     try {
@@ -264,18 +267,16 @@ const UserList = () => {
               <Button
                 disabled={!state.previous}
                 onClick={handlePreviousPage}
-                className={`btn ${
-                  !state.previous ? "btn-disabled" : "btn-primary"
-                }`}
+                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                  }`}
               >
                 Prev
               </Button>
               <Button
                 disabled={!state.next}
                 onClick={handleNextPage}
-                className={`btn ${
-                  !state.next ? "btn-disabled" : "btn-primary"
-                }`}
+                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                  }`}
               >
                 Next
               </Button>

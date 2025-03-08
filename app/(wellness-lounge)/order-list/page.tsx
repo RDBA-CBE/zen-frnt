@@ -23,6 +23,7 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
+import { orderStatusList } from "@/utils/constant.utils";
 
 const WellnessLoungeList = () => {
     const router = useRouter();
@@ -37,6 +38,8 @@ const WellnessLoungeList = () => {
         deleteId: null,
         submitLoading: false,
         loading: false,
+        loungeSearch: [],
+
     });
 
     const debouncedSearch = useDebounce(state.search, 500);
@@ -44,11 +47,12 @@ const WellnessLoungeList = () => {
     useEffect(() => {
         getOrdersList(state.currentPage);
         getCategoryList();
+        getLoungeList(state.currentPage)
     }, []);
 
     useEffect(() => {
         getOrdersList(state.currentPage);
-    }, [debouncedSearch, state.lounge_type, state.start_date, state.end_date]);
+    }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 
     const getOrdersList = async (page: number) => {
         try {
@@ -61,6 +65,7 @@ const WellnessLoungeList = () => {
                 pages = 1;
             }
             const res: any = await Models.session.registrationList(pages, body);
+
             setState({
                 loungeList: res?.results,
                 next: res.next,
@@ -68,6 +73,24 @@ const WellnessLoungeList = () => {
                 currentPage: pages,
                 loading: false,
             });
+        } catch (error) {
+            setState({ loading: false });
+
+            console.log("error: ", error);
+        }
+    };
+
+    const getLoungeList = async (page: number) => {
+        try {
+            setState({ loading: true });
+            let pages = 1;
+            let body = {};
+
+            const res: any = await Models.session.list(pages, body);
+            const Dropdowns = Dropdown(res?.results, "title");
+            setState({
+                loungeSearch: Dropdowns,
+            })
         } catch (error) {
             setState({ loading: false });
 
@@ -97,11 +120,11 @@ const WellnessLoungeList = () => {
         if (state.start_date) {
             body.start_date = moment(state.start_date).format("YYYY-MM-DD");
         }
-        if (state.end_date) {
-            body.end_date = moment(state.end_date).format("YYYY-MM-DD");
+        if (state.event) {
+            body.event = state.event?.value;
         }
-        if (state.lounge_type) {
-            body.lounge_type = state.lounge_type?.value;
+        if (state.lounge_status) {
+            body.lounge_status = state.lounge_status?.value;
         }
 
         return body;
@@ -115,6 +138,7 @@ const WellnessLoungeList = () => {
 
     const handleView = (item: any) => {
         console.log("Viewing:", item);
+       
     };
 
     const deleteSession = async () => {
@@ -149,7 +173,7 @@ const WellnessLoungeList = () => {
 
         },
         {
-            Header: "Event",
+            Header: "Lounge",
             accessor: "event",
             Cell: (row: any) => <Label>{row?.row?.event?.title}</Label>
         },
@@ -227,20 +251,26 @@ const WellnessLoungeList = () => {
                                 onChange={(e) => {
                                     setState({ search: e.target.value });
                                 }}
-                                placeholder="Search Title"
+                                placeholder="Search Order ID"
                                 required
                                 className="w-full"
                             />
                         </div>
                         <CustomSelect
-                            options={state.categoryList}
-                            value={state.lounge_type?.value || ""}
-                            onChange={(value: any) => setState({ lounge_type: value })}
-                            placeholder="Lounge Type"
+                            options={orderStatusList}
+                            value={state.lounge_status?.value || ""}
+                            onChange={(value: any) => setState({ lounge_status: value })}
+                            placeholder="Order Status"
+                        />
+                        <CustomSelect
+                            options={state?.loungeSearch}
+                            value={state.event?.value || ""}
+                            onChange={(value: any) => setState({ event: value })}
+                            placeholder="Lounge"
                         />
                         <div>
                             <DatePicker
-                                placeholder="Start date"
+                                placeholder="Order Date"
                                 closeIcon={true}
                                 selectedDate={state.start_date}
                                 onChange={(date: any) => {
@@ -250,18 +280,7 @@ const WellnessLoungeList = () => {
                                 }}
                             />
                         </div>
-                        <div>
-                            <DatePicker
-                                placeholder="End date"
-                                closeIcon={true}
-                                selectedDate={state.end_date}
-                                onChange={(date: any) => {
-                                    setState({
-                                        end_date: date,
-                                    });
-                                }}
-                            />
-                        </div>
+
                     </div>
                 </Card>
 
