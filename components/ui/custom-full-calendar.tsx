@@ -115,17 +115,26 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
     // Function to filter events for the selected date
     const getEventsForDate = (day: any) => {
         const selectedDayDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+        
+        // Set the time of selectedDayDate to midnight (00:00:00)
+        selectedDayDate.setHours(0, 0, 0, 0);
+    
         return events.filter((event: any) => {
             const eventStartDate = new Date(event.start_date);
             const eventEndDate = new Date(event.end_date);
-
-            // Check if the event's date range overlaps with the current day
+    
+            // Set the time of eventStartDate and eventEndDate to midnight
+            eventStartDate.setHours(0, 0, 0, 0);
+            eventEndDate.setHours(0, 0, 0, 0);
+    
+            // Check if the selectedDayDate is within the event's start and end date range
             return (
                 selectedDayDate >= eventStartDate &&
                 selectedDayDate <= eventEndDate
             );
         });
     };
+    
 
     return (
         <div className="calendar-wrapper p-4">
