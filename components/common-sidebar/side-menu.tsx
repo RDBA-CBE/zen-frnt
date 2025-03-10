@@ -71,6 +71,10 @@ const data = {
           title: "Categories",
           url: "/categories-list",
         },
+        {
+          title: "Calendar",
+          url: "/calendar",
+        },
       ],
     },
 

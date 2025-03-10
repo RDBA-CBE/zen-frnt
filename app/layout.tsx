@@ -23,6 +23,9 @@ import { BadgeCheck, Bell, CreditCard, LogOut, Sparkles } from "lucide-react";
 import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import LoginForm from "@/components/ui/login-form";
 import { Toaster } from "@/components/ui/sonner"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/common-components/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,8 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
- 
-  
+
   return (
     <html lang="en">
       <body
@@ -58,90 +60,8 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSidebar />
             <div className="flex flex-col w-full">
-              <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md p-2 flex items-center">
-                <div className="flex justify-between items-center w-full">
-                  <div className="flex justify-start items-center">
-                    <SidebarTrigger />
-                    <Separator className="h-6 w-px bg-black mx-2" />
-                    <h1 className="text-lg font-semibold pl-2">
-                      Zen Wellness Lounge
-                    </h1>
-                  </div>
-                  <div className="flex items-center ml-auto">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton
-                          size="lg"
-                          className="data-[state=open]:bg-gray-300 data-[state=open]:text-sidebar-accent-foreground"
-                        >
-                          <Avatar className="h-8 w-8 rounded">
-                            <AvatarImage
-                              src="https://github.com/shadcn.png"
-                              alt="@shadcn"
-                            />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
+              <Header />
 
-                          {/* <ChevronsUpDown className="ml-auto size-4" /> */}
-                        </SidebarMenuButton>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] bg-gray-300 p-4 min-w-56 rounded-lg"
-                        side={"bottom"}
-                        align="end"
-                        sideOffset={4}
-                      >
-                        <DropdownMenuLabel className="p-0 font-normal">
-                          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                            <Avatar className="h-8 w-8 rounded-lg">
-                              <AvatarImage
-                                src="https://github.com/shadcn.png"
-                                alt="@shadcn"
-                              />
-                              <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                              <span className="truncate font-semibold">
-                                Zen Lounge
-                              </span>
-                              <span className="truncate text-xs">
-                                zenlounge@gmail.com
-                              </span>
-                            </div>
-                          </div>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            <Sparkles />
-                            Upgrade to Pro
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            <BadgeCheck />
-                            Account
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <CreditCard />
-                            Billing
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Bell />
-                            Notifications
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <LogOut />
-                          Log out
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </header>
 
               <main className="w-full p-4">{children}</main>
               <footer className="sticky bottom-0 z-50 w-full bg-white dark:bg-gray-900  border-t p-4">

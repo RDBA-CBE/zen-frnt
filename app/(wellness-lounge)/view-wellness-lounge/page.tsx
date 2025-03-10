@@ -22,9 +22,10 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import { Trash2, X } from "lucide-react";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export default function viewWellnessLounge() {
     const router = useRouter();
@@ -34,8 +35,10 @@ export default function viewWellnessLounge() {
     const id = searchParams.get("id");
 
     const [state, setState] = useSetState({
-        orderData: []
+        orderData: [],
+        isOpen: false
     });
+
 
     // useEffect(() => {
     //     getCategoryList();
@@ -69,7 +72,41 @@ export default function viewWellnessLounge() {
     //     }
     // };
 
+    const closeDialog = (() => {
+        setState({ isOpen: false })
+    })
 
+    const confirmOrder = (async () => {
+        try {
+            const userID = localStorage.getItem("userId")
+            let body: any = {
+                user: Number(userID),
+                event: [id],
+            };
+            console.log("body: ", body);
+
+
+            const res = await Models.session.createRegistration(body);
+
+            // router.push("/order-list");
+            Success("Event Intrested sent successfully");
+            setState({ isOpen: false })
+        } catch (error: any) {
+            console.log("error", error);
+
+            // If error[0] exists (custom error message like "Registration for event Testing and user Ramesh already exists.")
+            // If error[0] exists (custom error message like "Registration for event Testing and user Ramesh already exists.")
+            if (error[0]) {
+                // You can set the custom error message here
+                Failure(error[0])
+                setState({
+                    submitLoading: false,
+                    isOpen: false
+                });
+            }
+
+        }
+    })
     return (
         <div className="container mx-auto">
             <div className="font-bold text-lg mb-3"> Lounge Session Details</div>
@@ -105,9 +142,27 @@ export default function viewWellnessLounge() {
                             <li>Seat Count: {state?.orderData?.seat_count}</li>
                         </ul>
 
+                        <div>
+                            <Button onClick={() => setState({ isOpen: true })}>Intrested</Button>
+                        </div>
                     </div>
 
                 </div>
+
+                <Dialog open={state?.isOpen} onOpenChange={closeDialog}>
+                    <DialogContent className="bg-white p-6 rounded-lg w-96">
+                        <DialogTitle className="text-lg font-semibold mb-2">Are you sure you're interested in this event?</DialogTitle>
+                        <div className="flex justify-between gap-2">
+                            <Button onClick={closeDialog} className="p-2 rounded text-white w-full">
+                                Cancel
+                            </Button>
+                            <Button onClick={confirmOrder} className="w-full p-2 rounded text-white">
+                                Confirm
+                            </Button>
+                        </div>
+
+                    </DialogContent>
+                </Dialog>
 
 
             </div>

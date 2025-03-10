@@ -243,6 +243,28 @@ const session = {
     return promise;
   },
 
+
+  // student
+  calendar: (page: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?page=${page}`;
+
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
 };
 
 export default session;

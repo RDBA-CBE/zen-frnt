@@ -41,6 +41,7 @@ const LoginForm = ({ className, ...props }) => {
 
       localStorage.setItem("token", res.access);
       localStorage.setItem("refreshToken", res.refresh);
+      localStorage.setItem("userId", res?.user_id)
       Success("Login successfully");
 
       // ✅ Trigger storage event to notify other tabs
