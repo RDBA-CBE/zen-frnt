@@ -1,7 +1,7 @@
 import instance from '@/utils/axios.utils';
 
 const auth = {
-    login: (data:any) => {
+    login: (data: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `auth/login/`;
             instance()
@@ -21,7 +21,7 @@ const auth = {
         return promise;
     },
 
-    userDetails: (userId) => {
+    userDetails: (userId: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `musicforum/users/${userId}/`;
             instance()
@@ -41,11 +41,11 @@ const auth = {
         return promise;
     },
 
-    updateProfile: (userId,body) => {
+    updateProfile: (userId: any, body: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `musicforum/users/${userId}/`;
             instance()
-                .patch(url,body)
+                .patch(url, body)
                 .then((res) => {
                     resolve(res.data);
                 })
@@ -60,6 +60,87 @@ const auth = {
         });
         return promise;
     },
+
+    registration: (data: any) => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `auth/signup/`;
+            instance()
+                .post(url, data)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data.error);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
+    getUniversity: () => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `/auth/universities/`;
+            instance()
+                .get(url)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data.error);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
+    getIntrestedTopics: () => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `/auth/interested-topics/`;
+            instance()
+                .get(url)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data.error);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
+    getCountries: () => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `/auth/countries/`;
+            instance()
+                .get(url)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data.error);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
 };
 
 export default auth;

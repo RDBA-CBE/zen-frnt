@@ -219,3 +219,14 @@ export const orderStatusList = [
         value: "Failed"
     },
 ]
+
+export const mentorList = [
+    {
+        label: "Yes",
+        value: "Yes"
+    },
+    {
+        label: "No",
+        value: "No"
+    }
+]

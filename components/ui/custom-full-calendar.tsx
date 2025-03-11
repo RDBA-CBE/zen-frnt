@@ -134,6 +134,11 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
             );
         });
     };
+
+    const handleSignUp = (() => {
+        setModalIsOpen(false);
+        router?.push("/registration")
+    })
     
 
     return (
@@ -218,7 +223,7 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
                     <Button onClick={handleEnroll} className="p-2 rounded bg-blue-500 text-white">
                         Enroll
                     </Button>
-                    <Button onClick={() => setModalIsOpen(false)} className="p-2 rounded bg-gray-500 text-white">
+                    <Button onClick={handleSignUp} className="p-2 rounded bg-gray-500 text-white">
                         Sign Up
                     </Button>
                 </DialogContent>
