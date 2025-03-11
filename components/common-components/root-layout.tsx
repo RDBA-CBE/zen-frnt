@@ -1,5 +1,5 @@
 import React from "react";
-import { SidebarProvider } from "../ui/sidebar";
+// import { SidebarProvider } from "../ui/sidebar";
 import { AppSidebar } from "../common-sidebar/side-menu";
 import Navbar from "./navbar";
 import { Link } from "lucide-react";
@@ -14,8 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <SidebarProvider>
-        <AppSidebar />
+      {/* <SidebarProvider> */}
+        {/* <AppSidebar /> */}
         <div className="flex flex-col w-full">
           <Navbar />
 
@@ -28,7 +28,7 @@ export default function RootLayout({
             </p>
           </footer>
         </div>
-      </SidebarProvider>
+      {/* </SidebarProvider> */}
       <Toaster position="top-center" />
     </>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅ Import useRouter
 import { AppSidebar } from "@/components/common-sidebar/side-menu";
-import { SidebarProvider } from "@/components/ui/sidebar";
+// import { SidebarProvider } from "@/components/ui/sidebar";
 import Navbar from "@/components/common-components/navbar";
 
 export default function ClientAuth({ children }: { children: React.ReactNode }) {
@@ -34,12 +34,12 @@ export default function ClientAuth({ children }: { children: React.ReactNode }) 
   if (!isMounted) return null; // ✅ Prevent hydration mismatch
 
   return hasToken ? (
-    <SidebarProvider>
-      <AppSidebar />
+    // <SidebarProvider>
+      // <AppSidebar />
       <div className="flex flex-col w-full">
         <Navbar />
         <main className="w-full p-4">{children}</main>
       </div>
-    </SidebarProvider>
+    // </SidebarProvider>
   ) : null; // Don't render anything while redirecting
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarTrigger } from "@/components/ui/sidebar";
+// import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
@@ -40,7 +40,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md p-2 flex items-center">
       <div className="flex justify-between items-center w-full">
         <div className="flex justify-start items-center">
-          <SidebarTrigger />
+          {/* <SidebarTrigger /> */}
           <Separator className="h-6 w-px bg-black mx-2" />
           <h1 className="text-lg font-semibold pl-2">Zen Wellness Lounge</h1>
         </div>
