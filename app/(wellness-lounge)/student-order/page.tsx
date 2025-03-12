@@ -24,6 +24,7 @@ import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { orderStatusList } from "@/utils/constant.utils";
+import Link from "next/link";
 
 const WellnessLoungeList = () => {
     const router = useRouter();
@@ -45,38 +46,47 @@ const WellnessLoungeList = () => {
     const debouncedSearch = useDebounce(state.search, 500);
 
     useEffect(() => {
-        getOrdersList(state.currentPage);
         getCategoryList();
-        getLoungeList(state.currentPage)
+        getLoungeList(1);
+
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            setState({ userId });
+        }
     }, []);
 
     useEffect(() => {
-        getOrdersList(state.currentPage);
+        if (state.userId) {
+            getOrdersList(state.currentPage);
+        }
+    }, [state.userId]);
+
+    useEffect(() => {
+        if (state.userId) {
+            getOrdersList(1); // Reset to first page on filter change
+        }
     }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 
     const getOrdersList = async (page: number) => {
         try {
             setState({ loading: true });
-            let pages = 1;
-            let body = bodyData();
-            if (objIsEmpty(body)) {
-                pages = page;
-            } else {
-                pages = 1;
-            }
-            const res: any = await Models.session.registrationList(pages, body);
+
+            const body = bodyData();
+            const userId = state.userId;
+            if (!userId) return;
+
+            const res: any = await Models.session.singleUserRegistrationList(page, body, userId);
 
             setState({
-                loungeList: res?.results,
-                next: res.next,
-                previous: res.previous,
-                currentPage: pages,
+                loungeList: res?.results || [],
+                next: res?.next,
+                previous: res?.previous,
+                currentPage: page,
                 loading: false,
             });
         } catch (error) {
             setState({ loading: false });
-
-            console.log("error: ", error);
+            console.error("Error fetching orders:", error);
         }
     };
 
@@ -138,7 +148,7 @@ const WellnessLoungeList = () => {
 
     const handleView = (item: any) => {
         console.log("Viewing:", item);
-        router.push(`/view-order/?id=${item?.id}`);
+
     };
 
     const deleteSession = async () => {
@@ -179,33 +189,16 @@ const WellnessLoungeList = () => {
         },
 
         {
-            Header: "Action",
+            Header: "View",
             accessor: "action",
             Cell: (row: any) => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button className="p-2 rounded-md hover:bg-gray-300">
-                            <MoreHorizontal size={20} />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                        <DropdownMenuItem onClick={() => handleEdit(row?.row)}>
-                            <Edit size={16} className="mr-2" />
-                            Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleView(row?.row)}>
-                            <Eye size={16} className="mr-2" />
-                            View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
-                            className="text-red-500"
-                        >
-                            <Trash size={16} className="mr-2" />
-                            Delete
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-1">
+                    <Link href={`/view-order/?id=${row?.row?.id}`} passHref>
+                        <Eye size={16} className="mr-2" />
+                    </Link>
+
+
+                </div>
             ),
         },
     ];
@@ -231,15 +224,10 @@ const WellnessLoungeList = () => {
                     <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
                         <div>
                             <h2 className="md:text-lg text-sm font-bold">
-                                Orders List
+                                Orders History
                             </h2>
                         </div>
-                        <div
-                            className="text-end"
-                            onClick={() => router.push("/create-order")}
-                        >
-                            <Button className="bg-black ">Create</Button>
-                        </div>
+
                     </div>
                 </Card>
 

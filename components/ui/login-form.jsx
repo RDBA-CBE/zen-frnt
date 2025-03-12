@@ -48,7 +48,7 @@ const LoginForm = ({ className, ...props }) => {
       // ✅ Trigger storage event to notify other tabs
       window.dispatchEvent(new Event("storage"));
 
-      router.push("/");
+      router.back("/");
     } catch (error) {
       console.log("error: ", error);
     }

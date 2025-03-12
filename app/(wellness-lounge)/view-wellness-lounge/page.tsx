@@ -36,13 +36,18 @@ export default function viewWellnessLounge() {
 
     const [state, setState] = useSetState({
         orderData: [],
-        isOpen: false
+        isOpen: false,
+        group: null
     });
 
 
-    // useEffect(() => {
-    //     getCategoryList();
-    // }, []);
+    useEffect(() => {
+        const Group = localStorage.getItem("group")
+        if (Group) {
+            setState({ group: Group })
+        }
+
+    }, []);
 
     useEffect(() => {
         getDetails();
@@ -141,10 +146,14 @@ export default function viewWellnessLounge() {
                             </li>
                             <li>Seat Count: {state?.orderData?.seat_count}</li>
                         </ul>
+                        {
+                            state?.group == "Student" && (
+                                <div>
+                                    <Button onClick={() => setState({ isOpen: true })}>Intrested</Button>
+                                </div>
+                            )
+                        }
 
-                        <div>
-                            <Button onClick={() => setState({ isOpen: true })}>Intrested</Button>
-                        </div>
                     </div>
 
                 </div>

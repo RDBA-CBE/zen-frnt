@@ -16,7 +16,7 @@ import { BadgeCheck, Bell, CreditCard, LogOut, Settings2Icon, Sparkles } from "l
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react"; // Using useState for dialog state management
+import { useState, useEffect } from "react"; // Using useState for dialog state management
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -33,8 +33,15 @@ import * as React from "react"
 
 export default function Header() {
   const [dialogOpen, setDialogOpen] = useState(false); // Manage dialog state with useState
+  const [group, setGroup] = useState(null)
   const router = useRouter();
 
+  useEffect(() => {
+    const Group: any = localStorage?.getItem("group")
+    setGroup(Group)
+  }, [])
+
+  console.log("group", group)
   // Logout function to remove token and navigate to login page
   const handleLogout = () => {
     // Remove the token from localStorage
@@ -96,41 +103,78 @@ export default function Header() {
           <h1 className="text-lg font-semibold pl-2">Zen Wellness Lounge</h1>
         </div> */}
         <div>
+
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Wellness Lounge</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                          href="/"
-                        >
-                          <Settings2Icon className="h-6 w-6" />
-                          <div className="mb-2 mt-4 text-lg font-medium">
-                            shadcn/ui
-                          </div>
-                          <p className="text-sm leading-tight text-muted-foreground">
-                            Beautifully designed components built with Radix UI and
-                            Tailwind CSS.
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
-                    <ListItem href="/docs" title="Introduction">
-                      Re-usable components built using Radix UI and Tailwind CSS.
-                    </ListItem>
-                    <ListItem href="/docs/installation" title="Installation">
-                      How to install dependencies and structure your app.
-                    </ListItem>
-                    <ListItem href="/docs/primitives/typography" title="Typography">
-                      Styles for headings, paragraphs, lists...etc
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+
+              {
+                group == "Admin" ? (
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>Wellness Lounge</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className=" p-4 md:w-[400px] lg:w-[250px]">
+
+                        <ListItem href="/wellness-lounge-list" title="Lounge Session List">
+                        </ListItem>
+                        <ListItem href="/create-wellness-lounge" title="Create Lounge Session">
+                        </ListItem>
+                        <ListItem href="/categories-list" title="Categories">
+                        </ListItem>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : group == "Student" && (
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>Wellness Lounge</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className=" p-4 md:w-[400px] lg:w-[250px]">
+
+                        <ListItem href="/calendar" title="Calendar">
+                        </ListItem>
+
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                )
+              }
+
+
+              {
+                group == "Admin" ? (
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>Orders</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className=" p-2 md:w-[400px] lg:w-[250px]">
+                        <ListItem href="/order-list" title="Orders List">
+                        </ListItem>
+                        <ListItem href="/create-order" title="Create order">
+                        </ListItem>
+                        <ListItem href="/view-order" title="View order">
+                        </ListItem>
+                        <ListItem href="Zoom Meeting Link" title="Zoom Meeting Link">
+                        </ListItem>
+                        <ListItem href="Order Cancelation" title="Order Cancelation">
+                        </ListItem>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : group == "Student" && (
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>Order History</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className=" p-4 md:w-[400px] lg:w-[250px]">
+                        <ListItem href="/order-list" title="Orders List">
+                        </ListItem>
+                        <ListItem href="/view-order" title="View order">
+                        </ListItem>
+                        <ListItem href="Zoom Meeting Link" title="Zoom Meeting Link">
+                        </ListItem>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                )
+              }
+
 
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Orders</NavigationMenuTrigger>

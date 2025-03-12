@@ -198,49 +198,50 @@ export default function CreateOrder() {
     ];
 
     return (
-        <div className="container mx-auto">
-            <div className="font-bold text-lg mb-3">Create Order</div>
-            <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-                <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+        <div className="container mx-auto h-[85vh] flex items-center">
+            <div className="w-full">
+                <div className="font-bold text-lg mb-3">Create Order</div>
+                <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+                    <div className="border rounded-xl p-4 gap-4 flex flex-col ">
 
-                    <CustomSelect
-                        options={state.userList}
-                        value={state.user?.value || ""}
-                        onChange={(value: any) => setState({ user: value })}
-                        title="Select User"
-                        error={state.errors?.user}
-                        required
-                        placeholder="Select User"
-                    />
-                    <div>
+                        <CustomSelect
+                            options={state.userList}
+                            value={state.user?.value || ""}
+                            onChange={(value: any) => setState({ user: value })}
+                            title="Select User"
+                            error={state.errors?.user}
+                            required
+                            placeholder="Select User"
+                        />
+                        <div>
 
-                        {
+                            {
 
-                            SelectedUser?.length > 0 && (
-                                <>
-                                    <h3 className="text-lg font-medium">User Details:</h3>
+                                SelectedUser?.length > 0 && (
+                                    <>
+                                        <h3 className="text-lg font-medium">User Details:</h3>
 
-                                    <div className="pl-3 pt-3">
-                                        <ul className="text-sm">
-                                            <li className="pb-3"><span className="font-bold text-gray-700">Profile Picture:</span> <img src={SelectedUser[0]?.profile_picture} alt="Profile" className="w-[100px] h-[100px] rounded pt-2" /></li>
-                                            <li className="pb-3"><span className="font-bold text-gray-700">Name:</span> {SelectedUser[0]?.username}</li>
-                                            <li className="pb-3"><span className="font-bold text-gray-700">Email:</span> {SelectedUser[0]?.email || 'N/A'}</li>
-                                            <li className="pb-3"><span className="font-bold text-gray-700">Contact Number:</span> {SelectedUser[0]?.phone_number || 'N/A'}</li>
-                                            <li className="pb-3"><span className="font-bold text-gray-700">Date of Birth:</span> {SelectedUser[0]?.date_of_birth || 'N/A'}</li>
-                                        </ul>
-                                    </div>
+                                        <div className="pl-3 pt-3">
+                                            <ul className="text-sm">
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Profile Picture:</span> <img src={SelectedUser[0]?.profile_picture} alt="Profile" className="w-[100px] h-[100px] rounded pt-2" /></li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Name:</span> {SelectedUser[0]?.username}</li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Email:</span> {SelectedUser[0]?.email || 'N/A'}</li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Contact Number:</span> {SelectedUser[0]?.phone_number || 'N/A'}</li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Date of Birth:</span> {SelectedUser[0]?.date_of_birth || 'N/A'}</li>
+                                            </ul>
+                                        </div>
 
-                                </>
+                                    </>
 
-                            )
-                        }
-
-
+                                )
+                            }
 
 
-                    </div>
 
-                    {/* <TextInput
+
+                        </div>
+
+                        {/* <TextInput
                         value={state.title}
                         onChange={(e) => {
                             setState({ title: e.target.value });
@@ -306,41 +307,41 @@ export default function CreateOrder() {
                             required
                         />
                     </div> */}
-                </div>
+                    </div>
 
-                <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                    <CustomMultiSelect
-                        options={state.loungeList}
-                        value={state.event || ""}
-                        onChange={(value: any) => setState({ event: value })}
-                        title="Select Lounge"
-                        error={state.errors?.event}
-                        required
-                        placeholder="Select Lounge"
-                    />
-                    {
-                        filteredLoungeData?.length > 0 &&
-                        (
-                            <Card className="w-[100%] mt-2 mb-4 p-2">
-                                <DataTable columns={columns} data={filteredLoungeData} />
-                            </Card>
-                        )
+                    <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+                        <CustomMultiSelect
+                            options={state.loungeList}
+                            value={state.event || ""}
+                            onChange={(value: any) => setState({ event: value })}
+                            title="Select Lounge"
+                            error={state.errors?.event}
+                            required
+                            placeholder="Select Lounge"
+                        />
+                        {
+                            filteredLoungeData?.length > 0 &&
+                            (
+                                <Card className="w-[100%] mt-2 mb-4 p-2">
+                                    <DataTable columns={columns} data={filteredLoungeData} />
+                                </Card>
+                            )
 
-                    }
+                        }
 
-                    <CustomSelect
-                        options={orderStatusList}
-                        value={state.registration_status?.value || ""}
-                        onChange={(value: any) => setState({ registration_status: value })}
-                        title="Select Order Status"
-                        error={state.errors?.registration_status}
-                        required
-                        placeholder="Select Order Status"
-                    />
+                        <CustomSelect
+                            options={orderStatusList}
+                            value={state.registration_status?.value || ""}
+                            onChange={(value: any) => setState({ registration_status: value })}
+                            title="Select Order Status"
+                            error={state.errors?.registration_status}
+                            required
+                            placeholder="Select Order Status"
+                        />
 
 
-                    <div className="flex justify-end gap-5 mt-10">
-                        {/* <Button variant="outline" className="sm:w-auto lg:w-[100px]">
+                        <div className="flex justify-end gap-5 mt-10">
+                            {/* <Button variant="outline" className="sm:w-auto lg:w-[100px]">
               Cancel
             </Button>
             <Button
@@ -350,20 +351,22 @@ export default function CreateOrder() {
               Submit
             </Button> */}
 
-                        <PrimaryButton
-                            variant={"outline"}
-                            name="Cancel"
-                            onClick={() => router.back()}
-                        />
+                            <PrimaryButton
+                                variant={"outline"}
+                                name="Cancel"
+                                onClick={() => router.back()}
+                            />
 
-                        <PrimaryButton
-                            name="Submit"
-                            onClick={() => onSubmit()}
-                            loading={state.submitLoading}
-                        />
+                            <PrimaryButton
+                                name="Submit"
+                                onClick={() => onSubmit()}
+                                loading={state.submitLoading}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
+
 
 
 

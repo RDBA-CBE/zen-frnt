@@ -105,55 +105,58 @@ export default function viewWellnessLounge() {
     ];
 
     return (
-        <div className="container mx-auto">
-            <div className="font-bold text-lg mb-3">User Details</div>
 
-            <div className={` ${(state?.userData?.event_registrations ?? []).length > 0 ? 'grid auto-rows-min gap-4 md:grid-cols-[25%_75%]' : 'flex justify-center items-center'}`}>
+        <div className="container mx-auto h-[85vh] flex items-center">
+            <div className="w-full">
+                <div className="flex justify-between items-center">
+                    <div className="font-bold text-lg mb-3">Profile</div>
+                </div>
 
-                <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                    <div>
-                        <div className="flex items-center gap-2  text-center">
-                            <div>
-                                <img src={state?.userData?.profile_picture} alt="thumbnail" className="w-[100px] h-[100px]" />
-                            </div>
 
-                            <div>
-                                <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                                    {state?.userData.username}
-                                </h2>
-                                <blockquote className="italic">
-                                    {state?.userData?.group_name}
-                                </blockquote>
-                            </div>
-                        </div>
 
+                <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+
+                    <div className="border rounded-xl p-4 gap-4 flex flex-col ">
                         <div>
-                            <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+                            <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
+                                {state?.userData.username}
+                            </h2>
+                            <blockquote className="italic">
+                                {state?.userData?.group_name}
+                            </blockquote>
+                        </div>
+                        <div>
+                            <ul className="my-6 ml-6 [&>li]:mt-2">
                                 {/* {state?.userData?.event_registrations && (
                                     <li>
                                         Event Registrations:{state?.userData?.event_registrations[0]}
                                     </li>
                                 )} */}
-                                {
-                                    state?.userData?.date_of_birth && (
-                                        <li>Date of Birth: {state?.userData?.date_of_birth}</li>
-                                    )
-                                }
+
                                 {
                                     state?.userData?.email && (
                                         <li>Email: {state?.userData?.email}</li>
                                     )
                                 }
-
                                 {
-                                    state?.userData?.phone_number && (
-                                        <li>Phone Number: {state?.userData?.phone_number}</li>
+                                    state?.userData?.department && (
+                                        <li>Date of Birth: {state?.userData?.department}</li>
                                     )
                                 }
 
                                 {
-                                    state?.userData?.address && (
-                                        <li>Address: {state?.userData?.address}</li>
+                                    state?.userData?.year_of_entry && (
+                                        <li>Phone Number: {state?.userData?.year_of_entry}</li>
+                                    )
+                                }
+                                {
+                                    state?.userData?.intrested_topics && (
+                                        <li>Intrested in: {state?.userData?.intrested_topics}</li>
+                                    )
+                                }
+                                {
+                                    state?.userData?.university && (
+                                        <li>University: {state?.userData?.university}</li>
                                     )
                                 }
 
@@ -161,10 +164,17 @@ export default function viewWellnessLounge() {
                         </div>
 
                     </div>
+                    <div className="border rounded-xl p-4 gap-4 justify-center items-center flex flex-col ">
+
+                        <img src="/assets/images/placeholder.jpg" alt="thumbnail" className="w-[300px] h-50" />
+                    </div>
+
+
+
                 </div>
-                {/* {(state?.userData?.event_registrations ?? []).length > 0 && (
-                    <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                        <h1 className="font-[500]">Event Registration</h1>
+                {(state?.userData?.event_registrations ?? []).length > 0 && (
+                    <div className="border rounded-xl p-4 gap-4 mt-5 flex flex-col ">
+                        <h1 className="font-[500]">Registered Events</h1>
 
                         <div className="rounded-lg border">
                             <DataTable columns={columns} data={state?.userData?.event_registrations ?? []} />
@@ -172,9 +182,12 @@ export default function viewWellnessLounge() {
 
 
                     </div>
-                )} */}
+                )}
             </div>
 
+
+
         </div>
+
     );
 }

@@ -25,7 +25,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { orderStatusList } from "@/utils/constant.utils";
 
-const WellnessLoungeList = () => {
+const CancelOrderList = () => {
     const router = useRouter();
 
     const [state, setState] = useSetState({
@@ -64,7 +64,7 @@ const WellnessLoungeList = () => {
             } else {
                 pages = 1;
             }
-            const res: any = await Models.session.registrationList(pages, body);
+            const res: any = await Models.session.cancelRegistrationList(pages, body);
 
             setState({
                 loungeList: res?.results,
@@ -123,9 +123,9 @@ const WellnessLoungeList = () => {
         if (state.event) {
             body.event = state.event?.value;
         }
-        if (state.lounge_status) {
-            body.lounge_status = state.lounge_status?.value;
-        }
+        // if (state.lounge_status) {
+        //     body.lounge_status = state.lounge_status?.value;
+        // }
 
         return body;
     };
@@ -225,7 +225,7 @@ const WellnessLoungeList = () => {
     };
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto h-[85vh]">
             <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
                 <Card className="w-[100%] p-4">
                     <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
@@ -244,7 +244,7 @@ const WellnessLoungeList = () => {
                 </Card>
 
                 <Card className="w-[100%] p-4">
-                    <div className="grid auto-rows-min gap-4 md:grid-cols-4">
+                    <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                         <div>
                             <TextInput
                                 value={state.search}
@@ -256,12 +256,12 @@ const WellnessLoungeList = () => {
                                 className="w-full"
                             />
                         </div>
-                        <CustomSelect
+                        {/* <CustomSelect
                             options={orderStatusList}
                             value={state.lounge_status?.value || ""}
                             onChange={(value: any) => setState({ lounge_status: value })}
                             placeholder="Order Status"
-                        />
+                        /> */}
                         <CustomSelect
                             options={state?.loungeSearch}
                             value={state.event?.value || ""}
@@ -345,4 +345,4 @@ const WellnessLoungeList = () => {
     );
 };
 
-export default WellnessLoungeList;
+export default CancelOrderList;

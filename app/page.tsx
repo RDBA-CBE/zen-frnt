@@ -115,6 +115,7 @@ const WellnessLoungeList = () => {
 
   const handleView = (item: any) => {
     console.log("Viewing:", item);
+    router.push(`/view-wellness-lounge/?id=${item?.id}`);
   };
 
   const deleteSession = async () => {
