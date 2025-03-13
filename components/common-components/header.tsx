@@ -126,10 +126,10 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex gap-2">
-            <a href="#" aria-label="Instagram">
+            <a href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect" target="_blank" aria-label="Instagram">
               <InstagramIcon className="w-4 h-4" />
             </a>
-            <a href="#" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"  target="_blank" aria-label="LinkedIn">
               <LinkedinIcon className="w-4 h-4" />
             </a>
           </div>
