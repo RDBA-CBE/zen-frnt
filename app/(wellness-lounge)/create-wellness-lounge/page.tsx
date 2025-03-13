@@ -119,136 +119,138 @@ export default function CreateWellnessLounge() {
   };
 
   return (
-    <div className="container mx-auto">
-      <div className="font-bold text-lg mb-3">Create Lounge Session</div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-        <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <TextInput
-            value={state.title}
-            onChange={(e) => {
-              setState({ title: e.target.value });
-            }}
-            placeholder="Title"
-            title="Title"
-            error={state.errors?.title}
-            required
-          />
-          <TextArea
-            name="Description"
-            value={state.description}
-            onChange={(e: any) => {
-              setState({ description: e.target.value });
-            }}
-            className="mt-2 w-full"
-            placeholder="Description"
-            title="Description"
-          />
-          <div className="grid auto-rows-min gap-4 grid-cols-2">
-            <DatePicker
-              placeholder="Start date"
-              title="Start date"
-              selectedDate={state.start_date}
-              onChange={(date: any) => {
-                console.log("date: ", date);
-                setState({
-                  start_date: date,
-                });
-              }}
-              error={state.errors?.start_date}
-              required
-            />
-            <DatePicker
-              placeholder="End date"
-              title="End date"
-              selectedDate={state.end_date}
-              onChange={(date: any) => {
-                console.log("date: ", date);
-                setState({
-                  end_date: date,
-                });
-              }}
-              error={state.errors?.end_date}
-              required
-            />
-          </div>
-          <div className="grid auto-rows-min gap-4 grid-cols-2">
-            <TimePicker
-              value={state.start_time}
-              onChange={(e: any) => setState({ start_time: e })}
-              title="Start Time"
-              placeholder="Start Time"
-              error={state.errors?.start_time}
-              required
-            />
-            <TimePicker
-              value={state.end_time}
-              onChange={(e: any) => setState({ end_time: e })}
-              title="End Time"
-              placeholder="End Time"
-              error={state.errors?.end_time}
-              required
-            />
-          </div>
-        </div>
+    <div className="container mx-auto ">
+      <div className="flex justify-center  h-[73.7vh] ">
+        <div className="w-full">
+          <div className="font-bold text-lg mb-3">Create Lounge Session</div>
+          <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+            <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+              <TextInput
+                value={state.title}
+                onChange={(e) => {
+                  setState({ title: e.target.value });
+                }}
+                placeholder="Title"
+                title="Title"
+                error={state.errors?.title}
+                required
+              />
+              <TextArea
+                name="Description"
+                value={state.description}
+                onChange={(e: any) => {
+                  setState({ description: e.target.value });
+                }}
+                className="mt-2 w-full"
+                placeholder="Description"
+                title="Description"
+              />
+              <div className="grid auto-rows-min gap-4 grid-cols-2">
+                <DatePicker
+                  placeholder="Start date"
+                  title="Start date"
+                  selectedDate={state.start_date}
+                  onChange={(date: any) => {
+                    console.log("date: ", date);
+                    setState({
+                      start_date: date,
+                    });
+                  }}
+                  error={state.errors?.start_date}
+                  required
+                />
+                <DatePicker
+                  placeholder="End date"
+                  title="End date"
+                  selectedDate={state.end_date}
+                  onChange={(date: any) => {
+                    console.log("date: ", date);
+                    setState({
+                      end_date: date,
+                    });
+                  }}
+                  error={state.errors?.end_date}
+                  required
+                />
+              </div>
+              <div className="grid auto-rows-min gap-4 grid-cols-2">
+                <TimePicker
+                  value={state.start_time}
+                  onChange={(e: any) => setState({ start_time: e })}
+                  title="Start Time"
+                  placeholder="Start Time"
+                  error={state.errors?.start_time}
+                  required
+                />
+                <TimePicker
+                  value={state.end_time}
+                  onChange={(e: any) => setState({ end_time: e })}
+                  title="End Time"
+                  placeholder="End Time"
+                  error={state.errors?.end_time}
+                  required
+                />
+              </div>
+            </div>
 
-        <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <CustomSelect
-            options={state.categoryList}
-            value={state.lounge_type?.value || ""}
-            onChange={(value: any) => setState({ lounge_type: value })}
-            title="Lounge Type"
-            error={state.errors?.lounge_type}
-            required
-          />
-          <TextInput
-            value={state.session_link}
-            onChange={(e) => {
-              setState({ session_link: e.target.value });
-            }}
-            placeholder="Session Link"
-            title="Session Link"
-            error={state.errors?.session_link}
-            required
-          />
-          <TextInput
-            value={state.price}
-            onChange={(e) => {
-              setState({ price: e.target.value });
-            }}
-            placeholder="Price"
-            title="Price"
-            type="number"
-            error={state.errors?.price}
-          />
+            <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+              <CustomSelect
+                options={state.categoryList}
+                value={state.lounge_type?.value || ""}
+                onChange={(value: any) => setState({ lounge_type: value })}
+                title="Lounge Type"
+                error={state.errors?.lounge_type}
+                required
+              />
+              <TextInput
+                value={state.session_link}
+                onChange={(e) => {
+                  setState({ session_link: e.target.value });
+                }}
+                placeholder="Session Link"
+                title="Session Link"
+                error={state.errors?.session_link}
+                required
+              />
+              <TextInput
+                value={state.price}
+                onChange={(e) => {
+                  setState({ price: e.target.value });
+                }}
+                placeholder="Price"
+                title="Price"
+                type="number"
+                error={state.errors?.price}
+              />
 
-          <TextInput
-            value={state.seat_count}
-            onChange={(e) => {
-              setState({ seat_count: e.target.value });
-            }}
-            placeholder="Seat Count"
-            title="Seat Count"
-            type="number"
-            error={state.errors?.seat_count}
-          />
-          <TextInput
-            title="Session Image"
-            placeholder="Session Image"
-            value={state.thumbnail_image}
-            onChange={(e: any) => {
-              console.log("e.target: ", e.target.files[0]);
+              <TextInput
+                value={state.seat_count}
+                onChange={(e) => {
+                  setState({ seat_count: e.target.value });
+                }}
+                placeholder="Seat Count"
+                title="Seat Count"
+                type="number"
+                error={state.errors?.seat_count}
+              />
+              <TextInput
+                title="Session Image"
+                placeholder="Session Image"
+                value={state.thumbnail_image}
+                onChange={(e: any) => {
+                  console.log("e.target: ", e.target.files[0]);
 
-              setState({
-                thumbnail_images: e.target.files[0],
-                thumbnail_image: e.target.value,
-              });
-            }}
-            className="mt-2 w-full"
-            type="file"
-          />
+                  setState({
+                    thumbnail_images: e.target.files[0],
+                    thumbnail_image: e.target.value,
+                  });
+                }}
+                className="mt-2 w-full"
+                type="file"
+              />
 
-          <div className="flex justify-end gap-5 mt-10">
-            {/* <Button variant="outline" className="sm:w-auto lg:w-[100px]">
+              <div className="flex justify-end gap-5 mt-10">
+                {/* <Button variant="outline" className="sm:w-auto lg:w-[100px]">
               Cancel
             </Button>
             <Button
@@ -258,20 +260,25 @@ export default function CreateWellnessLounge() {
               Submit
             </Button> */}
 
-            <PrimaryButton
-              variant={"outline"}
-              name="Cancel"
-              onClick={() => router.back()}
-            />
+                <PrimaryButton
+                  variant={"outline"}
+                  name="Cancel"
+                  onClick={() => router.back()}
+                />
 
-            <PrimaryButton
-              name="Submit"
-              onClick={() => onSubmit()}
-              loading={state.submitLoading}
-            />
+                <PrimaryButton
+                  name="Submit"
+                  onClick={() => onSubmit()}
+                  loading={state.submitLoading}
+                />
+              </div>
+            </div>
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }

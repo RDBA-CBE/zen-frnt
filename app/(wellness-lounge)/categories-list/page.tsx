@@ -190,32 +190,33 @@ const WellnessLoungeList = () => {
 
   return (
     <div className="container mx-auto ">
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
-            <div>
-              <h2 className="md:text-lg text-sm font-bold">Category List</h2>
+      <div className="flex justify-center h-[73.7vh] w-full">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <Card className="w-[100%] p-4">
+            <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
+              <div>
+                <h2 className="md:text-lg text-sm font-bold">Category List</h2>
+              </div>
+              <div className="text-end">
+                <Button
+                  type="button"
+                  className="bg-black "
+                  onClick={() =>
+                    setState({
+                      isOpen: true,
+                      editData: {},
+                      name: "",
+                      description: "",
+                    })
+                  }
+                >
+                  Create
+                </Button>
+              </div>
             </div>
-            <div className="text-end">
-              <Button
-                type="button"
-                className="bg-black "
-                onClick={() =>
-                  setState({
-                    isOpen: true,
-                    editData: {},
-                    name: "",
-                    description: "",
-                  })
-                }
-              >
-                Create
-              </Button>
-            </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* <Card className="w-[100%] p-4">
+          {/* <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div>
               <Input placeholder="Search Title" />
@@ -247,7 +248,7 @@ const WellnessLoungeList = () => {
           </div>
         </Card> */}
 
-        {/* <div className="flex gap-2">
+          {/* <div className="flex gap-2">
           <p className="text-[14px]">Selected Filters:</p>
           <p className="text-[14px] bg-gray-600 text-white px-2 flex items-center gap-1 rounded-sm">
             Online <X className="w-4 h-4 cursor-pointer" />{" "}
@@ -257,11 +258,11 @@ const WellnessLoungeList = () => {
           </p>
         </div> */}
 
-        <div className="rounded-lg border">
-          <DataTable columns={columns} data={state.categoryList} />
-        </div>
+          <div className="rounded-lg border">
+            <DataTable columns={columns} data={state.categoryList} />
+          </div>
 
-        {/* <div>
+          {/* <div>
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -280,7 +281,10 @@ const WellnessLoungeList = () => {
             </PaginationContent>
           </Pagination>
         </div> */}
+        </div>
       </div>
+
+
 
       <Modal
         isOpen={state.isOpen}

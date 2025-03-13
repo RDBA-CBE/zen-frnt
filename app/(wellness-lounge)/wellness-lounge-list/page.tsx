@@ -214,7 +214,7 @@ const WellnessLoungeList = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto h-[73.7vh]">
       <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
         <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
@@ -292,18 +292,16 @@ const WellnessLoungeList = () => {
               <Button
                 disabled={!state.previous}
                 onClick={handlePreviousPage}
-                className={`btn ${
-                  !state.previous ? "btn-disabled" : "btn-primary"
-                }`}
+                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                  }`}
               >
                 Prev
               </Button>
               <Button
                 disabled={!state.next}
                 onClick={handleNextPage}
-                className={`btn ${
-                  !state.next ? "btn-disabled" : "btn-primary"
-                }`}
+                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                  }`}
               >
                 Next
               </Button>

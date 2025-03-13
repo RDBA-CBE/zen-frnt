@@ -10,9 +10,9 @@ export default function Login() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center  h-[73.7vh]">
       {/* {!isAuthenticated ? ( */}
-        <LoginForm className={""} />
+      <LoginForm className={""} />
       {/* ) : (
         <p className="text-lg font-semibold">Redirecting...</p>
       )} */}

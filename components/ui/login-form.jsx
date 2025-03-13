@@ -58,7 +58,7 @@ const LoginForm = ({ className, ...props }) => {
   if (!isMounted) return null;
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center ">
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
