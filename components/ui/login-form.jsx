@@ -42,7 +42,7 @@ const LoginForm = ({ className, ...props }) => {
       localStorage.setItem("token", res.access);
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id)
-      localStorage.setItem("group", res.group[0] )
+      localStorage.setItem("group", res.group[0])
       Success("Login successfully");
 
       // ✅ Trigger storage event to notify other tabs
@@ -101,16 +101,16 @@ const LoginForm = ({ className, ...props }) => {
               <Button type="button" className="w-full" onClick={handleSubmit}>
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
+              {/* <Button variant="outline" className="w-full">
                 Login with Google
-              </Button>
+              </Button> */}
             </div>
-            <div className="mt-4 text-center text-sm">
+            {/* <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <a href="#" className="underline underline-offset-4">
                 Sign up
               </a>
-            </div>
+            </div> */}
           </form>
         </CardContent>
       </Card>

@@ -74,7 +74,7 @@ export default function viewWellnessLounge() {
     console.log("state?.orderData", state?.orderData)
 
     return (
-        <div className="container mx-auto h-[85vh] flex items-center">
+        <div className="container mx-auto flex items-center">
             <div className="w-full">
                 <div className="flex justify-between items-center">
                     <div className="mb-3">

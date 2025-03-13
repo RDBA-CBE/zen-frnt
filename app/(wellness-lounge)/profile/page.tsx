@@ -21,7 +21,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
-import { Trash2, X } from "lucide-react";
+import { PencilIcon, Trash2, X } from "lucide-react";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Link from "next/link";
@@ -106,10 +106,11 @@ export default function viewWellnessLounge() {
 
     return (
 
-        <div className="container mx-auto h-[85vh] flex items-center">
+        <div className="container mx-auto flex items-center">
             <div className="w-full">
                 <div className="flex justify-between items-center">
                     <div className="font-bold text-lg mb-3">Profile</div>
+
                 </div>
 
 
@@ -117,13 +118,31 @@ export default function viewWellnessLounge() {
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">
 
                     <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                        <div>
-                            <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                                {state?.userData.username}
-                            </h2>
-                            <blockquote className="italic">
-                                {state?.userData?.group_name}
-                            </blockquote>
+                        <div className="flex justify-between items-center">
+                            <div className="flex justify-between gap-2">
+                                <div>
+                                    {
+                                        state?.userData?.profile_picture ? (
+                                            <img src={state?.userData?.profile_picture} alt="profile" className="w-[70px] h-[70px] rounded" />
+                                        ) :
+                                            (
+                                                <img src="/assets/images/dummy-profile.jpg" alt="profile" className="w-[70px] h-[70px] rounded" />
+                                            )
+                                    }
+
+                                </div>
+                                <div>
+                                    <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
+                                        {state?.userData.username}
+                                    </h2>
+                                    <blockquote className="italic">
+                                        {state?.userData?.group_name}
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div>
+                                <Button onClick={() => router.push(`/update-user/?id=${state?.userData.id}`)}>Edit Profile</Button>
+                            </div>
                         </div>
                         <div>
                             <ul className="my-6 ml-6 [&>li]:mt-2">
@@ -138,20 +157,35 @@ export default function viewWellnessLounge() {
                                         <li>Email: {state?.userData?.email}</li>
                                     )
                                 }
+                                 {
+                                    state?.userData?.phone_number && (
+                                        <li>Phone Number: {state?.userData?.phone_number}</li>
+                                    )
+                                }
+                                 {
+                                    state?.userData?.date_of_birth && (
+                                        <li>Date of Birth: {state?.userData?.date_of_birth}</li>
+                                    )
+                                }
+                                  {
+                                    state?.userData?.address && (
+                                        <li>Address: {state?.userData?.address}</li>
+                                    )
+                                }
                                 {
                                     state?.userData?.department && (
-                                        <li>Date of Birth: {state?.userData?.department}</li>
+                                        <li>Department: {state?.userData?.department}</li>
                                     )
                                 }
 
                                 {
                                     state?.userData?.year_of_entry && (
-                                        <li>Phone Number: {state?.userData?.year_of_entry}</li>
+                                        <li>Year of Entry: {state?.userData?.year_of_entry}</li>
                                     )
                                 }
                                 {
                                     state?.userData?.intrested_topics && (
-                                        <li>Intrested in: {state?.userData?.intrested_topics}</li>
+                                        <li>Intrested in Topics: {state?.userData?.intrested_topics}</li>
                                     )
                                 }
                                 {

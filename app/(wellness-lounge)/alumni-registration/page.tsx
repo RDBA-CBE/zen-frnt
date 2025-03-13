@@ -7,10 +7,6 @@ import StudentRegistrationForm from "@/components/ui/student-registration-form";
 import { useState } from "react";
 
 export default function Registration() {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-        !!localStorage.getItem("token") // Check for token
-    );
-
 
     return (
         <div className="flex items-center justify-center ">

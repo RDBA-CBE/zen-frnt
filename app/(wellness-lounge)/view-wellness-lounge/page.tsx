@@ -93,8 +93,9 @@ export default function viewWellnessLounge() {
 
             const res = await Models.session.createRegistration(body);
 
-            // router.push("/order-list");
+            router.push("/student-order");
             Success("Event Intrested sent successfully");
+
             setState({ isOpen: false })
         } catch (error: any) {
             console.log("error", error);
@@ -149,7 +150,7 @@ export default function viewWellnessLounge() {
                         {
                             state?.group == "Student" && (
                                 <div>
-                                    <Button onClick={() => setState({ isOpen: true })}>Intrested</Button>
+                                    <Button className={`${state?.orderData?.is_registered == true ? "bg-green-800 hover:bg-green-800 border-green": "bg-black"}`} onClick={() => setState({ isOpen: true })}>Intrested</Button>
                                 </div>
                             )
                         }

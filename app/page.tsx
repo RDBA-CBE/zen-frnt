@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
@@ -23,8 +23,10 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
+import Calendar from "./(wellness-lounge)/calendar/page";
+import WellnessLoungeList from "./(wellness-lounge)/wellness-lounge-list/page";
 
-const WellnessLoungeList = () => {
+const App = () => {
   const router = useRouter();
 
   const [state, setState] = useSetState({
@@ -212,133 +214,27 @@ const WellnessLoungeList = () => {
       getLoungeList(newPage);
     }
   };
+  const [group, setGroup] = useState(null)
+  useEffect(() => {
+    const Group: any = localStorage?.getItem("group")
+
+    if (Group) {
+      setGroup(Group)
+    }
+  }, [])
 
   return (
-    <div className="container mx-auto">
-      <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
-        <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
-            <div>
-              <h2 className="md:text-lg text-sm font-bold">
-                Lounge Session List
-              </h2>
-            </div>
-            <div
-              className="text-end"
-              onClick={() => router.push("/create-wellness-lounge")}
-            >
-              <Button className="bg-black ">Create</Button>
-            </div>
-          </div>
-        </Card>
+    <>
+      {group == "Admin" ? (
+        <WellnessLoungeList />
 
-        <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-            <div>
-              <TextInput
-                value={state.search}
-                onChange={(e) => {
-                  setState({ search: e.target.value });
-                }}
-                placeholder="Search Title"
-                required
-                className="w-full"
-              />
-            </div>
-            <CustomSelect
-              options={state.categoryList}
-              value={state.lounge_type?.value || ""}
-              onChange={(value: any) => setState({ lounge_type: value })}
-              placeholder="Lounge Type"
-            />
-            <div>
-              <DatePicker
-                placeholder="Start date"
-                closeIcon={true}
-                selectedDate={state.start_date}
-                onChange={(date: any) => {
-                  setState({
-                    start_date: date,
-                  });
-                }}
-              />
-            </div>
-            <div>
-              <DatePicker
-                placeholder="End date"
-                closeIcon={true}
-                selectedDate={state.end_date}
-                onChange={(date: any) => {
-                  setState({
-                    end_date: date,
-                  });
-                }}
-              />
-            </div>
-          </div>
-        </Card>
+      ) : (
+        <Calendar />
+      )
 
-        {state.loading ? (
-          <Loading />
-        ) : state.loungeList?.length > 0 ? (
-          <>
-            <div className=" mt-2 overflow-x-auto">
-              <Card className="w-[100%] p-4">
-                <DataTable columns={columns} data={state.loungeList} />
-              </Card>
-            </div>
-
-            <div className="mt-5 flex justify-center gap-3">
-              <Button
-                disabled={!state.previous}
-                onClick={handlePreviousPage}
-                className={`btn ${
-                  !state.previous ? "btn-disabled" : "btn-primary"
-                }`}
-              >
-                Prev
-              </Button>
-              <Button
-                disabled={!state.next}
-                onClick={handleNextPage}
-                className={`btn ${
-                  !state.next ? "btn-disabled" : "btn-primary"
-                }`}
-              >
-                Next
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="items-center justify-center flex">
-            <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
-          </div>
-        )}
-      </div>
-      <Modal
-        isOpen={state.isOpen}
-        setIsOpen={() => setState({ isOpen: false, deleteId: null })}
-        title={"Are you sure to delete record"}
-        renderComponent={() => (
-          <>
-            <div className="flex justify-end gap-5">
-              <PrimaryButton
-                variant={"outline"}
-                name="Cancel"
-                onClick={() => setState({ isOpen: false, deleteId: null })}
-              />
-
-              <PrimaryButton
-                name="Submit"
-                onClick={() => deleteSession()}
-                loading={state.submitLoading}
-              />
-            </div>
-          </>
-        )}
-      />
-    </div>
+      }
+    </>
   );
 };
 
-export default WellnessLoungeList;
+export default App;

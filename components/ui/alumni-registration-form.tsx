@@ -208,7 +208,7 @@ const AlumniRegistrationForm = ({ className, ...props }: any) => {
     console.log("state?.errors")
 
     return (
-        <div className="flex items-center justify-center h-[85vh]">
+        <div className="flex items-center justify-center w-full">
 
 
 
