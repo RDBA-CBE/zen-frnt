@@ -198,7 +198,7 @@ export default function CreateOrder() {
     ];
 
     return (
-        <div className="container mx-auto h-[73.7vh] flex items-center">
+        <div className="container mx-auto flex items-center">
             <div className="w-full">
                 <div className="font-bold text-lg mb-3">Create Order</div>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">

@@ -120,7 +120,7 @@ export default function CreateWellnessLounge() {
 
   return (
     <div className="container mx-auto ">
-      <div className="flex justify-center  h-[73.7vh] ">
+      <div className="flex justify-center   ">
         <div className="w-full">
           <div className="font-bold text-lg mb-3">Create Lounge Session</div>
           <div className="grid auto-rows-min gap-4 md:grid-cols-2">

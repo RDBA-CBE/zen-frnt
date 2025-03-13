@@ -51,7 +51,7 @@ const WellnessLoungeList = () => {
     }, []);
 
     useEffect(() => {
-        getOrdersList(state.currentPage);
+        getOrdersList(1);
     }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 
     const getOrdersList = async (page: number) => {

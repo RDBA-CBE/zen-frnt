@@ -10,7 +10,7 @@ export default function Login() {
 
 
   return (
-    <div className="flex items-center justify-center  h-[73.7vh]">
+    <div className="flex items-center justify-center ">
       {/* {!isAuthenticated ? ( */}
       <LoginForm className={""} />
       {/* ) : (
