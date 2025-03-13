@@ -64,11 +64,11 @@ export default function RootLayout({
 
 
             <main className="w-full p-4">{children}</main>
-            <footer className="sticky backcolor-purpole text-white bottom-0 z-50 w-full bg-white dark:bg-gray-900  border-t p-8">
-              <p className="mb-0 md:text-md text-sm">
+            <footer className="fixed backcolor-purpole text-white bottom-0 z-50 w-full bg-white dark:bg-gray-900  border-t p-8">
+              <div className=" text-center mb-0 md:text-md text-md">
                 Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
                 <Link href="https://irepute.in/">repute</Link>
-              </p>
+              </div>
             </footer>
           </div>
           // </SidebarProvider>
