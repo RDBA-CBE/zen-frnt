@@ -57,19 +57,19 @@ const UserList = () => {
       setState({ loading: true });
 
       const body = bodyData();
-      let pages = 1;
-      if (objIsEmpty(body)) {
-        pages = page;
-      } else {
-        pages = 1;
-      }
-      const res: any = await Models.user.userList(pages, body);
+      // let pages = 1;
+      // if (objIsEmpty(body)) {
+      //   pages = page;
+      // } else {
+      //   pages = 1;
+      // }
+      const res: any = await Models.user.userList(page, body);
       console.log("res: ", res);
       setState({
         userList: res?.results,
         next: res.next,
         previous: res.previous,
-        currentPage: pages,
+        currentPage: page,
         loading: false,
       });
     } catch (error) {

@@ -32,7 +32,6 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("group")
     setDialogOpen(false);
-    window.location?.reload()
     router.push("/login");
   };
 

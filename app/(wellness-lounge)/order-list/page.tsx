@@ -57,20 +57,20 @@ const WellnessLoungeList = () => {
     const getOrdersList = async (page: number) => {
         try {
             setState({ loading: true });
-            let pages = 1;
+            // let pages = 1;
             let body = bodyData();
-            if (objIsEmpty(body)) {
-                pages = page;
-            } else {
-                pages = 1;
-            }
-            const res: any = await Models.session.registrationList(pages, body);
+            // if (objIsEmpty(body)) {
+            //     pages = page;
+            // } else {
+            //     pages = 1;
+            // }
+            const res: any = await Models.session.registrationList(page, body);
 
             setState({
                 loungeList: res?.results,
                 next: res.next,
                 previous: res.previous,
-                currentPage: pages,
+                currentPage: page,
                 loading: false,
             });
         } catch (error) {

@@ -57,20 +57,20 @@ const CancelOrderList = () => {
     const getOrdersList = async (page: number) => {
         try {
             setState({ loading: true });
-            let pages = 1;
+            // let pages = 1;
             let body = bodyData();
-            if (objIsEmpty(body)) {
-                pages = page;
-            } else {
-                pages = 1;
-            }
-            const res: any = await Models.session.cancelRegistrationList(pages, body);
+            // if (objIsEmpty(body)) {
+            //     pages = page;
+            // } else {
+            //     pages = 1;
+            // }
+            const res: any = await Models.session.cancelRegistrationList(page, body);
 
             setState({
                 loungeList: res?.results,
                 next: res.next,
                 previous: res.previous,
-                currentPage: pages,
+                currentPage: page,
                 loading: false,
             });
         } catch (error) {
@@ -225,7 +225,7 @@ const CancelOrderList = () => {
     };
 
     return (
-        <div className="container mx-auto h-[85vh]">
+        <div className="container mx-auto">
             <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
                 <Card className="w-[100%] p-4">
                     <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
