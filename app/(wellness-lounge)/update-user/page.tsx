@@ -23,6 +23,7 @@ import * as Validation from "../../../utils/validation.utils";
 import { Success } from "@/components/common-components/toast";
 import { Trash2 } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import { useSelector } from "react-redux";
 
 export default function CreateUser() {
   const router = useRouter();
@@ -30,6 +31,8 @@ export default function CreateUser() {
   const searchParams = useSearchParams();
 
   const id = searchParams.get("id");
+  const groups = useSelector((state: any) => state.auth.groups);
+  console.log("groups", groups)
 
   const [state, setState] = useSetState({
     name: "",
@@ -204,14 +207,29 @@ export default function CreateUser() {
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <CustomSelect
-            options={state.groupList}
-            value={state.user_type?.value || ""}
-            onChange={(value: any) => setState({ user_type: value })}
-            title="User Type"
-            error={state.errors?.user_type}
-            required
-          />
+          {
+            groups == "Student" ? (
+              <TextInput
+                // options={state.groupList}
+                value={state.user_type?.label || ""}
+                // onChange={(value: any) => setState({ user_type: value })}
+                title="User Type"
+                // error={state.errors?.user_type}
+                required
+                disabled
+              />
+            ) : (
+              <CustomSelect
+                options={state.groupList}
+                value={state.user_type?.value || ""}
+                onChange={(value: any) => setState({ user_type: value })}
+                title="User Type"
+                error={state.errors?.user_type}
+                required
+              />
+            )
+          }
+
 
           {/* <TextInput
             title="Profile Image"

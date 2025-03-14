@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -11,28 +10,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
-
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { DatePicker } from "../common-components/datePicker";
 import CustomSelect from "../common-components/dropdown";
-import { orderStatusList, mentorList } from "@/utils/constant.utils";
-import moment from "moment";
-import TextArea from "../common-components/textArea";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
-import { fail } from "assert";
 
 
 const StudentRegistrationForm = ({ className, ...props }: any) => {

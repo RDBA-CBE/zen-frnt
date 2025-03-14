@@ -7,11 +7,28 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, SparklesIcon, TwitchIcon } from "lucide-react";
+import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Label } from "@radix-ui/react-label";
 
 const Header = () => {
 
@@ -171,7 +188,7 @@ const Header = () => {
                       {/* Submenu */}
                       {(activeMenu === menu.title || clickedMenu === menu.title) && (
                         <div
-                          className="absolute left-0 w-56 bg-gray-300 p-4 rounded-lg shadow-lg"
+                          className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
                           onMouseEnter={() => setActiveMenu(menu.title)}
                           onMouseLeave={() => setActiveMenu(null)}
                         >
@@ -190,57 +207,113 @@ const Header = () => {
               </nav>
 
               {/* User Avatar Dropdown */}
-              <div className="flex items-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Avatar className="h-10 w-10 rounded">
-                      <AvatarFallback>A</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-gray-300 p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
-                    <DropdownMenuLabel className="p-0">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Avatar className="h-8 w-8 rounded">
-                          <AvatarFallback>A</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <span className="font-semibold">Zen Lounge</span>
-                          <span className="text-xs">zenlounge@gmail.com</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="h-10 w-10 rounded">
+                        <AvatarFallback>A</AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-gray-300 p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                      <DropdownMenuLabel className="p-0">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Avatar className="h-8 w-8 rounded">
+                            <AvatarFallback>A</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="font-semibold">Zen Lounge</span>
+                            <span className="text-xs">zenlounge@gmail.com</span>
+                          </div>
                         </div>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <SparklesIcon /> Upgrade to Pro
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <BadgeCheck /> Account
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <CreditCard /> Billing
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Bell /> Notifications
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    {tokens ? (
-                      <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-                        <LogOut /> Logout
-                      </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem onClick={() => router.push("/login")}>
-                        <LogIn /> Login
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <SparklesIcon /> Upgrade to Pro
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <BadgeCheck /> Account
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <CreditCard /> Billing
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Bell /> Notifications
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      {tokens ? (
+                        <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                          <LogOut /> Logout
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => router.push("/login")}>
+                          <LogIn /> Login
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="block lg:hidden">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <MenuIcon />
+                    </SheetTrigger>
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle></SheetTitle>
 
+                      </SheetHeader>
+                      <div className="flex justify-center">
+                        <Link href="/">
+                          <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
+                        </Link>
+                      </div>
+                      <div className="mt-10">
+                        {tokens && groups && (
+                          (groups === "Admin" ? AdminLeftSideMenu : StudentLeftSideMenu).map((menu: any, index) => {
+                            return (
+                              <Accordion type="single" collapsible className="w-full" key={index}>
+                                <AccordionItem value={`item-${index + 1}`}>
+                                  <AccordionTrigger className="no-underline hover:no-underline text-lg">{menu.title}</AccordionTrigger>
+                                  <AccordionContent>
+                                    {menu.items ? (
+                                      <ul className="pl-5">
+                                        {menu.items.map((item: any, itemIndex: any) => (
+                                          <li key={itemIndex} className="pb-2 text-lg">
+                                            <a href={item.url}>
+                                              {item.title}
+                                            </a>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    ) : (
+                                      <p>
+                                        <a href={menu.url}>
+                                          {menu.title}
+                                        </a>
+                                      </p>
+                                    )}
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
+                            );
+                          })
+                        )}
+                      </div>
+                      {/* <div className="mt-10 flex justify-center items-center gap-4">
+                        <InstagramIcon />
+                        <LinkedinIcon />
+                      </div> */}
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
+              </div>
               {/* Confirmation Dialog for Log out */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg w-96">

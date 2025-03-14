@@ -335,9 +335,9 @@ const session = {
 
 
   // student
-  calendar: (page: any) => {
+  calendar: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?page=${page}`;
+      let url = `zen/events/?page_param == false`;
 
       instance()
         .get(url)

@@ -1,13 +1,13 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./button"; // Custom button component
 import { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip"; // Import Tooltip components
 import Models from "@/imports/models.import";
 import moment from "moment";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
+import { Dialog, DialogContent, DialogTitle } from "./dialog";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // Function to get the first day of the month (i.e., which day the 1st falls on)
 const getFirstDayOfMonth = (year: any, month: any) => {
@@ -31,16 +31,16 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
     const [selectedEvent, setSelectedEvent] = useState<any>(null)
 
     useEffect(() => {
-        getLoungeList(1); // Fetch data when the component mounts
+        getLoungeList(); // Fetch data when the component mounts
     }, []);
     useEffect(() => {
         const Token: any = localStorage?.getItem("token")
         setToken(Token)
     })
 
-    const getLoungeList = async (page: number) => {
+    const getLoungeList = async () => {
         try {
-            const res: any = await Models.session.calendar(page);
+            const res: any = await Models.session.calendar();
             setLoungeList(res.results); // Update loungeList state with fetched data
             setEvents(res.results); // Also update events from the fetched data
         } catch (error) {
@@ -143,7 +143,7 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
 
 
     return (
-        <div className="calendar-wrapper p-4">
+        <div className="container mx-auto calendar-wrapper p-4">
             {/* Calendar Header */}
             <div className="calendar-header flex justify-between items-center mb-4">
                 <Button onClick={() => handleNavigate(-1)} className="bg-blue-500 text-white p-2 rounded">
@@ -158,7 +158,7 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
             </div>
 
             {/* Calendar Table */}
-            <div className="calendar-table">
+            <div className="calendar-table responsive-table">
                 <table className="min-w-full border-collapse">
                     <thead>
                         <tr>

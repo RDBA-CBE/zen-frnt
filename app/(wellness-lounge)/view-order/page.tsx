@@ -119,11 +119,11 @@ export default function viewWellnessLounge() {
                         </div>
                     </div>
                     <div className="border rounded-xl p-4 gap-4 justify-center items-center flex flex-col ">
-                        <h3>
+                        <h3 className="mt-2">
                             Meet Link:{" "}
                             {state?.orderData?.event?.session_link ? (
-                                <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
-                                    {state.orderData.event.session_link}
+                                <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-black text-white px-3 py-3 rounded-lg">
+                                  Join Meeting
                                 </Link>
                             ) : (
                                 "N/A"
