@@ -7,11 +7,18 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, Bell, CreditCard, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, SparklesIcon, TwitchIcon } from "lucide-react";
+import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, SparklesIcon, TwitchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
 
 const Header = () => {
+
+  const dispatch = useDispatch();
+  const tokens = useSelector((state: any) => state.auth.tokens);
+  const groups = useSelector((state: any) => state.auth.groups);
+
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [clickedMenu, setClickedMenu] = useState<string | null>(null); // Track the clicked menu
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -32,8 +39,11 @@ const Header = () => {
       const storedGroup = localStorage.getItem("group");
       setToken(storedToken);
       setGroup(storedGroup);
+      if (storedToken && storedGroup) {
+        dispatch(setAuthData({ tokens: storedToken, groups: storedGroup }));
+      }
     }
-  }, [isClient]); // Only run when `isClient` is true
+  }, [isClient, dispatch]); // Only run when `isClient` is true
 
   // Logout function to remove token and navigate to login page
   const handleLogout = () => {
@@ -41,6 +51,7 @@ const Header = () => {
     localStorage.removeItem("group");
     setDialogOpen(false);
     router.push("/login");
+    dispatch(clearAuthData());
   };
 
   // Cancel function to close the dialog without performing any action
@@ -114,7 +125,7 @@ const Header = () => {
         <header className="bg-white shadow-md sticky top-0 z-[10]">
           {/* Top Header */}
           <div className="backcolor-purpole text-white py-2">
-            <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div className="container mx-auto flex  items-center justify-between px-5">
               <div className="flex items-center gap-4">
                 <Link href="/student-registration" className="hover:underline border-r border-white pr-4">
                   Student Registration
@@ -136,7 +147,7 @@ const Header = () => {
 
           {/* Main Header */}
           <div className="py-4 border-b border-gray-200">
-            <div className="container mx-auto flex items-center justify-between gap-20">
+            <div className="container mx-auto flex items-center justify-between gap-20 px-5">
               <div className="flex justify-center">
                 <Link href="/">
                   <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
@@ -145,38 +156,38 @@ const Header = () => {
 
               {/* Left Menu (Admin/Student) */}
               <nav className="hidden lg:flex space-x-6">
-  {token && group && (
-    (group === "Admin" ? AdminLeftSideMenu : StudentLeftSideMenu).map((menu: any) => (
-      <div
-        key={menu.title}
-        className="relative"
-        onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
-        onMouseLeave={() => menu.items && setActiveMenu(null)}
-      >
-        <Link href={menu.url} className="hover:text-blue-600 font-medium">
-          {menu.title}
-        </Link>
+                {tokens && groups && (
+                  (groups === "Admin" ? AdminLeftSideMenu : StudentLeftSideMenu).map((menu: any) => (
+                    <div
+                      key={menu.title}
+                      className="relative"
+                      onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
+                      onMouseLeave={() => menu.items && setActiveMenu(null)}
+                    >
+                      <Link href={menu.url} className="hover:text-blue-600 font-medium">
+                        {menu.title}
+                      </Link>
 
-        {/* Submenu */}
-        {(activeMenu === menu.title || clickedMenu === menu.title) && (
-          <div
-            className="absolute left-0 w-56 bg-gray-300 p-4 rounded-lg shadow-lg"
-            onMouseEnter={() => setActiveMenu(menu.title)}
-            onMouseLeave={() => setActiveMenu(null)}
-          >
-            {menu.items?.map((item: any) => (
-              <div key={item.title} className="mb-2">
-                <Link href={item.url} className="text-sm text-black hover:text-blue-600">
-                  {item.title}
-                </Link>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    ))
-  )}
-</nav>
+                      {/* Submenu */}
+                      {(activeMenu === menu.title || clickedMenu === menu.title) && (
+                        <div
+                          className="absolute left-0 w-56 bg-gray-300 p-4 rounded-lg shadow-lg"
+                          onMouseEnter={() => setActiveMenu(menu.title)}
+                          onMouseLeave={() => setActiveMenu(null)}
+                        >
+                          {menu.items?.map((item: any) => (
+                            <div key={item.title} className="mb-2">
+                              <Link href={item.url} className="text-sm text-black hover:text-blue-600">
+                                {item.title}
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </nav>
 
               {/* User Avatar Dropdown */}
               <div className="flex items-center">
@@ -217,7 +228,7 @@ const Header = () => {
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    {token ? (
+                    {tokens ? (
                       <DropdownMenuItem onClick={() => setDialogOpen(true)}>
                         <LogOut /> Logout
                       </DropdownMenuItem>

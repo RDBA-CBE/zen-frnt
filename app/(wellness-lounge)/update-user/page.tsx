@@ -123,7 +123,8 @@ export default function CreateUser() {
       await Models.user.updateUser(formData, id);
       setState({ submitLoading: false });
 
-      router.push("/user-list");
+      // router.push("/user-list");
+      router?.back()
       Success("User updated successfully");
     } catch (error) {
       if (error instanceof Yup.ValidationError) {

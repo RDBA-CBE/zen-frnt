@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { setAuthData } from "@/store/slice/AuthSlice"; // Import the action
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +22,7 @@ import { Success } from "../common-components/toast";
 
 const LoginForm = ({ className, ...props }) => {
   const router = useRouter();
+  const dispatch = useDispatch(); // Initialize dispatch
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
   const [state, setState] = useSetState({
@@ -39,16 +42,21 @@ const LoginForm = ({ className, ...props }) => {
       };
       const res = await Models.auth.login(body);
 
+      // Store tokens and group in localStorage
       localStorage.setItem("token", res.access);
       localStorage.setItem("refreshToken", res.refresh);
-      localStorage.setItem("userId", res?.user_id)
-      localStorage.setItem("group", res.group[0])
+      localStorage.setItem("userId", res?.user_id);
+      localStorage.setItem("group", res.group[0]);
+
+      // Dispatch action to store tokens and group in Redux
+      dispatch(setAuthData({ tokens: res.access, groups: res.group[0] }));
+
       Success("Login successfully");
 
       // ✅ Trigger storage event to notify other tabs
       window.dispatchEvent(new Event("storage"));
 
-      router.back("/");
+      router.push("/");
     } catch (error) {
       console.log("error: ", error);
     }
@@ -101,16 +109,7 @@ const LoginForm = ({ className, ...props }) => {
               <Button type="button" className="w-full" onClick={handleSubmit}>
                 Login
               </Button>
-              {/* <Button variant="outline" className="w-full">
-                Login with Google
-              </Button> */}
             </div>
-            {/* <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Sign up
-              </a>
-            </div> */}
           </form>
         </CardContent>
       </Card>

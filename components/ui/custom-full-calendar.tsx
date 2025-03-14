@@ -194,7 +194,7 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
                                                         <Tooltip key={event.id}>
                                                             <TooltipTrigger>
                                                                 <div className="event p-0 border border-gray-300 rounded-lg bg-gray-50 mr-2">
-                                                                    <h4 className="font-medium text-sm text-gray-800 py-1 px-2">{event.title}</h4>
+                                                                    <h4 className="font-medium text-xs text-gray-800 py-1 px-2">{event.title}</h4>
                                                                 </div>
                                                             </TooltipTrigger>
                                                             <TooltipContent className="w-[300px]">

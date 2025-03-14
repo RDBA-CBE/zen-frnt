@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
-import { Success } from "../common-components/toast";
+import { Failure, Success } from "../common-components/toast";
 
 import {
     Tabs,
@@ -32,6 +32,7 @@ import TextArea from "../common-components/textArea";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
+import { fail } from "assert";
 
 
 const StudentRegistrationForm = ({ className, ...props }: any) => {
@@ -136,9 +137,14 @@ const StudentRegistrationForm = ({ className, ...props }: any) => {
             });
             const res = await Models.auth.registration(body);
             Success("Registration successfully");
-
+            router?.push("/login")
         } catch (error: any) {
             console.log("error", error)
+
+            if (error?.password[0]) {
+                Failure(error?.password[0])
+            }
+
             if (error instanceof Yup.ValidationError) {
                 const validationErrors: any = {};
                 error.inner.forEach((err: any) => {
@@ -158,52 +164,52 @@ const StudentRegistrationForm = ({ className, ...props }: any) => {
     };
 
 
-    const AlumniRegistration = async () => {
+    // const AlumniRegistration = async () => {
 
-        try {
-            const body = {
-                username: state?.alumniUsername,
-                email: state?.alumniEmail,
-                phone_number: state?.alumniPhone,
-                department: state?.alumniDepartment,
-                work: state?.work,
-                country: state?.country?.value,
-                address: state?.address,
-                year_of_graduation: state?.year_of_graduation,
-                password: state?.alumniPassword,
-                intrested_topics: state?.alumniIntrested_topics?.label == "Others" ? state?.alumniIntrested_topics1 : state?.alumniIntrested_topics?.label, // Ensure this is an array or null
-                alumniUniversity: state?.alumniUniversity?.value || "", // Safely access university value
-                is_open_to_be_mentor: state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
-                is_alumni: true
-            };
+    //     try {
+    //         const body = {
+    //             username: state?.alumniUsername,
+    //             email: state?.alumniEmail,
+    //             phone_number: state?.alumniPhone,
+    //             department: state?.alumniDepartment,
+    //             work: state?.work,
+    //             country: state?.country?.value,
+    //             address: state?.address,
+    //             year_of_graduation: state?.year_of_graduation,
+    //             password: state?.alumniPassword,
+    //             intrested_topics: state?.alumniIntrested_topics?.label == "Others" ? state?.alumniIntrested_topics1 : state?.alumniIntrested_topics?.label, // Ensure this is an array or null
+    //             alumniUniversity: state?.alumniUniversity?.value || "", // Safely access university value
+    //             is_open_to_be_mentor: state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
+    //             is_alumni: true
+    //         };
 
-            await Validation.AlumniRegistration.validate(body, {
-                abortEarly: false,
-            });
+    //         await Validation.AlumniRegistration.validate(body, {
+    //             abortEarly: false,
+    //         });
 
-            const res = await Models.auth.registration(body);
-            Success("Registration successfully");
+    //         const res = await Models.auth.registration(body);
+    //         Success("Registration successfully");
 
-        } catch (error) {
-            console.log("error", error)
-            if (error instanceof Yup.ValidationError) {
-                const validationErrors: any = {};
-                error.inner.forEach((err: any) => {
-                    validationErrors[err.path] = err?.message;
-                });
-                console.log("validationErrors: ", validationErrors);
+    //     } catch (error) {
+    //         console.log("error", error)
+    //         if (error instanceof Yup.ValidationError) {
+    //             const validationErrors: any = {};
+    //             error.inner.forEach((err: any) => {
+    //                 validationErrors[err.path] = err?.message;
+    //             });
+    //             console.log("validationErrors: ", validationErrors);
 
-                setState({
-                    errors: validationErrors,
-                    submitLoading: false
-                });
-            } else {
-                // If it's neither a custom error nor a validation error, just stop loading
-                setState({ submitLoading: false });
-            }
-        }
+    //             setState({
+    //                 errors: validationErrors,
+    //                 submitLoading: false
+    //             });
+    //         } else {
+    //             // If it's neither a custom error nor a validation error, just stop loading
+    //             setState({ submitLoading: false });
+    //         }
+    //     }
 
-    };
+    // };
 
     console.log("state?.errors")
 

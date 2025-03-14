@@ -5,7 +5,7 @@ function Calendar() {
   const [events, setEvents] = useState([]);
 
   return (
-    <div>
+    <div className="pb-5">
       <CustomFullCalendar events={events} setEvents={setEvents} />
     </div>
   );

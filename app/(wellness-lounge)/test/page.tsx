@@ -1,134 +1,15 @@
-"use client";
+import React from "react";
 
-import { useState } from "react";
-import { X, ChevronDown } from "lucide-react";
-import * as Popover from "@radix-ui/react-popover";
-
-interface Option {
-  value: string;
-  label: string;
-}
-
-interface CustomMultiSelectProps {
-  options: Option[];
-  value: string[];
-  onChange: (selected: string[]) => void;
-  placeholder?: string;
-  required?: boolean;
-  title?: string;
-  error?: string;
-}
-
-const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
-  options,
-  value,
-  onChange,
-  placeholder = "Select options",
-  title,
-  required,
-  error,
-}) => {
-  const handleSelectChange = (val: string) => {
-    const newSelection = value.includes(val)
-      ? value.filter((item) => item !== val) // Remove item
-      : [...value, val]; // Add item
-    onChange(newSelection);
-  };
-
-  const handleClear = () => {
-    onChange([]); // Clear all selections
-  };
-
+const Test: React.FC = () => {
   return (
-    <div className="w-full">
-      {title && (
-        <label className="block text-sm font-bold text-gray-700 mb-2">
-          {title} {required && <span className="text-red-500">*</span>}
-        </label>
-      )}
-
-      <Popover.Root>
-        <Popover.Trigger asChild>
-          <button className="border rounded-lg px-4 py-2 w-full flex justify-between items-center">
-            <span>{value.length > 0 ? `${value.length} selected` : placeholder}</span>
-            <ChevronDown />
-          </button>
-        </Popover.Trigger>
-
-        <Popover.Portal>
-          <Popover.Content className="bg-white border shadow-md rounded-md p-2 w-[200px]">
-            {options.map((option) => (
-              <div
-                key={option.value}
-                className="flex items-center p-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSelectChange(option.value)}
-              >
-                <input
-                  type="checkbox"
-                  checked={value.includes(option.value)}
-                  readOnly
-                  className="mr-2"
-                />
-                {option.label}
-              </div>
-            ))}
-          </Popover.Content>
-        </Popover.Portal>
-      </Popover.Root>
-
-      {/* Selected items as pills */}
-      {value.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
-          {value.map((val) => {
-            const selectedOption = options.find((option) => option.value === val);
-            return (
-              selectedOption && (
-                <span
-                  key={val}
-                  className="px-2 py-1 bg-gray-200 rounded-md text-sm flex items-center gap-1"
-                >
-                  {selectedOption.label}
-                  <X
-                    className="w-4 h-4 cursor-pointer"
-                    onClick={() => handleSelectChange(val)}
-                  />
-                </span>
-              )
-            );
-          })}
-        </div>
-      )}
-
-      {/* Clear button */}
-      {value.length > 0 && (
-        <button
-          onClick={handleClear}
-          className="text-gray-500 hover:text-gray-700 mt-2 text-sm"
-        >
-          Clear All
-        </button>
-      )}
-
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-    </div>
+      <div className="iframe-container mt-4">
+        <iframe
+          src="http://localhost:3000/calendar" // Ensure this URL is correct
+          style={{ border: "0", width: "100%", height: "600px" }}
+          title="Calendar"
+        ></iframe>
+      </div>
   );
 };
 
-// Example Usage
-export default function App() {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
-  return (
-    <CustomMultiSelect
-      options={[
-        { value: "1", label: "Option 1" },
-        { value: "2", label: "Option 2" },
-        { value: "3", label: "Option 3" },
-      ]}
-      value={selectedOptions}
-      onChange={setSelectedOptions}
-      title="Select Multiple Options"
-      placeholder="Choose options"
-    />
-  );
-}
+export default Test;
