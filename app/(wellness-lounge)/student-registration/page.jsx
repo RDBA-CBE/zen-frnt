@@ -14,7 +14,7 @@ export default function Registration() {
     return (
         <div className="flex items-center justify-center ">
             {/* {!isAuthenticated ? ( */}
-            <StudentRegistrationForm className={""} />
+            <StudentRegistrationForm  />
             {/* ) : (
         <p className="text-lg font-semibold">Redirecting...</p>
       )} */}

@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(wellness-lounge)/create-wellness-lounge/page.tsx", "app/(wellness-lounge)/categories-list/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(wellness-lounge)/create-wellness-lounge/page.tsx", "app/(wellness-lounge)/categories-list/page.jsx", "app/(wellness-lounge)/alumni-registration/page.jsx", "app/(wellness-lounge)/student-registration/page.jsx", "components/ui/student-registration-form.jsx", "components/ui/registration-form.jsx"],
   "exclude": ["node_modules"]
 }

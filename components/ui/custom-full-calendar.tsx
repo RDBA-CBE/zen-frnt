@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from "react";
 import { Button } from "./button"; // Custom button component
 import { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip"; // Import Tooltip components
@@ -20,23 +21,22 @@ const getDaysInMonth = (year: any, month: any) => {
 };
 
 const CustomFullCalendar = ({ events, setEvents }: any) => {
-
-    const router = useRouter()
-
+    const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: "", description: "", date: "" });
     const [lougeList, setLoungeList] = useState<any[]>([]); // store events data fetched from the API
     const [token, setToken] = useState(null);
-    const [selectedEvent, setSelectedEvent] = useState<any>(null)
+    const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
     useEffect(() => {
         getLoungeList(); // Fetch data when the component mounts
     }, []);
+
     useEffect(() => {
-        const Token: any = localStorage?.getItem("token")
-        setToken(Token)
-    })
+        const Token: any = localStorage?.getItem("token");
+        setToken(Token);
+    }, []);
 
     const getLoungeList = async () => {
         try {
@@ -112,7 +112,6 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
         weeks.push(currentWeek);
     }
 
-    console.log("weeks", weeks)
     // Function to filter events for the selected date
     const getEventsForDate = (day: any) => {
         const selectedDayDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
@@ -138,9 +137,8 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
 
     const handleSignUp = (() => {
         setModalIsOpen(false);
-        router?.push("/registration")
-    })
-
+        router?.push("/student-registration");
+    });
 
     return (
         <div className="container mx-auto calendar-wrapper p-4">
@@ -158,8 +156,8 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
             </div>
 
             {/* Calendar Table */}
-            <div className="calendar-table responsive-table">
-                <table className="min-w-full border-collapse">
+            <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse table-auto">
                     <thead>
                         <tr>
                             {daysOfWeek.map((day, index) => (
@@ -174,11 +172,11 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
                     </thead>
                     <tbody>
                         {weeks.map((week, index) => (
-                            <tr key={index}>
+                            <tr key={index} >
                                 {week.map((day, dayIndex) => (
                                     <td
                                         key={dayIndex}
-                                        className={`p-4 h-[100px] relative border border-gray-300 cursor-pointer ${day ? "hover:bg-blue-100" : "bg-gray-100"
+                                        className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${day ? "hover:bg-blue-100" : "bg-gray-100"
                                             }`}
                                         onClick={() => day && handleDayClick(day)}
                                     >
@@ -187,14 +185,14 @@ const CustomFullCalendar = ({ events, setEvents }: any) => {
                                         {day && (
                                             <div
                                                 className="events-container overflow-y-auto"
-                                                style={{ position: "absolute", top: "10px", left: "10px" }}
+                                                // style={{ position: "absolute", top: "10px", left: "10px" }}
                                             >
                                                 <TooltipProvider>
                                                     {getEventsForDate(day).map((event: any) => (
                                                         <Tooltip key={event.id}>
                                                             <TooltipTrigger>
                                                                 <div className="event p-0 border border-gray-300 rounded-lg bg-gray-50 mr-2">
-                                                                    <h4 className="font-medium text-xs text-gray-800 py-1 px-2">{event.title}</h4>
+                                                                    <h4 className="text-xs text-gray-800 py-1 px-2">{event.title}</h4>
                                                                 </div>
                                                             </TooltipTrigger>
                                                             <TooltipContent className="w-[300px]">

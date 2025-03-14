@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Edit, Eye, MoreHorizontal, Trash, X } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
+import { Dropdown,  useSetState } from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -23,7 +23,6 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
-import { orderStatusList } from "@/utils/constant.utils";
 
 const CancelOrderList = () => {
     const router = useRouter();
@@ -58,14 +57,13 @@ const CancelOrderList = () => {
         try {
             setState({ loading: true });
             // let pages = 1;
-            let body = bodyData();
+            const body = bodyData();
             // if (objIsEmpty(body)) {
             //     pages = page;
             // } else {
             //     pages = 1;
             // }
             const res: any = await Models.session.cancelRegistrationList(page, body);
-
             setState({
                 loungeList: res?.results,
                 next: res.next,

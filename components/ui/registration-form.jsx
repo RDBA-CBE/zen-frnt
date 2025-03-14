@@ -27,7 +27,7 @@ import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
 
 
-const RegistrationForm = ({ className, ...props }: any) => {
+const RegistrationForm = ({ className, ...props }) => {
     const router = useRouter();
     const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
@@ -70,7 +70,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
 
     const getUniversity = async () => {
         try {
-            const res: any = await Models.auth.getUniversity();
+            const res = await Models.auth.getUniversity();
             const Dropdowns = Dropdown(res?.results, "name");
             setState({ universityList: Dropdowns });
             console.log("res", res);
@@ -81,7 +81,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
 
     const getIntrestedTopics = async () => {
         try {
-            const res: any = await Models.auth.getIntrestedTopics();
+            const res = await Models.auth.getIntrestedTopics();
             const Dropdowns = Dropdown(res?.results, "topic");
 
             const updatedDropdowns = [
@@ -98,7 +98,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
 
     const getCountry = (async () => {
         try {
-            const res: any = await Models.auth.getCountries();
+            const res = await Models.auth.getCountries();
             const Dropdowns = Dropdown(res?.results, "name");
             setState({ countryList: Dropdowns })
             console.log("res", res)
@@ -130,11 +130,11 @@ const RegistrationForm = ({ className, ...props }: any) => {
             const res = await Models.auth.registration(body);
             Success("Registration successfully");
 
-        } catch (error: any) {
+        } catch (error) {
             console.log("error", error)
             if (error instanceof Yup.ValidationError) {
-                const validationErrors: any = {};
-                error.inner.forEach((err: any) => {
+                const validationErrors = {};
+                error.inner.forEach((err) => {
                     validationErrors[err.path] = err?.message;
                 });
                 console.log("validationErrors: ", validationErrors);
@@ -180,8 +180,8 @@ const RegistrationForm = ({ className, ...props }: any) => {
         } catch (error) {
             console.log("error", error)
             if (error instanceof Yup.ValidationError) {
-                const validationErrors: any = {};
-                error.inner.forEach((err: any) => {
+                const validationErrors = {};
+                error.inner.forEach((err) => {
                     validationErrors[err.path] = err?.message;
                 });
                 console.log("validationErrors: ", validationErrors);
@@ -260,7 +260,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={state?.universityList || []} // Safely pass empty array if universityList is null
                                         value={state.university?.value || ""}
-                                        onChange={(value: any) => setState({ university: value })}
+                                        onChange={(value) => setState({ university: value })}
                                         error={state.errors?.university}
                                         title="University"
                                         placeholder="Select University"
@@ -271,7 +271,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
                                         value={state.intrested_topics?.value || ""}
-                                        onChange={(value: any) => setState({ intrested_topics: value })}
+                                        onChange={(value) => setState({ intrested_topics: value })}
                                         error={state.errors?.intrested_topics}
                                         title="Intrested Topics"
                                         placeholder="Select Intrested Topics"
@@ -436,7 +436,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={state?.countryList || []} // Safely pass empty array if universityList is null
                                         value={state.country?.value || ""}
-                                        onChange={(value: any) => setState({ country: value })}
+                                        onChange={(value) => setState({ country: value })}
                                         error={state.errors?.country}
                                         title="country"
                                         placeholder="Select Your Country"
@@ -450,7 +450,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                         title="Address"
 
                                         value={state.address}
-                                        onChange={(e: any) => setState({ address: e.target.value })}
+                                        onChange={(e) => setState({ address: e.target.value })}
                                     />
                                 </div>
 
@@ -458,7 +458,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={state?.universityList || []} // Safely pass empty array if universityList is null
                                         value={state.alumniUniversity?.value || ""}
-                                        onChange={(value: any) => setState({ alumniUniversity: value })}
+                                        onChange={(value) => setState({ alumniUniversity: value })}
                                         error={state.errors?.alumniUniversity}
 
                                         placeholder="Select University"
@@ -470,7 +470,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
                                         value={state.alumniIntrested_topics?.value || ""}
-                                        onChange={(value: any) => setState({ alumniIntrested_topics: value })}
+                                        onChange={(value) => setState({ alumniIntrested_topics: value })}
                                         error={state.errors?.alumniIntrested_topics}
 
                                         placeholder="Select Topics"
@@ -498,7 +498,7 @@ const RegistrationForm = ({ className, ...props }: any) => {
                                     <CustomSelect
                                         options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
                                         value={state.is_open_to_be_mentor?.value || ""}
-                                        onChange={(value: any) => setState({ is_open_to_be_mentor: value })}
+                                        onChange={(value) => setState({ is_open_to_be_mentor: value })}
                                         error={state.errors?.is_open_to_be_mentor}
                                         title="Are you open to being a mentor?"
                                         placeholder="Select Topics"
