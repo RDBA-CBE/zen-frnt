@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
@@ -13,13 +14,15 @@ import { Card } from "@/components/ui/card";
 
 import { objIsEmpty, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { useEffect } from "react";
-import Modal from "@/components/common-components/modal";
-import TextArea from "@/components/common-components/textArea";
-import { TextInput } from "@/components/common-components/textInput";
-import PrimaryButton from "@/components/common-components/primaryButton";
+import { useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
 
-const WellnessLoungeList = () => {
+const Modal = dynamic(() => import('@/components/common-components/modal'), { ssr: false });
+const TextArea = dynamic(() => import('@/components/common-components/textArea'), { ssr: false });
+const TextInput = dynamic(() => import('@/components/common-components/textInput'), { ssr: false });
+const PrimaryButton = dynamic(() => import('@/components/common-components/primaryButton'), { ssr: false });
+
+const PaymentPage = () => {
   const [state, setState] = useSetState({
     name: "",
     description: "",
@@ -27,12 +30,21 @@ const WellnessLoungeList = () => {
     paymentName: "",
     categoryList: [],
     editData: {},
-    submitLoading:false
+    submitLoading: false
   });
 
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure client-side API call
   useEffect(() => {
-    getPaymentList();
+    setIsClient(true);  // Set client-side flag to true
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      getPaymentList(); // Fetch data after the page has mounted
+    }
+  }, [isClient]);
 
   const getPaymentList = async () => {
     try {
@@ -53,7 +65,6 @@ const WellnessLoungeList = () => {
       Header: "Description",
       accessor: "description",
     },
-
     {
       Header: "Action",
       accessor: "action",
@@ -69,10 +80,6 @@ const WellnessLoungeList = () => {
               <Edit size={16} className="mr-2" />
               Edit
             </DropdownMenuItem>
-            {/* <DropdownMenuItem onClick={() => handleView(row.original)}>
-              <Eye size={16} className="mr-2" />
-              View
-            </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() => deletePayment(row)}
               className="text-red-500"
@@ -109,7 +116,6 @@ const WellnessLoungeList = () => {
       setState({ submitLoading: false });
     } catch (error) {
       setState({ submitLoading: false });
-
       console.log("error: ", error);
     }
   };
@@ -138,7 +144,6 @@ const WellnessLoungeList = () => {
       setState({ submitLoading: false });
     } catch (error) {
       setState({ submitLoading: false });
-
       console.log("error: ", error);
     }
   };
@@ -152,8 +157,13 @@ const WellnessLoungeList = () => {
     });
   };
 
+  if (!isClient) {
+    // Prevent rendering until client-side components are ready
+    return null;
+  }
+
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto">
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
@@ -163,7 +173,7 @@ const WellnessLoungeList = () => {
             <div className="text-end">
               <Button
                 type="button"
-                className="bg-black "
+                className="bg-black"
                 onClick={() =>
                   setState({
                     isOpen: true,
@@ -215,7 +225,6 @@ const WellnessLoungeList = () => {
                 name="Cancel"
                 onClick={() => clearRecord()}
               />
-
               <PrimaryButton
                 name="Submit"
                 onClick={() =>
@@ -231,4 +240,4 @@ const WellnessLoungeList = () => {
   );
 };
 
-export default WellnessLoungeList;
+export default PaymentPage;

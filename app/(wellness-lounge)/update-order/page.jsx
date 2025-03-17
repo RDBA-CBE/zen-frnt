@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
@@ -29,7 +29,19 @@ export default function UpdateOrder() {
 
     const searchParams = useSearchParams();
 
-    const id = searchParams.get("id");
+    const [id, setId] = useState(null);
+    useEffect(() => {
+        // Ensure that searchParams are read only on the client side
+        if (typeof window !== "undefined") {
+    
+        const idFromSearchParams = searchParams.get("id");
+    
+        if (idFromSearchParams) {
+          setId(idFromSearchParams);
+        }
+      }
+    
+      }, [searchParams]);
 
     const [state, setState] = useSetState({
         seat_count: 0,
@@ -55,10 +67,13 @@ export default function UpdateOrder() {
     });
 
     useEffect(() => {
-        getDetails()
-        getCategoryList();
-        getUsersList();
-        getLoungeList();
+        if (id) {
+            getDetails()
+            getCategoryList();
+            getUsersList();
+            getLoungeList();
+        }
+
     }, [id]);
 
     const getDetails = async () => {

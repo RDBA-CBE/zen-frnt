@@ -30,12 +30,16 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
-        getLoungeList(); // Fetch data when the component mounts
+        if (typeof window !== "undefined") {
+            getLoungeList(); // Fetch data when the component mounts
+        }
     }, []);
 
     useEffect(() => {
-        const Token = localStorage?.getItem("token");
-        setToken(Token);
+        if (typeof window !== "undefined") {
+            const Token = localStorage?.getItem("token");
+            setToken(Token);
+        }
     }, []);
 
     const getLoungeList = async () => {

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import CustomFullCalendar from "@/components/ui/custom-full-calendar";
-function Calendar() {
+function CalendarPage() {
   const [events, setEvents] = useState([]);
 
   return (
@@ -9,4 +9,4 @@ function Calendar() {
   );
 }
 
-export default Calendar;
+export default CalendarPage;

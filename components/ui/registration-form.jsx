@@ -62,10 +62,12 @@ const RegistrationForm = ({ className, ...props }) => {
     });
 
     useEffect(() => {
-        setIsMounted(true); // Ensure component is only rendered on client
-        getUniversity();
-        getIntrestedTopics();
-        getCountry();
+        if (typeof window !== "undefined") {
+            setIsMounted(true); // Ensure component is only rendered on client
+            getUniversity();
+            getIntrestedTopics();
+            getCountry();
+        }
     }, []);
 
     const getUniversity = async () => {

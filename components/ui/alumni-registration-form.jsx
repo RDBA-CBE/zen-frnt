@@ -21,7 +21,7 @@ import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
 
 
-const AlumniRegistrationForm = ({ className, ...props }) => {
+const AlumniRegistrationForm = () => {
     const router = useRouter();
     const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
@@ -56,10 +56,12 @@ const AlumniRegistrationForm = ({ className, ...props }) => {
     });
 
     useEffect(() => {
-        setIsMounted(true); // Ensure component is only rendered on client
-        getUniversity();
-        getIntrestedTopics();
-        getCountry();
+        if (typeof window !== "undefined") {
+            setIsMounted(true); // Ensure component is only rendered on client
+            getUniversity();
+            getIntrestedTopics();
+            getCountry();
+        }
     }, []);
 
     const getUniversity = async () => {

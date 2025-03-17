@@ -8,6 +8,7 @@ import LoginForm from "@/components/ui/login-form";
 import { Provider } from "react-redux";
 import store from "@/store";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 // Import fonts
 const geistSans = Geist({
@@ -31,31 +32,34 @@ export default function RootLayout({
 
 
   return (
+
     <Provider store={store}>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <Suspense fallback={<div>Loading...</div>}>
+            {false ? (
+              <LoginForm className={""} />
+            ) : (
+              <div className="flex flex-col w-full min-h-screen">
+                <Header /> {/* Conditionally render header */}
+                <main className="w-full p-4 pb-24">
+                  {children} {/* Render the page content here */}
+                </main>
 
-          {false ? (
-            <LoginForm className={""} />
-          ) : (
-            <div className="flex flex-col w-full min-h-screen">
-              <Header /> {/* Conditionally render header */}
-              <main className="w-full p-4 pb-24">
-                {children} {/* Render the page content here */}
-              </main>
+                <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
+                  <div className="text-center mb-0 md:text-md text-xs">
+                    Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
+                    <Link href="https://irepute.in/">repute</Link>
+                  </div>
+                </footer>
 
-              <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
-                <div className="text-center mb-0 md:text-md text-xs">
-                  Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
-                  <Link href="https://irepute.in/">repute</Link>
-                </div>
-              </footer>
-
-            </div>
-          )}
-          <Toaster position="top-center" />
+              </div>
+            )}
+            <Toaster position="top-center" />
+          </Suspense>
         </body>
       </html>
     </Provider>
+
   );
 }

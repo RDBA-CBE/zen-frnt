@@ -39,7 +39,9 @@ export default function CreateWellnessLounge() {
   });
 
   useEffect(() => {
-    getCategoryList();
+    if (typeof window !== "undefined") {
+      getCategoryList();
+    }
   }, []);
 
   const getCategoryList = async () => {

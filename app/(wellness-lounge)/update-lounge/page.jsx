@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
@@ -25,12 +25,24 @@ import { Trash2, X } from "lucide-react";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 
-export default function CreateWellnessLounge() {
+export default function UpdateWellnessLounge() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
+  const [id, setId] = useState(null);
 
-  const id = searchParams.get("id");
+  useEffect(() => {
+    // Ensure that searchParams are read only on the client side
+    if (typeof window !== "undefined") {
+
+      const idFromSearchParams = searchParams.get("id");
+
+      if (idFromSearchParams) {
+        setId(idFromSearchParams);
+      }
+    }
+
+  }, [searchParams]);
 
   const [state, setState] = useSetState({
     seat_count: 0,
@@ -56,7 +68,9 @@ export default function CreateWellnessLounge() {
   }, []);
 
   useEffect(() => {
-    getDetails();
+    if (id) {
+      getDetails();
+    }
   }, [id]);
 
   const getDetails = async () => {

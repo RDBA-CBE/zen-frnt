@@ -1,14 +1,14 @@
 "use client";
 
-import LoginForm from "@/components/ui/login-form";
-import RegistrationForm from "@/components/ui/registration-form";
+// import LoginForm from "@/components/ui/login-form";
+// import RegistrationForm from "@/components/ui/registration-form";
 import StudentRegistrationForm from "@/components/ui/student-registration-form";
-import { useState } from "react";
+// import { useState } from "react";
 
-export default function Registration() {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-        !!localStorage.getItem("token") // Check for token
-    );
+export default function studentRegistration() {
+    // const [isAuthenticated, setIsAuthenticated] = useState(
+    //     !!localStorage.getItem("token") // Check for token
+    // );
 
 
     return (

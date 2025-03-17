@@ -20,7 +20,7 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Success } from "../common-components/toast";
 
-const LoginForm = ({ className, ...props }) => {
+const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch(); // Initialize dispatch
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
