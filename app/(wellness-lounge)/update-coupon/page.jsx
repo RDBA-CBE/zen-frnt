@@ -1,26 +1,21 @@
-"use client";
-// import { toast } from "@/components/hooks/use-toast"
-import { Button } from "@/components/ui/button";
+"use client"; // Ensures the component runs on the client side
 
-import Models from "@/imports/models.import";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSetState } from "@/utils/function.utils";
-import { DatePicker } from "@/components/common-components/datePicker";
-import CustomSelect from "@/components/common-components/dropdown";
-import { TextInput } from "@/components/common-components/textInput";
+import Models from "@/imports/models.import";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
-import { useEffect } from "react";
-import { Success } from "@/components/common-components/toast";
+import { TextInput } from "@/components/common-components/textInput";
+import { DatePicker } from "@/components/common-components/datePicker";
+import CustomSelect from "@/components/common-components/dropdown";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import { Success } from "@/components/common-components/toast";
 
-export default function UpdateCoupon() {
+const UpdateCoupon = () => {
   const router = useRouter();
-
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
-  const [state, setState] = useSetState({
+  const [id, setId] = useState(null);
+  const [state, setState] = useState({
     code: "",
     discount_type: null,
     discount_value: "",
@@ -31,7 +26,17 @@ export default function UpdateCoupon() {
   });
 
   useEffect(() => {
-    getDetails();
+    // Ensure that searchParams are read only on the client side
+    const idFromSearchParams = searchParams.get("id");
+    if (idFromSearchParams) {
+      setId(idFromSearchParams);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (id) {
+      getDetails();
+    }
   }, [id]);
 
   const getDetails = async () => {
@@ -60,9 +65,7 @@ export default function UpdateCoupon() {
         valid_to: state?.valid_to,
       };
 
-      await Validation.createCoupon.validate(body, {
-        abortEarly: false,
-      });
+      await Validation.createCoupon.validate(body, { abortEarly: false });
       await Models.coupon.update(body, id);
       setState({ submitLoading: false });
 
@@ -94,9 +97,7 @@ export default function UpdateCoupon() {
       <div className="grid auto-rows-min gap-4 md:grid-cols-1">
         <TextInput
           value={state.code}
-          onChange={(e) => {
-            setState({ code: e.target.value });
-          }}
+          onChange={(e) => setState({ code: e.target.value })}
           placeholder="Code"
           title="Code"
           error={state.errors?.code}
@@ -112,9 +113,7 @@ export default function UpdateCoupon() {
 
         <TextInput
           value={state.discount_value}
-          onChange={(e) => {
-            setState({ discount_value: e.target.value });
-          }}
+          onChange={(e) => setState({ discount_value: e.target.value })}
           placeholder="Value"
           title="Value"
           error={state.errors?.discount_value}
@@ -125,23 +124,14 @@ export default function UpdateCoupon() {
             placeholder="Start date"
             title="Start date"
             selectedDate={state.valid_from}
-            onChange={(date) => {
-              console.log("date: ", date);
-              setState({
-                valid_from: date,
-              });
-            }}
+            onChange={(date) => setState({ valid_from: date })}
             error={state.errors?.valid_from}
           />
           <DatePicker
             placeholder="End date"
             title="End date"
             selectedDate={state.valid_to}
-            onChange={(date) =>
-              setState({
-                valid_to: date,
-              })
-            }
+            onChange={(date) => setState({ valid_to: date })}
             error={state.errors?.valid_to}
           />
         </div>
@@ -162,4 +152,15 @@ export default function UpdateCoupon() {
       </div>
     </div>
   );
-}
+};
+
+// Wrap the component with Suspense to handle CSR
+const UpdateCouponPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UpdateCoupon />
+    </Suspense>
+  );
+};
+
+export default UpdateCouponPage;

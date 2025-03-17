@@ -33,7 +33,9 @@ export default function CreateUser() {
   });
 
   useEffect(() => {
-    getGroupList();
+    if (typeof window !== "undefined") {
+      getGroupList();
+    }
   }, []);
 
   const getGroupList = async () => {

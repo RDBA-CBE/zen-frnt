@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -18,14 +14,10 @@
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
-      {
-        "name": "next"
-      }
+      { "name": "next" }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -50,6 +42,7 @@
     "app/(wellness-lounge)/profile/page.jsx",
     "app/(wellness-lounge)/registration/page.jsx",
     "app/(wellness-lounge)/test/page.jsx",
+    "app/(wellness-lounge)/calendar/page.jsx",
     "app/(wellness-lounge)/student-order/page.jsx",
     "app/(wellness-lounge)/update-lounge/page.jsx",
     "app/(wellness-lounge)/update-coupon/page.jsx",
@@ -77,9 +70,11 @@
     "components/common-components/primaryButton.jsx",
     "components/ui/custom-full-calendar.jsx",
     "app/(wellness-lounge)/order-list/page.jsx",
-    "app/page.jsx"
-, "components/common-sidebar/team-switcher.jsx", "components/common-sidebar/nav-user.jsx", "components/common-sidebar/nav-projects.jsx", "components/common-sidebar/nav-main.jsx"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "app/page.jsx",
+    "components/common-sidebar/team-switcher.jsx",
+    "components/common-sidebar/nav-user.jsx",
+    "components/common-sidebar/nav-projects.jsx",
+    "components/common-sidebar/nav-main.jsx"
+  ],
+  "exclude": ["node_modules"]
 }

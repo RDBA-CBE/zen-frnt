@@ -1,18 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Edit, Eye, MoreHorizontal, Trash, X } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Eye, } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
+import { Dropdown, useSetState } from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -46,24 +41,30 @@ const WellnessLoungeList = () => {
     const debouncedSearch = useDebounce(state.search, 500);
 
     useEffect(() => {
-        getCategoryList();
-        getLoungeList(1);
+        if (typeof window !== "undefined") {
+            getCategoryList();
+            getLoungeList(1);
 
-        const userId = localStorage.getItem("userId");
-        if (userId) {
-            setState({ userId });
+            const userId = localStorage.getItem("userId");
+            if (userId) {
+                setState({ userId });
+            }
         }
     }, []);
 
     useEffect(() => {
-        if (state.userId) {
-            getOrdersList(state.currentPage);
+        if (typeof window !== "undefined") {
+            if (state.userId) {
+                getOrdersList(state.currentPage);
+            }
         }
     }, [state.userId]);
 
     useEffect(() => {
-        if (state.userId) {
-            getOrdersList(1); // Reset to first page on filter change
+        if (typeof window !== "undefined") {
+            if (state.userId) {
+                getOrdersList(1); // Reset to first page on filter change
+            }
         }
     }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 

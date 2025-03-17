@@ -1,13 +1,13 @@
 "use client";
 
-import LoginForm from "@/components/ui/login-form";
+// import LoginForm from "@/components/ui/login-form";
 import RegistrationForm from "@/components/ui/registration-form";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function Registration() {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-        !!localStorage.getItem("token") // Check for token
-    );
+    // const [isAuthenticated, setIsAuthenticated] = useState(
+    //     !!localStorage.getItem("token") // Check for token
+    // );
 
 
     return (

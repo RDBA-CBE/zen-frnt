@@ -37,7 +37,9 @@ const PaymentGatewayList = () => {
   });
 
   useEffect(() => {
-    paymentGatewayList();
+    if (typeof window !== "undefined") {
+      paymentGatewayList();
+    }
   }, []);
 
   const paymentGatewayList = async () => {

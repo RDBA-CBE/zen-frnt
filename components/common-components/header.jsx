@@ -36,12 +36,12 @@ const Header = () => {
   const tokens = useSelector((state) => state.auth.tokens);
   const groups = useSelector((state) => state.auth.groups);
 
-  const [activeMenu, setActiveMenu] = useState < string | null > (null);
-  const [clickedMenu, setClickedMenu] = useState < string | null > (null); // Track the clicked menu
+  const [activeMenu, setActiveMenu] = useState  (null);
+  const [clickedMenu, setClickedMenu] = useState(null); // Track the clicked menu
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [group, setGroup] = useState < string | null > (null);
+  const [group, setGroup] = useState  (null);
   const router = useRouter();
-  const [token, setToken] = useState < string | null > (null);
+  const [token, setToken] = useState (null);
   const [isClient, setIsClient] = useState(false); // Track if we're in the client
 
   // Set `isClient` to true after the component mounts (only runs on the client)
