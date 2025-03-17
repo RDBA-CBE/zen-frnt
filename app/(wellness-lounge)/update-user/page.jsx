@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
@@ -30,7 +30,14 @@ export default function CreateUser() {
 
   const searchParams = useSearchParams();
 
-  const id = searchParams.get("id");
+  const [id, setId] = useState(null);
+  useEffect(() => {
+    // Ensure searchParams is accessed only on client-side
+    const idFromSearchParams = searchParams.get("id");
+    if (idFromSearchParams) {
+      setId(idFromSearchParams);
+    }
+  }, [searchParams]);
   const groups = useSelector((state) => state.auth.groups);
   console.log("groups", groups)
 
