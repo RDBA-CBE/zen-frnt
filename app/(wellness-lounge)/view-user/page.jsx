@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
     Dropdown,
@@ -33,8 +33,19 @@ export default function viewWellnessLounge() {
 
     const searchParams = useSearchParams();
 
-    const id = searchParams.get("id");
+    const [id, setId] = useState(null);
+    useEffect(() => {
+        // Ensure that searchParams are read only on the client side
+        if (typeof window !== "undefined") {
 
+            const idFromSearchParams = searchParams.get("id");
+
+            if (idFromSearchParams) {
+                setId(idFromSearchParams);
+            }
+        }
+
+    }, [searchParams]);
     const [state, setState] = useSetState({
         userData: []
     });
@@ -44,7 +55,9 @@ export default function viewWellnessLounge() {
     // }, []);
 
     useEffect(() => {
-        getDetails();
+        if (id) {
+            getDetails();
+        }
     }, [id]);
 
     const getDetails = async () => {

@@ -32,11 +32,16 @@ export default function CreateUser() {
 
   const [id, setId] = useState(null);
   useEffect(() => {
-    // Ensure searchParams is accessed only on client-side
-    const idFromSearchParams = searchParams.get("id");
-    if (idFromSearchParams) {
-      setId(idFromSearchParams);
+    // Ensure that searchParams are read only on the client side
+    if (typeof window !== "undefined") {
+
+      const idFromSearchParams = searchParams.get("id");
+
+      if (idFromSearchParams) {
+        setId(idFromSearchParams);
+      }
     }
+
   }, [searchParams]);
   const groups = useSelector((state) => state.auth.groups);
   console.log("groups", groups)

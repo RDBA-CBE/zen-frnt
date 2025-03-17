@@ -27,10 +27,15 @@ const UpdateCoupon = () => {
 
   useEffect(() => {
     // Ensure that searchParams are read only on the client side
-    const idFromSearchParams = searchParams.get("id");
-    if (idFromSearchParams) {
-      setId(idFromSearchParams);
+    if (typeof window !== "undefined") {
+
+      const idFromSearchParams = searchParams.get("id");
+
+      if (idFromSearchParams) {
+        setId(idFromSearchParams);
+      }
     }
+
   }, [searchParams]);
 
   useEffect(() => {

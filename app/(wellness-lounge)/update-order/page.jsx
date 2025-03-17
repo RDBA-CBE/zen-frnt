@@ -31,12 +31,17 @@ export default function UpdateOrder() {
 
     const [id, setId] = useState(null);
     useEffect(() => {
-        // Ensure searchParams is accessed only on client-side
+        // Ensure that searchParams are read only on the client side
+        if (typeof window !== "undefined") {
+    
         const idFromSearchParams = searchParams.get("id");
+    
         if (idFromSearchParams) {
-            setId(idFromSearchParams);
+          setId(idFromSearchParams);
         }
-    }, [searchParams]);
+      }
+    
+      }, [searchParams]);
 
     const [state, setState] = useSetState({
         seat_count: 0,
