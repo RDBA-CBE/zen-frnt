@@ -39,7 +39,7 @@ const payment = {
     return promise;
   },
 
-  details: ( id) => {
+  details: ( id:any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/payments/${id}`;
       instance()

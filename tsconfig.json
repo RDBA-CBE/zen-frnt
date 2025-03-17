@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,9 +23,63 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(wellness-lounge)/create-wellness-lounge/page.tsx", "app/(wellness-lounge)/categories-list/page.jsx", "app/(wellness-lounge)/alumni-registration/page.jsx", "app/(wellness-lounge)/student-registration/page.jsx", "components/ui/student-registration-form.jsx", "components/ui/registration-form.jsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/(wellness-lounge)/create-wellness-lounge/page.jsx",
+    "app/(wellness-lounge)/categories-list/page.jsx",
+    "app/(wellness-lounge)/alumni-registration/page.jsx",
+    "app/(wellness-lounge)/student-registration/page.jsx",
+    "components/ui/student-registration-form.jsx",
+    "components/ui/registration-form.jsx",
+    "app/(wellness-lounge)/cancel-order/page.jsx",
+    "app/(wellness-lounge)/coupon-list/page.jsx",
+    "app/(wellness-lounge)/create-coupon/page.jsx",
+    "app/(wellness-lounge)/create-order/page.jsx",
+    "app/(wellness-lounge)/create-user/page.jsx",
+    "app/(wellness-lounge)/login/page.jsx",
+    "app/(wellness-lounge)/payment/page.jsx",
+    "app/(wellness-lounge)/payment-gateway-list/page.jsx",
+    "app/(wellness-lounge)/profile/page.jsx",
+    "app/(wellness-lounge)/registration/page.jsx",
+    "app/(wellness-lounge)/test/page.jsx",
+    "app/(wellness-lounge)/student-order/page.jsx",
+    "app/(wellness-lounge)/update-lounge/page.jsx",
+    "app/(wellness-lounge)/update-coupon/page.jsx",
+    "app/(wellness-lounge)/update-order/page.jsx",
+    "app/(wellness-lounge)/wellness-lounge-list/page.jsx",
+    "app/(wellness-lounge)/view-wellness-lounge/page.jsx",
+    "app/(wellness-lounge)/view-user/page.jsx",
+    "app/(wellness-lounge)/view-order/page.jsx",
+    "app/(wellness-lounge)/user-list/page.jsx",
+    "app/(wellness-lounge)/update-user/page.jsx",
+    "app/layout.jsx",
+    "components/common-components/checkbox.jsx",
+    "components/common-components/timePicker.jsx",
+    "components/common-components/toast.jsx",
+    "components/common-components/useDebounce.jsx",
+    "components/common-sidebar/side-menu.jsx",
+    "components/ui/alumni-registration-form.jsx",
+    "components/ui/command.jsx",
+    "components/common-components/auth-provider.jsx",
+    "components/common-components/dropdown.jsx",
+    "components/common-components/header.jsx",
+    "components/common-components/textArea.jsx",
+    "components/common-components/root-layout.jsx",
+    "components/common-components/multi-select.jsx",
+    "components/common-components/primaryButton.jsx",
+    "components/ui/custom-full-calendar.jsx",
+    "app/(wellness-lounge)/order-list/page.jsx",
+    "app/page.jsx"
+, "components/common-sidebar/team-switcher.jsx", "components/common-sidebar/nav-user.jsx", "components/common-sidebar/nav-projects.jsx", "components/common-sidebar/nav-main.jsx"  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

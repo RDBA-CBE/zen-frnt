@@ -101,29 +101,29 @@ const Common = {
     return promise;
   },
 
-  skillList: (body) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = `musicforum/skills/`;
+  // skillList: (body) => {
+  //   let promise = new Promise((resolve, reject) => {
+  //     let url = `musicforum/skills/`;
 
-      if (body.skill_category_id) {
-        url += `?skill_category_id=${body.skill_category_id}`;
-      }
-      instance()
-        .get(url)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          console.log("errorsss: ", error);
-          if (error.response) {
-            reject(error.response.data.error);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
+  //     if (body.skill_category_id) {
+  //       url += `?skill_category_id=${body.skill_category_id}`;
+  //     }
+  //     instance()
+  //       .get(url)
+  //       .then((res) => {
+  //         resolve(res.data);
+  //       })
+  //       .catch((error) => {
+  //         console.log("errorsss: ", error);
+  //         if (error.response) {
+  //           reject(error.response.data.error);
+  //         } else {
+  //           reject(error);
+  //         }
+  //       });
+  //   });
+  //   return promise;
+  // },
 
   skillLevelList: () => {
     let promise = new Promise((resolve, reject) => {
