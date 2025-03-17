@@ -8,6 +8,7 @@ import LoginForm from "@/components/ui/login-form";
 import { Provider } from "react-redux";
 import store from "@/store";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 // Import fonts
 const geistSans = Geist({
@@ -31,6 +32,7 @@ export default function RootLayout({
 
 
   return (
+     <Suspense fallback={<div>Loading...</div>}>
     <Provider store={store}>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
@@ -57,5 +59,6 @@ export default function RootLayout({
         </body>
       </html>
     </Provider>
+    </Suspense>
   );
 }

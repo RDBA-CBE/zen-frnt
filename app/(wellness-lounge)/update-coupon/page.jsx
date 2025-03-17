@@ -162,9 +162,9 @@ const UpdateCoupon = () => {
 // Wrap the component with Suspense to handle CSR
 const UpdateCouponPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UpdateCoupon />
-    </Suspense>
+
+    <UpdateCoupon />
+
   );
 };
 
