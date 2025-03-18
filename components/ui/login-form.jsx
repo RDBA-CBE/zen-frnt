@@ -88,8 +88,8 @@ const LoginForm = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="flex items-center justify-center ">
-      <Card className="w-[400px]">
+    <div className="flex items-center justify-center">
+      <Card className="md:w-[400px] w-[100%]">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
@@ -104,7 +104,7 @@ const LoginForm = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="Enter Your mail ID"
                   required
                   value={state.username}
                   onChange={(e) => setState({ username: e.target.value })}
@@ -123,6 +123,7 @@ const LoginForm = () => {
                 <Input
                   id="password"
                   type="password"
+                   placeholder="Enter Your Password"
                   required
                   value={state.password}
                   onChange={(e) => setState({ password: e.target.value })}
