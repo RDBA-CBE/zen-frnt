@@ -18,7 +18,8 @@ import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
-import { Success } from "../common-components/toast";
+import { Failure, Success } from "../common-components/toast";
+import * as Yup from "yup";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -59,6 +60,27 @@ const LoginForm = () => {
       router.push("/");
     } catch (error) {
       console.log("error: ", error);
+
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
+
+        console.log("validationErrors: ", validationErrors);
+
+        // Set validation errors in state
+        setState({ errors: validationErrors });
+        setState({ submitLoading: false }); // Stop loading after error
+      } else {
+        setState({ submitLoading: false }); // Stop loading after unexpected error
+        if (error?.detail) {
+          Failure(error.detail)
+        } else {
+          Failure("An error occurred. Please try again.");
+
+        }
+      }
     }
   };
 

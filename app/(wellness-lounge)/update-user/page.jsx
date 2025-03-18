@@ -20,7 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import { Trash2 } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
@@ -260,15 +260,27 @@ export default function CreateUser() {
       router?.back();
       Success("User updated successfully");
     } catch (error) {
+
+
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
         error.inner.forEach((err) => {
           validationErrors[err.path] = err?.message;
         });
+
+        console.log("validationErrors: ", validationErrors);
+
+        // Set validation errors in state
         setState({ errors: validationErrors });
-        setState({ submitLoading: false });
+        setState({ submitLoading: false }); // Stop loading after error
       } else {
-        setState({ submitLoading: false });
+        setState({ submitLoading: false }); // Stop loading after unexpected error
+        if (error?.email) {
+          Failure(error.email[0])
+        } else {
+          Failure("An error occurred. Please try again.");
+
+        }
       }
     }
   };

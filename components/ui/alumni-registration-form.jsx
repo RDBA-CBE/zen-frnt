@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Success } from "../common-components/toast";
+import { Failure, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import { mentorList } from "@/utils/constant.utils";
 import TextArea from "../common-components/textArea";
@@ -175,20 +175,28 @@ const AlumniRegistrationForm = () => {
             router?.push("/")
         } catch (error) {
             console.log("error", error)
+
             if (error instanceof Yup.ValidationError) {
                 const validationErrors = {};
                 error.inner.forEach((err) => {
                     validationErrors[err.path] = err?.message;
                 });
+
                 console.log("validationErrors: ", validationErrors);
 
-                setState({
-                    errors: validationErrors,
-                    submitLoading: false
-                });
+                // Set validation errors in state
+                setState({ errors: validationErrors });
+                setState({ submitLoading: false }); // Stop loading after error
             } else {
-                // If it's neither a custom error nor a validation error, just stop loading
-                setState({ submitLoading: false });
+                setState({ submitLoading: false }); // Stop loading after unexpected error
+                if (error?.email) {
+                    Failure(error.email[0])
+                } else if (error?.password) {
+                    Failure(error.password[0])
+                } else {
+                    Failure("An error occurred. Please try again.");
+
+                }
             }
         }
 
