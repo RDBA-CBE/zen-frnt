@@ -108,6 +108,8 @@ export default function CreateUser() {
         address: res.address ? res.address : "",
         phone_number: res?.phone_number ? res?.phone_number : "",
         year_of_entry: res?.year_of_entry,
+        year_of_graduation: res?.year_of_graduation ? res?.year_of_graduation : "",
+        work: res?.work ? res?.work : "",
         department: res?.department ? res?.department : "",
         university: {
           value: res?.university?.id ? res?.university?.id : null,
@@ -116,6 +118,14 @@ export default function CreateUser() {
         intrested_topics: {
           value: res?.intrested_topics ? res?.intrested_topics?.label : null,
           label: res?.intrested_topics ? res?.intrested_topics?.label : null,
+        },
+        country: {
+          value: res?.country ? res?.country?.id : null,
+          label: res?.country ? res?.country?.name : null,
+        },
+        is_open_to_be_mentor: {
+          value: res?.is_open_to_be_mentor == true ? "Yes" : "No",
+          label: res?.is_open_to_be_mentor == true ? "Yes" : "No",
         },
         dob: res.date_of_birth ? new Date(res.date_of_birth) : "",
         user_type: {
@@ -127,6 +137,8 @@ export default function CreateUser() {
       console.log("error: ", error);
     }
   };
+
+  console.log("is_open_to_be_mentor", state?.is_open_to_be_mentor)
 
   const getUniversity = async () => {
     try {
@@ -189,8 +201,7 @@ export default function CreateUser() {
         country: state?.user_type?.label === "Alumni" ? state?.country?.value : undefined,
       };
 
-      console.log("state?.user_type?.label ", state?.user_type?.label);
-
+      console.log("body", body)
       await Validation.createUser.validate(body, {
         abortEarly: false,
       });
@@ -538,7 +549,7 @@ export default function CreateUser() {
                   />
                 </div>
 
-                <div className="space-y-1">
+                {/* <div className="space-y-1">
                   <CustomSelect
                     options={state.intrestedTopicsList || []}
                     value={state.intrested_topics?.label || ""}
@@ -560,7 +571,8 @@ export default function CreateUser() {
                       onChange={(e) => setState({ intrested_topics1: e.target.value })}
                     />
                   </div>
-                }</>
+                } */}
+              </>
             )
           }
 

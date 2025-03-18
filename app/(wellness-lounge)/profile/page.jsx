@@ -103,7 +103,7 @@ export default function ProfilePage() {
                     {state?.userData.username}
                   </h2>
                   <blockquote className="italic">
-                    {state?.userData?.group_name}
+                    {state?.userData?.group?.name}
                   </blockquote>
                 </div>
               </div>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                   <li>Date of Birth: {state?.userData?.date_of_birth}</li>
                 )}
                 {state?.userData?.address && (
-                  <li>Address: {state?.userData?.address}</li>
+                  <li>Address: {state?.userData?.address},{state?.userData?.country?.name} </li>
                 )}
                 {state?.userData?.department && (
                   <li>Department: {state?.userData?.department}</li>
@@ -141,7 +141,7 @@ export default function ProfilePage() {
                   <li>Interested in Topics: {state?.userData?.intrested_topics}</li>
                 )}
                 {state?.userData?.university && (
-                  <li>University: {state?.userData?.university}</li>
+                  <li>University: {state?.userData?.university.name}</li>
                 )}
               </ul>
             </div>

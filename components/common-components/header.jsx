@@ -36,12 +36,12 @@ const Header = () => {
   const tokens = useSelector((state) => state.auth.tokens);
   const groups = useSelector((state) => state.auth.groups);
 
-  const [activeMenu, setActiveMenu] = useState  (null);
+  const [activeMenu, setActiveMenu] = useState(null);
   const [clickedMenu, setClickedMenu] = useState(null); // Track the clicked menu
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [group, setGroup] = useState  (null);
+  const [group, setGroup] = useState(null);
   const router = useRouter();
-  const [token, setToken] = useState (null);
+  const [token, setToken] = useState(null);
   const [isClient, setIsClient] = useState(false); // Track if we're in the client
 
   // Set `isClient` to true after the component mounts (only runs on the client)
@@ -127,7 +127,7 @@ const Header = () => {
       url: "/calendar",
     },
     {
-      title: "Order History",
+      title: "Order",
       url: "/student-order",
     },
     {
