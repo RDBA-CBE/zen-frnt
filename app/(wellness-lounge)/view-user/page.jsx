@@ -143,24 +143,49 @@ export default function viewWellnessLounge() {
                                     )
                                 }
                                 {
+                                    state?.userData?.phone_number && (
+                                        <li>Phone Number: {state?.userData?.phone_number}</li>
+                                    )
+                                }
+                                {
                                     state?.userData?.department && (
                                         <li>Date of Birth: {state?.userData?.department}</li>
                                     )
                                 }
-
                                 {
-                                    state?.userData?.year_of_entry && (
-                                        <li>Phone Number: {state?.userData?.year_of_entry}</li>
+                                    state?.userData?.group?.name == "Alumni" ? (
+                                        <>
+                                            {
+                                                state?.userData?.year_of_graduation && (
+                                                    <li>Year Of Graduation: {state?.userData?.year_of_graduation}</li>
+                                                )
+                                            }
+
+                                        </>
+                                    ) : state?.userData?.group?.name == "Student" && (
+                                        <>
+                                            {
+                                                state?.userData?.year_of_entry && (
+                                                    <li>Year Of Entry: {state?.userData?.year_of_entry}</li>
+                                                )
+                                            }
+                                        </>
                                     )
                                 }
                                 {
+                                    state?.userData?.work && (
+                                        <li>Work: {state?.userData?.work}</li>
+                                    )
+                                }
+
+                                {
                                     state?.userData?.intrested_topics && (
-                                        <li>Intrested in: {state?.userData?.intrested_topics}</li>
+                                        <li>Intrested in Topics: {state?.userData?.intrested_topics}</li>
                                     )
                                 }
                                 {
                                     state?.userData?.university && (
-                                        <li>University: {state?.userData?.university}</li>
+                                        <li>University: {state?.userData?.university?.name}</li>
                                     )
                                 }
 

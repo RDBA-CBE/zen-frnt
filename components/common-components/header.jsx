@@ -215,20 +215,20 @@ const Header = () => {
                         <AvatarFallback>A</AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-gray-300 p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
-                      <DropdownMenuLabel className="p-0">
+                    <DropdownMenuContent className="bg-gray-300 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                      <DropdownMenuLabel className="p-0 pb-2">
                         <div className="flex items-center gap-2 text-sm">
                           <Avatar className="h-8 w-8 rounded">
                             <AvatarFallback>A</AvatarFallback>
                           </Avatar>
                           <div>
                             <span className="font-semibold">Zen Lounge</span>
-                            <span className="text-xs">zenlounge@gmail.com</span>
+                            {/* <span className="text-xs">zenlounge@gmail.com</span> */}
                           </div>
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuGroup>
+                      {/* <DropdownMenuGroup>
                         <DropdownMenuItem>
                           <SparklesIcon /> Upgrade to Pro
                         </DropdownMenuItem>
@@ -245,7 +245,7 @@ const Header = () => {
                           <Bell /> Notifications
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSeparator /> */}
                       {tokens ? (
                         <DropdownMenuItem onClick={() => setDialogOpen(true)}>
                           <LogOut /> Logout
