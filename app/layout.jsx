@@ -42,7 +42,7 @@ export default function RootLayout({
             ) : (
               <div className="flex flex-col w-full min-h-screen">
                 <Header /> {/* Conditionally render header */}
-                <main className="w-full p-4 pb-24">
+                <main className="w-full p-4 pt-10 pb-24">
                   {children} {/* Render the page content here */}
                 </main>
 

@@ -1,9 +1,9 @@
 import instance from "@/utils/axios.utils";
 
 const user = {
-  userList: (page: any,body:any) => {
+  userList: (page: any, body: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/?page=${page}&group_name=Student`;
+      let url = `auth/users/?page=${page}`;
       if (body.search) {
         url += `&search=${encodeURIComponent(body.search)}`;
       }
@@ -25,7 +25,7 @@ const user = {
   dropdownUserserList: () => {
     let promise = new Promise((resolve, reject) => {
       let url = `auth/users/?&group_name=Student`;
-    
+
       instance()
         .get(url)
         .then((res) => {
@@ -71,7 +71,7 @@ const user = {
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.data.message);
+            reject(error.response.data);
           } else {
             reject(error);
           }
@@ -118,7 +118,7 @@ const user = {
     return promise;
   },
 
-  
+
 };
 
 export default user;

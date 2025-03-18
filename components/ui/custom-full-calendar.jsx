@@ -148,13 +148,13 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         <div className="container mx-auto calendar-wrapper p-4">
             {/* Calendar Header */}
             <div className="calendar-header flex justify-between items-center mb-4">
-                <Button onClick={() => handleNavigate(-1)} className="bg-blue-500 text-white p-2 rounded">
+                <Button onClick={() => handleNavigate(-1)} className="text-white p-2 rounded">
                     Previous
                 </Button>
                 <h2 className="text-xl font-semibold">
                     {new Date(selectedDate).toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
                 </h2>
-                <Button onClick={() => handleNavigate(1)} className="bg-blue-500 text-white p-2 rounded">
+                <Button onClick={() => handleNavigate(1)} className="text-white p-2 rounded">
                     Next
                 </Button>
             </div>

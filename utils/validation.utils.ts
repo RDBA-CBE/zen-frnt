@@ -40,10 +40,10 @@ export const updateSessionOrder = Yup.object().shape({
 export const createUser = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  phone_number: Yup.string().required("Phone number is required"),
-  address: Yup.string().nullable(), // Optional field, allows empty string
+  // phone_number: Yup.string().required("Phone number is required"),
+  // address: Yup.string().nullable(), // Optional field, allows empty string
   user_type: Yup.string().required("User type is required"),
-  dob: Yup.string().required("Date of birth is required"), // Optional array of strings
+  // dob: Yup.string().required("Date of birth is required"), // Optional array of strings
 });
 
 export const createPaymetGayway = Yup.object().shape({

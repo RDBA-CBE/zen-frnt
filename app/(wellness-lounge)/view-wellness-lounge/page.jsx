@@ -107,7 +107,7 @@ export default function viewWellnessLounge() {
 
             const res = await Models.session.createRegistration(body);
 
-            router.push("/student-order");
+            router.push(`/view-order?id=${res?.id}`);
             Success("Event Intrested sent successfully");
 
             setState({ isOpen: false })

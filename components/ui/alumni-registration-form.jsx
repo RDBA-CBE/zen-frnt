@@ -201,7 +201,7 @@ const AlumniRegistrationForm = () => {
 
 
 
-            <Card>
+            <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
                 <CardHeader>
                     <CardTitle>Alumni Registration</CardTitle>
                     <CardDescription>

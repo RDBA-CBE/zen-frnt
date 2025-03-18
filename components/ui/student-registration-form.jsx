@@ -200,7 +200,7 @@ const StudentRegistrationForm = () => {
     return (
         <div className="flex items-center justify-center w-full">
 
-            <Card>
+            <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
                 <CardHeader>
                     <CardTitle>Student Registration</CardTitle>
                     <CardDescription>
