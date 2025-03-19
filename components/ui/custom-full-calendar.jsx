@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
+import { XIcon } from "lucide-react";
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -71,7 +72,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         try {
             setState({ loading: true });
 
-            const res = await Models.category.list();
+            const res = await Models.category.catDropDownList();
             const dropdowns = Dropdown(res?.results, "name");
             setState({ categoryList: dropdowns, loading: false });
         } catch (error) {
@@ -212,6 +213,15 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                 </div>
 
             </div>
+            {state.lounge_type && (
+                <div className="text-start mb-5 flex">
+                    <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center">
+                        <p className=" text-xs text-white">{state.lounge_type?.label}</p><XIcon className="text-white h-4 w-4 ml-2 pointer" onClick={() => setState({ lounge_type: null })} />
+
+                    </div>
+                </div>
+
+            )}
 
             {/* Calendar Table */}
             <div className="overflow-x-auto">

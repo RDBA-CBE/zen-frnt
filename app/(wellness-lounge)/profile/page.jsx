@@ -215,9 +215,9 @@ export default function ProfilePage() {
                       </div>
                       <div className="lg:w-1/2 w-[100%] md:block hidden">
                         <img
-                          src="/assets/images/placeholder.jpg"
+                          src="/assets/images/ab-3-1.webp"
                           alt="thumbnail"
-                          className="w-[300px] h-50"
+                          className="w-[300px] h-[300px]"
                         />
                       </div>
                     </div>
@@ -256,7 +256,7 @@ export default function ProfilePage() {
                             />
                           </div>
                         </div>
-                      ) : "No Registered Events"
+                      ) : "No Orders"
                     }
                   </CardContent>
                   {/* <CardFooter>

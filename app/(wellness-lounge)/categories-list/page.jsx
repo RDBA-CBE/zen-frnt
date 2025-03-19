@@ -200,7 +200,7 @@ const WellnessLoungeList = () => {
               <div className="text-end">
                 <Button
                   type="button"
-                  className="bg-black "
+                  className="bg-themeGreen hover:bg-themeGreen "
                   onClick={() =>
                     setState({
                       isOpen: true,
@@ -315,13 +315,13 @@ const WellnessLoungeList = () => {
 
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"}
+                variant={"outline"} className="text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
                 name="Cancel"
                 onClick={() => clearRecord()}
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() =>
                   objIsEmpty(state.editData)
                     ? createCategory()
@@ -342,7 +342,7 @@ const WellnessLoungeList = () => {
           <>
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"}
+                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                 name="Cancel"
                 onClick={() =>
                   setState({ isOpenDelete: false, deleteId: null })
@@ -350,7 +350,7 @@ const WellnessLoungeList = () => {
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteCategory()}
                 loading={state.deleteLoading}
               />

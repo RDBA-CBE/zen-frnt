@@ -231,8 +231,7 @@ const UserList = () => {
             </div>
             <div className="text-end">
               <Button
-                type="button"
-                className="bg-black "
+                type="button" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => router.push("/create-user")}
               >
                 Create
@@ -267,7 +266,7 @@ const UserList = () => {
               <Button
                 disabled={!state.previous}
                 onClick={handlePreviousPage}
-                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                className={`btn ${!state.previous ? "btn-disabled bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                   }`}
               >
                 Prev
@@ -275,7 +274,7 @@ const UserList = () => {
               <Button
                 disabled={!state.next}
                 onClick={handleNextPage}
-                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                className={`btn ${!state.next ? "btn-disabled bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                   }`}
               >
                 Next

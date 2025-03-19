@@ -439,12 +439,13 @@ export default function CreateUser() {
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton
               variant={"outline"}
+              className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               name="Cancel"
               onClick={() => router.back()}
             />
 
             <PrimaryButton
-              name="Submit"
+              name="Submit" className="bg-themeGreen hover:bg-themeGreen"
               onClick={() => onSubmit()}
               loading={state.submitLoading}
             />

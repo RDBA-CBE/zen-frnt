@@ -65,9 +65,9 @@ export default function CreateWellnessLounge() {
   ];
 
   return (
-    <div className="container mx-auto">
+    <div className="container lg:w-[800px] w-[100%] mx-auto">
       <div className="font-bold text-lg mb-3">Create Coupon</div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-1">
+      <div className="border rounded-lg p-4 grid auto-rows-min gap-4 md:grid-cols-1">
         <TextInput
           value={state.code}
           onChange={(e) => {
@@ -133,14 +133,14 @@ export default function CreateWellnessLounge() {
 
         <div className="flex justify-end gap-5">
           <PrimaryButton
-            variant={"outline"}
+            variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
             name="Cancel"
             onClick={() => router.push("/coupon-list")}
           />
 
           <PrimaryButton
             name="Submit"
-            onClick={() => onSubmit()}
+            onClick={() => onSubmit()} className="bg-themeGreen hover:bg-themeGreen"
             loading={state.submitLoading}
           />
         </div>

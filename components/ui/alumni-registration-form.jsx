@@ -388,7 +388,7 @@ const AlumniRegistrationForm = () => {
                         </div>
                     </div>
                     <div className="flex justify-center gap-2">
-                        <Button onClick={() => router?.back()} className="w-full bg-themePurple hover:bg-themePurple">Cancel</Button>
+                        <Button onClick={() => router?.back()} variant="outline" className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen">Cancel</Button>
                         <Button onClick={AlumniRegistration} className="w-full bg-themeGreen hover:bg-themeGreen">Submit</Button>
                     </div>
                 </CardContent>

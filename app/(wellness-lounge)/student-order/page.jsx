@@ -225,53 +225,59 @@ const WellnessLoungeList = () => {
                     <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
                         <div>
                             <h2 className="md:text-lg text-sm font-bold">
-                                Orders History
+                                Orders
                             </h2>
                         </div>
 
                     </div>
                 </Card>
 
-                <Card className="w-[100%] p-4">
-                    <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                        <div>
-                            <TextInput
-                                value={state.search}
-                                onChange={(e) => {
-                                    setState({ search: e.target.value });
-                                }}
-                                placeholder="Search Order ID"
-                                required
-                                className="w-full"
+                {state.loading ? (
+                    <Loading />
+                ) : state.loungeList?.length > 0 ? (
+                    <Card className="w-[100%] p-4">
+                        <div className="grid auto-rows-min gap-4 md:grid-cols-4">
+                            <div>
+                                <TextInput
+                                    value={state.search}
+                                    onChange={(e) => {
+                                        setState({ search: e.target.value });
+                                    }}
+                                    placeholder="Search Order ID"
+                                    required
+                                    className="w-full"
+                                />
+                            </div>
+                            <CustomSelect
+                                options={orderStatusList}
+                                value={state.lounge_status?.value || ""}
+                                onChange={(value) => setState({ lounge_status: value })}
+                                placeholder="Order Status"
                             />
-                        </div>
-                        <CustomSelect
-                            options={orderStatusList}
-                            value={state.lounge_status?.value || ""}
-                            onChange={(value) => setState({ lounge_status: value })}
-                            placeholder="Order Status"
-                        />
-                        <CustomSelect
-                            options={state?.loungeSearch}
-                            value={state.event?.value || ""}
-                            onChange={(value) => setState({ event: value })}
-                            placeholder="Lounge"
-                        />
-                        <div>
-                            <DatePicker
-                                placeholder="Order Date"
-                                closeIcon={true}
-                                selectedDate={state.start_date}
-                                onChange={(date) => {
-                                    setState({
-                                        start_date: date,
-                                    });
-                                }}
+                            <CustomSelect
+                                options={state?.loungeSearch}
+                                value={state.event?.value || ""}
+                                onChange={(value) => setState({ event: value })}
+                                placeholder="Lounge"
                             />
-                        </div>
+                            <div>
+                                <DatePicker
+                                    placeholder="Order Date"
+                                    closeIcon={true}
+                                    selectedDate={state.start_date}
+                                    onChange={(date) => {
+                                        setState({
+                                            start_date: date,
+                                        });
+                                    }}
+                                />
+                            </div>
 
-                    </div>
-                </Card>
+                        </div>
+                    </Card>
+                ) : null
+                }
+
 
                 {state.loading ? (
                     <Loading />
@@ -303,9 +309,11 @@ const WellnessLoungeList = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="items-center justify-center flex">
-                        <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
-                    </div>
+                    <Card className="w-[100%] mt-5 p-4">
+                        <div className="items-center justify-center flex">
+                            <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
+                        </div>
+                    </Card>
                 )}
             </div>
             <Modal

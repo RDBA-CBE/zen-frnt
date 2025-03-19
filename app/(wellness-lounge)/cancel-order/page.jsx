@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash, XIcon } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown,  useSetState } from "@/utils/function.utils";
+import { Dropdown, useSetState } from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -236,7 +236,7 @@ const CancelOrderList = () => {
                             className="text-end"
                             onClick={() => router.push("/create-order")}
                         >
-                            <Button className="bg-black ">Create</Button>
+                            <Button className="bg-themeGreen hover:bg-themeGreen">Create</Button>
                         </div>
                     </div>
                 </Card>
@@ -282,6 +282,22 @@ const CancelOrderList = () => {
                     </div>
                 </Card>
 
+                <div className="text-start gap-2 mb-0 flex">
+                    {state?.event && (
+                        <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">{state.event?.label}</p>
+                            <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ event: null })} />
+                        </div>
+                    )}
+                    {state?.start_date && (
+                        <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">{moment(state.start_date).format("YYYY-MM-DD")}</p>
+                            <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ start_date: null })} />
+                        </div>
+                    )}
+
+                </div>
+
                 {state.loading ? (
                     <Loading />
                 ) : state.loungeList?.length > 0 ? (
@@ -296,7 +312,7 @@ const CancelOrderList = () => {
                             <Button
                                 disabled={!state.previous}
                                 onClick={handlePreviousPage}
-                                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                                className={`btn ${!state.previous ? "bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                                     }`}
                             >
                                 Prev
@@ -304,7 +320,7 @@ const CancelOrderList = () => {
                             <Button
                                 disabled={!state.next}
                                 onClick={handleNextPage}
-                                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                                className={`btn ${!state.next ? "btn-disabled bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                                     }`}
                             >
                                 Next
@@ -325,13 +341,13 @@ const CancelOrderList = () => {
                     <>
                         <div className="flex justify-end gap-5">
                             <PrimaryButton
-                                variant={"outline"}
+                                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                                 name="Cancel"
                                 onClick={() => setState({ isOpen: false, deleteId: null })}
                             />
 
                             <PrimaryButton
-                                name="Submit"
+                                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                                 onClick={() => deleteSession()}
                                 loading={state.submitLoading}
                             />

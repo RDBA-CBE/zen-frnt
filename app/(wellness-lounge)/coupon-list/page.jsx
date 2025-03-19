@@ -32,7 +32,7 @@ const WellnessLoungeList = () => {
     categoryList: [],
     editData: {},
     deleteId: null,
-    submitLoading:false
+    submitLoading: false
   });
 
   useEffect(() => {
@@ -134,7 +134,7 @@ const WellnessLoungeList = () => {
             <div className="text-end">
               <Button
                 type="button"
-                className="bg-black "
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => router.push("/create-coupon")}
               >
                 Create
@@ -156,12 +156,12 @@ const WellnessLoungeList = () => {
             <div className="flex justify-end gap-5">
               <PrimaryButton
                 variant={"outline"}
-                name="Cancel"
+                name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                 onClick={() => setState({ isOpen: false, deleteId: null })}
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteCoupon()}
                 loading={state.submitLoading}
               />

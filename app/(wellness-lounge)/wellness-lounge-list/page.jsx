@@ -79,7 +79,7 @@ const WellnessLoungeList = () => {
     try {
       setState({ loading: true });
 
-      const res = await Models.category.list();
+      const res = await Models.category.catDropDownList();
       const dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: dropdowns, loading: false });
     } catch (error) {
@@ -227,7 +227,7 @@ const WellnessLoungeList = () => {
               className="text-end"
               onClick={() => router.push("/create-wellness-lounge")}
             >
-              <Button className="bg-black ">Create</Button>
+              <Button className="bg-themeGreen hover:bg-themeGreen ">Create</Button>
             </div>
           </div>
         </Card>
@@ -292,7 +292,7 @@ const WellnessLoungeList = () => {
               <Button
                 disabled={!state.previous}
                 onClick={handlePreviousPage}
-                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                className={`btn ${!state.previous ? "btn-disabled bg-themeGreen" : "bg-themeGreen"
                   }`}
               >
                 Prev
@@ -300,7 +300,7 @@ const WellnessLoungeList = () => {
               <Button
                 disabled={!state.next}
                 onClick={handleNextPage}
-                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                className={`btn ${!state.next ? "btn-disabled bg-themeGreen" : "bg-themeGreen"
                   }`}
               >
                 Next
@@ -321,13 +321,13 @@ const WellnessLoungeList = () => {
           <>
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"}
+                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                 name="Cancel"
                 onClick={() => setState({ isOpen: false, deleteId: null })}
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteSession()}
                 loading={state.submitLoading}
               />

@@ -229,7 +229,7 @@ const PaymentGatewayList = () => {
             <div className="text-end">
               <Button
                 type="button"
-                className="bg-black "
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() =>
                   setState({
                     isOpen: true,
@@ -307,13 +307,13 @@ const PaymentGatewayList = () => {
 
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"}
+                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 name="Cancel"
                 onClick={() => clearRecord()}
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() =>
                   objIsEmpty(state.editData) ? createGatway() : updateGatway()
                 }
@@ -380,7 +380,7 @@ const PaymentGatewayList = () => {
             <div className="flex justify-end gap-5">
               <PrimaryButton
                 variant={"outline"}
-                name="Close"
+                name="Close" className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 onClick={() =>
                   setState({
                     isOpenView: false,
@@ -400,7 +400,7 @@ const PaymentGatewayList = () => {
           <>
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"}
+                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 name="Cancel"
                 onClick={() =>
                   setState({ isOpenDelete: false, deleteId: null })
@@ -408,7 +408,7 @@ const PaymentGatewayList = () => {
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteGatway()}
                 loading={state.deleteLoading}
               />

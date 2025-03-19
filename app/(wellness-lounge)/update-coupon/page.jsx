@@ -97,9 +97,9 @@ const UpdateCoupon = () => {
   ];
 
   return (
-    <div className="container mx-auto">
+    <div className="container lg:w-[800px] w-[100%] mx-auto">
       <div className="font-bold text-lg mb-3">Update Coupon</div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-1">
+      <div className="border rounded-xl p-4  grid auto-rows-min gap-4 md:grid-cols-1">
         <TextInput
           value={state.code}
           onChange={(e) => setState({ code: e.target.value })}
@@ -143,13 +143,13 @@ const UpdateCoupon = () => {
 
         <div className="flex justify-end gap-5">
           <PrimaryButton
-            variant={"outline"}
+            variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
             name="Cancel"
             onClick={() => router.push("/coupon-list")}
           />
 
           <PrimaryButton
-            name="Submit"
+            name="Submit" className="bg-themeGreen hover:bg-themeGreen"
             onClick={() => onSubmit()}
             loading={state.submitLoading}
           />

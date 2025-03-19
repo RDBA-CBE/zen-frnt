@@ -33,15 +33,15 @@ export default function UpdateOrder() {
     useEffect(() => {
         // Ensure that searchParams are read only on the client side
         if (typeof window !== "undefined") {
-    
-        const idFromSearchParams = searchParams.get("id");
-    
-        if (idFromSearchParams) {
-          setId(idFromSearchParams);
+
+            const idFromSearchParams = searchParams.get("id");
+
+            if (idFromSearchParams) {
+                setId(idFromSearchParams);
+            }
         }
-      }
-    
-      }, [searchParams]);
+
+    }, [searchParams]);
 
     const [state, setState] = useSetState({
         seat_count: 0,
@@ -254,7 +254,7 @@ export default function UpdateOrder() {
 
     return (
         <div className="container mx-auto">
-            <div className="font-bold text-lg mb-3">Create Order</div>
+            <div className="font-bold text-lg mb-3">Update Order</div>
             <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                 <div className="border rounded-xl p-4 gap-4 flex flex-col ">
 
@@ -348,13 +348,13 @@ export default function UpdateOrder() {
             </Button> */}
 
                         <PrimaryButton
-                            variant={"outline"}
+                            variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                             name="Cancel"
                             onClick={() => router.back()}
                         />
 
                         <PrimaryButton
-                            name="Submit"
+                            name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                             onClick={() => onSubmit()}
                             loading={state.submitLoading}
                         />

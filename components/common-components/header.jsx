@@ -181,7 +181,7 @@ const Header = () => {
                       onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
                       onMouseLeave={() => menu.items && setActiveMenu(null)}
                     >
-                      <Link href={menu.url} className="hover:text-blue-600 font-medium">
+                      <Link href={menu.url} className="hover:text-themePurple font-medium">
                         {menu.title}
                       </Link>
 
@@ -194,7 +194,7 @@ const Header = () => {
                         >
                           {menu.items?.map((item) => (
                             <div key={item.title} className="mb-2">
-                              <Link href={item.url} className="text-sm text-black hover:text-blue-600">
+                              <Link href={item.url} className="text-sm text-black hover:text-themePurple">
                                 {item.title}
                               </Link>
                             </div>
@@ -215,7 +215,7 @@ const Header = () => {
                         <AvatarFallback><User2Icon /></AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-gray-300 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                    <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
                       <DropdownMenuLabel className="p-0 pb-2">
                         <div className="flex items-center gap-2 text-sm">
                           <Avatar className="h-8 w-8 rounded">
@@ -320,7 +320,7 @@ const Header = () => {
                   <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} className="px-4 py-2 bg-themePurple hover:bg-themePurple rounded text-sm">Cancel</Button>
+                    <Button onClick={handleCancel} className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen rounded text-sm">Cancel</Button>
                     <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">Confirm</Button>
                   </div>
                 </DialogContent>

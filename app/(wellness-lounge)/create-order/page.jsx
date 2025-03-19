@@ -214,9 +214,7 @@ export default function CreateOrder() {
                             placeholder="Select User"
                         />
                         <div>
-
                             {
-
                                 SelectedUser?.length > 0 && (
                                     <>
                                         <h3 className="text-lg font-medium">User Details:</h3>
@@ -230,13 +228,10 @@ export default function CreateOrder() {
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Date of Birth:</span> {SelectedUser[0]?.date_of_birth || 'N/A'}</li>
                                             </ul>
                                         </div>
-
                                     </>
 
                                 )
                             }
-
-
 
 
                         </div>
@@ -352,12 +347,12 @@ export default function CreateOrder() {
             </Button> */}
 
                             <PrimaryButton
-                                variant={"outline"}
+                                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                                 name="Cancel"
                                 onClick={() => router.back()}
                             />
 
-                            <PrimaryButton
+                            <PrimaryButton className="bg-themeGreen hover:bg-themeGreen"
                                 name="Submit"
                                 onClick={() => onSubmit()}
                                 loading={state.submitLoading}

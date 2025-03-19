@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Edit, Eye, MoreHorizontal, Trash, X } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash, X, XIcon } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -238,7 +238,7 @@ const WellnessLoungeList = () => {
                             className="text-end"
                             onClick={() => router.push("/create-order")}
                         >
-                            <Button className="bg-black ">Create</Button>
+                            <Button className="bg-themeGreen hover:bg-themeGreen ">Create</Button>
                         </div>
                     </div>
                 </Card>
@@ -283,6 +283,31 @@ const WellnessLoungeList = () => {
 
                     </div>
                 </Card>
+                <div className="text-start gap-2 mb-0 flex">
+                    {
+                        state.lounge_status && (
+                            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                                <p className=" text-xs text-white">{state.lounge_status?.label}</p>
+                                <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ lounge_status: null })} />
+
+                            </div>
+                        )
+                    }
+
+                    {state?.event && (
+                        <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">{state.event?.label}</p>
+                            <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ event: null })} />
+                        </div>
+                    )}
+                    {state?.start_date && (
+                        <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">{moment(state.start_date).format("YYYY-MM-DD")}</p>
+                            <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ start_date: null })} />
+                        </div>
+                    )}
+
+                </div>
 
                 {state.loading ? (
                     <Loading />
@@ -298,7 +323,7 @@ const WellnessLoungeList = () => {
                             <Button
                                 disabled={!state.previous}
                                 onClick={handlePreviousPage}
-                                className={`btn ${!state.previous ? "btn-disabled" : "btn-primary"
+                                className={`btn ${!state.previous ? "btn-disabled bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                                     }`}
                             >
                                 Prev
@@ -306,7 +331,7 @@ const WellnessLoungeList = () => {
                             <Button
                                 disabled={!state.next}
                                 onClick={handleNextPage}
-                                className={`btn ${!state.next ? "btn-disabled" : "btn-primary"
+                                className={`btn ${!state.next ? "btn-disabled bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
                                     }`}
                             >
                                 Next
@@ -328,11 +353,11 @@ const WellnessLoungeList = () => {
                         <div className="flex justify-end gap-5">
                             <PrimaryButton
                                 variant={"outline"}
-                                name="Cancel"
+                                name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                                 onClick={() => setState({ isOpen: false, deleteId: null })}
                             />
 
-                            <PrimaryButton
+                            <PrimaryButton className="bg-themeGreen hover:bg-themeGreen"
                                 name="Submit"
                                 onClick={() => deleteSession()}
                                 loading={state.submitLoading}

@@ -388,7 +388,7 @@ export default function CreateUser() {
 
   return (
     <div className="container mx-auto">
-      <div className="font-bold text-lg mb-3">Create User</div>
+      <div className="font-bold text-lg mb-3">Update User</div>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
@@ -593,12 +593,12 @@ export default function CreateUser() {
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton
               variant={"outline"}
-              name="Cancel"
+              name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               onClick={() => router.back()}
             />
 
             <PrimaryButton
-              name="Submit"
+              name="Submit" className="bg-themeGreen hover:bg-themeGreen"
               onClick={() => onSubmit()}
               loading={state.submitLoading}
             />

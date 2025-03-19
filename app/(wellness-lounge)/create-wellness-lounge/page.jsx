@@ -264,12 +264,12 @@ export default function CreateWellnessLounge() {
 
                 <PrimaryButton
                   variant={"outline"}
-                  name="Cancel"
+                  name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
                   onClick={() => router.back()}
                 />
 
                 <PrimaryButton
-                  name="Submit"
+                  name="Submit" className="bg-themeGreen hover:bg-themeGreen"
                   onClick={() => onSubmit()}
                   loading={state.submitLoading}
                 />

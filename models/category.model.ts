@@ -20,7 +20,26 @@ const category = {
     return promise;
   },
 
-  create: (body:any) => {
+  catDropDownList: () => {
+    let promise = new Promise((resolve, reject) => {
+      let url = "zen/categories/?page_param=false";
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  create: (body: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = "zen/categories/";
       instance()
@@ -39,7 +58,7 @@ const category = {
     return promise;
   },
 
-  details: ( id:any) => {
+  details: (id: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/categories/${id}`;
       instance()
@@ -58,12 +77,12 @@ const category = {
     return promise;
   },
 
-  update: (id: any,data:any) => {
+  update: (id: any, data: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/categories/${id}/`;
 
       instance()
-        .patch(url,data)
+        .patch(url, data)
         .then((res) => {
           resolve(res.data);
         })
