@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Edit, Eye, MoreHorizontal, Trash, X } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash, X, XIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -277,6 +277,33 @@ const WellnessLoungeList = () => {
             </div>
           </div>
         </Card>
+
+        <div className="text-start gap-2 mb-0 flex">
+          {
+            state.lounge_type && (
+              <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                <p className=" text-xs text-white">{state.lounge_type?.label}</p>
+                <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ lounge_type: null })} />
+
+              </div>
+            )
+          }
+
+          {state?.start_date && (
+            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+              <p className=" text-xs text-white">Start : {moment(state.start_date).format("YYYY-MM-DD")}</p>
+              <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ start_date: null })} />
+            </div>
+          )}
+
+          {state?.end_date && (
+            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+              <p className=" text-xs text-white">End : {moment(state.end_date).format("YYYY-MM-DD")}</p>
+              <XIcon className="text-white h-4 w-4 ml-2 cursor-pointer" onClick={() => setState({ end_date: null })} />
+            </div>
+          )}
+        </div>
+
 
         {state.loading ? (
           <Loading />
