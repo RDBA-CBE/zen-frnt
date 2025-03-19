@@ -149,8 +149,8 @@ export default function CreateWellnessLounge() {
               />
               <div className="grid auto-rows-min gap-4 grid-cols-2">
                 <DatePicker
-                  placeholder="Start date"
-                  title="Start date"
+                  placeholder="Start Date"
+                  title="Start Date"
                   selectedDate={state.start_date}
                   onChange={(date) => {
                     console.log("date: ", date);
@@ -162,8 +162,8 @@ export default function CreateWellnessLounge() {
                   required
                 />
                 <DatePicker
-                  placeholder="End date"
-                  title="End date"
+                  placeholder="End Date"
+                  title="End Date"
                   selectedDate={state.end_date}
                   onChange={(date) => {
                     console.log("date: ", date);

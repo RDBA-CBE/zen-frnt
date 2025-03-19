@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon } from "lucide-react";
+import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon, User2Icon, UserX2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
@@ -123,7 +123,7 @@ const Header = () => {
 
   const StudentLeftSideMenu = [
     {
-      title: "Calendar",
+      title: "The Program",
       url: "/calendar",
     },
     {
@@ -212,14 +212,14 @@ const Header = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Avatar className="h-10 w-10 rounded">
-                        <AvatarFallback>A</AvatarFallback>
+                        <AvatarFallback><User2Icon /></AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-300 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
                       <DropdownMenuLabel className="p-0 pb-2">
                         <div className="flex items-center gap-2 text-sm">
                           <Avatar className="h-8 w-8 rounded">
-                            <AvatarFallback>A</AvatarFallback>
+                            <AvatarFallback><User2Icon /></AvatarFallback>
                           </Avatar>
                           <div>
                             <span className="font-semibold">Zen Lounge</span>
@@ -320,8 +320,8 @@ const Header = () => {
                   <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} className="px-4 py-2 bg-gray-300 rounded text-sm">Cancel</Button>
-                    <Button onClick={handleLogout} className="px-4 py-2 bg-blue-500 text-white rounded text-sm">Confirm</Button>
+                    <Button onClick={handleCancel} className="px-4 py-2 bg-themePurple hover:bg-themePurple rounded text-sm">Cancel</Button>
+                    <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">Confirm</Button>
                   </div>
                 </DialogContent>
               </Dialog>

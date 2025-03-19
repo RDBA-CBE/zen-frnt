@@ -164,7 +164,7 @@ export default function viewWellnessLounge() {
                         {
                             state?.group == "Student" && (
                                 <div>
-                                    <Button className={`${state?.orderData?.is_registered == true ? "bg-green-800 hover:bg-green-800 border-green" : "bg-black"}`} onClick={() => setState({ isOpen: true })}>Intrested</Button>
+                                    <Button className={`${state?.orderData?.is_registered == true ? "bg-themeGreen hover:bg-themeGreen" : "bg-themePurple hover:bg-themePurple "}`} onClick={() => setState({ isOpen: true })}>Intrested</Button>
                                 </div>
                             )
                         }
@@ -177,10 +177,10 @@ export default function viewWellnessLounge() {
                     <DialogContent className="bg-white p-6 rounded-lg w-96">
                         <DialogTitle className="text-lg font-semibold mb-2">Are you sure you're interested in this event?</DialogTitle>
                         <div className="flex justify-between gap-2">
-                            <Button onClick={closeDialog} className="p-2 rounded text-white w-full">
+                            <Button onClick={closeDialog} className="p-2 bg-themePurple hover:bg-themePurple rounded text-white w-full">
                                 Cancel
                             </Button>
-                            <Button onClick={confirmOrder} className="w-full p-2 rounded text-white">
+                            <Button onClick={confirmOrder} className="w-full bg-themeGreen hover:bg-themeGreen p-2 rounded text-white">
                                 Confirm
                             </Button>
                         </div>

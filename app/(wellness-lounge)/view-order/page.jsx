@@ -91,8 +91,8 @@ export default function viewWellnessLounge() {
     return (
         <div className="container mx-auto flex items-center">
             <div className="w-full">
-                <div className="flex justify-between items-center">
-                    <div className="mb-3">
+                <div className="md:flex justify-between items-center">
+                    <div className="md:mb-3">
                         <p className="font-bold text-lg">Order Details</p>
                         <p className="text-sm">Order ID: {state?.orderData?.registration_id}</p>
                     </div>
@@ -115,18 +115,25 @@ export default function viewWellnessLounge() {
                             )
                         }
 
+                        <blockquote className="mt-6 border-l-2 pl-6 italic">
+                            Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
+                            {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
+                        </blockquote>
+
+
 
                         <div>
                             <ul className="my-6 ml-6  [&>li]:mt-2">
                                 {state?.orderData?.event && (
                                     <>
                                         <li>
-                                            Event Name:{state?.orderData?.event?.title} - {state?.orderData?.event?.lounge_type?.name}
+                                            <span className="font-[600] text-gray-700">Event Name:</span>  {state?.orderData?.event?.title}
 
                                         </li>
-                                        <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
-                                        <li>End Date: {moment(state?.orderData.end_date?.end_date).format("YYYY-MMM-DD")}</li>
-                                        <li>Seat Count: {state?.orderData?.event?.seat_count}</li>
+                                        <li> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </li>
+                                        {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
+                                        <li>End Date: {moment(state?.orderData.end_date?.end_date).format("YYYY-MMM-DD")}</li> */}
+                                        <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li>
                                     </>
                                 )}
 
@@ -137,7 +144,7 @@ export default function viewWellnessLounge() {
                         <h3 className="mt-2">
                             Meet Link:{" "}
                             {state?.orderData?.event?.session_link ? (
-                                <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-black text-white px-3 py-3 rounded-lg">
+                                <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-themeGreen text-white px-3 py-3 rounded-lg">
                                     Join Meeting
                                 </Link>
                             ) : (

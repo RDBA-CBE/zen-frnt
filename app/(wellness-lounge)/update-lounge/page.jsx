@@ -68,10 +68,10 @@ export default function UpdateWellnessLounge() {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      getDetails();
-    }
+    getDetails();
   }, [id]);
+
+  console.log("id", id)
 
   const getDetails = async () => {
     try {
@@ -86,6 +86,7 @@ export default function UpdateWellnessLounge() {
           thumbnail_image: res?.thumbnail,
         });
       }
+      console.log("ressa", res)
       setState({
         title: res.title,
 
@@ -218,8 +219,8 @@ export default function UpdateWellnessLounge() {
           />
           <div className="grid auto-rows-min gap-4 grid-cols-2">
             <DatePicker
-              placeholder="Start date"
-              title="Start date"
+              placeholder="Start Date"
+              title="Start Date"
               selectedDate={state.start_date}
               onChange={(date) => {
                 console.log("date: ", date);
@@ -231,8 +232,8 @@ export default function UpdateWellnessLounge() {
               required
             />
             <DatePicker
-              placeholder="End date"
-              title="End date"
+              placeholder="End Date"
+              title="End Date"
               selectedDate={state.end_date}
               onChange={(date) => {
                 console.log("date: ", date);

@@ -8,6 +8,8 @@ export const instance = () => {
     // baseURL:"https://vqbv6q92-8000.inc1.devtunnels.ms/api/"
     // baseURL: "https://r97smzp6-8002.inc1.devtunnels.ms/"
     baseURL: "http://zenbkad.zenwellnesslounge.com/api/"
+    // baseURL: "https://r97smzp6-8000.inc1.devtunnels.ms/api/"
+
 
 
   });

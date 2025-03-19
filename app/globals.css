@@ -129,7 +129,7 @@ body {
 /* App.css */
 .calendar-wrapper {
   text-align: center;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .calendar-header {

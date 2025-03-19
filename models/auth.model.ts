@@ -21,6 +21,45 @@ const auth = {
         return promise;
     },
 
+    changePassword: (data: any) => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `auth/password-reset/`;
+            instance()
+                .post(url, data)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+    changePasswordConfirm: (data: any, uid: any, Token: any) => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `auth/password-reset-confirm/${uid}/${Token}`;
+            instance()
+                .post(url, data)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
     userDetails: (userId: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `musicforum/users/${userId}/`;

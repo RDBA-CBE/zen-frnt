@@ -145,18 +145,24 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     });
 
     return (
-        <div className="container mx-auto calendar-wrapper p-4">
+        <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
             {/* Calendar Header */}
             <div className="calendar-header flex justify-between items-center mb-4">
-                <Button onClick={() => handleNavigate(-1)} className="text-white p-2 rounded">
-                    Previous
-                </Button>
-                <h2 className="text-xl font-semibold">
-                    {new Date(selectedDate).toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
-                </h2>
-                <Button onClick={() => handleNavigate(1)} className="text-white p-2 rounded">
-                    Next
-                </Button>
+
+                <div>
+                    <h2 className="text-xl font-semibold">
+                        {new Date(selectedDate).toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
+                    </h2></div>
+                <div className="flex gap-4">
+                    <Button onClick={() => handleNavigate(-1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
+                        Previous
+                    </Button>
+
+                    <Button onClick={() => handleNavigate(1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
+                        Next
+                    </Button>
+                </div>
+
             </div>
 
             {/* Calendar Table */}
@@ -167,7 +173,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                             {daysOfWeek.map((day, index) => (
                                 <th
                                     key={index}
-                                    className="p-2 border border-gray-300 text-center font-semibold text-gray-700 bg-gray-200"
+                                    className="p-2 border border-gray-300 text-center font-semibold text-gray-700 bg-fuchsia-100"
                                 >
                                     {day}
                                 </th>
@@ -180,7 +186,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                 {week.map((day, dayIndex) => (
                                     <td
                                         key={dayIndex}
-                                        className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${day ? "hover:bg-blue-100" : "bg-gray-100"
+                                        className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                                             }`}
                                         onClick={() => day && handleDayClick(day)}
                                     >
@@ -195,9 +201,10 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                                     {getEventsForDate(day).map((event) => (
                                                         <Tooltip key={event.id}>
                                                             <TooltipTrigger>
-                                                                <div className="event p-0 border border-gray-300 rounded-lg bg-gray-50 mr-2">
-                                                                    <h4 className="text-xs text-gray-800 py-1 px-2">{event.title}</h4>
+                                                                <div className="event p-0 border border-fuchsia-900 rounded-lg bg-fuchsia-900 mr-2">
+                                                                    <h4 className="text-xs text-white py-1 px-2 truncate max-w-[15ch]">{event.title}</h4>
                                                                 </div>
+
                                                             </TooltipTrigger>
                                                             <TooltipContent className="w-[300px]">
                                                                 <h4 className="font-bold text-[18px] leading-[22px] mb-2">
@@ -228,10 +235,10 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg w-96">
                     <DialogTitle className="text-lg font-semibold mb-2">Here you can enroll or sign up for the course.</DialogTitle>
-                    <Button onClick={handleEnroll} className="p-2 rounded bg-blue-500 text-white">
+                    <Button onClick={handleEnroll} className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
                         Enroll
                     </Button>
-                    <Button onClick={handleSignUp} className="p-2 rounded bg-gray-500 text-white">
+                    <Button onClick={handleSignUp} className="p-2 rounded bg-themeGreen hover:bg-themeGreen text-white">
                         Sign Up
                     </Button>
                 </DialogContent>

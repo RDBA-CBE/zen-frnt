@@ -377,7 +377,7 @@ const AlumniRegistrationForm = () => {
                         <div className="space-y-1">
                             <TextInput
                                 id="alumniPassword"
-                                type="alumniPassword"
+                                type="password"
                                 placeholder="Enter Your password"
                                 title="Password"
                                 required

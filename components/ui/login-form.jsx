@@ -50,7 +50,7 @@ const LoginForm = () => {
       localStorage.setItem("group", res.group[0]);
 
       // Dispatch action to store tokens and group in Redux
-      dispatch(setAuthData({ tokens: res.access, groups: res.group[0] }));
+      dispatch(setAuthData({ tokens: res.access, groups: res.group[0], userId: res.user_id }));
 
       Success("Login successfully");
 
@@ -123,7 +123,7 @@ const LoginForm = () => {
                 <Input
                   id="password"
                   type="password"
-                   placeholder="Enter Your Password"
+                  placeholder="Enter Your Password"
                   required
                   value={state.password}
                   onChange={(e) => setState({ password: e.target.value })}
