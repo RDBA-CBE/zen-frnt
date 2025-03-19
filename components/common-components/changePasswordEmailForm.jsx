@@ -70,8 +70,8 @@ const ChangePasswordEmailForm = () => {
                 setState({ submitLoading: false }); // Stop loading after error
             } else {
                 setState({ submitLoading: false }); // Stop loading after unexpected error
-                if (error?.detail) {
-                    Failure(error.detail)
+                if (error?.email) {
+                    Failure(error.email[0])
                 } else {
                     Failure("An error occurred. Please try again.");
 
@@ -125,7 +125,7 @@ const ChangePasswordEmailForm = () => {
                                     onChange={(e) => setState({ password: e.target.value })}
                                 />
                             </div> */}
-                            <Button type="button" className="w-full" onClick={handleSubmit}>
+                            <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen " onClick={handleSubmit}>
                                 Submit
                             </Button>
                         </div>

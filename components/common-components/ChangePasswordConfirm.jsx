@@ -103,8 +103,8 @@ const ChangePasswordConfirmForm = () => {
                 setState({ submitLoading: false }); // Stop loading after error
             } else {
                 setState({ submitLoading: false }); // Stop loading after unexpected error
-                if (error?.detail) {
-                    Failure(error.detail)
+                if (error?.password) {
+                    Failure(error.password[0])
                 } else {
                     Failure("An error occurred. Please try again.");
 
@@ -150,7 +150,7 @@ const ChangePasswordConfirmForm = () => {
                                     onChange={(e) => setState({ confirm_password: e.target.value })}
                                 />
                             </div>
-                            <Button type="button" className="w-full" onClick={handleSubmit}>
+                            <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen " onClick={handleSubmit}>
                                 Confirm
                             </Button>
                         </div>

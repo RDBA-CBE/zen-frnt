@@ -335,10 +335,12 @@ const session = {
 
 
   // student
-  calendar: () => {
+  calendar: (body) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/events/?page_param == false`;
-
+      if (body.lounge_type) {
+        url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
+      }
       instance()
         .get(url)
         .then((res) => {

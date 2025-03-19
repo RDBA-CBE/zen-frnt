@@ -7,6 +7,8 @@ import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { Dropdown, useSetState } from "@/utils/function.utils";
+import CustomSelect from "../common-components/dropdown";
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -28,12 +30,24 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     const [lougeList, setLoungeList] = useState([]); // store events data fetched from the API
     const [token, setToken] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [state, setState] = useSetState({
+        categoryList: [],
+        loading: false,
+        lounge_type: null
+    });
+
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             getLoungeList(); // Fetch data when the component mounts
+            getCategoryList()
         }
     }, []);
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            getLoungeList(); // Fetch data when the component mounts
+        }
+    }, [state.lounge_type]);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -44,12 +58,36 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     const getLoungeList = async () => {
         try {
-            const res = await Models.session.calendar();
+            let body = bodyData();
+            const res = await Models.session.calendar(body);
             setLoungeList(res.results); // Update loungeList state with fetched data
             setEvents(res.results); // Also update events from the fetched data
         } catch (error) {
             console.log("error: ", error);
         }
+    };
+
+    const getCategoryList = async () => {
+        try {
+            setState({ loading: true });
+
+            const res = await Models.category.list();
+            const dropdowns = Dropdown(res?.results, "name");
+            setState({ categoryList: dropdowns, loading: false });
+        } catch (error) {
+            setState({ loading: false });
+
+            console.log("error: ", error);
+        }
+    };
+
+    const bodyData = () => {
+        let body = {};
+        if (state.lounge_type) {
+            body.lounge_type = state.lounge_type?.value;
+        }
+
+        return body;
     };
 
     // Navigate between months
@@ -153,14 +191,24 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                     <h2 className="text-xl font-semibold">
                         {new Date(selectedDate).toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
                     </h2></div>
-                <div className="flex gap-4">
-                    <Button onClick={() => handleNavigate(-1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
-                        Previous
-                    </Button>
+                <div className="flex gap-10">
+                    <div className="w-[200px]">
+                        <CustomSelect
+                            options={state.categoryList}
+                            value={state.lounge_type?.value || ""}
+                            onChange={(value) => setState({ lounge_type: value })}
+                            placeholder="Lounge Type"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <Button onClick={() => handleNavigate(-1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
+                            Previous
+                        </Button>
 
-                    <Button onClick={() => handleNavigate(1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
-                        Next
-                    </Button>
+                        <Button onClick={() => handleNavigate(1)} className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded">
+                            Next
+                        </Button>
+                    </div>
                 </div>
 
             </div>

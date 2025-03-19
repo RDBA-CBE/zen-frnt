@@ -129,7 +129,7 @@ const LoginForm = () => {
                   onChange={(e) => setState({ password: e.target.value })}
                 />
               </div>
-              <Button type="button" className="w-full" onClick={handleSubmit}>
+              <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen" onClick={handleSubmit}>
                 Login
               </Button>
             </div>
