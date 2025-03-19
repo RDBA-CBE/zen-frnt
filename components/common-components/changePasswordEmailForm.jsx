@@ -53,7 +53,7 @@ const ChangePasswordEmailForm = () => {
             // ✅ Trigger storage event to notify other tabs
             // window.dispatchEvent(new Event("storage"));
 
-            // router.push("/");
+            router.push("/");
         } catch (error) {
             console.log("error: ", error);
 
