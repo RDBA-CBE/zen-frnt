@@ -112,7 +112,7 @@ const session = {
 
   dropdownLoungelist: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?page_param=false&is_future=true`;
+      let url = `zen/events/?pagination=false&is_future=true`;
       instance()
         .get(url)
         .then((res) => {

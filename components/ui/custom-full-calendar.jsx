@@ -61,8 +61,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         try {
             let body = bodyData();
             const res = await Models.session.calendar(body);
-            setLoungeList(res.results); // Update loungeList state with fetched data
-            setEvents(res.results); // Also update events from the fetched data
+            setLoungeList(res); // Update loungeList state with fetched data
+            setEvents(res); // Also update events from the fetched data
         } catch (error) {
             console.log("error: ", error);
         }

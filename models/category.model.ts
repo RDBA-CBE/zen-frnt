@@ -22,7 +22,7 @@ const category = {
 
   catDropDownList: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = "zen/categories/?page_param=false";
+      let url = "zen/categories/?pagination=false";
       instance()
         .get(url)
         .then((res) => {
