@@ -63,7 +63,7 @@ const session = {
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.data.message);
+            reject(error.response.data);
           } else {
             reject(error);
           }
@@ -112,7 +112,7 @@ const session = {
 
   dropdownLoungelist: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?pagination=false&is_future=true`;
+      let url = `zen/events/?pagination=false`;
       instance()
         .get(url)
         .then((res) => {

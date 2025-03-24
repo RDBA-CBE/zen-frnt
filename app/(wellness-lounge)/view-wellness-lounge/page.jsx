@@ -74,6 +74,11 @@ export default function viewWellnessLounge() {
             setState({
                 orderData: res
             });
+            const EventId = localStorage?.getItem("eventId")
+            if (EventId) {
+                localStorage?.removeItem("eventId")
+            }
+
         } catch (error) {
             console.log("error: ", error);
         }
@@ -104,6 +109,11 @@ export default function viewWellnessLounge() {
             };
             console.log("body: ", body);
 
+            const EventId = localStorage?.getItem("eventId")
+            if (EventId) {
+                localStorage?.removeItem("eventId")
+            }
+            console.log("EventId", EventId)
 
             const res = await Models.session.createRegistration(body);
 

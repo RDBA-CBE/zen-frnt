@@ -18,6 +18,7 @@ interface DatePickerProps {
   required?: boolean;
   error?: string;
   closeIcon?: boolean;
+  disablePastDates?: boolean;  // Added prop to disable past dates
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
@@ -28,6 +29,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   required,
   error,
   closeIcon,
+  disablePastDates = false,  // Default value is false
 }) => {
   return (
     <div className="w-full relative">
@@ -61,6 +63,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             selected={selectedDate || undefined}
             onSelect={(date) => onChange?.(date ?? null)}
             initialFocus
+            disabled={
+              disablePastDates
+                ? (date) => date < new Date()  // Disable dates before today
+                : undefined
+            }
           />
         </PopoverContent>
       </Popover>

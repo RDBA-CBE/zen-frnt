@@ -125,8 +125,9 @@ export default function UpdateOrder() {
     const getLoungeList = async () => {
         try {
             const res = await Models.session.dropdownLoungelist();
-            const Dropdowns = Dropdown(res?.results, "title");
-            setState({ loungeList: Dropdowns, loungeData: res?.results });
+            console.log("res", res)
+            const Dropdowns = Dropdown(res, "title");
+            setState({ loungeList: Dropdowns, loungeData: res });
         } catch (error) {
             console.log("error: ", error);
         }
@@ -207,6 +208,7 @@ export default function UpdateOrder() {
         lounge?.id == state?.event?.value
     );
 
+    console.log("state?.loungeData", state?.loungeData)
 
     const columns = [
         {
@@ -251,6 +253,8 @@ export default function UpdateOrder() {
         // }
 
     ];
+
+    console.log("filteredLoungeData", filteredLoungeData)
 
     return (
         <div className="container mx-auto">

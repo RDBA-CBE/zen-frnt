@@ -129,6 +129,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                 console.log("No event selected.");
             }
         } else {
+            localStorage?.setItem("eventId", selectedEvent.id)
             router.push("/login");
         }
         setModalIsOpen(false);
@@ -183,6 +184,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         router?.push("/student-registration");
     });
 
+
     return (
         <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
             {/* Calendar Header */}
@@ -217,7 +219,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                 <div className="text-start mb-5 flex">
                     <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center">
                         <p className=" text-xs text-white">{state.lounge_type?.label}</p><XIcon className="text-white h-4 w-4 ml-2 pointer" onClick={() => setState({ lounge_type: null })} />
-
                     </div>
                 </div>
 
@@ -259,7 +260,20 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                                     {getEventsForDate(day).map((event) => (
                                                         <Tooltip key={event.id}>
                                                             <TooltipTrigger>
-                                                                <div className="event p-0 border border-fuchsia-900 rounded-lg bg-fuchsia-900 mr-2">
+                                                                <div className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            event.lounge_type?.id === 5
+                                                                                ? '#7f4099'  // fuchsia-900 hex color
+                                                                                : event.lounge_type?.id === 6
+                                                                                    ? '#88c742'  // fuchsia-500 hex color
+                                                                                    : event.lounge_type?.id === 7
+                                                                                        ? '#10aaec'  // fuchsia-300 hex color
+                                                                                        : event.lounge_type?.id === 8
+                                                                                            ? '#e25197'  // fuchsia-100 hex color
+                                                                                            : "#023e98"
+                                                                    }}
+                                                                >
                                                                     <h4 className="text-xs text-white py-1 px-2 truncate max-w-[15ch]">{event.title}</h4>
                                                                 </div>
 
