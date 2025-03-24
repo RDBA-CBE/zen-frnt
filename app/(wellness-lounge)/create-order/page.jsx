@@ -70,8 +70,8 @@ export default function CreateOrder() {
     const getLoungeList = async () => {
         try {
             const res = await Models.session.dropdownLoungelist();
-            const Dropdowns = Dropdown(res?.results, "title");
-            setState({ loungeList: Dropdowns, loungeData: res?.results });
+            const Dropdowns = Dropdown(res, "title");
+            setState({ loungeList: Dropdowns, loungeData: res });
         } catch (error) {
             console.log("error: ", error);
         }

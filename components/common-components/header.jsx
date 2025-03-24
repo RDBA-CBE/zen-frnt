@@ -211,7 +211,7 @@ const Header = () => {
                 <div className="flex items-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Avatar className="h-10 w-10 rounded">
+                      <Avatar className="h-10 w-10 rounded cursor-pointer">
                         <AvatarFallback><User2Icon /></AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>

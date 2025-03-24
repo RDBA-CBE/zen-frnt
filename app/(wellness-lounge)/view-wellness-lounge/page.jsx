@@ -74,8 +74,18 @@ export default function viewWellnessLounge() {
             setState({
                 orderData: res
             });
+            const EventId = localStorage?.getItem("eventId")
+            if (EventId) {
+                localStorage?.removeItem("eventId")
+            }
+
         } catch (error) {
+
             console.log("error: ", error);
+
+            if(error?.detail == "Authentication credentials were not provided.") {
+                router?.push("/login")
+            }
         }
     };
     console.log("orderData", state?.orderData)
@@ -104,6 +114,11 @@ export default function viewWellnessLounge() {
             };
             console.log("body: ", body);
 
+            const EventId = localStorage?.getItem("eventId")
+            if (EventId) {
+                localStorage?.removeItem("eventId")
+            }
+            console.log("EventId", EventId)
 
             const res = await Models.session.createRegistration(body);
 

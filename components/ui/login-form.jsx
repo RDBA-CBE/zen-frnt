@@ -29,11 +29,19 @@ const LoginForm = () => {
   const [state, setState] = useSetState({
     username: "",
     password: "",
+    eventid: null
   });
-
+  console.log("state?.eventId", state?.eventid)
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
   }, []);
+
+  useEffect(() => {
+    const eventId = localStorage.getItem("eventId")
+    if (eventId) {
+      setState({ eventid: eventId })
+    }
+  }, [state?.eventid])
 
   const handleSubmit = async () => {
     try {
@@ -56,8 +64,18 @@ const LoginForm = () => {
 
       // ✅ Trigger storage event to notify other tabs
       window.dispatchEvent(new Event("storage"));
+      console.log("res?.group[0]", res?.group[0])
+      if (res?.group[0] == "Student") {
+        if (state?.eventid) {
+          router.push(`/view-wellness-lounge?id=${state?.eventid}`);
+        } else {
+          router.back(); // Navigate to the previous page        
+        }
+      } else {
+        router.push("/");
 
-      router.push("/");
+      }
+
     } catch (error) {
       console.log("error: ", error);
 

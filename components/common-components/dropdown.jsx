@@ -33,7 +33,7 @@ const CustomSelect = (props) => {
     error,
 
   } = props;
-  const selectedOption = options.find((option) => option.value === value);
+  const selectedOption = options?.find((option) => option.value === value);
 
   return (
     <div className="w-full ">
@@ -45,7 +45,7 @@ const CustomSelect = (props) => {
       <div className="relative">
         <Select
           onValueChange={(val) => {
-            const selected = options.find((option) => option.value === val);
+            const selected = options?.find((option) => option.value === val);
             if (selected) {
               onChange(selected);
             }
@@ -58,7 +58,7 @@ const CustomSelect = (props) => {
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
-            {options.map((option) => (
+            {options?.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>

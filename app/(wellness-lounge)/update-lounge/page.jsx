@@ -22,7 +22,7 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import { Trash2, X } from "lucide-react";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 
 export default function UpdateWellnessLounge() {
@@ -176,6 +176,27 @@ export default function UpdateWellnessLounge() {
       router.push("/wellness-lounge-list");
       Success("Lounge updated successfully");
     } catch (error) {
+      // console.log("error", error?.end_date[0])
+      console.log("error", error);
+
+      // Check if error for start_date exists and has at least one error message
+      if (error?.start_date && Array.isArray(error.start_date) && error.start_date.length > 0) {
+        Failure(error?.start_date[0]);  // Show failure message for start_date
+      }
+
+      // Check if error for end_date exists and has at least one error message
+      else if (error?.end_date && Array.isArray(error.end_date) && error.end_date.length > 0) {
+        Failure(error?.end_date[0]);  // Show failure message for end_date
+      }
+
+      else if (error?.start_time && Array.isArray(error.start_time) && error.start_time.length > 0) {
+        Failure(error?.start_time[0]);  // Show failure message for start_time
+      }
+      else if (error?.end_time && Array.isArray(error.end_time) && error.end_time.length > 0) {
+        Failure(error?.end_time[0]);  // Show failure message for end_time
+      }
+
+
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
         error.inner.forEach((err) => {
@@ -185,6 +206,8 @@ export default function UpdateWellnessLounge() {
 
         setState({ errors: validationErrors });
         setState({ submitLoading: false });
+
+
       } else {
         setState({ submitLoading: false });
       }
@@ -229,7 +252,9 @@ export default function UpdateWellnessLounge() {
                 });
               }}
               error={state.errors?.start_date}
+              // disablePastDates={true} // Disable past dates
               required
+
             />
             <DatePicker
               placeholder="End Date"
@@ -243,6 +268,7 @@ export default function UpdateWellnessLounge() {
               }}
               error={state.errors?.end_date}
               required
+            // disablePastDates={true} // Disable past dates
             />
           </div>
           <div className="grid auto-rows-min gap-4 grid-cols-2">

@@ -91,72 +91,75 @@ export default function viewWellnessLounge() {
     return (
         <div className="container mx-auto flex items-center">
             <div className="w-full">
-                <div className="md:flex justify-between items-center">
-                    <div className="md:mb-3">
-                        <p className="font-bold text-lg">Order Details</p>
-                        <p className="text-sm">Order ID: {state?.orderData?.registration_id}</p>
-                    </div>
-                    <div className="mb-3">
-                        <p className="text-sm">Registration Date: {moment(state?.orderData?.registration_date).format("DD-MMM-YYYY")}</p>
-                    </div>
-                </div>
-
-
-
-                <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-
-                    <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                        {
-                            state?.orderData.registration_status && (
-                                <h4 className="mt-5 scroll-m-20 text-lg
+                <div className="flex justify-center">
+                    <div className="lg:w-[800px] w-full ">
+                        <div className="md:flex justify-between items-center  ">
+                            <div className="md:mb-3">
+                                <p className="font-bold text-lg">Order Details</p>
+                                <p className="text-sm">Order ID: {state?.orderData?.registration_id}</p>
+                            </div>
+                            <div className="mb-3">
+                                <p className="text-sm">Registration Date: {moment(state?.orderData?.registration_date).format("DD-MMM-YYYY")}</p>
+                            </div>
+                        </div>
+                        <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+                            <div>
+                                {
+                                    state?.orderData.registration_status && (
+                                        <h4 className="mt-5 scroll-m-20 text-lg
                                  font-[500] tracking-tight transition-colors first:mt-0">
-                                    Registration Status: {state?.orderData.registration_status}
-                                </h4>
-                            )
-                        }
+                                            Registration Status: {state?.orderData.registration_status}
+                                        </h4>
+                                    )
+                                }
 
-                        <blockquote className="mt-6 border-l-2 pl-6 italic">
-                            Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
-                            {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
-                        </blockquote>
+                                <blockquote className="mt-6 border-l-2 pl-6 italic">
+                                    Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
+                                    {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
+                                </blockquote>
 
 
 
-                        <div>
-                            <ul className="my-6 ml-6  [&>li]:mt-2">
-                                {state?.orderData?.event && (
-                                    <>
-                                        <li>
-                                            <span className="font-[600] text-gray-700">Event Name:</span>  {state?.orderData?.event?.title}
+                                <div>
+                                    <ul className="my-6 ml-6  [&>li]:mt-2">
+                                        {state?.orderData?.event && (
+                                            <>
+                                                <li>
+                                                    <span className="font-[600] text-gray-700">Event Name:</span>  {state?.orderData?.event?.title}
 
-                                        </li>
-                                        <li> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </li>
-                                        {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
+                                                </li>
+                                                <li> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </li>
+                                                {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
                                         <li>End Date: {moment(state?.orderData.end_date?.end_date).format("YYYY-MMM-DD")}</li> */}
-                                        <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li>
-                                    </>
-                                )}
+                                                <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li>
+                                            </>
+                                        )}
 
-                            </ul>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="mt-2 ml-5">
+                                    Meet Link:{" "}
+                                    {state?.orderData?.event?.session_link ? (
+                                        <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-themeGreen text-white px-3 py-3 rounded-lg">
+                                            Join Meeting
+                                        </Link>
+                                    ) : (
+                                        "N/A"
+                                    )}
+                                </h3>
+                                {/* {state?.orderData?.event?.session_link && (
+                                    <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
+                                        <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />
+                                    </Link>
+                                )} */}
+                            </div>
+
                         </div>
                     </div>
-                    <div className="border rounded-xl p-4 gap-4 justify-center items-center flex flex-col ">
-                        <h3 className="mt-2">
-                            Meet Link:{" "}
-                            {state?.orderData?.event?.session_link ? (
-                                <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-themeGreen text-white px-3 py-3 rounded-lg">
-                                    Join Meeting
-                                </Link>
-                            ) : (
-                                "N/A"
-                            )}
-                        </h3>
-                        {state?.orderData?.event?.session_link && (
-                            <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />
-                            </Link>
-                        )}
-                    </div>
+
 
                     {/* <div>
                     <ul className="my-6 ml-6 list-disc [&>li]:mt-2">

@@ -105,30 +105,41 @@ const UserList = () => {
       Header: "Action",
       accessor: "action",
       Cell: (row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-2 rounded-md hover:bg-gray-200">
-              <MoreHorizontal size={20} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem onClick={() => handleEdit(row?.row)}>
-              <Edit size={16} className="mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleView(row.row)}>
-              <Eye size={16} className="mr-2" />
-              View
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => deleteUser(row)}
-              className="text-red-500"
-            >
-              <Trash size={16} className="mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
+            <Edit size={18} className="mr-2" />
+          </div>
+          <div className="cursor-pointer" onClick={() => handleView(row.row)}>
+            <Eye size={20} className="mr-2" />
+          </div>
+          <div className="cursor-pointer" onClick={() => deleteUser(row)}>
+            <Trash size={18} className="mr-2" />
+          </div>
+        </div>
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        //     <button className="p-2 rounded-md hover:bg-gray-200">
+        //       <MoreHorizontal size={20} />
+        //     </button>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent align="end" className="w-32">
+        //     <DropdownMenuItem onClick={() => handleEdit(row?.row)}>
+        //       <Edit size={16} className="mr-2" />
+        //       Edit
+        //     </DropdownMenuItem>
+        //     <DropdownMenuItem onClick={() => handleView(row.row)}>
+        //       <Eye size={16} className="mr-2" />
+        //       View
+        //     </DropdownMenuItem>
+        //     <DropdownMenuItem
+        //       onClick={() => deleteUser(row)}
+        //       className="text-red-500"
+        //     >
+        //       <Trash size={16} className="mr-2" />
+        //       Delete
+        //     </DropdownMenuItem>
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
       ),
     },
   ];

@@ -62,7 +62,18 @@ const WellnessLoungeList = () => {
       Header: "Action",
       accessor: "action",
       Cell: (row) => (
-        <DropdownMenu>
+        <div className="flex items-center gap-2">
+          <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
+            <Edit size={18} className="mr-2" />
+          </div>
+          {/* <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
+          <Eye size={20} className="mr-2" />
+        </div> */}
+          <div className="cursor-pointer" onClick={() => setState({ isOpenDelete: true, deleteId: row?.row?.id })}>
+            <Trash size={18} className="mr-2" />
+          </div>
+
+          {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-2 rounded-md hover:bg-gray-200">
               <MoreHorizontal size={20} />
@@ -73,10 +84,10 @@ const WellnessLoungeList = () => {
               <Edit size={16} className="mr-2" />
               Edit
             </DropdownMenuItem>
-            {/* <DropdownMenuItem onClick={() => handleView(row.original)}>
+            <DropdownMenuItem onClick={() => handleView(row.original)}>
               <Eye size={16} className="mr-2" />
               View
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() =>
                 setState({ isOpenDelete: true, deleteId: row?.row?.id })
@@ -87,7 +98,8 @@ const WellnessLoungeList = () => {
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
+        </div>
       ),
     },
   ];
