@@ -67,11 +67,9 @@ const LoginForm = () => {
       console.log("res?.group[0]", res?.group[0])
       if (res?.group[0] == "Student") {
         if (state?.eventid) {
-          console.log("hiiii")
           router.push(`/view-wellness-lounge?id=${state?.eventid}`);
         } else {
-          console.log("hellow")
-          router.push("/");
+          router.back(); // Navigate to the previous page        
         }
       } else {
         router.push("/");

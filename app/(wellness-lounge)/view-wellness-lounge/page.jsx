@@ -80,7 +80,12 @@ export default function viewWellnessLounge() {
             }
 
         } catch (error) {
+
             console.log("error: ", error);
+
+            if(error?.detail == "Authentication credentials were not provided.") {
+                router?.push("/login")
+            }
         }
     };
     console.log("orderData", state?.orderData)

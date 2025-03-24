@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 
 export default function CreateWellnessLounge() {
@@ -105,6 +105,22 @@ export default function CreateWellnessLounge() {
       router.push("/wellness-lounge-list");
       Success("Lounge created successfully");
     } catch (error) {
+      // Check if error for start_date exists and has at least one error message
+      if (error?.start_date && Array.isArray(error.start_date) && error.start_date.length > 0) {
+        Failure(error?.start_date[0]);  // Show failure message for start_date
+      }
+
+      // Check if error for end_date exists and has at least one error message
+      else if (error?.end_date && Array.isArray(error.end_date) && error.end_date.length > 0) {
+        Failure(error?.end_date[0]);  // Show failure message for end_date
+      }
+
+      else if (error?.start_time && Array.isArray(error.start_time) && error.start_time.length > 0) {
+        Failure(error?.start_time[0]);  // Show failure message for start_time
+      }
+      else if (error?.end_time && Array.isArray(error.end_time) && error.end_time.length > 0) {
+        Failure(error?.end_time[0]);  // Show failure message for end_time
+      }
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
         error.inner.forEach((err) => {

@@ -83,28 +83,39 @@ const WellnessLoungeList = () => {
       Header: "Action",
       accessor: "action",
       Cell: (row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-2 rounded-md hover:bg-gray-200">
-              <MoreHorizontal size={20} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem
-              onClick={() => router.push(`/update-coupon?id=${row?.row?.id} `)}
-            >
-              <Edit size={16} className="mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
-              className="text-red-500"
-            >
-              <Trash size={16} className="mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2">
+        <div className="cursor-pointer"  onClick={() => router.push(`/update-coupon?id=${row?.row?.id} `)}>
+          <Edit size={18} className="mr-2" />
+        </div>
+        {/* <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
+          <Eye size={20} className="mr-2" />
+        </div> */}
+        <div className="cursor-pointer"  onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}>
+          <Trash size={18} className="mr-2" />
+        </div>
+      </div >
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        //     <button className="p-2 rounded-md hover:bg-gray-200">
+        //       <MoreHorizontal size={20} />
+        //     </button>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent align="end" className="w-32">
+        //     <DropdownMenuItem
+        //       onClick={() => router.push(`/update-coupon?id=${row?.row?.id} `)}
+        //     >
+        //       <Edit size={16} className="mr-2" />
+        //       Edit
+        //     </DropdownMenuItem>
+        //     <DropdownMenuItem
+        //       onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
+        //       className="text-red-500"
+        //     >
+        //       <Trash size={16} className="mr-2" />
+        //       Delete
+        //     </DropdownMenuItem>
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
       ),
     },
   ];

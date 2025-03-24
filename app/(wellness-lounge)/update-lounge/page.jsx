@@ -189,6 +189,12 @@ export default function UpdateWellnessLounge() {
         Failure(error?.end_date[0]);  // Show failure message for end_date
       }
 
+      else if (error?.start_time && Array.isArray(error.start_time) && error.start_time.length > 0) {
+        Failure(error?.start_time[0]);  // Show failure message for start_time
+      }
+      else if (error?.end_time && Array.isArray(error.end_time) && error.end_time.length > 0) {
+        Failure(error?.end_time[0]);  // Show failure message for end_time
+      }
 
 
       if (error instanceof Yup.ValidationError) {
