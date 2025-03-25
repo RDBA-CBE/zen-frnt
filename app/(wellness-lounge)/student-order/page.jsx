@@ -221,62 +221,61 @@ const WellnessLoungeList = () => {
     return (
         <div className="container mx-auto">
             <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
-                <Card className="w-[100%] p-4">
-                    <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
-                        <div>
-                            <h2 className="md:text-lg text-sm font-bold">
-                                Orders
-                            </h2>
-                        </div>
-
-                    </div>
-                </Card>
-
                 {state.loading ? (
                     <Loading />
                 ) : state.loungeList?.length > 0 ? (
                     <Card className="w-[100%] p-4">
-                        <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                            <div>
-                                <TextInput
-                                    value={state.search}
-                                    onChange={(e) => {
-                                        setState({ search: e.target.value });
-                                    }}
-                                    placeholder="Search Order ID"
-                                    required
-                                    className="w-full"
-                                />
+                        <div className="block justify-between items-center lg:flex">
+                            <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
+                                <h2 className="md:text-lg text-sm font-bold">
+                                    Orders
+                                </h2>
                             </div>
-                            <CustomSelect
-                                options={orderStatusList}
-                                value={state.lounge_status?.value || ""}
-                                onChange={(value) => setState({ lounge_status: value })}
-                                placeholder="Order Status"
-                            />
-                            <CustomSelect
-                                options={state?.loungeSearch}
-                                value={state.event?.value || ""}
-                                onChange={(value) => setState({ event: value })}
-                                placeholder="Lounge"
-                            />
-                            <div>
-                                <DatePicker
-                                    placeholder="Order Date"
-                                    closeIcon={true}
-                                    selectedDate={state.start_date}
-                                    onChange={(date) => {
-                                        setState({
-                                            start_date: date,
-                                        });
-                                    }}
-                                />
+                            <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
+                                <div className="md:w-1/4 w-full  md:mb-0 mb-2">
+                                    <TextInput
+                                        value={state.search}
+                                        onChange={(e) => {
+                                            setState({ search: e.target.value });
+                                        }}
+                                        placeholder="Search Order ID"
+                                        required
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="md:w-1/4 w-full  md:mb-0 mb-2">
+                                    <CustomSelect
+                                        options={orderStatusList}
+                                        value={state.lounge_status?.value || ""}
+                                        onChange={(value) => setState({ lounge_status: value })}
+                                        placeholder="Order Status"
+                                    />
+                                </div>
+                                <div className="md:w-1/4 w-full  md:mb-0 mb-2">
+                                    <CustomSelect
+                                        options={state?.loungeSearch}
+                                        value={state.event?.value || ""}
+                                        onChange={(value) => setState({ event: value })}
+                                        placeholder="Lounge"
+                                    />
+                                </div>
+                                <div className="md:w-1/4 w-full  md:mb-0 mb-2">
+                                    <DatePicker
+                                        placeholder="Order Date"
+                                        closeIcon={true}
+                                        selectedDate={state.start_date}
+                                        onChange={(date) => {
+                                            setState({
+                                                start_date: date,
+                                            });
+                                        }}
+                                    />
+                                </div>
+
                             </div>
 
                         </div>
-                    </Card>
-                ) : null
-                }
+                    </Card>) : null}
 
 
                 {state.loading ? (

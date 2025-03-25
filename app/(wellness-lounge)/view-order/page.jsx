@@ -141,9 +141,9 @@ export default function viewWellnessLounge() {
 
                             <div>
                             <p className="pt-5 text-[20px]">   Session Link:{" "}
-                            {state?.orderData?.session_link ? (
-                                <Link href={state.orderData.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
-                                    {state.orderData.session_link}
+                            {state?.orderData?.event?.session_link ? (
+                                <Link href={state.orderData.event?.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
+                                    {state.orderData.event?.session_link}
                                 </Link>
                             ) : (
                                 " No session link available"
