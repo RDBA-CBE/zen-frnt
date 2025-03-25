@@ -69,7 +69,7 @@ const LoginForm = () => {
         if (state?.eventid) {
           router.push(`/view-wellness-lounge?id=${state?.eventid}`);
         } else {
-          router.back(); // Navigate to the previous page        
+          router.push("/");
         }
       } else {
         router.push("/");
