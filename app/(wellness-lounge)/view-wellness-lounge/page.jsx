@@ -33,6 +33,12 @@ export default function viewWellnessLounge() {
     const searchParams = useSearchParams();
 
     const [id, setId] = useState(null);
+    console.log("id", id)
+    useEffect(() => {
+        if (id) {
+            localStorage?.setItem("eventId", id)
+        }
+    }, [id])
     useEffect(() => {
         // Ensure that searchParams are read only on the client side
         if (typeof window !== "undefined") {
@@ -83,7 +89,7 @@ export default function viewWellnessLounge() {
 
             console.log("error: ", error);
 
-            if(error?.detail == "Authentication credentials were not provided.") {
+            if (error?.detail == "Authentication credentials were not provided.") {
                 router?.push("/login")
             }
         }
