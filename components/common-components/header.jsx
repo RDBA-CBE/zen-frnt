@@ -66,6 +66,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("group");
+    localStorage.removeItem("eventId")
     setDialogOpen(false);
     router.push("/login");
     dispatch(clearAuthData());
