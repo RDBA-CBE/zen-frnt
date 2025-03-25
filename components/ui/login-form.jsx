@@ -20,6 +20,7 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
+import Loading from "../common-components/Loading";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -29,7 +30,8 @@ const LoginForm = () => {
   const [state, setState] = useSetState({
     username: "",
     password: "",
-    eventid: null
+    eventid: null,
+    loading: false
   });
   console.log("state?.eventId", state?.eventid)
   useEffect(() => {
@@ -45,6 +47,7 @@ const LoginForm = () => {
 
   const handleSubmit = async () => {
     try {
+      setState({ loading: true })
       const body = {
         email: state.username,
         password: state.password,
@@ -61,6 +64,7 @@ const LoginForm = () => {
       dispatch(setAuthData({ tokens: res.access, groups: res.group[0], userId: res.user_id, username: res?.username }));
 
       Success("Login successfully");
+      setState({ loading: false })
 
       // ✅ Trigger storage event to notify other tabs
       window.dispatchEvent(new Event("storage"));
@@ -78,6 +82,7 @@ const LoginForm = () => {
 
     } catch (error) {
       console.log("error: ", error);
+      setState({ loading: false })
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -88,10 +93,9 @@ const LoginForm = () => {
         console.log("validationErrors: ", validationErrors);
 
         // Set validation errors in state
-        setState({ errors: validationErrors });
-        setState({ submitLoading: false }); // Stop loading after error
+        setState({ errors: validationErrors, loading: false });
       } else {
-        setState({ submitLoading: false }); // Stop loading after unexpected error
+        setState({ loading: false }); // Stop loading after unexpected error
         if (error?.detail) {
           Failure(error.detail)
         } else {
