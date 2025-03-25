@@ -427,22 +427,42 @@ export default function CreateUser() {
           // error={state.errors?.dob}
           // required
           />
+          {isValidImageUrl(state.thumbnail_image) ? (
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Session Image
+              </label>
+              <div className="flex items-center gap-10">
+                <img src={state.thumbnail_image} height={200} width={200} />
+                <div
+                  className=" flex bg-slate-300 rounded-md p-3 items-center justify-center"
+                  onClick={() =>
+                    setState({ thumbnail_image: "", thumbnail_images: "" })
+                  }
+                >
+                  <Trash2 className="  h-6 w-6 cursor-pointer text-red-600" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <TextInput
+              title="Profile Image"
+              placeholder="Profile Image"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const imageUrl = URL.createObjectURL(file); // Generate preview URL
+                setState({
+                  thumbnail_images: file, // Store actual file
+                  thumbnail_image: imageUrl, // Use preview URL instead of fakepath
+                });
+              }}
+              className="mt-2 w-full"
+              type="file"
+            />
+          )}
 
-          <TextInput
-            title="Profile Image"
-            placeholder="Profile Image"
-            value={state.thumbnail_image}
-            onChange={(e) => {
-              console.log("e.target: ", e.target.files[0]);
 
-              setState({
-                thumbnail_images: e.target.files[0],
-                thumbnail_image: e.target.value,
-              });
-            }}
-            className="mt-2 w-full"
-            type="file"
-          />
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">

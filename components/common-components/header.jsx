@@ -35,6 +35,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const tokens = useSelector((state) => state.auth.tokens);
   const groups = useSelector((state) => state.auth.groups);
+  const username = useSelector((state) => state.auth.username)
 
   const [activeMenu, setActiveMenu] = useState(null);
   const [clickedMenu, setClickedMenu] = useState(null); // Track the clicked menu
@@ -54,6 +55,7 @@ const Header = () => {
     if (isClient) {
       const storedToken = localStorage.getItem("token");
       const storedGroup = localStorage.getItem("group");
+
       setToken(storedToken);
       setGroup(storedGroup);
       if (storedToken && storedGroup) {
@@ -218,17 +220,26 @@ const Header = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
                       <DropdownMenuLabel className="p-0 pb-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Avatar className="h-8 w-8 rounded">
-                            <AvatarFallback><User2Icon /></AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <span className="font-semibold">Zen Lounge</span>
-                            {/* <span className="text-xs">zenlounge@gmail.com</span> */}
-                          </div>
-                        </div>
+                        {
+                          username && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Avatar className="h-8 w-8 rounded">
+                                <AvatarFallback><User2Icon /></AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <span className="font-semibold">{username}</span>
+                                {/* <span className="text-xs">zenlounge@gmail.com</span> */}
+                              </div>
+                            </div>
+                          )
+                        }
+
                       </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
+                      {
+                        username && (<DropdownMenuSeparator />
+                        )
+                      }
+
                       {/* <DropdownMenuGroup>
                         <DropdownMenuItem>
                           <SparklesIcon /> Upgrade to Pro

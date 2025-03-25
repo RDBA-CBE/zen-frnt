@@ -366,7 +366,7 @@ export default function UpdateWellnessLounge() {
             </div>
           ) : (
             <TextInput
-              title="Session Image"
+              title="Session Image Session Image ( Best Result: Image Size - 610*407)"
               placeholder="Session Image"
               type="file"
               className="mt-2 w-full"
