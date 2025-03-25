@@ -91,6 +91,8 @@ export default function ProfilePage() {
     localStorage.removeItem("token");
     localStorage.removeItem("group");
     localStorage.removeItem("eventId")
+    localStorage.removeItem("username")
+
     setDialogOpen(false);
     router.push("/login");
     dispatch(clearAuthData());

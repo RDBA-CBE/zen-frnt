@@ -59,6 +59,7 @@ const LoginForm = () => {
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("group", res.group[0]);
+      localStorage.setItem("username", res?.username)
 
       // Dispatch action to store tokens and group in Redux
       dispatch(setAuthData({ tokens: res.access, groups: res.group[0], userId: res.user_id, username: res?.username }));

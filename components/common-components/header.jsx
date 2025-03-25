@@ -29,6 +29,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Label } from "@radix-ui/react-label";
+import { useSetState } from "@/utils/function.utils";
 
 const Header = () => {
 
@@ -45,6 +46,13 @@ const Header = () => {
   const [token, setToken] = useState(null);
   const [isClient, setIsClient] = useState(false); // Track if we're in the client
 
+  const [state, setState] = useSetState({
+    token: null,
+    group: null,
+    username: null
+  })
+
+
   // Set `isClient` to true after the component mounts (only runs on the client)
   useEffect(() => {
     setIsClient(true);
@@ -55,11 +63,10 @@ const Header = () => {
     if (isClient) {
       const storedToken = localStorage.getItem("token");
       const storedGroup = localStorage.getItem("group");
+      const StoredUsername = localStorage.getItem("username")
 
-      setToken(storedToken);
-      setGroup(storedGroup);
-      if (storedToken && storedGroup) {
-        dispatch(setAuthData({ tokens: storedToken, groups: storedGroup }));
+      if (storedToken && storedGroup && StoredUsername) {
+        dispatch(setAuthData({ tokens: storedToken, groups: storedGroup, username: StoredUsername }));
       }
     }
   }, [isClient, dispatch]); // Only run when `isClient` is true
@@ -69,6 +76,7 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("group");
     localStorage.removeItem("eventId")
+    localStorage.removeItem("username")
     setDialogOpen(false);
     router.push("/login");
     dispatch(clearAuthData());
