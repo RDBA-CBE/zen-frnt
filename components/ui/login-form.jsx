@@ -129,7 +129,7 @@ const LoginForm = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
                     href="#"
@@ -137,7 +137,7 @@ const LoginForm = () => {
                   >
                     Forgot your password?
                   </a>
-                </div>
+                </div> */}
                 <Input
                   id="password"
                   type="password"

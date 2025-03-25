@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -235,37 +235,40 @@ const UserList = () => {
   return (
     <div className="container mx-auto ">
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+
+
         <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
-            <div>
-              <h2 className="md:text-lg text-sm font-bold">User List</h2>
+          <div className="block justify-between items-center lg:flex">
+            <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
+              <h2 className="md:text-lg text-sm font-bold">
+                Users
+              </h2>
             </div>
-            <div className="text-end">
-              <Button
-                type="button" className="bg-themeGreen hover:bg-themeGreen"
+            <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
+              <div className="md:w-3/4 w-full  md:mb-0 mb-2">
+                <TextInput
+                  value={state.search}
+                  onChange={(e) => {
+                    setState({ search: e.target.value });
+                  }}
+                  placeholder="Search Name"
+                  required
+                  className="w-full"
+                />
+              </div>
+
+              <div className="md:w-1/4 w-full  md:text-end"
                 onClick={() => router.push("/create-user")}
               >
-                Create
-              </Button>
+                <Button className="bg-themeGreen hover:bg-themeGreen "><PlusIcon /></Button>
+              </div>
             </div>
+
           </div>
         </Card>
 
-        <Card className="w-[100%] p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-            <div>
-              <TextInput
-                value={state.search}
-                onChange={(e) => {
-                  setState({ search: e.target.value });
-                }}
-                placeholder="Search Name"
-                required
-                className="w-full"
-              />
-            </div>
-          </div>
-        </Card>
+
+
         {state.loading ? (
           <Loading />
         ) : state.userList?.length > 0 ? (

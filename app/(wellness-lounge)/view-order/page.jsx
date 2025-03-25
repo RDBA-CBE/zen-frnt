@@ -113,7 +113,7 @@ export default function viewWellnessLounge() {
                                     )
                                 }
 
-                                <blockquote className="mt-6 border-l-2 pl-6 italic">
+                                <blockquote className="mt-6 border-l-2 pl-6 italic  bg-fuchsia-100 py-4  border-l-[5px] border-fuchsia-900 ">
                                     Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
                                     {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
                                 </blockquote>
@@ -131,7 +131,7 @@ export default function viewWellnessLounge() {
                                                 <li> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </li>
                                                 {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
                                         <li>End Date: {moment(state?.orderData.end_date?.end_date).format("YYYY-MMM-DD")}</li> */}
-                                                <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li>
+                                                {/* <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li> */}
                                             </>
                                         )}
 
@@ -140,16 +140,14 @@ export default function viewWellnessLounge() {
                             </div>
 
                             <div>
-                                <h3 className="mt-2 ml-5">
-                                    Meet Link:{" "}
-                                    {state?.orderData?.event?.session_link ? (
-                                        <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer" className="bg-themeGreen text-white px-3 py-3 rounded-lg">
-                                            Join Meeting
-                                        </Link>
-                                    ) : (
-                                        "N/A"
-                                    )}
-                                </h3>
+                            <p className="pt-5 text-[20px]">   Session Link:{" "}
+                            {state?.orderData?.session_link ? (
+                                <Link href={state.orderData.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
+                                    {state.orderData.session_link}
+                                </Link>
+                            ) : (
+                                " No session link available"
+                            )}</p>
                                 {/* {state?.orderData?.event?.session_link && (
                                     <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
                                         <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />

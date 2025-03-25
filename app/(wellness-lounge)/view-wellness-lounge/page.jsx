@@ -128,7 +128,7 @@ export default function viewWellnessLounge() {
 
             const res = await Models.session.createRegistration(body);
 
-            router.push(`/view-order?id=${res?.id}`);
+            router.push(`/view-order?id=${res[0]?.id}`);
             Success("Event Intrested sent successfully");
 
             setState({ isOpen: false })
@@ -153,14 +153,14 @@ export default function viewWellnessLounge() {
             <div className="font-bold text-lg mb-3"> Lounge Session Details</div>
             <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                 <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-                    <img src={state?.orderData?.thumbnail} alt="thumbnail" className="w-100 h-100" />
+                    <img src={state?.orderData?.thumbnail} alt="thumbnail" className="w-100 h-auto" />
                 </div>
                 <div className="border rounded-xl p-4 gap-4 flex flex-col ">
                     <div>
-                        <h2 className="mt-10 scroll-m-20 border-b pb-2 text-2xl font-[500] tracking-tight transition-colors first:mt-0">
+                        <h2 className="mt-10 scroll-m-20    text-2xl font-[500] tracking-tight transition-colors first:mt-0">
                             {state?.orderData.title} - {state?.orderData?.lounge_type?.name}
                         </h2>
-                        <blockquote className="mt-6 border-l-2 pl-6 italic">
+                        <blockquote className="mt-6 border-l-[5px] border-fuchsia-900 pl-6 italic bg-fuchsia-100 py-4  ">
                             Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData.start_date).format("YYYY-MMM-DD")}, {state?.orderData.start_time}</span>
                             {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData.end_date).format("YYYY-MMM-DD")}, {state?.orderData.end_time}</span>
                         </blockquote>
@@ -168,8 +168,18 @@ export default function viewWellnessLounge() {
                         <p className="leading-7 [&:not(:first-child)]:mt-6">
                             {state?.orderData?.description}
                         </p>
+                        <p className="pt-5 text-[20px]">   Session Link:{" "}
+                            {state?.orderData?.session_link ? (
+                                <Link href={state.orderData.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
+                                    {state.orderData.session_link}
+                                </Link>
+                            ) : (
+                                " No session link available"
+                            )}</p>
 
-                        <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+                        {/* <p>Seat Count: {state?.orderData?.seat_count}</p> */}
+
+                        {/* <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
                             <li>
                                 Session Link:{" "}
                                 {state?.orderData?.session_link ? (
@@ -181,11 +191,11 @@ export default function viewWellnessLounge() {
                                 )}
                             </li>
                             <li>Seat Count: {state?.orderData?.seat_count}</li>
-                        </ul>
+                        </ul> */}
                         {
                             state?.group == "Student" && (
                                 <div>
-                                    <Button className={`${state?.orderData?.is_registered == true ? "bg-themeGreen hover:bg-themeGreen" : "bg-themePurple hover:bg-themePurple "}`} onClick={() => setState({ isOpen: true })}>Intrested</Button>
+                                    <Button className={`mt-3 ${state?.orderData?.is_registered == true ? "bg-themeGreen hover:bg-themeGreen" : "bg-themePurple hover:bg-themePurple "}`} onClick={() => setState({ isOpen: true })}>Intrested</Button>
                                 </div>
                             )
                         }

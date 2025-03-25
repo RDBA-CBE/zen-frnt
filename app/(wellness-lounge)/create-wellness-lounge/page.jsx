@@ -252,7 +252,7 @@ export default function CreateWellnessLounge() {
                 error={state.errors?.seat_count}
               />
               <TextInput
-                title="Session Image"
+                title="Session Image ( Best Result: Image Size - 610*407)"
                 placeholder="Session Image"
                 value={state.thumbnail_image}
                 onChange={(e) => {
