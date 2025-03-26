@@ -130,7 +130,7 @@ const ChangePasswordConfirmForm = () => {
         <div className="flex items-center justify-center">
             <Card className="md:w-[400px] w-[100%]">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Confirm Password</CardTitle>
+                    <CardTitle className="text-2xl">Change Password</CardTitle>
                     {/* <CardDescription>
                         Enter your email below to login to your account
                     </CardDescription> */}
