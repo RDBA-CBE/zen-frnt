@@ -21,6 +21,7 @@ import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
 import Loading from "../common-components/Loading";
+import { Loader } from "lucide-react";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -46,8 +47,8 @@ const LoginForm = () => {
   }, [state?.eventid])
 
   const handleSubmit = async () => {
+    setState({ loading: true })
     try {
-      setState({ loading: true })
       const body = {
         email: state.username,
         password: state.password,
@@ -153,7 +154,12 @@ const LoginForm = () => {
                 />
               </div>
               <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen" onClick={handleSubmit}>
-                Login
+                {
+                  state?.loading ? (
+                    <Loader />
+                  ) : "Login"
+                }
+
               </Button>
             </div>
           </form>
