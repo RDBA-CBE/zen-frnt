@@ -21,7 +21,7 @@ const auth = {
         return promise;
     },
 
-    changePassword: (data: any) => {
+    forgotpassword: (data: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `auth/password-reset/`;
             instance()
@@ -40,9 +40,29 @@ const auth = {
         });
         return promise;
     },
-    changePasswordConfirm: (data: any, uid: any, Token: any) => {
+    forgotnewpassword: (data: any, uid: any, Token: any) => {
         let promise = new Promise((resolve, reject) => {
             let url = `auth/password-reset-confirm/${uid}/${Token}`;
+            instance()
+                .post(url, data)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    console.log('errorsss: ', error);
+                    if (error.response) {
+                        reject(error.response.data);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
+    changepassword: (data: any) => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `auth/change-password/`;
             instance()
                 .post(url, data)
                 .then((res) => {

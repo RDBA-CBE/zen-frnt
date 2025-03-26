@@ -51,6 +51,7 @@ const ChangePasswordConfirmForm = () => {
     const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
     const [state, setState] = useSetState({
+        old_password: "",
         new_password: "",
         confirm_password: "",
     });
@@ -64,13 +65,14 @@ const ChangePasswordConfirmForm = () => {
     const handleSubmit = async () => {
         try {
             const body = {
+                old_password: state?.old_password,
                 new_password: state.new_password,
                 confirm_password: state.confirm_password,
             };
-            console.log("userid")
-            const uid = id
-            const Token = token
-            const res = await Models.auth.changePasswordConfirm(body, uid, Token);
+            // console.log("userid")
+            // const uid = id
+            // const Token = token
+            const res = await Models.auth.changepassword(body);
             console.log("res", res)
             // Store tokens and group in localStorage
             // localStorage.setItem("token", res.access);
@@ -81,7 +83,7 @@ const ChangePasswordConfirmForm = () => {
             // // Dispatch action to store tokens and group in Redux
             // dispatch(setAuthData({ tokens: res.access, groups: res.group[0] }));
 
-            Success(res?.message);
+            Success(res?.detail);
 
             // ✅ Trigger storage event to notify other tabs
             // window.dispatchEvent(new Event("storage"));
@@ -105,7 +107,15 @@ const ChangePasswordConfirmForm = () => {
                 setState({ submitLoading: false }); // Stop loading after unexpected error
                 if (error?.password) {
                     Failure(error.password[0])
-                } else {
+                }
+                else if (error?.non_field_errors) {
+                    Failure(error?.non_field_errors[0])
+                } else if (error?.old_password) {
+                    Failure(error?.old_password[0])
+                } else if (error?.confirm_password) {
+                    Failure(error?.confirm_password[0])
+                }
+                else {
                     Failure("An error occurred. Please try again.");
 
                 }
@@ -128,6 +138,17 @@ const ChangePasswordConfirmForm = () => {
                 <CardContent>
                     <form>
                         <div className="flex flex-col gap-6">
+                            <div className="grid gap-2">
+                                <Label htmlFor="old password">Old Password</Label>
+                                <Input
+                                    id="old-password"
+                                    type="password"
+                                    placeholder="Enter Your New Password"
+                                    required
+                                    value={state.old_password}
+                                    onChange={(e) => setState({ old_password: e.target.value })}
+                                />
+                            </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">New Password</Label>
                                 <Input

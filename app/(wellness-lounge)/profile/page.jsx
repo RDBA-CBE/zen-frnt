@@ -144,7 +144,7 @@ export default function ProfilePage() {
             <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
               <TabsTrigger value="profile" className="w-[100%] p-2  md:text-md text-sm lg:justify-start">Profile</TabsTrigger>
               <TabsTrigger value="orders" className="w-[100%] p-2 md:text-md text-sm lg:justify-start">Orders</TabsTrigger>
-              <TabsTrigger value="change-password" className="w-[100%] p-2 md:text-md text-sm lg:justify-start" onClick={() => router?.push("/change-password-email")}>Change Password</TabsTrigger>
+              <TabsTrigger value="change-password" className="w-[100%] p-2 md:text-md text-sm lg:justify-start" onClick={() => router?.push("/change-password-confirm")}>Change Password</TabsTrigger>
               <TabsTrigger value="logout" className="w-[100%] p-2 md:text-md text-sm lg:justify-start" onClick={() => setDialogOpen(true)}>Logout</TabsTrigger>
             </TabsList>
             <div className="lg:flex-1 lg:w-[75%] w-[100%]">

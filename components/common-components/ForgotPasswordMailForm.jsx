@@ -21,7 +21,7 @@ import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
 
-const ChangePasswordEmailForm = () => {
+const ForgotPasswordEmailForm = () => {
     const router = useRouter();
     const dispatch = useDispatch(); // Initialize dispatch
     const [isMounted, setIsMounted] = useState(false); // Track mounting state
@@ -87,7 +87,7 @@ const ChangePasswordEmailForm = () => {
         <div className="flex items-center justify-center">
             <Card className="md:w-[400px] w-[100%]">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Change Password</CardTitle>
+                    <CardTitle className="text-2xl">Forgot Password</CardTitle>
                     {/* <CardDescription>
                         Enter your email below to login to your account
                     </CardDescription> */}
@@ -131,7 +131,7 @@ const ChangePasswordEmailForm = () => {
                                 <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen " onClick={handleSubmit}>
                                     Submit
                                 </Button>
-                             </div>
+                            </div>
                         </div>
                     </form>
                 </CardContent>
@@ -140,4 +140,4 @@ const ChangePasswordEmailForm = () => {
     );
 };
 
-export default ChangePasswordEmailForm;
+export default ForgotPasswordEmailForm;
