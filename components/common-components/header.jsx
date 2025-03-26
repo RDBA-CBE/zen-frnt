@@ -258,8 +258,8 @@ const Header = () => {
                       {
                         groups === "Admin" && (
                           <>
-                            <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-                             Change Password
+                            <DropdownMenuItem onClick={() => router?.push("/change-password-confirm")}>
+                              Change Password
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                           </>
@@ -355,10 +355,10 @@ const Header = () => {
               {/* Confirmation Dialog for Log out */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg w-96">
-                  <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
+                  <DialogTitle className="text-[20px] font-semibold">Confirm Logout</DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen rounded text-sm">Cancel</Button>
+                    <Button onClick={handleCancel} variant={"outline"}  className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm">Cancel</Button>
                     <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">Confirm</Button>
                   </div>
                 </DialogContent>
