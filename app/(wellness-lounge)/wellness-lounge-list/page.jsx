@@ -202,7 +202,7 @@ const WellnessLoungeList = () => {
 
   return (
     <div className="container mx-auto ">
-      <div className="flex flex-1 flex-col gap-4 p-0 pt-0">
+      <div className="flex flex-1 flex-col gap-2 p-0 pt-0">
         {/* <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
             

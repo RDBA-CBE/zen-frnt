@@ -255,6 +255,17 @@ const Header = () => {
                         )
                       }
 
+                      {
+                        groups === "Admin" && (
+                          <>
+                            <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                             Change Password
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )
+                      }
+
                       {/* <DropdownMenuGroup>
                         <DropdownMenuItem>
                           <SparklesIcon /> Upgrade to Pro

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, MoreHorizontal, Trash, X } from "lucide-react";
+import { Edit, MoreHorizontal, PlusIcon, Trash, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -148,7 +148,7 @@ const WellnessLoungeList = () => {
                 className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => router.push("/create-coupon")}
               >
-                Create
+                <PlusIcon />
               </Button>
             </div>
           </div>

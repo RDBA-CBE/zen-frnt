@@ -234,7 +234,7 @@ const UserList = () => {
 
   return (
     <div className="container mx-auto ">
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
 
 
         <Card className="w-[100%] p-4">

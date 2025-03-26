@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -255,7 +255,7 @@ const PaymentGatewayList = () => {
                   })
                 }
               >
-                Create
+                <PlusIcon />
               </Button>
             </div>
           </div>
