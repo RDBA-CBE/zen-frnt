@@ -268,7 +268,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                                                                 : event.lounge_type?.id === 6
                                                                                     ? '#88c742'  // fuchsia-500 hex color
                                                                                     : event.lounge_type?.id === 7
-                                                                                        ? '#10aaec'  // fuchsia-300 hex color
+                                                                                        ? '#834ae9'  // fuchsia-300 hex color
                                                                                         : event.lounge_type?.id === 8
                                                                                             ? '#e25197'  // fuchsia-100 hex color
                                                                                             : "#023e98"
