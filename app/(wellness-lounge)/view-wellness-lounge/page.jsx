@@ -112,16 +112,15 @@ export default function viewWellnessLounge() {
             ) : (
                 state?.orderData && (
                     <>
-                        <div className="font-bold text-lg mb-3">Lounge Session Details</div>
-                        <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+                        <div className="grid auto-rows-min gap-4 lg:grid-cols-2">
                             <div className="border rounded-xl p-4 gap-4 flex flex-col">
                                 <img src={state?.orderData?.thumbnail} alt="thumbnail" className="w-100 h-auto" />
                             </div>
-                            <div className="border rounded-xl p-4 gap-4 flex flex-col">
+                            <div className="border rounded-xl p-4 flex flex-col">
                                 <h2 className="mt-10 scroll-m-20 text-2xl font-[500] tracking-tight transition-colors first:mt-0">
                                     {state?.orderData.title} - {state?.orderData?.lounge_type?.name}
                                 </h2>
-                                <blockquote className="mt-6 border-l-[5px] border-fuchsia-900 pl-6 italic bg-fuchsia-100 py-4">
+                                <blockquote className="mt-4 border-l-[5px] border-fuchsia-900 pl-6 italic bg-fuchsia-100 py-4">
                                     Event Start Date and Time:{" "}
                                     <span className="font-bold text-gray-700">
                                         {moment(state?.orderData.start_date).format("YYYY-MMM-DD")}, {state?.orderData.start_time}
@@ -132,9 +131,9 @@ export default function viewWellnessLounge() {
                                     </span>
                                 </blockquote>
 
-                                <p className="leading-7 [&:not(:first-child)]:mt-6">{state?.orderData?.description}</p>
+                                <p className="leading-8 text-[18px] [&:not(:first-child)]:mt-4">{state?.orderData?.description}</p>
 
-                                <p className="pt-5 text-[20px]">
+                                <p className="pt-5 md:text-[20px] text-[18px]">
                                     Session Link:{" "}
                                     {state?.orderData?.session_link ? (
                                         <Link
@@ -143,7 +142,7 @@ export default function viewWellnessLounge() {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            {state?.orderData.session_link}
+                                         Join Meeting
                                         </Link>
                                     ) : (
                                         " No session link available"

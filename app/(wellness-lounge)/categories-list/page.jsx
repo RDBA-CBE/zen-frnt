@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ import { TextInput } from "@/components/common-components/textInput";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 
-const WellnessLoungeList = () => {
+const CategoriesList = () => {
   const [state, setState] = useSetState({
     description: "",
     isOpen: false,
@@ -207,7 +207,7 @@ const WellnessLoungeList = () => {
           <Card className="w-[100%] p-4">
             <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
               <div>
-                <h2 className="md:text-lg text-sm font-bold">Category List</h2>
+                <h2 className="md:text-[20px] text-sm font-bold">Category List</h2>
               </div>
               <div className="text-end">
                 <Button
@@ -222,7 +222,7 @@ const WellnessLoungeList = () => {
                     })
                   }
                 >
-                  Create
+                 <PlusIcon />
                 </Button>
               </div>
             </div>
@@ -374,4 +374,4 @@ const WellnessLoungeList = () => {
   );
 };
 
-export default WellnessLoungeList;
+export default CategoriesList;

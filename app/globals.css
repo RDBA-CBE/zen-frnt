@@ -3,7 +3,35 @@
 @tailwind utilities;
 
 body {
-  font-family:"DM Sans", sans-serif;
+  font-family: "DM Sans", sans-serif;
+}
+
+p {
+  font-family: "DM Sans", sans-serif;
+}
+
+h1 {
+  font-family: "Marcellus", serif;
+}
+
+h2 {
+  font-family: "Marcellus", serif;
+}
+
+h3 {
+  font-family: "Marcellus", serif;
+}
+
+h4 {
+  font-family: "Marcellus", serif;
+}
+
+h5 {
+  font-family: "Marcellus", serif;
+}
+
+h6 {
+  font-family: "Marcellus", serif;
 }
 
 @layer base {
@@ -165,8 +193,8 @@ body {
   margin-top: 30px;
 }
 
-.backcolor-purpole{
-  background-color:#7f4099
+.backcolor-purpole {
+  background-color: #7f4099
 }
 
 /* header */

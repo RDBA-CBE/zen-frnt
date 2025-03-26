@@ -400,7 +400,7 @@ export default function ProfilePage() {
               </TabsContent> */}
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="bg-white p-6 rounded-lg w-96">
+                <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full ">
                   <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">

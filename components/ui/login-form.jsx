@@ -22,6 +22,7 @@ import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
 import Loading from "../common-components/Loading";
 import { Loader } from "lucide-react";
+import Link from "next/link";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -161,6 +162,7 @@ const LoginForm = () => {
                 }
 
               </Button>
+              <p className="text-center text-[14px]">Don't have an account? <Link href="/student-registration" className="underline">Sign up</Link> </p>
             </div>
           </form>
         </CardContent>

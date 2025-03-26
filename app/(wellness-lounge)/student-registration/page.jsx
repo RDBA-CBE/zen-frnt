@@ -12,9 +12,9 @@ export default function studentRegistration() {
 
 
     return (
-        <div className="flex items-center justify-center ">
+        <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">
             {/* {!isAuthenticated ? ( */}
-            <StudentRegistrationForm  />
+            <StudentRegistrationForm />
             {/* ) : (
         <p className="text-lg font-semibold">Redirecting...</p>
       )} */}

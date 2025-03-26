@@ -47,9 +47,9 @@ export default function RootLayout({
                 </main>
 
                 <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
-                  <div className="text-center mb-0 md:text-md text-xs">
+                  <div className="text-center mb-0 md:text-[14px] text-xs">
                     Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
-                    <Link href="https://irepute.in/">repute</Link>
+                    <Link href="https://irepute.in/" className="font-bold">repute</Link>
                   </div>
                 </footer>
 

@@ -91,28 +91,30 @@ export default function viewWellnessLounge() {
     return (
         <div className="container mx-auto flex items-center">
             <div className="w-full">
-                <div className="flex justify-center">
+                <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">
                     <div className="lg:w-[800px] w-full ">
-                        <div className="md:flex justify-between items-center  ">
-                            <div className="md:mb-3">
-                                <p className="font-bold text-lg">Order Details</p>
-                                <p className="text-sm">Order ID: {state?.orderData?.registration_id}</p>
-                            </div>
-                            <div className="mb-3">
-                                <p className="text-sm">Registration Date: {moment(state?.orderData?.registration_date).format("DD-MMM-YYYY")}</p>
-                            </div>
-                        </div>
+
                         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
                             <div>
-                                {
-                                    state?.orderData.registration_status && (
-                                        <h4 className="mt-5 scroll-m-20 text-lg
+                                <div className="md:flex justify-between items-center  ">
+                                    <div className="md:mb-3">
+                                        {
+                                            state?.orderData.registration_status && (
+                                                <h4 className="mt-5 scroll-m-20 text-[20px]
                                  font-[500] tracking-tight transition-colors first:mt-0">
-                                            Registration Status: {state?.orderData.registration_status}
-                                        </h4>
-                                    )
-                                }
+                                                    Registration Status: {state?.orderData.registration_status}
+                                                </h4>
+                                            )
+                                        }
 
+
+
+                                        <p className="text-sm">Order ID: {state?.orderData?.registration_id}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <p className="text-sm">Registration Date: {moment(state?.orderData?.registration_date).format("DD-MMM-YYYY")}</p>
+                                    </div>
+                                </div>
                                 <blockquote className="mt-6 border-l-2 pl-6 italic  bg-fuchsia-100 py-4  border-l-[5px] border-fuchsia-900 ">
                                     Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
                                     {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
@@ -120,34 +122,31 @@ export default function viewWellnessLounge() {
 
 
 
-                                <div>
-                                    <ul className="my-6 ml-6  [&>li]:mt-2">
-                                        {state?.orderData?.event && (
-                                            <>
-                                                <li>
-                                                    <span className="font-[600] text-gray-700">Event Name:</span>  {state?.orderData?.event?.title}
+                                <div className="pt-3">
+                                    {state?.orderData?.event && (
+                                        <>
+                                            <p className="pb-1">
+                                                <span className="font-[600] text-gray-700">Event Name:</span>  {state?.orderData?.event?.title}
 
-                                                </li>
-                                                <li> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </li>
-                                                {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
+                                            </p>
+                                            <p> <span className="font-[600] text-gray-700">Category Name:</span> {state?.orderData?.event?.lounge_type?.name} </p>
+                                            {/* <li>Start Date: {moment(state?.orderData.event?.start_date).format("YYYY-MMM-DD")}</li>
                                         <li>End Date: {moment(state?.orderData.end_date?.end_date).format("YYYY-MMM-DD")}</li> */}
-                                                {/* <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li> */}
-                                            </>
-                                        )}
-
-                                    </ul>
+                                            {/* <li> <span className="font-[600] text-gray-700">Seat Count:</span> {state?.orderData?.event?.seat_count}</li> */}
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
                             <div>
-                            <p className="pt-5 text-[20px]">   Session Link:{" "}
-                            {state?.orderData?.event?.session_link ? (
-                                <Link href={state.orderData.event?.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
-                                    {state.orderData.event?.session_link}
-                                </Link>
-                            ) : (
-                                " No session link available"
-                            )}</p>
+                                <h4 className="md:text-[22px] text-[18px]">   Session Link:{" "}
+                                    {state?.orderData?.event?.session_link ? (
+                                        <Link href={state.orderData.event?.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
+                                            Join Meeting
+                                        </Link>
+                                    ) : (
+                                        " No session link available"
+                                    )}</h4>
                                 {/* {state?.orderData?.event?.session_link && (
                                     <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
                                         <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />

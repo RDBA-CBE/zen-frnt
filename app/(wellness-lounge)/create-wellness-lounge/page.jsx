@@ -140,7 +140,7 @@ export default function CreateWellnessLounge() {
     <div className="container mx-auto ">
       <div className="flex justify-center   ">
         <div className="w-full">
-          <div className="font-bold text-lg mb-3">Create Lounge Session</div>
+          <h2 className="md:text-[20px] text-sm  font-bold mb-3">Create Lounge Session</h2>
           <div className="grid auto-rows-min gap-4 md:grid-cols-2">
             <div className="border rounded-xl p-4 gap-4 flex flex-col ">
               <TextInput

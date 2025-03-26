@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon, User2Icon, UserX2Icon } from "lucide-react";
+import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon, User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
@@ -155,12 +155,19 @@ const Header = () => {
           <div className="backcolor-purpole text-white py-2">
             <div className="container mx-auto flex  items-center justify-between px-5">
               <div className="flex items-center gap-4">
-                <Link href="/student-registration" className="hover:underline border-r border-white pr-4">
-                  Student Registration
-                </Link>
-                <Link href="/alumni-registration" className="hover:underline">
-                  Alumni Registration
-                </Link>
+                <div className="flex items-center gap-1 border-r border-white pr-4">
+                  <UserIcon className=" w-5 h-5" />
+                  <Link href="/student-registration" className="hover:underline text-[16px] ">
+                    Student Registration
+                  </Link>
+                </div>
+                <div className="flex items-center gap-1">
+                  <UserIcon className=" w-5 h-5" />
+                  <Link href="/alumni-registration" className="hover:underline text-[16px]">
+                    Alumni Registration
+                  </Link>
+                </div>
+
               </div>
               <div className="flex gap-2">
                 <Link href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect" target="_blank" aria-label="Instagram">
@@ -192,7 +199,7 @@ const Header = () => {
                       onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
                       onMouseLeave={() => menu.items && setActiveMenu(null)}
                     >
-                      <Link href={menu.url} className="hover:text-themePurple font-medium">
+                      <Link href={menu.url} className="hover:text-themePurple text-[14px] font-[600] uppercase ">
                         {menu.title}
                       </Link>
 
@@ -205,7 +212,7 @@ const Header = () => {
                         >
                           {menu.items?.map((item) => (
                             <div key={item.title} className="mb-2">
-                              <Link href={item.url} className="text-sm text-black hover:text-themePurple">
+                              <Link href={item.url} className="text-xs text-black font-[600] uppercase hover:text-themePurple">
                                 {item.title}
                               </Link>
                             </div>
@@ -299,10 +306,10 @@ const Header = () => {
                             return (
                               <Accordion type="single" collapsible className="w-full" key={index}>
                                 <AccordionItem value={`item-${index + 1}`}>
-                                  <AccordionTrigger className="no-underline hover:no-underline text-lg">{menu.title}</AccordionTrigger>
+                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-lg">{menu.title}</AccordionTrigger>
                                   <AccordionContent>
                                     {menu.items ? (
-                                      <ul className="pl-5">
+                                      <ul className="pl-5 uppercase">
                                         {menu.items.map((item, itemIndex) => (
                                           <li key={itemIndex} className="pb-2 text-lg">
                                             <a href={item.url}>
@@ -312,7 +319,7 @@ const Header = () => {
                                         ))}
                                       </ul>
                                     ) : (
-                                      <p>
+                                      <p className="uppercase">
                                         <a href={menu.url}>
                                           {menu.title}
                                         </a>

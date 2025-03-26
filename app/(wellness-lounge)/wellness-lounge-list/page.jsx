@@ -218,7 +218,7 @@ const WellnessLoungeList = () => {
         <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-              <h2 className="md:text-lg text-sm font-bold">
+              <h2 className="md:text-[20px] text-sm font-bold">
                 Lounge Session
               </h2>
             </div>
