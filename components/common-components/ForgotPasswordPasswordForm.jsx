@@ -86,7 +86,7 @@ const ForgotPasswordForm = () => {
             // ✅ Trigger storage event to notify other tabs
             // window.dispatchEvent(new Event("storage"));
 
-            router.push("/");
+            router.push("/login");
         } catch (error) {
             console.log("error: ", error);
 
