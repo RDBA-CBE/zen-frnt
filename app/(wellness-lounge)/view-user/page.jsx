@@ -113,7 +113,7 @@ export default function viewWellnessLounge() {
         <div className="container mx-auto flex items-center">
             <div className="w-full">
                 <div className="flex justify-between items-center">
-                    <div className="font-bold text-lg mb-3">User Details</div>
+                    <h2 className="font-bold md:text-[20px] text-sm mb-3">User Details</h2>
                 </div>
 
 

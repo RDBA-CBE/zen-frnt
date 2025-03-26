@@ -140,7 +140,7 @@ const WellnessLoungeList = () => {
         <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
             <div>
-              <h2 className="md:text-lg text-sm font-bold">Coupon List</h2>
+              <h2 className="md:text-[20px] text-sm font-bold">Coupon List</h2>
             </div>
             <div className="text-end">
               <Button

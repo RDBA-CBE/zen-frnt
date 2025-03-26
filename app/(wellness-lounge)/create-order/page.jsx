@@ -200,7 +200,7 @@ export default function CreateOrder() {
     return (
         <div className="container mx-auto flex items-center">
             <div className="w-full">
-                <div className="font-bold text-lg mb-3">Create Order</div>
+                <h2 className="font-bold md:text-[20px] text-sm mb-3">Create Order</h2>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                     <div className="border rounded-xl p-4 gap-4 flex flex-col ">
 

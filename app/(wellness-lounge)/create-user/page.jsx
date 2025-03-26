@@ -235,7 +235,7 @@ export default function CreateUser() {
   console.log("state?.user", state?.user_type?.label)
   return (
     <div className="container mx-auto">
-      <div className="font-bold text-lg mb-3">Create User</div>
+      <h2 className="font-bold md:text-[20px] text-sm mb-3">Create User</h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
