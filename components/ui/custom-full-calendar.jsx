@@ -188,14 +188,15 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     return (
         <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
             {/* Calendar Header */}
-            <div className="calendar-header flex justify-between items-center mb-4">
+            <div className="md:flex md:justify-between items-center mb-4">
 
                 <div>
-                    <h2 className="text-xl font-semibold">
+                    <h2 className="text-xl font-semibold text-left mb-3">
                         {new Date(selectedDate).toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
-                    </h2></div>
-                <div className="flex gap-10">
-                    <div className="w-[200px]">
+                    </h2>
+                </div>
+                <div className="md:flex md:gap-10 ">
+                    <div className="md:w-[200px] w-full mb-2 md:mb-0">
                         <CustomSelect
                             options={state.categoryList}
                             value={state.lounge_type?.value || ""}
@@ -305,7 +306,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
             {/* Event Modal */}
             <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
-                <DialogContent className="bg-white p-6 rounded-lg w-96">
+                <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
                     <DialogTitle className="text-lg font-semibold mb-2">Here you can enroll or sign up for the course.</DialogTitle>
                     <Button onClick={handleEnroll} className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
                         Enroll

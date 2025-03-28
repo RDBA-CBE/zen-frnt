@@ -432,7 +432,7 @@ export default function CreateUser() {
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Session Image
               </label>
-              <div className="flex items-center gap-10">
+              <div className="flex items-center md:gap-10 gap-2">
                 <img src={state.thumbnail_image} height={200} width={200} />
                 <div
                   className=" flex bg-slate-300 rounded-md p-3 items-center justify-center"
