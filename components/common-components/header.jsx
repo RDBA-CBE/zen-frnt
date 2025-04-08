@@ -99,12 +99,12 @@ const Header = () => {
       ],
     },
     {
-      title: "Orders",
+      title: "Sessions",
       url: "#",
       items: [
-        { title: "Orders List", url: "/order-list" },
-        { title: "Create order", url: "/create-order" },
-        { title: "Cancel Orders", url: "/cancel-order" },
+        { title: "Sessions List", url: "/order-list" },
+        { title: "Create Session", url: "/create-order" },
+        { title: "Cancel Sessions", url: "/cancel-order" },
       ],
     },
     {
@@ -138,7 +138,7 @@ const Header = () => {
       url: "/calendar",
     },
     {
-      title: "Order",
+      title: "Session",
       url: "/student-order",
     },
     {

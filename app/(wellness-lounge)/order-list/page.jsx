@@ -157,18 +157,18 @@ const WellnessLoungeList = () => {
 
     const columns = [
         {
-            Header: "Order Id",
+            Header: "Session Id",
             accessor: "registration_id",
         },
         {
-            Header: "Order Date",
+            Header: "Session Date",
             accessor: "registration_date",
             Cell: (row) => (
                 <Label>{moment(row?.row?.registration_date).format("DD-MM-YYYY")}</Label>
             ),
         },
         {
-            Header: "Order Status",
+            Header: "Session Status",
             accessor: "registration_status",
 
         },
@@ -245,7 +245,7 @@ const WellnessLoungeList = () => {
                     <div className="block justify-between items-center lg:flex">
                         <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
                             <h2 className="md:text-[20px] text-sm font-bold">
-                                Orders
+                            Sessions
                             </h2>
                         </div>
                         <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
@@ -255,7 +255,7 @@ const WellnessLoungeList = () => {
                                     onChange={(e) => {
                                         setState({ search: e.target.value });
                                     }}
-                                    placeholder="Search Order ID"
+                                    placeholder="Search Session ID"
                                     required
                                     className="w-full"
                                 />
@@ -265,7 +265,7 @@ const WellnessLoungeList = () => {
                                     options={orderStatusList}
                                     value={state.lounge_status?.value || ""}
                                     onChange={(value) => setState({ lounge_status: value })}
-                                    placeholder="Order Status"
+                                    placeholder="Session Status"
                                 />
                             </div>
                             <div className="md:w-1/5 w-full  md:mb-0 mb-2">
@@ -278,7 +278,7 @@ const WellnessLoungeList = () => {
                             </div>
                             <div className="md:w-1/5 w-full  md:mb-0 mb-2">
                                 <DatePicker
-                                    placeholder="Order Date"
+                                    placeholder="Session Date"
                                     closeIcon={true}
                                     selectedDate={state.start_date}
                                     onChange={(date) => {

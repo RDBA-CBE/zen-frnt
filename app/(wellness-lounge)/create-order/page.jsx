@@ -111,7 +111,7 @@ export default function CreateOrder() {
             setState({ submitLoading: false });
 
             router.push("/order-list");
-            Success("Order created successfully");
+            Success("Session created successfully");
         } catch (error) {
             console.log("error", error);
 
@@ -200,7 +200,7 @@ export default function CreateOrder() {
     return (
         <div className="container mx-auto flex items-center">
             <div className="w-full">
-                <h2 className="font-bold md:text-[20px] text-sm mb-3">Create Order</h2>
+                <h2 className="font-bold md:text-[20px] text-sm mb-3">Create Session</h2>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                     <div className="border rounded-xl p-4 gap-4 flex flex-col ">
 
@@ -328,10 +328,10 @@ export default function CreateOrder() {
                             options={orderStatusList}
                             value={state.registration_status?.value || ""}
                             onChange={(value) => setState({ registration_status: value })}
-                            title="Select Order Status"
+                            title="Select Session Status"
                             error={state.errors?.registration_status}
                             required
-                            placeholder="Select Order Status"
+                            placeholder="Select Session Status"
                         />
 
 

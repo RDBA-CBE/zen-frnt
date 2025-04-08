@@ -155,18 +155,18 @@ const CancelOrderList = () => {
 
     const columns = [
         {
-            Header: "Order Id",
+            Header: "Session Id",
             accessor: "registration_id",
         },
         {
-            Header: "Order Date",
+            Header: "Session Date",
             accessor: "registration_date",
             Cell: (row) => (
                 <Label>{moment(row?.row?.registration_date).format("DD-MM-YYYY")}</Label>
             ),
         },
         {
-            Header: "Order Status",
+            Header: "Session Status",
             accessor: "registration_status",
 
         },
@@ -241,7 +241,7 @@ const CancelOrderList = () => {
                     <div className="block justify-between items-center lg:flex">
                         <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
                             <h2 className="md:text-[20px] text-sm font-bold">
-                                Cancel Orders
+                                Cancel Sessions
                             </h2>
                         </div>
                         <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
@@ -251,7 +251,7 @@ const CancelOrderList = () => {
                                     onChange={(e) => {
                                         setState({ search: e.target.value });
                                     }}
-                                    placeholder="Search Order ID"
+                                    placeholder="Search Session ID"
                                     required
                                     className="w-full"
                                 />
@@ -274,7 +274,7 @@ const CancelOrderList = () => {
                             </div>
                             <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                                 <DatePicker
-                                    placeholder="Order Date"
+                                    placeholder="Session Date"
                                     closeIcon={true}
                                     selectedDate={state.start_date}
                                     onChange={(date) => {
