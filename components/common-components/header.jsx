@@ -102,9 +102,9 @@ const Header = () => {
       title: "Sessions",
       url: "#",
       items: [
-        { title: "Sessions List", url: "/order-list" },
-        { title: "Create Session", url: "/create-order" },
-        { title: "Cancel Sessions", url: "/cancel-order" },
+        { title: "Registered Users", url: "/order-list" },
+        { title: "Add User", url: "/create-order" },
+        { title: "Cancelled Users", url: "/cancel-order" },
       ],
     },
     {
