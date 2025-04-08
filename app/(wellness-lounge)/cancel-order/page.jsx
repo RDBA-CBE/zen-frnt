@@ -241,7 +241,7 @@ const CancelOrderList = () => {
                     <div className="block justify-between items-center lg:flex">
                         <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
                             <h2 className="md:text-[20px] text-sm font-bold">
-                                Cancel Sessions
+                                Cancelled Users
                             </h2>
                         </div>
                         <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
