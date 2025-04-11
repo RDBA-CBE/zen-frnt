@@ -24,7 +24,8 @@ import Loading from "../common-components/Loading";
 import { Loader } from "lucide-react";
 import Link from "next/link";
 
-const LoginForm = () => {
+const LoginForm = (props) => {
+  const { isRefresh } = props;
   const router = useRouter();
   const dispatch = useDispatch(); // Initialize dispatch
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
@@ -33,22 +34,21 @@ const LoginForm = () => {
     username: "",
     password: "",
     eventid: null,
-    loading: false
+    loading: false,
   });
-  console.log("state?.eventId", state?.eventid)
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
   }, []);
 
   useEffect(() => {
-    const eventId = localStorage.getItem("eventId")
+    const eventId = localStorage.getItem("eventId");
     if (eventId) {
-      setState({ eventid: eventId })
+      setState({ eventid: eventId });
     }
-  }, [state?.eventid])
+  }, [state?.eventid]);
 
   const handleSubmit = async () => {
-    setState({ loading: true })
+    setState({ loading: true });
     try {
       const body = {
         email: state.username,
@@ -61,31 +61,41 @@ const LoginForm = () => {
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("group", res.group[0]);
-      localStorage.setItem("username", res?.username)
+      localStorage.setItem("username", res?.username);
 
       // Dispatch action to store tokens and group in Redux
-      dispatch(setAuthData({ tokens: res.access, groups: res.group[0], userId: res.user_id, username: res?.username }));
+      dispatch(
+        setAuthData({
+          tokens: res.access,
+          groups: res.group[0],
+          userId: res.user_id,
+          username: res?.username,
+        })
+      );
 
       Success("Login successfully");
-      setState({ loading: false })
+      setState({ loading: false });
 
       // ✅ Trigger storage event to notify other tabs
       window.dispatchEvent(new Event("storage"));
-      console.log("res?.group[0]", res?.group[0])
       if (res?.group[0] == "Student") {
         if (state?.eventid) {
           router.push(`/view-wellness-lounge?id=${state?.eventid}`);
         } else {
           router.push("/");
+          if (isRefresh) {
+            window.location.reload();
+          }
         }
       } else {
         router.push("/");
-
+        if (isRefresh) {
+          window.location.reload();
+        }
       }
-
     } catch (error) {
       console.log("error: ", error);
-      setState({ loading: false })
+      setState({ loading: false });
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -100,10 +110,9 @@ const LoginForm = () => {
       } else {
         setState({ loading: false }); // Stop loading after unexpected error
         if (error?.detail) {
-          Failure(error.detail)
+          Failure(error.detail);
         } else {
           Failure("An error occurred. Please try again.");
-
         }
       }
     }
@@ -154,15 +163,19 @@ const LoginForm = () => {
                   onChange={(e) => setState({ password: e.target.value })}
                 />
               </div>
-              <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen" onClick={handleSubmit}>
-                {
-                  state?.loading ? (
-                    <Loader />
-                  ) : "Login"
-                }
-
+              <Button
+                type="button"
+                className="w-full bg-themeGreen hover:bg-themeGreen"
+                onClick={handleSubmit}
+              >
+                {state?.loading ? <Loader /> : "Login"}
               </Button>
-              <p className="text-center text-[14px]">Don't have an account? <Link href="/student-registration" className="underline">Sign up</Link> </p>
+              <p className="text-center text-[14px]">
+                Don't have an account?{" "}
+                <Link href="/student-registration" className="underline">
+                  Sign up
+                </Link>{" "}
+              </p>
             </div>
           </form>
         </CardContent>

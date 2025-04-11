@@ -16,6 +16,7 @@ import useDebounce from "@/components/common-components/useDebounce";
 import { Success } from "@/components/common-components/toast";
 import Calendar from "./(wellness-lounge)/calendar/page";
 import WellnessLoungeList from "./(wellness-lounge)/wellness-lounge-list/page";
+import LoginForm from "@/components/ui/login-form";
 
 const App = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const App = () => {
     deleteId: null,
     submitLoading: false,
     loading: false,
+    token: "",
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -205,25 +207,42 @@ const App = () => {
       getLoungeList(newPage);
     }
   };
-  const [group, setGroup] = useState(null)
+  const [group, setGroup] = useState(null);
   useEffect(() => {
-    const Group = localStorage?.getItem("group")
+    const Group = localStorage?.getItem("group");
+    const token = localStorage?.getItem("token");
 
     if (Group) {
-      setGroup(Group)
+      setGroup(Group);
     }
-  }, [])
+
+    if (token) {
+      setState({ token });
+    }
+  }, []);
 
   return (
     <>
-      {group == "Admin" ? (
-        <WellnessLoungeList />
-
+      {state.token ? (
+        group == "Admin" ? (
+          <WellnessLoungeList />
+        ) : (
+          <Calendar />
+        )
       ) : (
+        <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">
+          <LoginForm isRefresh={true} />
+        </div>
+      )}
+      {/* {group == "Admin" ? (
+        <WellnessLoungeList />
+      ) : state.token ? (
         <Calendar />
-      )
-
-      }
+      ) : (
+        <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">
+          <LoginForm />
+        </div>
+      )} */}
     </>
   );
 };
