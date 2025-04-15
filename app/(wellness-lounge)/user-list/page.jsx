@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 
-import { objIsEmpty, useSetState } from "@/utils/function.utils";
+import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useEffect } from "react";
 import Modal from "@/components/common-components/modal";
@@ -41,16 +41,31 @@ const UserList = () => {
     search: "",
     currentPage: 1,
     loading: false,
+    roleList: [],
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
 
   useEffect(() => {
     getUserList(state.currentPage);
+    getGroups();
   }, []);
   useEffect(() => {
     getUserList(state.currentPage);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, state.role]);
+
+  const getGroups = async () => {
+    try {
+      setState({ loading: true });
+      const res = await Models.auth.getGroups();
+      const exceptAdmin = res?.results?.filter((item) => item.name !== "Admin");
+      const dropdown = Dropdown(exceptAdmin, "name");
+      setState({ roleList: dropdown, loading: false });
+    } catch (error) {
+      setState({ loading: false });
+      console.log("error: ", error);
+    }
+  };
 
   const getUserList = async (page) => {
     try {
@@ -86,6 +101,12 @@ const UserList = () => {
     {
       Header: "Email",
       accessor: "email",
+    },
+
+    {
+      Header: "Role",
+      accessor: "Role",
+      Cell: (row) => <Label>{row?.row?.groups?.[0]}</Label>,
     },
     {
       Header: "Registration Date",
@@ -147,9 +168,10 @@ const UserList = () => {
   const handleEdit = (item) => {
     router.push(`/update-user/?id=${item.id}`);
   };
+
   const handleView = (item) => {
     router.push(`/view-user/?id=${item.id}`);
-  }
+  };
 
   const createCategory = async () => {
     try {
@@ -214,6 +236,9 @@ const UserList = () => {
     if (state.search) {
       body.search = state.search;
     }
+    if (state.role) {
+      body.group_name = state.role?.label;
+    }
 
     return body;
   };
@@ -235,14 +260,10 @@ const UserList = () => {
   return (
     <div className="container mx-auto ">
       <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
-
-
         <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-              <h2 className="md:text-[20px] text-sm font-bold">
-                Users
-              </h2>
+              <h2 className="md:text-[20px] text-sm font-bold">Users</h2>
             </div>
             <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
               <div className="md:w-3/4 w-full  md:mb-0 mb-2">
@@ -256,18 +277,24 @@ const UserList = () => {
                   className="w-full"
                 />
               </div>
+              <CustomSelect
+                options={state?.roleList || []} // Safely pass empty array if universityList is null
+                value={state.role?.value || ""}
+                onChange={(value) => setState({ role: value })}
+                placeholder="Filter by role"
+              />
 
-              <div className="md:w-1/4 w-full  md:text-end"
+              <div
+                className="md:w-1/4 w-full  md:text-end"
                 onClick={() => router.push("/create-user")}
               >
-                <Button className="bg-themeGreen hover:bg-themeGreen "><PlusIcon /></Button>
+                <Button className="bg-themeGreen hover:bg-themeGreen ">
+                  <PlusIcon />
+                </Button>
               </div>
             </div>
-
           </div>
         </Card>
-
-
 
         {state.loading ? (
           <Loading />
@@ -280,16 +307,22 @@ const UserList = () => {
               <Button
                 disabled={!state.previous}
                 onClick={handlePreviousPage}
-                className={`btn ${!state.previous ? "btn-disabled bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
-                  }`}
+                className={`btn ${
+                  !state.previous
+                    ? "btn-disabled bg-themeGreen hover:bg-themeGreen"
+                    : "bg-themeGreen hover:bg-themeGreen"
+                }`}
               >
                 Prev
               </Button>
               <Button
                 disabled={!state.next}
                 onClick={handleNextPage}
-                className={`btn ${!state.next ? "btn-disabled bg-themeGreen hover:bg-themeGreen" : "bg-themeGreen hover:bg-themeGreen"
-                  }`}
+                className={`btn ${
+                  !state.next
+                    ? "btn-disabled bg-themeGreen hover:bg-themeGreen"
+                    : "bg-themeGreen hover:bg-themeGreen"
+                }`}
               >
                 Next
               </Button>

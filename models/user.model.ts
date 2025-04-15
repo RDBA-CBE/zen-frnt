@@ -7,6 +7,10 @@ const user = {
       if (body.search) {
         url += `&search=${encodeURIComponent(body.search)}`;
       }
+
+      if (body?.group_name) {
+        url += `&group_name=${encodeURIComponent(body?.group_name)}`;
+      }
       instance()
         .get(url)
         .then((res) => {
@@ -117,8 +121,6 @@ const user = {
     });
     return promise;
   },
-
-
 };
 
 export default user;
