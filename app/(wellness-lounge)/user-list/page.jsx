@@ -57,7 +57,7 @@ const UserList = () => {
   const getGroups = async () => {
     try {
       setState({ loading: true });
-      const res = await Models.auth.getGroups();
+      const res = await Models.Common.groups();
       const exceptAdmin = res?.results?.filter((item) => item.name !== "Admin");
       const dropdown = Dropdown(exceptAdmin, "name");
       setState({ roleList: dropdown, loading: false });

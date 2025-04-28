@@ -67,7 +67,7 @@ const AlumniRegistrationForm = () => {
     const getUniversity = async () => {
         try {
             const res = await Models.auth.getUniversity();
-            const Dropdowns = Dropdown(res?.results, "name");
+            const Dropdowns = Dropdown(res, "name");
             setState({ universityList: Dropdowns });
             console.log("res", res);
         } catch (error) {
