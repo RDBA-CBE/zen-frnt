@@ -773,3 +773,151 @@ h6 {
     line-height: 1;
   }
 }
+
+.phone-input-wrapper .custom-phone-input {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* Remove focus border */
+.phone-input-wrapper .custom-phone-input input:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optional: Style the country select dropdown */
+.phone-input-wrapper .custom-phone-input .PhoneInputCountry {
+  margin-right: 8px;
+}
+
+/* Optional: Add border to the flag dropdown */
+.phone-input-wrapper .custom-phone-input .PhoneInputCountrySelect {
+  border: none;
+  background: transparent;
+}
+
+.phone-input-wrapper .custom-phone-input input::placeholder {
+  color: #999;
+}
+
+
+
+/* Wrapper */
+.dropdown-wrapper {
+  width: 100%;
+}
+
+.dropdown-container {
+  position: relative;
+  z-index: 10;
+}
+
+/* Header */
+.header-text {
+  display: flex;
+  gap: 5px;
+  padding-bottom: 5px;
+}
+
+.header-text span {
+  font-size: 16px;
+}
+
+.header-text .required {
+  color: red;
+}
+
+/* Dropdown button */
+.dropdown-toggle-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.selected-values {
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.selected-values span {
+  color: #555;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.remove-tag-btn {
+  background: none;
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 0;
+}
+
+.search-input {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+}
+
+.options-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.option-item {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option-item:hover {
+  background-color: #f0f0f0;
+}
+
+.footer-container {
+  padding: 16px;
+  text-align: center;
+}
+
+.loading-spinner {
+  font-size: 16px;
+  color: #ccc;
+}

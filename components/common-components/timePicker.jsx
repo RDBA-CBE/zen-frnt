@@ -23,14 +23,16 @@ import "react-datepicker/dist/react-datepicker.css";
 //   value: any;
 // }
 
-export default function TimePicker({
-  placeholder = "Select Time",
-  title,
-  required,
-  error,
-  onChange,
-  value,
-}) {
+export default function TimePicker(props) {
+  const {
+    placeholder = "Select Time",
+    title,
+    required,
+    error,
+    onChange,
+    value,
+  } = props;
+
   return (
     <div className="w-full">
       {title && (
@@ -59,7 +61,7 @@ export default function TimePicker({
             showTimeSelectOnly
             timeIntervals={15} // Set time interval (e.g., every 15 minutes)
             timeCaption="Time"
-            dateFormat="h:mm aa" 
+            dateFormat="h:mm aa"
             className="w-full p-2 border rounded-md focus:outline-none"
           />
         </PopoverContent>

@@ -17,13 +17,12 @@ import CustomSelect from "@/components/common-components/dropdown";
 import TimePicker from "@/components/common-components/timePicker";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
-
-import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import { Trash2, X } from "lucide-react";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import * as Yup from "yup";
 
 export default function UpdateWellnessLounge() {
   const router = useRouter();
@@ -34,14 +33,12 @@ export default function UpdateWellnessLounge() {
   useEffect(() => {
     // Ensure that searchParams are read only on the client side
     if (typeof window !== "undefined") {
-
       const idFromSearchParams = searchParams.get("id");
 
       if (idFromSearchParams) {
         setId(idFromSearchParams);
       }
     }
-
   }, [searchParams]);
 
   const [state, setState] = useSetState({
@@ -71,7 +68,7 @@ export default function UpdateWellnessLounge() {
     getDetails();
   }, [id]);
 
-  console.log("id", id)
+  console.log("id", id);
 
   const getDetails = async () => {
     try {
@@ -86,7 +83,7 @@ export default function UpdateWellnessLounge() {
           thumbnail_image: res?.thumbnail,
         });
       }
-      console.log("ressa", res)
+      console.log("ressa", res);
       setState({
         title: res.title,
 
@@ -120,6 +117,11 @@ export default function UpdateWellnessLounge() {
       console.log("error: ", error);
     }
   };
+
+
+
+
+
 
   const onSubmit = async () => {
     try {
@@ -173,29 +175,41 @@ export default function UpdateWellnessLounge() {
       const res = await Models.session.update(formData, id);
       setState({ submitLoading: false });
 
-      router.push("/wellness-lounge-list");
+      // router.push("/wellness-lounge-list");
       Success("Lounge updated successfully");
     } catch (error) {
       // console.log("error", error?.end_date[0])
       console.log("error", error);
 
       // Check if error for start_date exists and has at least one error message
-      if (error?.start_date && Array.isArray(error.start_date) && error.start_date.length > 0) {
-        Failure(error?.start_date[0]);  // Show failure message for start_date
+      if (
+        error?.start_date &&
+        Array.isArray(error.start_date) &&
+        error.start_date.length > 0
+      ) {
+        Failure(error?.start_date[0]); // Show failure message for start_date
       }
 
       // Check if error for end_date exists and has at least one error message
-      else if (error?.end_date && Array.isArray(error.end_date) && error.end_date.length > 0) {
-        Failure(error?.end_date[0]);  // Show failure message for end_date
+      else if (
+        error?.end_date &&
+        Array.isArray(error.end_date) &&
+        error.end_date.length > 0
+      ) {
+        Failure(error?.end_date[0]); // Show failure message for end_date
+      } else if (
+        error?.start_time &&
+        Array.isArray(error.start_time) &&
+        error.start_time.length > 0
+      ) {
+        Failure(error?.start_time[0]); // Show failure message for start_time
+      } else if (
+        error?.end_time &&
+        Array.isArray(error.end_time) &&
+        error.end_time.length > 0
+      ) {
+        Failure(error?.end_time[0]); // Show failure message for end_time
       }
-
-      else if (error?.start_time && Array.isArray(error.start_time) && error.start_time.length > 0) {
-        Failure(error?.start_time[0]);  // Show failure message for start_time
-      }
-      else if (error?.end_time && Array.isArray(error.end_time) && error.end_time.length > 0) {
-        Failure(error?.end_time[0]);  // Show failure message for end_time
-      }
-
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -206,18 +220,17 @@ export default function UpdateWellnessLounge() {
 
         setState({ errors: validationErrors });
         setState({ submitLoading: false });
-
-
       } else {
         setState({ submitLoading: false });
       }
     }
   };
-  console.log("isFeatured: ", state.isFeatured);
 
   return (
     <div className="container mx-auto">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">Update Lounge Session</h2>
+      <h2 className="font-bold md:text-[20px] text-sm mb-3">
+        Update Lounge Session
+      </h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
@@ -242,6 +255,7 @@ export default function UpdateWellnessLounge() {
           />
           <div className="grid auto-rows-min gap-4 grid-cols-2">
             <DatePicker
+              formDate={new Date()}
               placeholder="Start Date"
               title="Start Date"
               selectedDate={state.start_date}
@@ -249,14 +263,15 @@ export default function UpdateWellnessLounge() {
                 console.log("date: ", date);
                 setState({
                   start_date: date,
+                  end_date: null,
                 });
               }}
               error={state.errors?.start_date}
               // disablePastDates={true} // Disable past dates
               required
-
             />
             <DatePicker
+              fromDate={new Date(state.start_date)}
               placeholder="End Date"
               title="End Date"
               selectedDate={state.end_date}
@@ -268,13 +283,15 @@ export default function UpdateWellnessLounge() {
               }}
               error={state.errors?.end_date}
               required
-            // disablePastDates={true} // Disable past dates
+              // disablePastDates={true} // Disable past dates
             />
           </div>
           <div className="grid auto-rows-min gap-4 grid-cols-2">
             <TimePicker
               value={state.start_time}
-              onChange={(e) => setState({ start_time: e })}
+              onChange={(e) => {
+                setState({ start_time: e });
+              }}
               title="Start Time"
               placeholder="Start Time"
               error={state.errors?.start_time}
@@ -385,12 +402,14 @@ export default function UpdateWellnessLounge() {
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton
               variant={"outline"}
-              name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
+              name="Cancel"
+              className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
               onClick={() => router.back()}
             />
 
             <PrimaryButton
-              name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+              name="Submit"
+              className="bg-themeGreen hover:bg-themeGreen"
               onClick={() => onSubmit()}
               loading={state.submitLoading}
             />

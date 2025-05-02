@@ -5,9 +5,34 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, Bell, CreditCard, DiscAlbum, FacebookIcon, InstagramIcon, LinkedinIcon, LogIn, LogOut, MenuIcon, SparklesIcon, TwitchIcon, User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
+import {
+  BadgeCheck,
+  Bell,
+  CreditCard,
+  DiscAlbum,
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  LogIn,
+  LogOut,
+  MenuIcon,
+  SparklesIcon,
+  TwitchIcon,
+  User2,
+  User2Icon,
+  UserIcon,
+  UserX2Icon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,22 +46,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import { Label } from "@radix-ui/react-label";
 import { useSetState } from "@/utils/function.utils";
 
 const Header = () => {
-
   const dispatch = useDispatch();
   const tokens = useSelector((state) => state.auth.tokens);
   const groups = useSelector((state) => state.auth.groups);
-  const username = useSelector((state) => state.auth.username)
+  const username = useSelector((state) => state.auth.username);
 
   const [activeMenu, setActiveMenu] = useState(null);
   const [clickedMenu, setClickedMenu] = useState(null); // Track the clicked menu
@@ -49,9 +73,8 @@ const Header = () => {
   const [state, setState] = useSetState({
     token: null,
     group: null,
-    username: null
-  })
-
+    username: null,
+  });
 
   // Set `isClient` to true after the component mounts (only runs on the client)
   useEffect(() => {
@@ -63,10 +86,16 @@ const Header = () => {
     if (isClient) {
       const storedToken = localStorage.getItem("token");
       const storedGroup = localStorage.getItem("group");
-      const StoredUsername = localStorage.getItem("username")
+      const StoredUsername = localStorage.getItem("username");
 
       if (storedToken && storedGroup && StoredUsername) {
-        dispatch(setAuthData({ tokens: storedToken, groups: storedGroup, username: StoredUsername }));
+        dispatch(
+          setAuthData({
+            tokens: storedToken,
+            groups: storedGroup,
+            username: StoredUsername,
+          })
+        );
       }
     }
   }, [isClient, dispatch]); // Only run when `isClient` is true
@@ -75,8 +104,8 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("group");
-    localStorage.removeItem("eventId")
-    localStorage.removeItem("username")
+    localStorage.removeItem("eventId");
+    localStorage.removeItem("username");
     setDialogOpen(false);
     router.push("/login");
     dispatch(clearAuthData());
@@ -118,9 +147,7 @@ const Header = () => {
     {
       title: "Payment Gateways",
       url: "#",
-      items: [
-        { title: "Payment Gateway List", url: "/payment-gateway-list" },
-      ],
+      items: [{ title: "Payment Gateway List", url: "/payment-gateway-list" }],
     },
     {
       title: "Coupons",
@@ -157,23 +184,36 @@ const Header = () => {
               <div className="flex items-center gap-2 md:gap-4">
                 <div className="flex items-center gap-1 border-r border-white md:pr-4 pr-2">
                   <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                  <Link href="/student-registration" className="hover:underline md:text-[16px] text-[10px] ">
+                  <Link
+                    href="/student-registration"
+                    className="hover:underline md:text-[16px] text-[10px] "
+                  >
                     Student Registration
                   </Link>
                 </div>
                 <div className="flex items-center gap-1">
                   <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                  <Link href="/alumni-registration" className="hover:underline  md:text-[16px] text-[10px]">
+                  <Link
+                    href="/alumni-registration"
+                    className="hover:underline  md:text-[16px] text-[10px]"
+                  >
                     Alumni Registration
                   </Link>
                 </div>
-
               </div>
               <div className="flex gap-2">
-                <Link href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect" target="_blank" aria-label="Instagram">
+                <Link
+                  href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect"
+                  target="_blank"
+                  aria-label="Instagram"
+                >
                   <InstagramIcon className="w-4 h-4" />
                 </Link>
-                <Link href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/" target="_blank" aria-label="LinkedIn">
+                <Link
+                  href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
+                  target="_blank"
+                  aria-label="LinkedIn"
+                >
                   <LinkedinIcon className="w-4 h-4" />
                 </Link>
               </div>
@@ -184,27 +224,42 @@ const Header = () => {
           <div className="py-4 border-b border-gray-200">
             <div className="container mx-auto flex items-center justify-between gap-20 px-5">
               <div className="flex justify-center">
-                <Link href="/">
-                  <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
+                <Link href="https://zenwellnesslounge.com/" target="_blank">
+                  <Image
+                    src="/assets/images/logo.png"
+                    alt="logo"
+                    width={200}
+                    height={80}
+                  />
                 </Link>
               </div>
 
               {/* Left Menu (Admin/Student) */}
               <nav className="hidden lg:flex space-x-6">
-                {tokens && groups && (
-                  (groups === "Admin" ? AdminLeftSideMenu : StudentLeftSideMenu).map((menu) => (
+                {tokens &&
+                  groups &&
+                  (groups === "Admin"
+                    ? AdminLeftSideMenu
+                    : StudentLeftSideMenu
+                  ).map((menu) => (
                     <div
                       key={menu.title}
                       className="relative"
-                      onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
+                      onMouseEnter={() =>
+                        menu.items && setActiveMenu(menu.title)
+                      }
                       onMouseLeave={() => menu.items && setActiveMenu(null)}
                     >
-                      <Link href={menu.url} className="hover:text-themePurple text-[14px] font-[600] uppercase ">
+                      <Link
+                        href={menu.url}
+                        className="hover:text-themePurple text-[14px] font-[600] uppercase "
+                      >
                         {menu.title}
                       </Link>
 
                       {/* Submenu */}
-                      {(activeMenu === menu.title || clickedMenu === menu.title) && (
+                      {(activeMenu === menu.title ||
+                        clickedMenu === menu.title) && (
                         <div
                           className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
                           onMouseEnter={() => setActiveMenu(menu.title)}
@@ -212,7 +267,10 @@ const Header = () => {
                         >
                           {menu.items?.map((item) => (
                             <div key={item.title} className="mb-2">
-                              <Link href={item.url} className="text-xs text-black font-[600] uppercase hover:text-themePurple">
+                              <Link
+                                href={item.url}
+                                className="text-xs text-black font-[600] uppercase hover:text-themePurple"
+                              >
                                 {item.title}
                               </Link>
                             </div>
@@ -220,8 +278,7 @@ const Header = () => {
                         </div>
                       )}
                     </div>
-                  ))
-                )}
+                  ))}
               </nav>
 
               {/* User Avatar Dropdown */}
@@ -230,41 +287,46 @@ const Header = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Avatar className="h-10 w-10 rounded cursor-pointer">
-                        <AvatarFallback><User2Icon /></AvatarFallback>
+                        <AvatarFallback>
+                          <User2Icon />
+                        </AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                    <DropdownMenuContent
+                      className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                      side="bottom"
+                      align="end"
+                      sideOffset={4}
+                    >
                       <DropdownMenuLabel className="p-0 pb-2">
-                        {
-                          username && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Avatar className="h-8 w-8 rounded">
-                                <AvatarFallback><User2Icon /></AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <span className="font-semibold">{username}</span>
-                                {/* <span className="text-xs">zenlounge@gmail.com</span> */}
-                              </div>
+                        {username && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Avatar className="h-8 w-8 rounded">
+                              <AvatarFallback>
+                                <User2Icon />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <span className="font-semibold">{username}</span>
+                              {/* <span className="text-xs">zenlounge@gmail.com</span> */}
                             </div>
-                          )
-                        }
-
+                          </div>
+                        )}
                       </DropdownMenuLabel>
-                      {
-                        username && (<DropdownMenuSeparator />
-                        )
-                      }
+                      {username && <DropdownMenuSeparator />}
 
-                      {
-                        groups === "Admin" && (
-                          <>
-                            <DropdownMenuItem onClick={() => router?.push("/change-password-confirm")}>
-                              Change Password
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                          </>
-                        )
-                      }
+                      {groups === "Admin" && (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router?.push("/change-password-confirm")
+                            }
+                          >
+                            Change Password
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                        </>
+                      )}
 
                       {/* <DropdownMenuGroup>
                         <DropdownMenuItem>
@@ -304,44 +366,60 @@ const Header = () => {
                     <SheetContent>
                       <SheetHeader>
                         <SheetTitle></SheetTitle>
-
                       </SheetHeader>
                       <div className="flex justify-center">
-                        <Link href="/">
-                          <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
+                        <Link
+                          href="https://zenwellnesslounge.com/"
+                          target="_blank"
+                        >
+                          <Image
+                            src="/assets/images/logo.png"
+                            alt="logo"
+                            width={200}
+                            height={80}
+                          />
                         </Link>
                       </div>
                       <div className="mt-10">
-                        {tokens && groups && (
-                          (groups === "Admin" ? AdminLeftSideMenu : StudentLeftSideMenu).map((menu, index) => {
+                        {tokens &&
+                          groups &&
+                          (groups === "Admin"
+                            ? AdminLeftSideMenu
+                            : StudentLeftSideMenu
+                          ).map((menu, index) => {
                             return (
-                              <Accordion type="single" collapsible className="w-full" key={index}>
+                              <Accordion
+                                type="single"
+                                collapsible
+                                className="w-full"
+                                key={index}
+                              >
                                 <AccordionItem value={`item-${index + 1}`}>
-                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-lg">{menu.title}</AccordionTrigger>
+                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-lg">
+                                    {menu.title}
+                                  </AccordionTrigger>
                                   <AccordionContent>
                                     {menu.items ? (
                                       <ul className="pl-5 uppercase">
                                         {menu.items.map((item, itemIndex) => (
-                                          <li key={itemIndex} className="pb-2 text-lg">
-                                            <a href={item.url}>
-                                              {item.title}
-                                            </a>
+                                          <li
+                                            key={itemIndex}
+                                            className="pb-2 text-lg"
+                                          >
+                                            <a href={item.url}>{item.title}</a>
                                           </li>
                                         ))}
                                       </ul>
                                     ) : (
                                       <p className="uppercase">
-                                        <a href={menu.url}>
-                                          {menu.title}
-                                        </a>
+                                        <a href={menu.url}>{menu.title}</a>
                                       </p>
                                     )}
                                   </AccordionContent>
                                 </AccordionItem>
                               </Accordion>
                             );
-                          })
-                        )}
+                          })}
                       </div>
                       {/* <div className="mt-10 flex justify-center items-center gap-4">
                         <InstagramIcon />
@@ -350,16 +428,28 @@ const Header = () => {
                     </SheetContent>
                   </Sheet>
                 </div>
-
               </div>
               {/* Confirmation Dialog for Log out */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
-                  <DialogTitle className="text-[20px] font-semibold">Confirm Logout</DialogTitle>
+                  <DialogTitle className="text-[20px] font-semibold">
+                    Confirm Logout
+                  </DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} variant={"outline"} className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm">Cancel</Button>
-                    <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">Confirm</Button>
+                    <Button
+                      onClick={handleCancel}
+                      variant={"outline"}
+                      className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
+                    >
+                      Confirm
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>

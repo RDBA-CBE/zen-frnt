@@ -106,20 +106,33 @@ export default function CreateWellnessLounge() {
       Success("Lounge created successfully");
     } catch (error) {
       // Check if error for start_date exists and has at least one error message
-      if (error?.start_date && Array.isArray(error.start_date) && error.start_date.length > 0) {
-        Failure(error?.start_date[0]);  // Show failure message for start_date
+      if (
+        error?.start_date &&
+        Array.isArray(error.start_date) &&
+        error.start_date.length > 0
+      ) {
+        Failure(error?.start_date[0]); // Show failure message for start_date
       }
 
       // Check if error for end_date exists and has at least one error message
-      else if (error?.end_date && Array.isArray(error.end_date) && error.end_date.length > 0) {
-        Failure(error?.end_date[0]);  // Show failure message for end_date
-      }
-
-      else if (error?.start_time && Array.isArray(error.start_time) && error.start_time.length > 0) {
-        Failure(error?.start_time[0]);  // Show failure message for start_time
-      }
-      else if (error?.end_time && Array.isArray(error.end_time) && error.end_time.length > 0) {
-        Failure(error?.end_time[0]);  // Show failure message for end_time
+      else if (
+        error?.end_date &&
+        Array.isArray(error.end_date) &&
+        error.end_date.length > 0
+      ) {
+        Failure(error?.end_date[0]); // Show failure message for end_date
+      } else if (
+        error?.start_time &&
+        Array.isArray(error.start_time) &&
+        error.start_time.length > 0
+      ) {
+        Failure(error?.start_time[0]); // Show failure message for start_time
+      } else if (
+        error?.end_time &&
+        Array.isArray(error.end_time) &&
+        error.end_time.length > 0
+      ) {
+        Failure(error?.end_time[0]); // Show failure message for end_time
       }
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -140,7 +153,9 @@ export default function CreateWellnessLounge() {
     <div className="container mx-auto ">
       <div className="flex justify-center   ">
         <div className="w-full">
-          <h2 className="md:text-[20px] text-sm  font-bold mb-3">Create Lounge Session</h2>
+          <h2 className="md:text-[20px] text-sm  font-bold mb-3">
+            Create Lounge Session
+          </h2>
           <div className="grid auto-rows-min gap-4 md:grid-cols-2">
             <div className="border rounded-xl p-4 gap-4 flex flex-col ">
               <TextInput
@@ -172,6 +187,7 @@ export default function CreateWellnessLounge() {
                     console.log("date: ", date);
                     setState({
                       start_date: date,
+                      end_date: null,
                     });
                   }}
                   error={state.errors?.start_date}
@@ -189,6 +205,7 @@ export default function CreateWellnessLounge() {
                   }}
                   error={state.errors?.end_date}
                   required
+                  fromDate={new Date(state.start_date)}
                 />
               </div>
               <div className="grid auto-rows-min gap-4 grid-cols-2">
@@ -280,23 +297,22 @@ export default function CreateWellnessLounge() {
 
                 <PrimaryButton
                   variant={"outline"}
-                  name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
+                  name="Cancel"
+                  className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
                   onClick={() => router.back()}
                 />
 
                 <PrimaryButton
-                  name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                  name="Submit"
+                  className="bg-themeGreen hover:bg-themeGreen"
                   onClick={() => onSubmit()}
                   loading={state.submitLoading}
                 />
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }
