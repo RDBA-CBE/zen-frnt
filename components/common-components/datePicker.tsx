@@ -19,7 +19,7 @@ interface DatePickerProps {
   error?: string;
   closeIcon?: boolean;
   disablePastDates?: boolean; // Added prop to disable past dates
-  fromDate?: any;
+  fromDate?: Date;
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
