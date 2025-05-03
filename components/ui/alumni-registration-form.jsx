@@ -345,7 +345,7 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Year of Graduated"
                 title="Year Graduated"
                 value={state.year_of_graduation}
-                error={state.errors?.year_of_entry}
+                error={state.errors?.year_of_graduation}
 
                 onChange={(e) =>
                   setState({ year_of_graduation: e.target.value })
