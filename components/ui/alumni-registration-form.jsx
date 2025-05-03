@@ -344,6 +344,7 @@ const AlumniRegistrationForm = () => {
                 type="numeric"
                 placeholder="Enter Year of Graduated"
                 title="Year Graduated"
+                required
                 value={state.year_of_graduation}
                 error={state.errors?.year_of_graduation}
 
