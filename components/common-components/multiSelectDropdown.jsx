@@ -152,7 +152,7 @@ const MultiSelectDropdown = ({
 
         {isOpen && (
           <div
-            className="dropdown-menu "
+            className="dropdown-menu no-scrollbar"
             style={{
               border: "1px solid #ccc",
               borderRadius: "4px",

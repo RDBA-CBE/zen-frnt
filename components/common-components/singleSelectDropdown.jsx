@@ -13,7 +13,7 @@ const SingleSelectDropdown = ({
   color,
   headerSize,
   size,
-  title
+  title,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -49,17 +49,16 @@ const SingleSelectDropdown = ({
   };
 
   return (
-    <div className="dropdown-wrapper" >
+    <div className="dropdown-wrapper">
       <div className="dropdown-container">
-      {title && (
+        {title && (
           <label className="block text-sm font-bold text-gray-700 mb-2">
             {title} {required && <span className="text-red-500">*</span>}
           </label>
         )}
 
         <div
-                  className="dropdown-toggle-btn rounded-md border border-input bg-background"
-
+          className="dropdown-toggle-btn rounded-md border border-input bg-background"
           onClick={handleToggleDropdown}
           role="button"
           tabIndex={0}
@@ -77,11 +76,15 @@ const SingleSelectDropdown = ({
             cursor: "pointer",
             backgroundColor: "#fff",
             fontSize: "14px",
-            marginTop:"8px",
+            marginTop: "8px",
           }}
         >
           <div className="selected-values">
-            {selectedOption ? <span>{selectedOption.label}</span> : <span>{placeholder}</span>}
+            {selectedOption ? (
+              <span>{selectedOption.label}</span>
+            ) : (
+              <span>{placeholder}</span>
+            )}
           </div>
           <span>
             {isOpen ? (
@@ -94,7 +97,7 @@ const SingleSelectDropdown = ({
 
         {isOpen && (
           <div
-            className="dropdown-menu"
+            className="dropdown-menu no-scrollbar"
             style={{
               border: "1px solid #ccc",
               borderRadius: "4px",
@@ -121,7 +124,7 @@ const SingleSelectDropdown = ({
                 border: "1px solid #ccc",
               }}
             />
-            <div className="options-list">
+            <div className="options-list overflow-y-auto max-h-52 [&::-webkit-scrollbar]:hidden scrollbar-hide">
               {filteredOptions.map((item) => (
                 <div
                   key={item.value}
@@ -132,7 +135,8 @@ const SingleSelectDropdown = ({
                     cursor: "pointer",
                     backgroundColor:
                       selectedOption?.value === item.value ? "#d0e0ff" : "#fff",
-                    color: selectedOption?.value === item.value ? "#007bff" : "#000",
+                    color:
+                      selectedOption?.value === item.value ? "#007bff" : "#000",
                     borderRadius: "4px",
                     marginBottom: "4px",
                   }}
