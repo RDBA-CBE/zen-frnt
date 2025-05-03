@@ -42,7 +42,9 @@ const MultiSelectDropdown = ({
 
     let updatedOptions;
     if (exists) {
-      updatedOptions = selectedOptions.filter((item) => item.value !== optionValue);
+      updatedOptions = selectedOptions.filter(
+        (item) => item.value !== optionValue
+      );
     } else {
       updatedOptions = [...selectedOptions, optionObj];
     }
@@ -150,14 +152,14 @@ const MultiSelectDropdown = ({
 
         {isOpen && (
           <div
-            className="dropdown-menu"
+            className="dropdown-menu "
             style={{
               border: "1px solid #ccc",
               borderRadius: "4px",
               marginTop: "4px",
               backgroundColor: "#fff",
               maxHeight: "200px",
-              overflowY: "auto",
+              overflowY: "auto", // Scroll only here
               padding: "8px",
               zIndex: 9999,
               position: "absolute",
@@ -177,7 +179,8 @@ const MultiSelectDropdown = ({
                 border: "1px solid #ccc",
               }}
             />
-            <div className="options-list">
+
+            <div className="options-list overflow-y-auto max-h-52 [&::-webkit-scrollbar]:hidden scrollbar-hide">
               {filteredOptions.map((item) => (
                 <div
                   key={item.value}
@@ -186,10 +189,14 @@ const MultiSelectDropdown = ({
                   style={{
                     padding: "4px 6px",
                     cursor: "pointer",
-                    backgroundColor: selectedOptions.some((opt) => opt.value === item.value)
+                    backgroundColor: selectedOptions.some(
+                      (opt) => opt.value === item.value
+                    )
                       ? "#d0e0ff"
                       : "#fff",
-                    color: selectedOptions.some((opt) => opt.value === item.value)
+                    color: selectedOptions.some(
+                      (opt) => opt.value === item.value
+                    )
                       ? "#007bff"
                       : "#000",
                     borderRadius: "4px",
