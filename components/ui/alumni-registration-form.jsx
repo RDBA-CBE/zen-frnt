@@ -25,13 +25,17 @@ import MultiSelectDropdown from "../common-components/multiSelectDropdown";
 
 import SingleSelectDropdown from "../common-components/singleSelectDropdown";
 
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput, {
+  isValidPhoneNumber,
+  getCountries,
+} from "react-phone-number-input";
 import CustomMultiSelect from "../common-components/multi-select";
 import { Loader } from "lucide-react";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
+
 
   const [state, setState] = useSetState({
     username: "",
@@ -60,7 +64,7 @@ const AlumniRegistrationForm = () => {
     alumniIntrested_topics1: "",
     year_of_graduation: "",
     alumniPassword: "",
-    btnLoading:false
+    btnLoading: false,
   });
 
   useEffect(() => {
@@ -236,7 +240,8 @@ const AlumniRegistrationForm = () => {
       });
     }
   };
-  console.log("✌️alumniIntrested_topics --->", state.alumniIntrested_topics);
+
+
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -340,6 +345,8 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Year of Graduated"
                 title="Year Graduated"
                 value={state.year_of_graduation}
+                error={state.errors?.year_of_entry}
+
                 onChange={(e) =>
                   setState({ year_of_graduation: e.target.value })
                 }
