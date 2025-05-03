@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 const MultiSelectDropdown = ({
@@ -21,7 +21,6 @@ const MultiSelectDropdown = ({
 
   useEffect(() => {
     if (value?.length > 0) {
-      // If value is an array of values, convert them to full objects
       const isValueArrayOfObjects = typeof value[0] === "object";
       const selected = isValueArrayOfObjects
         ? value
@@ -50,7 +49,8 @@ const MultiSelectDropdown = ({
     }
 
     setSelectedOptions(updatedOptions);
-    onChange(updatedOptions); // Send full objects
+    onChange(updatedOptions);
+    setIsOpen(false);
   };
 
   const filteredOptions = options.filter((option) =>
@@ -67,7 +67,10 @@ const MultiSelectDropdown = ({
   };
 
   return (
-    <div className="dropdown-wrapper" style={{ position: "relative" }}>
+    <div
+      className="dropdown-wrapper"
+      style={{ position: "relative" }}
+    >
       <div className="dropdown-container">
         {title && (
           <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -159,7 +162,7 @@ const MultiSelectDropdown = ({
               marginTop: "4px",
               backgroundColor: "#fff",
               maxHeight: "200px",
-              overflowY: "auto", // Scroll only here
+              overflowY: "auto",
               padding: "8px",
               zIndex: 9999,
               position: "absolute",

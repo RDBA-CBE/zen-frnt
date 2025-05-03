@@ -27,6 +27,7 @@ import SingleSelectDropdown from "../common-components/singleSelectDropdown";
 
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import CustomMultiSelect from "../common-components/multi-select";
+import { Loader } from "lucide-react";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
@@ -59,6 +60,7 @@ const AlumniRegistrationForm = () => {
     alumniIntrested_topics1: "",
     year_of_graduation: "",
     alumniPassword: "",
+    btnLoading:false
   });
 
   useEffect(() => {
@@ -158,6 +160,7 @@ const AlumniRegistrationForm = () => {
 
   const AlumniRegistration = async () => {
     try {
+      setState({ btnLoading: true });
       const body = {
         username: state?.alumniUsername,
         email: state?.alumniEmail,
@@ -178,17 +181,19 @@ const AlumniRegistrationForm = () => {
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
         is_alumni: true,
       };
-      console.log("✌️body --->", body);
 
       await Validation.AlumniRegistration.validate(body, {
         abortEarly: false,
       });
 
       const res = await Models.auth.registration(body);
+      setState({ btnLoading: false });
+
       Success("Registration successfully");
       router?.push("/");
     } catch (error) {
       console.log("error", error);
+      setState({ btnLoading: false });
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -200,9 +205,9 @@ const AlumniRegistrationForm = () => {
 
         // Set validation errors in state
         setState({ errors: validationErrors });
-        setState({ submitLoading: false }); // Stop loading after error
+        setState({ btnLoading: false }); // Stop loading after error
       } else {
-        setState({ submitLoading: false }); // Stop loading after unexpected error
+        setState({ btnLoading: false }); // Stop loading after unexpected error
         if (error?.email) {
           Failure(error.email[0]);
         } else if (error?.password) {
@@ -451,7 +456,7 @@ const AlumniRegistrationForm = () => {
               onClick={AlumniRegistration}
               className="w-full bg-themeGreen hover:bg-themeGreen"
             >
-              Submit
+              {state.btnLoading ? <Loader /> : "Submit"}
             </Button>
           </div>
         </CardContent>

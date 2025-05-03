@@ -19,7 +19,7 @@ import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
-import { Trash2, X } from "lucide-react";
+import { Loader, Trash2, X } from "lucide-react";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import * as Yup from "yup";
@@ -58,6 +58,7 @@ export default function UpdateWellnessLounge() {
     errors: {},
     isFeatured: false,
     submitLoading: false,
+    loading: false,
   });
 
   useEffect(() => {
@@ -68,10 +69,9 @@ export default function UpdateWellnessLounge() {
     getDetails();
   }, [id]);
 
-  console.log("id", id);
-
   const getDetails = async () => {
     try {
+      setState({ loading: true });
       const res = await Models.session.details(id);
 
       if (res?.thumbnail) {
@@ -101,27 +101,29 @@ export default function UpdateWellnessLounge() {
         },
         seat_count: Number(res?.seat_count),
         isFeatured: res?.is_featured,
+        loading: false,
       });
     } catch (error) {
+      setState({ loading: false });
+
       console.log("error: ", error);
     }
   };
 
   const getCategoryList = async () => {
     try {
+      setState({ loading: true });
+
       const res = await Models.category.list();
       console.log("res: ", res);
       const Dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: Dropdowns });
+      setState({ categoryList: Dropdowns, loading: false });
     } catch (error) {
+      setState({ loading: false, });
+
       console.log("error: ", error);
     }
   };
-
-
-
-
-
 
   const onSubmit = async () => {
     try {
@@ -175,7 +177,7 @@ export default function UpdateWellnessLounge() {
       const res = await Models.session.update(formData, id);
       setState({ submitLoading: false });
 
-      // router.push("/wellness-lounge-list");
+      router.push("/wellness-lounge-list");
       Success("Lounge updated successfully");
     } catch (error) {
       // console.log("error", error?.end_date[0])
@@ -226,7 +228,11 @@ export default function UpdateWellnessLounge() {
     }
   };
 
-  return (
+  return state.loading ? (
+    <div className="container mx-auto flex justify-center items-center ">
+      <Loader />
+    </div>
+  ) : (
     <div className="container mx-auto">
       <h2 className="font-bold md:text-[20px] text-sm mb-3">
         Update Lounge Session

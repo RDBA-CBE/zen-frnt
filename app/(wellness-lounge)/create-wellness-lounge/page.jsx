@@ -16,6 +16,7 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import { Loader } from "lucide-react";
 
 export default function CreateWellnessLounge() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function CreateWellnessLounge() {
     thumbnail_image: "",
     errors: {},
     submitLoading: false,
+    loading: false,
   });
 
   useEffect(() => {
@@ -46,10 +48,13 @@ export default function CreateWellnessLounge() {
 
   const getCategoryList = async () => {
     try {
+      setState({ loading: true });
       const res = await Models.category.list();
       const Dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: Dropdowns });
+      setState({ categoryList: Dropdowns, loading: false });
     } catch (error) {
+      setState({ loading: false });
+
       console.log("error: ", error);
     }
   };
@@ -149,8 +154,12 @@ export default function CreateWellnessLounge() {
     }
   };
 
-  return (
-    <div className="container mx-auto ">
+  return state.loading ? (
+    <div className="container mx-auto flex justify-center items-center">
+      <Loader />
+    </div>
+  ) : (
+    <div className="container mx-auto">
       <div className="flex justify-center   ">
         <div className="w-full">
           <h2 className="md:text-[20px] text-sm  font-bold mb-3">
