@@ -68,7 +68,7 @@ export const studentRegistration = Yup.object().shape({
 export const AlumniRegistration = Yup.object().shape({
   username: Yup.string().required("Name is required"),
   email: Yup.string().required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  // password: Yup.string().required("Password is required"),
   phone_number: Yup.string().required("Phone number is required"),
   year_of_graduation: Yup.string().required("Year of graduation is required"),
 

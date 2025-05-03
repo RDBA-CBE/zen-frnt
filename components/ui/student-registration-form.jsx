@@ -51,7 +51,7 @@ const StudentRegistrationForm = () => {
     alumniIntrested_topics1: "",
     year_of_graduation: "",
     alumniPassword: "",
-    btnLoading:false
+    btnLoading: false,
   });
 
   useEffect(() => {
@@ -144,7 +144,9 @@ const StudentRegistrationForm = () => {
         university: null,
       });
 
-      Success("Registration successfully");
+      Success(
+        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests."
+      );
       router?.push("/login");
     } catch (error) {
       console.log("error", error);

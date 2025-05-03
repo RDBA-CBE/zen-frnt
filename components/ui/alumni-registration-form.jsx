@@ -173,7 +173,7 @@ const AlumniRegistrationForm = () => {
         country: state?.country?.value,
         address: state?.address,
         year_of_graduation: state?.year_of_graduation,
-        password: state?.alumniPassword,
+        // password: state?.alumniPassword,
         intrested_topics: state?.alumniIntrested_topics?.some(
           (item) => item.value === "others"
         )
@@ -192,8 +192,25 @@ const AlumniRegistrationForm = () => {
       const res = await Models.auth.registration(body);
       setState({ btnLoading: false });
 
-      Success("Registration successfully");
-      router?.push("/");
+      Success(
+        "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
+      );
+      setState({
+        alumniUsername: "",
+        alumniEmail: "",
+        alumniPhone: "",
+        alumniDepartment: "",
+        work: "",
+        country: null,
+        address: "",
+        year_of_graduation: "",
+        alumniIntrested_topics1: "",
+        alumniIntrested_topics: [],
+        alumniUniversity: null,
+        is_open_to_be_mentor: false,
+        errors: null,
+      });
+      // router?.push("/");
     } catch (error) {
       console.log("error", error);
       setState({ btnLoading: false });
@@ -435,7 +452,7 @@ const AlumniRegistrationForm = () => {
                 placeholder="Select"
               />
             </div>
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <TextInput
                 id="alumniPassword"
                 type="password"
@@ -446,7 +463,7 @@ const AlumniRegistrationForm = () => {
                 onChange={(e) => setState({ alumniPassword: e.target.value })}
                 error={state?.errors?.password}
               />
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-center gap-2">
             <Button
