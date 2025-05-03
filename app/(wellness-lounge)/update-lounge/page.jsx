@@ -138,10 +138,10 @@ export default function UpdateWellnessLounge() {
           ? moment(state.end_date).format("YYYY-MM-DD")
           : null,
         end_time: state.end_time
-          ? moment(state.end_time).format("hh:mm:ss")
+          ? moment(state.end_time).format("HH:mm")
           : null,
         start_time: state.start_time
-          ? moment(state.start_time).format("hh:mm:ss")
+          ? moment(state.start_time).format("HH:mm")
           : null,
         price: state.price ? state.price : 0,
         session_link: state.session_link,

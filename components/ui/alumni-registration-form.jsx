@@ -36,7 +36,6 @@ const AlumniRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
-
   const [state, setState] = useSetState({
     username: "",
     email: "",
@@ -241,8 +240,6 @@ const AlumniRegistrationForm = () => {
     }
   };
 
-
-
   return (
     <div className="flex items-center justify-center w-full">
       <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
@@ -347,7 +344,6 @@ const AlumniRegistrationForm = () => {
                 required
                 value={state.year_of_graduation}
                 error={state.errors?.year_of_graduation}
-
                 onChange={(e) =>
                   setState({ year_of_graduation: e.target.value })
                 }

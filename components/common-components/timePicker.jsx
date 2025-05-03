@@ -50,7 +50,7 @@ export default function TimePicker(props) {
             )}
           >
             <CalendarClock height={20} width={20} />
-            {value ? format(value, "h:mm aa") : <span>{placeholder}</span>}
+            {value ? format(value, "HH:mm") : <span>{placeholder}</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -61,7 +61,8 @@ export default function TimePicker(props) {
             showTimeSelectOnly
             timeIntervals={15} // Set time interval (e.g., every 15 minutes)
             timeCaption="Time"
-            dateFormat="h:mm aa"
+            // dateFormat="HH:mm"
+            timeFormat="HH:mm"
             className="w-full p-2 border rounded-md focus:outline-none"
           />
         </PopoverContent>

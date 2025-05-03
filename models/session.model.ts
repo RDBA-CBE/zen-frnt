@@ -337,7 +337,7 @@ const session = {
   // student
   calendar: (body) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?pagination=false&is_future=true`;
+      let url = `zen/events/?pagination=false`;
       if (body.lounge_type) {
         url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
       }
