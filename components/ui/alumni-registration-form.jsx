@@ -173,7 +173,6 @@ const AlumniRegistrationForm = () => {
         country: state?.country?.value,
         address: state?.address,
         year_of_graduation: state?.year_of_graduation,
-        // password: state?.alumniPassword,
         intrested_topics: state?.alumniIntrested_topics?.some(
           (item) => item.value === "others"
         )
@@ -201,7 +200,7 @@ const AlumniRegistrationForm = () => {
         alumniPhone: "",
         alumniDepartment: "",
         work: "",
-        country: null,
+        country: "",
         address: "",
         year_of_graduation: "",
         alumniIntrested_topics1: "",
@@ -222,6 +221,9 @@ const AlumniRegistrationForm = () => {
         });
 
         console.log("validationErrors: ", validationErrors);
+        if (isValidPhoneNumber(state.alumniPhone) == false) {
+          validationErrors.phone_number = "Please enter a valid phone number";
+        }
 
         // Set validation errors in state
         setState({ errors: validationErrors });
@@ -230,9 +232,13 @@ const AlumniRegistrationForm = () => {
         setState({ btnLoading: false }); // Stop loading after unexpected error
         if (error?.email) {
           Failure(error.email[0]);
+          setState({ errors: null });
         } else if (error?.password) {
+          setState({ errors: null });
+
           Failure(error.password[0]);
         } else {
+          setState({ errors: null });
           Failure("An error occurred. Please try again.");
         }
       }

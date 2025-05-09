@@ -73,26 +73,26 @@ const LoginForm = (props) => {
         })
       );
 
-      Success("Login successfully");
+      Success("Login successful");
       setState({ loading: false });
 
-      // ✅ Trigger storage event to notify other tabs
-      window.dispatchEvent(new Event("storage"));
-      if (res?.group[0] == "Student") {
-        if (state?.eventid) {
-          router.push(`/view-wellness-lounge?id=${state?.eventid}`);
+      setTimeout(() => {
+        if (res?.group[0] === "Student") {
+          if (state?.eventid) {
+            router.push(`/view-wellness-lounge?id=${state?.eventid}`);
+          } else {
+            router.push("/");
+            if (isRefresh) {
+              window.location.reload();
+            }
+          }
         } else {
           router.push("/");
           if (isRefresh) {
             window.location.reload();
           }
         }
-      } else {
-        router.push("/");
-        if (isRefresh) {
-          window.location.reload();
-        }
-      }
+      }, 1000);
     } catch (error) {
       console.log("error: ", error);
       setState({ loading: false });
@@ -172,7 +172,7 @@ const LoginForm = (props) => {
               </Button>
               <p className="text-center text-[14px]">
                 Don't have an account?{" "}
-                <Link href="/student-registration" className="underline">
+                <Link href="/student-registration" className="underline" prefetch={true}>
                   Sign up
                 </Link>{" "}
               </p>

@@ -6,7 +6,8 @@ import Header from "@/components/common-components/header"; // Import Header
 import { Toaster } from "@/components/ui/sonner";
 import { Provider } from "react-redux";
 import store from "@/store";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // Import fonts
 const geistSans = Geist({
@@ -25,6 +26,14 @@ const geistMono = Geist_Mono({
 // };
 
 export default function RootLayout({ children }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <Provider store={store}>
@@ -35,13 +44,13 @@ export default function RootLayout({ children }) {
           <Suspense fallback={<div>Loading...</div>}>
             <div className="flex flex-col w-full min-h-screen">
               <Header /> {/* Conditionally render header */}
-              <main className="w-full p-4 pt-5 pb-24">
-               {children}
-              </main>
+              <main className="w-full p-4 pt-5 pb-24">{children}</main>
               <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
                 <div className="text-center mb-0 md:text-[14px] text-xs">
                   Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
-                  <Link href="https://irepute.in/" className="font-bold">
+                  <Link href="https://irepute.in/" className="font-bold"
+                  
+                  >
                     repute
                   </Link>
                 </div>

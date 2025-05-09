@@ -87,7 +87,7 @@ const Header = () => {
       const storedToken = localStorage.getItem("token");
       const storedGroup = localStorage.getItem("group");
       const StoredUsername = localStorage.getItem("username");
-
+      setToken(storedToken);
       if (storedToken && storedGroup && StoredUsername) {
         dispatch(
           setAuthData({
@@ -108,6 +108,7 @@ const Header = () => {
     localStorage.removeItem("username");
     setDialogOpen(false);
     router.push("/login");
+    window.location.reload();
     dispatch(clearAuthData());
   };
 
@@ -185,6 +186,7 @@ const Header = () => {
                 <div className="flex items-center gap-1 border-r border-white md:pr-4 pr-2">
                   <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                   <Link
+                    prefetch={true}
                     href="/student-registration"
                     className="hover:underline md:text-[16px] text-[10px] "
                   >
@@ -194,6 +196,7 @@ const Header = () => {
                 <div className="flex items-center gap-1">
                   <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                   <Link
+                    prefetch={true}
                     href="/alumni-registration"
                     className="hover:underline  md:text-[16px] text-[10px]"
                   >
@@ -251,6 +254,7 @@ const Header = () => {
                       onMouseLeave={() => menu.items && setActiveMenu(null)}
                     >
                       <Link
+                        prefetch={true}
                         href={menu.url}
                         className="hover:text-themePurple text-[14px] font-[600] uppercase "
                       >
@@ -268,6 +272,7 @@ const Header = () => {
                           {menu.items?.map((item) => (
                             <div key={item.title} className="mb-2">
                               <Link
+                                prefetch={true}
                                 href={item.url}
                                 className="text-xs text-black font-[600] uppercase hover:text-themePurple"
                               >
@@ -315,7 +320,7 @@ const Header = () => {
                       </DropdownMenuLabel>
                       {username && <DropdownMenuSeparator />}
 
-                      {groups === "Admin" && (
+                      {tokens && (
                         <>
                           <DropdownMenuItem
                             onClick={() =>

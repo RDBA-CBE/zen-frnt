@@ -15,21 +15,19 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
-import { Dialog, DialogContent, DialogTitle } from "../../../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "../../../components/ui/dialog";
 import Link from "next/link";
 
 export default function ProfilePage() {
-
   const router = useRouter();
   const dispatch = useDispatch();
   const tokens = useSelector((state) => state.auth.tokens);
@@ -90,8 +88,8 @@ export default function ProfilePage() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("group");
-    localStorage.removeItem("eventId")
-    localStorage.removeItem("username")
+    localStorage.removeItem("eventId");
+    localStorage.removeItem("username");
 
     setDialogOpen(false);
     router.push("/login");
@@ -101,7 +99,7 @@ export default function ProfilePage() {
   // Cancel function to close the dialog without performing any action
   const handleCancel = () => {
     setDialogOpen(false);
-    window?.location?.reload()
+    window?.location?.reload();
   };
 
   const columns = [
@@ -109,7 +107,11 @@ export default function ProfilePage() {
       Header: "Order ID",
       accessor: "registration_id",
       Cell: ({ row }) => (
-        <Link href={`/view-order?id=${row?.id}`} className="pointer">
+        <Link
+          href={`/view-order?id=${row?.id}`}
+          className="pointer"
+          prefetch={true}
+        >
           {row?.registration_id}
         </Link>
       ),
@@ -127,10 +129,11 @@ export default function ProfilePage() {
       Header: "Registration Date",
       accessor: "registration_date",
       Cell: (row) => (
-        <Label>{moment(row?.row?.registration_date).format("DD-MM-YYYY")}</Label>
+        <Label>
+          {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
+        </Label>
       ),
     },
-
   ];
 
   return (
@@ -140,12 +143,37 @@ export default function ProfilePage() {
           <div className="font-bold text-lg mb-3">Profile</div>
         </div> */}
         <div className="flex justify-between items-center w-[100%]">
-          <Tabs defaultValue="profile" className="lg:flex lg:gap-20 gap-4 w-[100%]">
+          <Tabs
+            defaultValue="profile"
+            className="lg:flex lg:gap-20 gap-4 w-[100%]"
+          >
             <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
-              <TabsTrigger value="profile" className="w-[100%] p-2  md:text-md text-sm lg:justify-start">Profile</TabsTrigger>
-              <TabsTrigger value="orders" className="w-[100%] p-2 md:text-md text-sm lg:justify-start">Orders</TabsTrigger>
-              <TabsTrigger value="change-password" className="w-[100%] p-2 md:text-md text-sm lg:justify-start" onClick={() => router?.push("/change-password-confirm")}>Change Password</TabsTrigger>
-              <TabsTrigger value="logout" className="w-[100%] p-2 md:text-md text-sm lg:justify-start" onClick={() => setDialogOpen(true)}>Logout</TabsTrigger>
+              <TabsTrigger
+                value="profile"
+                className="w-[100%] p-2  md:text-md text-sm lg:justify-start"
+              >
+                Profile
+              </TabsTrigger>
+              <TabsTrigger
+                value="orders"
+                className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
+              >
+                Orders
+              </TabsTrigger>
+              <TabsTrigger
+                value="change-password"
+                className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
+                onClick={() => router?.push("/change-password-confirm")}
+              >
+                Change Password
+              </TabsTrigger>
+              <TabsTrigger
+                value="logout"
+                className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
+                onClick={() => setDialogOpen(true)}
+              >
+                Logout
+              </TabsTrigger>
             </TabsList>
             <div className="lg:flex-1 lg:w-[75%] w-[100%]">
               <TabsContent value="profile">
@@ -185,7 +213,6 @@ export default function ProfilePage() {
                               </blockquote>
                             </div>
                           </div>
-
                         </div>
                         <div>
                           <ul className="my-6  [&>li]:mt-2">
@@ -193,25 +220,39 @@ export default function ProfilePage() {
                               <li>Email: {state?.userData?.email}</li>
                             )}
                             {state?.userData?.phone_number && (
-                              <li>Phone Number: {state?.userData?.phone_number}</li>
+                              <li>
+                                Phone Number: {state?.userData?.phone_number}
+                              </li>
                             )}
                             {state?.userData?.date_of_birth && (
-                              <li>Date of Birth: {state?.userData?.date_of_birth}</li>
+                              <li>
+                                Date of Birth: {state?.userData?.date_of_birth}
+                              </li>
                             )}
                             {state?.userData?.address && (
-                              <li>Address: {state?.userData?.address},{state?.userData?.country?.name} </li>
+                              <li>
+                                Address: {state?.userData?.address},
+                                {state?.userData?.country?.name}{" "}
+                              </li>
                             )}
                             {state?.userData?.department && (
                               <li>Department: {state?.userData?.department}</li>
                             )}
                             {state?.userData?.year_of_entry && (
-                              <li>Year of Entry: {state?.userData?.year_of_entry}</li>
+                              <li>
+                                Year of Entry: {state?.userData?.year_of_entry}
+                              </li>
                             )}
                             {state?.userData?.intrested_topics && (
-                              <li>Interested in Topics: {state?.userData?.intrested_topics}</li>
+                              <li>
+                                Interested in Topics:{" "}
+                                {state?.userData?.intrested_topics}
+                              </li>
                             )}
                             {state?.userData?.university && (
-                              <li>University: {state?.userData?.university.name}</li>
+                              <li>
+                                University: {state?.userData?.university.name}
+                              </li>
                             )}
                           </ul>
                         </div>
@@ -224,11 +265,11 @@ export default function ProfilePage() {
                         />
                       </div>
                     </div>
-
                   </CardContent>
                   <CardFooter>
                     <div>
-                      <Button className="bg-themeGreen hover:bg-themeGreen"
+                      <Button
+                        className="bg-themeGreen hover:bg-themeGreen"
                         onClick={() =>
                           router.push(`/update-user/?id=${state?.userData.id}`)
                         }
@@ -248,19 +289,18 @@ export default function ProfilePage() {
                     </CardDescription> */}
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {
-                      (state?.userData?.event_registrations ?? []).length > 0 ? (
-                        <div >
-
-                          <div className="rounded-lg border">
-                            <DataTable
-                              columns={columns}
-                              data={state?.userData?.event_registrations ?? []}
-                            />
-                          </div>
+                    {(state?.userData?.event_registrations ?? []).length > 0 ? (
+                      <div>
+                        <div className="rounded-lg border">
+                          <DataTable
+                            columns={columns}
+                            data={state?.userData?.event_registrations ?? []}
+                          />
                         </div>
-                      ) : "No Orders"
-                    }
+                      </div>
+                    ) : (
+                      "No Orders"
+                    )}
                   </CardContent>
                   {/* <CardFooter>
                     <Button>Save password</Button>
@@ -401,17 +441,28 @@ export default function ProfilePage() {
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full ">
-                  <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
+                  <DialogTitle className="text-lg font-semibold">
+                    Confirm Logout
+                  </DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} className="px-4 py-2 bg-themePurple hover:bg-themePurple rounded text-sm">Cancel</Button>
-                    <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">Confirm</Button>
+                    <Button
+                      onClick={handleCancel}
+                      className="px-4 py-2 bg-themePurple hover:bg-themePurple rounded text-sm"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
+                    >
+                      Confirm
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
             </div>
           </Tabs>
-
         </div>
         {/* 
         <div className="grid auto-rows-min gap-4 md:grid-cols-2">
@@ -505,7 +556,7 @@ export default function ProfilePage() {
             </div>
           )
         } */}
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

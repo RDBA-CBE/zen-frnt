@@ -149,6 +149,7 @@ export default function viewWellnessLounge() {
                   Session Link:{" "}
                   {state?.orderData?.session_link ? (
                     <Link
+                      prefetch={true}
                       href={state?.orderData.session_link}
                       className="text-fuchsia-900"
                       target="_blank"

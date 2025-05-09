@@ -7,11 +7,11 @@ import { setAuthData } from "@/store/slice/AuthSlice"; // Import the action
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,171 +20,155 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
+import { Loader } from "lucide-react";
+// import Validation from "@/utils/validation.utils";
+import * as Validation from "../../utils/validation.utils";
 
 const ChangePasswordConfirmForm = () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
 
+  const [id, setId] = useState(null);
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    // Ensure that searchParams are read only on the client side
+    if (typeof window !== "undefined") {
+      const idFromSearchParams = searchParams.get("id");
+      const tokenFromSearchParams = searchParams.get("token");
 
-    const [id, setId] = useState(null);
-    const [token, setToken] = useState(null)
-    useEffect(() => {
-        // Ensure that searchParams are read only on the client side
-        if (typeof window !== "undefined") {
+      if (idFromSearchParams) {
+        setId(idFromSearchParams);
+      }
+      if (tokenFromSearchParams) {
+        setToken(tokenFromSearchParams);
+      }
+    }
+  }, [searchParams]);
 
-            const idFromSearchParams = searchParams.get("id");
-            const tokenFromSearchParams = searchParams.get("token");
+  const dispatch = useDispatch(); // Initialize dispatch
+  const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
-            if (idFromSearchParams) {
-                setId(idFromSearchParams);
-            }
-            if (tokenFromSearchParams) {
-                setToken(tokenFromSearchParams);
-            }
-        }
+  const [state, setState] = useSetState({
+    old_password: "",
+    new_password: "",
+    confirm_password: "",
+    btnLoading: false,
+  });
 
-    }, [searchParams]);
+  useEffect(() => {
+    setIsMounted(true); // Ensure component is only rendered on client
+  }, []);
+  console.log("id", id);
+  console.log("token", token);
 
+  const handleSubmit = async () => {
+    try {
+      setState({ btnLoading: true });
+      const body = {
+        old_password: state?.old_password,
+        new_password: state.new_password,
+        confirm_password: state.confirm_password,
+      };
+      await Validation.change_password.validate(body);
+      const res = await Models.auth.changepassword(body);
+      console.log("res", res);
+      setState({ btnLoading: false });
 
-    const dispatch = useDispatch(); // Initialize dispatch
-    const [isMounted, setIsMounted] = useState(false); // Track mounting state
+      Success(res?.detail);
 
-    const [state, setState] = useSetState({
-        old_password: "",
-        new_password: "",
-        confirm_password: "",
-    });
+      router.push("/");
+    } catch (error) {
+      console.log("error: ", error);
+      setState({ btnLoading: false });
+      if (error?.password) {
+        Failure(error.password[0]);
+      } else if (error?.non_field_errors) {
+        Failure(error?.non_field_errors[0]);
+      } else if (error?.old_password) {
+        Failure(error?.old_password[0]);
+      } else if (error?.confirm_password) {
+        Failure(error?.confirm_password[0]);
+      } else {
+        Failure(error?.message);
+      }
+      setState({ submitLoading: false }); // Stop loading after error
+    }
+  };
 
-    useEffect(() => {
-        setIsMounted(true); // Ensure component is only rendered on client
-    }, []);
-    console.log("id", id)
-    console.log("token", token)
+  // 🚀 Prevent hydration errors by ensuring the component renders only after mount
+  if (!isMounted) return null;
 
-    const handleSubmit = async () => {
-        try {
-            const body = {
-                old_password: state?.old_password,
-                new_password: state.new_password,
-                confirm_password: state.confirm_password,
-            };
-            // console.log("userid")
-            // const uid = id
-            // const Token = token
-            const res = await Models.auth.changepassword(body);
-            console.log("res", res)
-            // Store tokens and group in localStorage
-            // localStorage.setItem("token", res.access);
-            // localStorage.setItem("refreshToken", res.refresh);
-            // localStorage.setItem("userId", res?.user_id);
-            // localStorage.setItem("group", res.group[0]);
-
-            // // Dispatch action to store tokens and group in Redux
-            // dispatch(setAuthData({ tokens: res.access, groups: res.group[0] }));
-
-            Success(res?.detail);
-
-            // ✅ Trigger storage event to notify other tabs
-            // window.dispatchEvent(new Event("storage"));
-
-            router.push("/");
-        } catch (error) {
-            console.log("error: ", error);
-
-            if (error instanceof Yup.ValidationError) {
-                const validationErrors = {};
-                error.inner.forEach((err) => {
-                    validationErrors[err.path] = err?.message;
-                });
-
-                console.log("validationErrors: ", validationErrors);
-
-                // Set validation errors in state
-                setState({ errors: validationErrors });
-                setState({ submitLoading: false }); // Stop loading after error
-            } else {
-                setState({ submitLoading: false }); // Stop loading after unexpected error
-                if (error?.password) {
-                    Failure(error.password[0])
-                }
-                else if (error?.non_field_errors) {
-                    Failure(error?.non_field_errors[0])
-                } else if (error?.old_password) {
-                    Failure(error?.old_password[0])
-                } else if (error?.confirm_password) {
-                    Failure(error?.confirm_password[0])
-                }
-                else {
-                    Failure("An error occurred. Please try again.");
-
-                }
-            }
-        }
-    };
-
-    // 🚀 Prevent hydration errors by ensuring the component renders only after mount
-    if (!isMounted) return null;
-
-    return (
-        <div className="flex items-center justify-center">
-            <Card className="md:w-[400px] w-[100%]">
-                <CardHeader>
-                    <CardTitle className="text-2xl">Change Password</CardTitle>
-                    {/* <CardDescription>
+  return (
+    <div className="flex items-center justify-center">
+      <Card className="md:w-[400px] w-[100%]">
+        <CardHeader>
+          <CardTitle className="text-2xl">Change Password</CardTitle>
+          {/* <CardDescription>
                         Enter your email below to login to your account
                     </CardDescription> */}
-                </CardHeader>
-                <CardContent>
-                    <form>
-                        <div className="flex flex-col gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="old password">Old Password</Label>
-                                <Input
-                                    id="old-password"
-                                    type="password"
-                                    placeholder="Enter Your New Password"
-                                    required
-                                    value={state.old_password}
-                                    onChange={(e) => setState({ old_password: e.target.value })}
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">New Password</Label>
-                                <Input
-                                    id="new-password"
-                                    type="password"
-                                    placeholder="Enter Your New Password"
-                                    required
-                                    value={state.new_password}
-                                    onChange={(e) => setState({ new_password: e.target.value })}
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Confirm New Password</Label>
-                                <Input
-                                    id="confirm-passsword"
-                                    type="password"
-                                    placeholder="Enter Your Confirm Password"
-                                    required
-                                    value={state.confirm_password}
-                                    onChange={(e) => setState({ confirm_password: e.target.value })}
-                                />
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Button onClick={() => router?.back()} variant="outline" className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen">Cancel</Button>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="old password">Old Password</Label>
+                <Input
+                  id="old-password"
+                  type="password"
+                  placeholder="Enter Your New Password"
+                  required
+                  value={state.old_password}
+                  onChange={(e) => setState({ old_password: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="Enter Your New Password"
+                  required
+                  value={state.new_password}
+                  onChange={(e) => setState({ new_password: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Confirm New Password</Label>
+                <Input
+                  id="confirm-passsword"
+                  type="password"
+                  placeholder="Enter Your Confirm Password"
+                  required
+                  value={state.confirm_password}
+                  onChange={(e) =>
+                    setState({ confirm_password: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => router?.back()}
+                  variant="outline"
+                  className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+                >
+                  Cancel
+                </Button>
 
-                                <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen " onClick={handleSubmit}>
-                                    Confirm
-                                </Button>
-                            </div>
-
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
-    );
+                <Button
+                  type="button"
+                  className="w-full bg-themeGreen hover:bg-themeGreen "
+                  onClick={handleSubmit}
+                >
+                  {state.btnLoading ? <Loader /> : "Confirm"}
+                </Button>
+              </div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default ChangePasswordConfirmForm;
