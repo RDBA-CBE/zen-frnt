@@ -92,7 +92,7 @@ const LoginForm = (props) => {
             window.location.reload();
           }
         }
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log("error: ", error);
       setState({ loading: false });

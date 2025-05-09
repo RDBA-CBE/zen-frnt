@@ -161,9 +161,96 @@ const AlumniRegistrationForm = () => {
     }
   };
 
+  // const AlumniRegistration = async () => {
+  //   try {
+  //     setState({ btnLoading: true });
+  //     const body = {
+  //       username: state?.alumniUsername,
+  //       email: state?.alumniEmail,
+  //       phone_number: state?.alumniPhone,
+  //       department: state?.alumniDepartment,
+  //       work: state?.work,
+  //       country: state?.country?.value,
+  //       address: state?.address,
+  //       year_of_graduation: state?.year_of_graduation?.value
+  //         ? state?.year_of_graduation?.value
+  //         : "",
+  //       intrested_topics: state?.alumniIntrested_topics?.some(
+  //         (item) => item.value === "others"
+  //       )
+  //         ? state?.alumniIntrested_topics1
+  //         : state?.alumniIntrested_topics?.map((item) => item.label),
+  //       university: state?.alumniUniversity?.value || "", // Safely access university value
+  //       is_open_to_be_mentor:
+  //         state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
+  //       is_alumni: true,
+  //     };
+
+  //     await Validation.AlumniRegistration.validate(body, {
+  //       abortEarly: false,
+  //     });
+
+  //     const res = await Models.auth.registration(body);
+  //     setState({ btnLoading: false });
+
+  //     Success(
+  //       "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
+  //     );
+  //     setState({
+  //       alumniUsername: "",
+  //       alumniEmail: "",
+  //       alumniPhone: "",
+  //       alumniDepartment: "",
+  //       work: "",
+  //       country: "",
+  //       address: "",
+  //       year_of_graduation: "",
+  //       alumniIntrested_topics1: "",
+  //       alumniIntrested_topics: [],
+  //       alumniUniversity: null,
+  //       is_open_to_be_mentor: false,
+  //       errors: null,
+  //     });
+  //     // router?.push("/");
+  //   } catch (error) {
+  //     console.log("error", error);
+  //     setState({ btnLoading: false });
+
+  //     if (error instanceof Yup.ValidationError) {
+  //       const validationErrors = {};
+  //       error.inner.forEach((err) => {
+  //         validationErrors[err.path] = err?.message;
+  //       });
+
+  //       console.log("validationErrors: ", validationErrors);
+  //       if (isValidPhoneNumber(state.alumniPhone) == false) {
+  //         validationErrors.phone_number = "Please enter a valid phone number";
+  //       }
+
+  //       // Set validation errors in state
+  //       setState({ errors: validationErrors });
+  //       setState({ btnLoading: false }); // Stop loading after error
+  //     } else {
+  //       setState({ btnLoading: false }); // Stop loading after unexpected error
+  //       if (error?.email) {
+  //         Failure(error.email[0]);
+  //         setState({ errors: null });
+  //       } else if (error?.password) {
+  //         setState({ errors: null });
+
+  //         Failure(error.password[0]);
+  //       } else {
+  //         setState({ errors: null });
+  //         Failure("An error occurred. Please try again.");
+  //       }
+  //     }
+  //   }
+  // };
+
   const AlumniRegistration = async () => {
     try {
       setState({ btnLoading: true });
+
       const body = {
         username: state?.alumniUsername,
         email: state?.alumniEmail,
@@ -186,17 +273,31 @@ const AlumniRegistrationForm = () => {
         is_alumni: true,
       };
 
-      await Validation.AlumniRegistration.validate(body, {
-        abortEarly: false,
-      });
+      // First: Run Yup validation
+      await Validation.AlumniRegistration.validate(body, { abortEarly: false });
 
+      // Then: Run custom phone validation
+      if (!isValidPhoneNumber(body.phone_number)) {
+        setState({
+          btnLoading: false,
+          errors: {
+            phone_number: "Please enter a valid phone number",
+          },
+        });
+        return;
+      }
+
+      // If all validations pass
       const res = await Models.auth.registration(body);
+
       setState({ btnLoading: false });
 
       Success(
         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
       );
+
       setState({
+        errors: null,
         alumniUsername: "",
         alumniEmail: "",
         alumniPhone: "",
@@ -209,39 +310,39 @@ const AlumniRegistrationForm = () => {
         alumniIntrested_topics: [],
         alumniUniversity: null,
         is_open_to_be_mentor: false,
-        errors: null,
       });
-      // router?.push("/");
     } catch (error) {
-      console.log("error", error);
       setState({ btnLoading: false });
 
+      const validationErrors = {};
+
       if (error instanceof Yup.ValidationError) {
-        const validationErrors = {};
         error.inner.forEach((err) => {
-          validationErrors[err.path] = err?.message;
+          validationErrors[err.path] = err.message;
         });
 
-        console.log("validationErrors: ", validationErrors);
-        if (isValidPhoneNumber(state.alumniPhone) == false) {
+        // ✅ Add custom phone validation too if needed
+        if (!isValidPhoneNumber(state.alumniPhone)) {
           validationErrors.phone_number = "Please enter a valid phone number";
         }
 
-        // Set validation errors in state
         setState({ errors: validationErrors });
-        setState({ btnLoading: false }); // Stop loading after error
       } else {
-        setState({ btnLoading: false }); // Stop loading after unexpected error
+        if (!isValidPhoneNumber(state.alumniPhone)) {
+          validationErrors.phone_number = "Please enter a valid phone number";
+        }
+
+        setState({ errors: validationErrors });
+
         if (error?.email) {
           Failure(error.email[0]);
           setState({ errors: null });
         } else if (error?.password) {
-          setState({ errors: null });
-
           Failure(error.password[0]);
-        } else {
           setState({ errors: null });
+        } else if (Object.keys(validationErrors).length === 0) {
           Failure("An error occurred. Please try again.");
+          setState({ errors: null });
         }
       }
     }

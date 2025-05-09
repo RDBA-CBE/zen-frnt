@@ -22,6 +22,8 @@ const SingleSelectDropdown = ({
   useEffect(() => {
     if (value) {
       setSelectedOption(value);
+    } else {
+      setSelectedOption(null);
     }
   }, [value]);
 
@@ -31,7 +33,7 @@ const SingleSelectDropdown = ({
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
-    onChange(option); 
+    onChange(option);
     setIsOpen(false);
   };
 
@@ -129,7 +131,7 @@ const SingleSelectDropdown = ({
                 <div
                   key={item.value}
                   className="option-item"
-                  onMouseDown={() => handleOptionSelect(item)} 
+                  onMouseDown={() => handleOptionSelect(item)}
                   style={{
                     padding: "6px 8px",
                     cursor: "pointer",
