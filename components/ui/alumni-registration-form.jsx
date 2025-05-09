@@ -172,7 +172,9 @@ const AlumniRegistrationForm = () => {
         work: state?.work,
         country: state?.country?.value,
         address: state?.address,
-        year_of_graduation: state?.year_of_graduation,
+        year_of_graduation: state?.year_of_graduation?.value
+          ? state?.year_of_graduation?.value
+          : "",
         intrested_topics: state?.alumniIntrested_topics?.some(
           (item) => item.value === "others"
         )
@@ -262,6 +264,11 @@ const AlumniRegistrationForm = () => {
       });
     }
   };
+
+  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+    const year = 1951 + i;
+    return { value: year.toString(), label: year.toString() };
+  });
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -359,7 +366,7 @@ const AlumniRegistrationForm = () => {
             </div>
 
             <div className="space-y-1">
-              <TextInput
+              {/* <TextInput
                 id="year_of_graduation"
                 type="numeric"
                 placeholder="Enter Year of Graduated"
@@ -370,6 +377,16 @@ const AlumniRegistrationForm = () => {
                 onChange={(e) =>
                   setState({ year_of_graduation: e.target.value })
                 }
+              /> */}
+
+              <CustomSelect
+                options={years || []} // Safely pass empty array if universityList is null
+                value={state.year_of_graduation?.value || ""}
+                onChange={(value) => setState({ year_of_graduation: value })}
+                error={state.errors?.year_of_graduation}
+                title="Year Graduated"
+                placeholder="Select Year of Graduated"
+                required
               />
             </div>
 

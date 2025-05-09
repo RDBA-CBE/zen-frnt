@@ -42,6 +42,7 @@ const UserList = () => {
     currentPage: 1,
     loading: false,
     roleList: [],
+    deleteLoading: false,
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -133,7 +134,12 @@ const UserList = () => {
           <div className="cursor-pointer" onClick={() => handleView(row.row)}>
             <Eye size={20} className="mr-2" />
           </div>
-          <div className="cursor-pointer" onClick={() => deleteUser(row)}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isDeleteOpen: true, deleteId: row?.row?.id })
+            }
+          >
             <Trash size={18} className="mr-2" />
           </div>
         </div>
@@ -194,10 +200,14 @@ const UserList = () => {
 
   const deleteUser = async (row) => {
     try {
-      await Models.user.delete(row?.row?.id);
+      setState({ deleteLoading: true });
+      await Models.user.delete(state.deleteId);
       Success("User deleted successfully");
+      setState({ isDeleteOpen: false, deleteId: null, deleteLoading: false });
       await getUserList(state.currentPage);
     } catch (error) {
+      setState({ deleteLoading: false });
+
       console.log("error: ", error);
     }
   };
@@ -394,6 +404,33 @@ const UserList = () => {
                     : updateCategory()
                 }
                 loading={state.submitLoading}
+              />
+            </div>
+          </>
+        )}
+      />
+
+      <Modal
+        isOpen={state.isDeleteOpen}
+        setIsOpen={() => setState({ isDeleteOpen: false, deleteId: null })}
+        title={"Are you sure to delete user"}
+        renderComponent={() => (
+          <>
+            <div className="flex justify-end gap-5">
+              <PrimaryButton
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                name="Cancel"
+                onClick={() =>
+                  setState({ isDeleteOpen: false, deleteId: null })
+                }
+              />
+
+              <PrimaryButton
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
+                onClick={() => deleteUser()}
+                loading={state.deleteLoading}
               />
             </div>
           </>

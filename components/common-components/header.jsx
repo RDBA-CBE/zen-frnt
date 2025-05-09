@@ -180,48 +180,50 @@ const Header = () => {
       {isClient && ( // Ensure that the header only renders after the client-side component mounts
         <header className="bg-white shadow-md sticky top-0 z-[10]">
           {/* Top Header */}
-          <div className="backcolor-purpole text-white py-2">
-            <div className="container mx-auto flex  items-center justify-between px-5">
-              <div className="flex items-center gap-2 md:gap-4">
-                <div className="flex items-center gap-1 border-r border-white md:pr-4 pr-2">
-                  <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+          {!tokens && (
+            <div className="backcolor-purpole text-white py-2">
+              <div className="container mx-auto flex  items-center justify-between px-5">
+                <div className="flex items-center gap-2 md:gap-4">
+                  <div className="flex items-center gap-1 border-r border-white md:pr-4 pr-2">
+                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                    <Link
+                      prefetch={true}
+                      href="/student-registration"
+                      className="hover:underline md:text-[16px] text-[10px] "
+                    >
+                      Student Registration
+                    </Link>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                    <Link
+                      prefetch={true}
+                      href="/alumni-registration"
+                      className="hover:underline  md:text-[16px] text-[10px]"
+                    >
+                      Alumni Registration
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex gap-2  ">
                   <Link
-                    prefetch={true}
-                    href="/student-registration"
-                    className="hover:underline md:text-[16px] text-[10px] "
+                    href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect"
+                    target="_blank"
+                    aria-label="Instagram"
                   >
-                    Student Registration
+                    <InstagramIcon className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
+                    target="_blank"
+                    aria-label="LinkedIn"
+                  >
+                    <LinkedinIcon className="w-4 h-4" />
                   </Link>
                 </div>
-                <div className="flex items-center gap-1">
-                  <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                  <Link
-                    prefetch={true}
-                    href="/alumni-registration"
-                    className="hover:underline  md:text-[16px] text-[10px]"
-                  >
-                    Alumni Registration
-                  </Link>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link
-                  href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect"
-                  target="_blank"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
-                  target="_blank"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedinIcon className="w-4 h-4" />
-                </Link>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Main Header */}
           <div className="py-4 border-b border-gray-200">

@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import store from "@/store";
 import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { InstagramIcon, LinkedinIcon } from "lucide-react";
 
 // Import fonts
 const geistSans = Geist({
@@ -46,13 +47,33 @@ export default function RootLayout({ children }) {
               <Header /> {/* Conditionally render header */}
               <main className="w-full p-4 pt-5 pb-24">{children}</main>
               <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
-                <div className="text-center mb-0 md:text-[14px] text-xs">
-                  Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
-                  <Link href="https://irepute.in/" className="font-bold"
-                  
-                  >
-                    repute
-                  </Link>
+                <div className="flex justify-between items-center text-xs md:text-[14px] pl-10 align-center">
+                  {/* Left: Copyright */}
+                  <div>
+                    Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
+                    {/* © 2025 ZenWellness Lounge. Concept by{" "} */}
+                    <Link href="https://irepute.in/" className="font-bold">
+                      repute
+                    </Link>
+                  </div>
+
+                  {/* Right: Social Icons */}
+                  <div className="flex gap-2">
+                    <Link
+                      href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect"
+                      target="_blank"
+                      aria-label="Instagram"
+                    >
+                      <InstagramIcon className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
+                      target="_blank"
+                      aria-label="LinkedIn"
+                    >
+                      <LinkedinIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </footer>
             </div>

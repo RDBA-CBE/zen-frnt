@@ -119,7 +119,9 @@ const StudentRegistrationForm = () => {
         username: state?.username,
         email: state?.email,
         department: state?.department,
-        year_of_entry: state?.year_of_entry,
+        year_of_entry: state?.year_of_entry?.value
+          ? state?.year_of_entry?.value
+          : "",
         password: state?.password,
         intrested_topics: state?.alumniIntrested_topics?.some(
           (item) => item.value === "others"
@@ -134,6 +136,12 @@ const StudentRegistrationForm = () => {
         abortEarly: false,
       });
       const res = await Models.auth.registration(body);
+
+      Success(
+        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests."
+      );
+
+      router?.push("/login");
       setState({
         btnLoading: false,
         username: "",
@@ -143,11 +151,6 @@ const StudentRegistrationForm = () => {
         password: "",
         university: null,
       });
-
-      Success(
-        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests."
-      );
-      router?.push("/login");
     } catch (error) {
       console.log("error", error);
       setState({ btnLoading: false });
@@ -223,7 +226,10 @@ const StudentRegistrationForm = () => {
 
   // };
 
-  console.log("state?.errors");
+  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+    const year = 1951 + i;
+    return { value: year.toString(), label: year.toString() };
+  });
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -352,7 +358,7 @@ const StudentRegistrationForm = () => {
                                         error={state.errors?.year_of_entry}
                                         required
                                     /> */}
-              <TextInput
+              {/* <TextInput
                 id="year_of_entry"
                 type="text"
                 placeholder="Enter Year of Entry"
@@ -361,6 +367,15 @@ const StudentRegistrationForm = () => {
                 title="Year of Entry"
                 required
                 error={state.errors?.year_of_entry}
+              /> */}
+              <CustomSelect
+                options={years || []} // Safely pass empty array if universityList is null
+                value={state.year_of_entry?.value || ""}
+                onChange={(value) => setState({ year_of_entry: value })}
+                error={state.errors?.year_of_entry}
+                title="Year of Entry"
+                placeholder="Select Year of Entry"
+                required
               />
             </div>
 
