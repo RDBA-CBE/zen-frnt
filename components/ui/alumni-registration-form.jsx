@@ -179,7 +179,7 @@ const AlumniRegistrationForm = () => {
         )
           ? state?.alumniIntrested_topics1
           : state?.alumniIntrested_topics?.map((item) => item.label),
-        alumniUniversity: state?.alumniUniversity?.value || "", // Safely access university value
+        university: state?.alumniUniversity?.value || "", // Safely access university value
         is_open_to_be_mentor:
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
         is_alumni: true,
