@@ -20,6 +20,7 @@ import TextArea from "@/components/common-components/textArea";
 import { TextInput } from "@/components/common-components/textInput";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const CategoriesList = () => {
   const [state, setState] = useSetState({
@@ -374,4 +375,4 @@ const CategoriesList = () => {
   );
 };
 
-export default CategoriesList;
+export default ProtectedRoute(CategoriesList);

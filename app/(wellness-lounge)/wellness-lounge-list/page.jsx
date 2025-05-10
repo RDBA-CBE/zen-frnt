@@ -32,6 +32,7 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -391,4 +392,4 @@ const WellnessLoungeList = () => {
   );
 };
 
-export default WellnessLoungeList;
+export default ProtectedRoute(WellnessLoungeList);

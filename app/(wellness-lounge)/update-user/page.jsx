@@ -25,8 +25,10 @@ import { Trash2 } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
 import { mentorList } from "@/utils/constant.utils";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function CreateUser() {
+const CreateUser = () => {
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -628,3 +630,7 @@ export default function CreateUser() {
     </div>
   );
 }
+
+
+export default ProtectedRoute(CreateUser);
+

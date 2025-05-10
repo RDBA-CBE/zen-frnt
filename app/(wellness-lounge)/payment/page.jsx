@@ -16,6 +16,7 @@ import { objIsEmpty, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const Modal = dynamic(() => import('@/components/common-components/modal'), { ssr: false });
 const TextArea = dynamic(() => import('@/components/common-components/textArea'), { ssr: false });
@@ -240,4 +241,4 @@ const PaymentPage = () => {
   );
 };
 
-export default PaymentPage;
+export default ProtectedRoute(PaymentPage);

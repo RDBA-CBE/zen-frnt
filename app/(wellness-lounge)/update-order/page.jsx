@@ -23,8 +23,9 @@ import { XIcon } from "lucide-react";
 import { orderStatusList } from "@/utils/constant.utils";
 import CustomSelectMulti from "@/components/common-components/multi-select";
 import CustomMultiSelect from "@/components/common-components/multi-select";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function UpdateOrder() {
+const UpdateOrder = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -76,12 +77,11 @@ export default function UpdateOrder() {
     try {
       const res = await Models.session.detailsRegistration(id);
       console.log("getDetails: ", res?.user);
-      const data={
+      const data = {
         value: res?.user?.id,
         label: res?.user?.username,
-      }
-console.log('✌️data --->', data);
-
+      };
+      console.log("✌️data --->", data);
 
       setState({
         user: {
@@ -196,7 +196,6 @@ console.log('✌️data --->', data);
     }
   };
 
-
   const SelectedUser = state?.userData?.filter(
     (item) => item?.id == state?.user?.value
   );
@@ -204,7 +203,6 @@ console.log('✌️data --->', data);
   const filteredLoungeData = state?.loungeData?.filter(
     (lounge) => lounge?.id == state?.event?.value
   );
-
 
   const columns = [
     {
@@ -371,4 +369,6 @@ console.log('✌️data --->', data);
       </div>
     </div>
   );
-}
+};
+
+export default ProtectedRoute(UpdateOrder);

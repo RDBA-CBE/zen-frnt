@@ -23,8 +23,9 @@ import { Loader, Trash2, X } from "lucide-react";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import * as Yup from "yup";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function UpdateWellnessLounge() {
+const UpdateWellnessLounge = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -119,7 +120,7 @@ export default function UpdateWellnessLounge() {
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
     } catch (error) {
-      setState({ loading: false, });
+      setState({ loading: false });
 
       console.log("error: ", error);
     }
@@ -424,4 +425,6 @@ export default function UpdateWellnessLounge() {
       </div>
     </div>
   );
-}
+};
+
+export default ProtectedRoute(UpdateWellnessLounge);

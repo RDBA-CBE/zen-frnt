@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import CustomFullCalendar from "@/components/ui/custom-full-calendar";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 function CalendarPage() {
   const [events, setEvents] = useState([]);
 
@@ -9,4 +10,4 @@ function CalendarPage() {
   );
 }
 
-export default CalendarPage;
+export default ProtectedRoute(CalendarPage);

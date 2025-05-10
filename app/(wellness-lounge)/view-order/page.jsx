@@ -27,8 +27,10 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Link from "next/link";
 import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function viewWellnessLounge() {
+const viewWellnessLounge = () => {
+
     const router = useRouter();
 
     const searchParams = useSearchParams();
@@ -211,3 +213,5 @@ export default function viewWellnessLounge() {
         </div>
     );
 }
+
+export default ProtectedRoute(viewWellnessLounge);

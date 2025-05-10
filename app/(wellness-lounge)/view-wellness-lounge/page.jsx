@@ -10,8 +10,11 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
 import { Failure, Success } from "@/components/common-components/toast";
 import { Loader, Loader2Icon, LoaderIcon } from "lucide-react";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function viewWellnessLounge() {
+
+const viewWellnessLounge = () => {
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [id, setId] = useState(null);
@@ -206,3 +209,6 @@ export default function viewWellnessLounge() {
     </div>
   );
 }
+
+
+export default ProtectedRoute(viewWellnessLounge);

@@ -23,6 +23,7 @@ import * as Yup from "yup";
 import { Loader } from "lucide-react";
 // import Validation from "@/utils/validation.utils";
 import * as Validation from "../../utils/validation.utils";
+import ProtectedRoute from "./privateRouter";
 
 const ChangePasswordConfirmForm = () => {
   const router = useRouter();
@@ -171,4 +172,4 @@ const ChangePasswordConfirmForm = () => {
   );
 };
 
-export default ChangePasswordConfirmForm;
+export default ProtectedRoute(ChangePasswordConfirmForm);

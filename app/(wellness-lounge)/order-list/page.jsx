@@ -24,6 +24,7 @@ import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { orderStatusList } from "@/utils/constant.utils";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const WellnessLoungeList = () => {
     const router = useRouter();
@@ -385,4 +386,6 @@ const WellnessLoungeList = () => {
     );
 };
 
-export default WellnessLoungeList;
+export default ProtectedRoute(WellnessLoungeList);
+
+

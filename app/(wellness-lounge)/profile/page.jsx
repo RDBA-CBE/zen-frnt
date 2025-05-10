@@ -26,8 +26,9 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import Link from "next/link";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const tokens = useSelector((state) => state.auth.tokens);
@@ -559,4 +560,6 @@ export default function ProfilePage() {
       </div>
     </div>
   );
-}
+};
+
+export default ProtectedRoute(ProfilePage);

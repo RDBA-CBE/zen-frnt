@@ -26,6 +26,7 @@ import { Label } from "@radix-ui/react-label";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import useDebounce from "@/components/common-components/useDebounce";
 import Loading from "@/components/common-components/Loading";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const UserList = () => {
   const router = useRouter();
@@ -440,4 +441,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default ProtectedRoute(UserList);

@@ -23,8 +23,10 @@ import { XIcon } from "lucide-react";
 import { orderStatusList } from "@/utils/constant.utils"
 import CustomSelectMulti from "@/components/common-components/multi-select";
 import CustomMultiSelect from "@/components/common-components/multi-select";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function CreateOrder() {
+const CreateOrder = () => {
+
     const router = useRouter();
 
     const [state, setState] = useSetState({
@@ -369,3 +371,7 @@ export default function CreateOrder() {
         </div>
     );
 }
+
+
+
+export default ProtectedRoute(CreateOrder);

@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import "react-day-picker/dist/style.css";
 
 interface DatePickerProps {
   selectedDate?: Date | null;
@@ -61,7 +62,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
-            fromDate={fromDate ? fromDate : new Date()}
+            fromDate={fromDate ? fromDate : null}
             mode="single"
             selected={selectedDate || undefined}
             onSelect={(date) => onChange?.(date ?? null)}
@@ -71,6 +72,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                 ? (date) => date < new Date() // Disable dates before today
                 : undefined
             }
+            captionLayout="dropdown" // <-- Enables month & year dropdowns
+            fromYear={1900} // <-- Earliest year allowed
+            toYear={new Date().getFullYear() + 5} // <-- Latest year
           />
         </PopoverContent>
       </Popover>

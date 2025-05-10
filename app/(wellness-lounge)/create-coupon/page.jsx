@@ -10,8 +10,10 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
-export default function CreateWellnessLounge() {
+const CreateWellnessLounge = () => {
+
   const router = useRouter();
 
   const [state, setState] = useSetState({
@@ -148,3 +150,5 @@ export default function CreateWellnessLounge() {
     </div>
   );
 }
+
+export default ProtectedRoute(CreateWellnessLounge);

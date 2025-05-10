@@ -10,6 +10,7 @@ import { DatePicker } from "@/components/common-components/datePicker";
 import CustomSelect from "@/components/common-components/dropdown";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { Success } from "@/components/common-components/toast";
+import ProtectedRoute from "@/components/common-components/privateRouter";
 
 const UpdateCoupon = () => {
   const router = useRouter();
@@ -168,4 +169,6 @@ const UpdateCouponPage = () => {
   );
 };
 
-export default UpdateCouponPage;
+export default ProtectedRoute(UpdateCouponPage);
+
+
