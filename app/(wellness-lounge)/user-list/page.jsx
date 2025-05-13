@@ -414,7 +414,7 @@ const UserList = () => {
       <Modal
         isOpen={state.isDeleteOpen}
         setIsOpen={() => setState({ isDeleteOpen: false, deleteId: null })}
-        title={"Are you sure to delete user"}
+        title={"Are you sure to delete user ?"}
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">
