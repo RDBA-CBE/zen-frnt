@@ -421,14 +421,14 @@ const UserList = () => {
               <PrimaryButton
                 variant={"outline"}
                 className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
-                name="Cancel"
+                name="No"
                 onClick={() =>
                   setState({ isDeleteOpen: false, deleteId: null })
                 }
               />
 
               <PrimaryButton
-                name="Submit"
+                name="Yes"
                 className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteUser()}
                 loading={state.deleteLoading}
