@@ -165,7 +165,7 @@ const viewWellnessLounge = () => {
                   )}
                 </p>
 
-                {state?.group === "Student" && state?.orderData?.is_registered === false && (
+                {(state?.group === "Student" && state?.orderData?.is_registered === false)?  (
                   <div>
                     <Button
                       className={`mt-3 ${
@@ -178,14 +178,25 @@ const viewWellnessLounge = () => {
                       Enroll
                     </Button>
                   </div>
-                )}
+                ) : <div>
+                    <Button
+                      className={`mt-3 ${
+                        state?.orderData?.is_registered
+                          ? "bg-themeGreen hover:bg-themeGreen"
+                          : "bg-themePurple hover:bg-themePurple"
+                      }`}
+                      onClick={() => setState({ isOpen: true })}
+                    >
+                      Already Enrolled
+                    </Button>
+                  </div>}
               </div>
             </div>
 
             <Dialog open={state?.isOpen} onOpenChange={closeDialog}>
               <DialogContent className="bg-white p-6 rounded-lg w-96">
                 <DialogTitle className="text-lg font-semibold mb-2">
-                  Are you sure you're interested in this event?
+                  You want to enroll in this event?
                 </DialogTitle>
                 <div className="flex justify-between gap-2">
                   <Button

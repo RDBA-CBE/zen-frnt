@@ -30,7 +30,8 @@ const CreateUser = () => {
   const router = useRouter();
 
   const [state, setState] = useSetState({
-    name: "",
+    firstname: "",
+    lastname:"",
     email: "",
     phone_number: "",
     address: "",
@@ -125,7 +126,8 @@ const CreateUser = () => {
 
       // Construct the body object with necessary fields, conditionally included
       let body = {
-        name: state.name,
+        firstname: state.firstname,
+         lastname: state.lastname,
         email: state.email,
         department:
           state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -187,7 +189,8 @@ const CreateUser = () => {
       // Prepare the formData to submit
       let groups = [state.user_type?.value];
       let formData = new FormData();
-      formData.append("username", body.name);
+      formData.append("firstname", body.firstname);
+       formData.append("lastname", body.lastname);
       formData.append("email", body.email);
 
       // Append other fields conditionally
@@ -317,13 +320,24 @@ const CreateUser = () => {
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
-            value={state.name}
+            value={state.firstname}
             onChange={(e) => {
-              setState({ name: e.target.value });
+              setState({ firstname: e.target.value });
             }}
-            placeholder="Name"
-            title="Name"
-            error={state.errors?.name}
+            placeholder="First Name"
+            title="First Name"
+            error={state.errors?.firstname}
+            required
+          />
+
+          <TextInput
+            value={state.lastname}
+            onChange={(e) => {
+              setState({ lastname: e.target.value });
+            }}
+            placeholder="Last Name"
+            title="Last Name"
+            error={state.errors?.lastname}
             required
           />
 
@@ -338,7 +352,7 @@ const CreateUser = () => {
             required
           />
 
-          <DatePicker
+          {/* <DatePicker
             placeholder="Date Of Birth"
             title="Date Of Birth"
             selectedDate={state.dob}
@@ -350,7 +364,7 @@ const CreateUser = () => {
             }}
             // error={state.errors?.dob}
             // required
-          />
+          /> */}
 
           <TextInput
             title="Profile Image"

@@ -37,7 +37,8 @@ const AlumniRegistrationForm = () => {
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
   const [state, setState] = useSetState({
-    username: "",
+    firstname: "",
+    lastname:"",
     email: "",
     password: "",
     phone_number: "",
@@ -123,7 +124,8 @@ const AlumniRegistrationForm = () => {
   const StudentRegistration = async () => {
     try {
       const body = {
-        username: state?.username,
+        firstname: state?.firstname,
+        lastname: state?.lastname,
         email: state?.email,
         department: state?.department,
         year_of_entry: state?.year_of_entry,
@@ -252,7 +254,8 @@ const AlumniRegistrationForm = () => {
       setState({ btnLoading: true });
 
       const body = {
-        username: state?.alumniUsername,
+        firstname: state?.aluminifirstname,
+        lastname: state?.aluminilastname,
         email: state?.alumniEmail,
         phone_number: state?.alumniPhone,
         department: state?.alumniDepartment,
@@ -298,7 +301,8 @@ const AlumniRegistrationForm = () => {
 
       setState({
         errors: null,
-        alumniUsername: "",
+        alumnifirstname: "",
+        alumnilastname: "",
         alumniEmail: "",
         alumniPhone: "",
         alumniDepartment: "",
@@ -385,14 +389,27 @@ const AlumniRegistrationForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <TextInput
-                id="alumniUsername"
+                id="alumnifirstname"
                 type="text"
-                placeholder="Enter Your Name"
-                title="User Name"
+                placeholder="Enter Your First Name"
+                title="First Name"
                 required
-                value={state.alumniUsername}
-                onChange={(e) => setState({ alumniUsername: e.target.value })}
-                error={state?.errors?.username}
+                value={state.alumnifirstname}
+                onChange={(e) => setState({ alumnifirstname: e.target.value })}
+                error={state?.errors?.firstname}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <TextInput
+                id="alumnilastname"
+                type="text"
+                placeholder="Enter Your Last Name"
+                title="Last Name"
+                required
+                value={state.alumnilastname}
+                onChange={(e) => setState({ alumnilastname: e.target.value })}
+                error={state?.errors?.lastname}
               />
             </div>
 

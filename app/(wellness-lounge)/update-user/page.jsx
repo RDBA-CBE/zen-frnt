@@ -53,7 +53,8 @@ const CreateUser = () => {
   console.log("groups", groups);
 
   const [state, setState] = useSetState({
-    name: "",
+    firstname: "",
+    lastname:"",
     email: "",
     phone_number: "",
     address: "",
@@ -112,8 +113,10 @@ const CreateUser = () => {
 
       console.log("resss", res);
       setState({
+          firstname: res.firstname ? res.firstname : "",
+            lastname: res.lastname ? res.lastname : "",
         email: res.email ? res.email : "",
-        name: res.username ? res.username : "",
+      
         address: res.address ? res.address : "",
         phone_number: res?.phone_number ? res?.phone_number : "",
         year_of_entry: res?.year_of_entry
@@ -199,7 +202,8 @@ const CreateUser = () => {
       setState({ submitLoading: true });
 
       let body = {
-        name: state.name,
+        firstname: state.firstname,
+        lastname:state.lastname,
         email: state.email,
         department:
           state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -247,7 +251,8 @@ const CreateUser = () => {
 
       let groups = [state.user_type?.value];
       let formData = new FormData();
-      formData.append("username", body.name);
+      formData.append("firstname", body.firstname);
+      formData.append("lastname", body.lastname);
       formData.append("email", body.email);
 
       if (body.department) formData.append("department", body.department);
@@ -357,13 +362,24 @@ const CreateUser = () => {
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
-            value={state.name}
+            value={state.firstname}
             onChange={(e) => {
-              setState({ name: e.target.value });
+              setState({ firstname: e.target.value });
             }}
-            placeholder="Name"
-            title="Name"
-            error={state.errors?.name}
+            placeholder="First Name"
+            title="First Name"
+            error={state.errors?.firstname}
+            required
+          />
+
+           <TextInput
+            value={state.lastname}
+            onChange={(e) => {
+              setState({ lastname: e.target.value });
+            }}
+            placeholder="Last Name"
+            title="Last Name"
+            error={state.errors?.lastname}
             required
           />
 
@@ -378,7 +394,7 @@ const CreateUser = () => {
             required
           />
 
-          <DatePicker
+          {/* <DatePicker
             placeholder="Date Of Birth"
             title="Date Of Birth"
             selectedDate={state.dob}
@@ -390,7 +406,7 @@ const CreateUser = () => {
             }}
             // error={state.errors?.dob}
             // required
-          />
+          /> */}
           {isValidImageUrl(state.thumbnail_image) ? (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">

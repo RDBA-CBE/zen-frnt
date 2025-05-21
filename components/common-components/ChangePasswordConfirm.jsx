@@ -20,7 +20,7 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
-import { Loader } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 // import Validation from "@/utils/validation.utils";
 import * as Validation from "../../utils/validation.utils";
 import ProtectedRoute from "./privateRouter";
@@ -55,6 +55,9 @@ const ChangePasswordConfirmForm = () => {
     new_password: "",
     confirm_password: "",
     btnLoading: false,
+    showPassword: false,
+    showConfirmPassword: false,
+    showNewPassword: false,
   });
 
   useEffect(() => {
@@ -114,38 +117,86 @@ const ChangePasswordConfirmForm = () => {
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="old password">Old Password</Label>
+                <div className="relative">
                 <Input
                   id="old-password"
-                  type="password"
+                  type={state.showPassword ? "text" : "password"}
                   placeholder="Enter Your New Password"
                   required
                   value={state.old_password}
                   onChange={(e) => setState({ old_password: e.target.value })}
+                   className="pr-10"
                 />
+                <button
+                    type="button"
+                    onClick={() => {
+                      setState({ showPassword: !state.showPassword });
+                    }}
+                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                  >
+                    {state?.showPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">New Password</Label>
+                <div className="relative">
                 <Input
                   id="new-password"
-                  type="password"
+                  type={state.showNewPassword ? "text" : "password"}
                   placeholder="Enter Your New Password"
                   required
                   value={state.new_password}
                   onChange={(e) => setState({ new_password: e.target.value })}
+                  className="pr-10"
                 />
+                <button
+                    type="button"
+                    onClick={() => {
+                      setState({ showNewPassword: !state.showNewPassword });
+                    }}
+                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                  >
+                    {state?.showNewPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Confirm New Password</Label>
+                 <div className="relative">
                 <Input
                   id="confirm-passsword"
-                  type="password"
+                 type={state.showConfirmPassword ? "text" : "password"}
                   placeholder="Enter Your Confirm Password"
+                   className="pr-10"
                   required
                   value={state.confirm_password}
                   onChange={(e) =>
                     setState({ confirm_password: e.target.value })
                   }
                 />
+                <button
+                    type="button"
+                    onClick={() => {
+                      setState({ showConfirmPassword: !state.showConfirmPassword });
+                    }}
+                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                  >
+                    {state?.showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                  </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button

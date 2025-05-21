@@ -61,7 +61,8 @@ export const createCategory = Yup.object().shape({
 });
 
 export const studentRegistration = Yup.object().shape({
-  username: Yup.string().required("Name is required"),
+  firstname: Yup.string().required("First Name is required"),
+  lastname: Yup.string().required("Last Name is required"),
   email: Yup.string().required("Email is required"),
   password: Yup.string().required("Password is required"),
   year_of_entry: Yup.string().required("Year of entry is required"),
@@ -81,7 +82,8 @@ export const forgetPassword = Yup.object().shape({
 });
 
 export const AlumniRegistration = Yup.object().shape({
-  username: Yup.string().required("Name is required"),
+  firstname: Yup.string().required("First Name is required"),
+   lastname: Yup.string().required("Last Name is required"),
   email: Yup.string().required("Email is required").email("Email is not valid"),
   // email: Yup.string().required("Email is required"),
   // password: Yup.string().required("Password is required"),

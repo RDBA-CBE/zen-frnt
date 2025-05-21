@@ -52,7 +52,7 @@ const StudentRegistrationForm = () => {
     year_of_graduation: "",
     alumniPassword: "",
     btnLoading: false,
-    showPassword:false
+    showPassword: false
   });
 
   useEffect(() => {
@@ -117,7 +117,8 @@ const StudentRegistrationForm = () => {
       );
 
       const body = {
-        username: state?.username,
+        firstname: state?.firstname,
+        lastname: state?.lastname,
         email: state?.email,
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
@@ -145,7 +146,8 @@ const StudentRegistrationForm = () => {
       router?.push("/login");
       setState({
         btnLoading: false,
-        username: "",
+        firstname: "",
+        lastname: "",
         email: "",
         department: "",
         year_of_entry: "",
@@ -246,14 +248,28 @@ const StudentRegistrationForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <TextInput
-                id="username"
+                id="firstname"
                 type="text"
-                placeholder="Enter Your Name"
+                placeholder="Enter Your First Name"
                 required
-                value={state.username}
-                onChange={(e) => setState({ username: e.target.value })}
-                error={state.errors?.username}
-                title="User Name"
+                value={state.firstname}
+                onChange={(e) => setState({ firstname: e.target.value })}
+                error={state.errors?.firstname}
+                title="First Name"
+              />
+            </div>
+
+
+            <div className="space-y-1">
+              <TextInput
+                id="lastname"
+                type="text"
+                placeholder="Enter Your Last Name"
+                required
+                value={state.lastname}
+                onChange={(e) => setState({ lastname: e.target.value })}
+                error={state.errors?.lastname}
+                title="Last Name"
               />
             </div>
 
@@ -383,30 +399,30 @@ const StudentRegistrationForm = () => {
             <div className="space-y-1">
               <div className="relative">
                 <TextInput
-                id="password"
-                type="password"
-                placeholder="Enter Your password"
-                required
-                title="Password"
-                value={state.password}
-                onChange={(e) => setState({ password: e.target.value })}
-                error={state.errors?.password}
-              />
+                  id="password"
+                  type="password"
+                  placeholder="Enter Your password"
+                  required
+                  title="Password"
+                  value={state.password}
+                  onChange={(e) => setState({ password: e.target.value })}
+                  error={state.errors?.password}
+                />
                 <button
                   type="button"
-                 
-                 onClick={() => {
-                    
+
+                  onClick={() => {
+
                     setState({ showPassword: !state.showPassword });
                   }}
                   className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-                  style={{top:"55%"}}
+                  style={{ top: "55%" }}
                 >
                   {state?.showPassword ? <EyeOff size={18} /> : <Eye
-                   size={18} />}
+                    size={18} />}
                 </button>
               </div>
-              
+
             </div>
           </div>
 
