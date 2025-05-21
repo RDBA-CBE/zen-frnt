@@ -26,9 +26,16 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
 import { mentorList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
+
+import PhoneInput, {
+  isValidPhoneNumber,
+  getCountries,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
 
 const CreateUser = () => {
-
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -109,13 +116,20 @@ const CreateUser = () => {
         name: res.username ? res.username : "",
         address: res.address ? res.address : "",
         phone_number: res?.phone_number ? res?.phone_number : "",
-        year_of_entry: res?.year_of_entry,
-        year_of_graduation: res?.year_of_graduation ? res?.year_of_graduation : "",
+        year_of_entry: res?.year_of_entry
+          ? {
+              value: res?.year_of_entry.toString(),
+              label: res?.year_of_entry.toString(),
+            }
+          : null,
+        year_of_graduation: res?.year_of_graduation
+          ? res?.year_of_graduation
+          : "",
         work: res?.work ? res?.work : "",
         department: res?.department ? res?.department : "",
         university: {
           value: res?.university?.id ? res?.university?.id : null,
-          label: res?.university?.name ? res?.university?.name : null
+          label: res?.university?.name ? res?.university?.name : null,
         },
         intrested_topics: {
           value: res?.intrested_topics ? res?.intrested_topics?.label : null,
@@ -140,7 +154,6 @@ const CreateUser = () => {
     }
   };
 
-  console.log("is_open_to_be_mentor", state?.is_open_to_be_mentor)
 
   const getUniversity = async () => {
     try {
@@ -171,7 +184,7 @@ const CreateUser = () => {
 
       const updatedDropdowns = [
         ...Dropdowns,
-        { label: "Others", value: "others" }
+        { label: "Others", value: "others" },
       ];
 
       setState({ intrestedTopicsList: updatedDropdowns });
@@ -188,22 +201,46 @@ const CreateUser = () => {
       let body = {
         name: state.name,
         email: state.email,
-        department: state?.user_type?.label !== "Admin" ? state?.department : undefined,
+        department:
+          state?.user_type?.label !== "Admin" ? state?.department : undefined,
         address: state.address || "",
         dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
         user_type: state.user_type?.value,
         thumbnail_image: state.thumbnail_images || "",
-        phone_number: state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
-        year_of_entry: state?.user_type?.label === "Student" ? state.year_of_entry : undefined,
-        university: state?.user_type?.label !== "Admin" ? state?.university?.value : undefined,
-        intrested_topics: state?.user_type?.label !== "Admin" ? state?.intrested_topics?.label == "Others" ? state?.intrested_topics1 : state?.intrested_topics?.label : undefined,
+        phone_number:
+          state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
+        year_of_entry:
+          state?.user_type?.label === "Student"
+            ? state.year_of_entry
+            : undefined,
+        university:
+          state?.user_type?.label !== "Admin"
+            ? state?.university?.value
+            : undefined,
+        intrested_topics:
+          state?.user_type?.label !== "Admin"
+            ? state?.intrested_topics?.label == "Others"
+              ? state?.intrested_topics1
+              : state?.intrested_topics?.label
+            : undefined,
         work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-        year_of_graduation: state?.user_type?.label === "Alumni" ? state?.year_of_graduation : undefined,
-        is_open_to_be_mentor: state?.user_type?.label === "Alumni" ? state?.is_open_to_be_mentor?.value == "Yes" ? true : false : undefined,
-        country: state?.user_type?.label === "Alumni" ? state?.country?.value : undefined,
+        year_of_graduation:
+          state?.user_type?.label === "Alumni"
+            ? state?.year_of_graduation
+            : undefined,
+        is_open_to_be_mentor:
+          state?.user_type?.label === "Alumni"
+            ? state?.is_open_to_be_mentor?.value == "Yes"
+              ? true
+              : false
+            : undefined,
+        country:
+          state?.user_type?.label === "Alumni"
+            ? state?.country?.value
+            : undefined,
       };
 
-      console.log("body", body)
+      console.log("body", body);
       await Validation.createUser.validate(body, {
         abortEarly: false,
       });
@@ -229,7 +266,8 @@ const CreateUser = () => {
 
       if (state?.user_type?.label !== "Admin") {
         if (body.university) formData.append("university", body.university);
-        if (body.intrested_topics) formData.append("intrested_topics", body.intrested_topics);
+        if (body.intrested_topics)
+          formData.append("intrested_topics", body.intrested_topics);
       }
 
       if (body.phone_number && state?.user_type?.label === "Alumni") {
@@ -247,11 +285,17 @@ const CreateUser = () => {
         formData.append("address", body.address);
       }
 
-      if (body.year_of_graduation !== undefined && state?.user_type?.label === "Alumni") {
+      if (
+        body.year_of_graduation !== undefined &&
+        state?.user_type?.label === "Alumni"
+      ) {
         formData.append("year_of_graduation", body.year_of_graduation);
       }
 
-      if (body.is_open_to_be_mentor !== undefined && state?.user_type?.label === "Alumni") {
+      if (
+        body.is_open_to_be_mentor !== undefined &&
+        state?.user_type?.label === "Alumni"
+      ) {
         formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
       }
       if (body.year_of_entry && state?.user_type?.label === "Student") {
@@ -262,8 +306,6 @@ const CreateUser = () => {
       router?.back();
       Success("User updated successfully");
     } catch (error) {
-
-
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
         error.inner.forEach((err) => {
@@ -278,115 +320,36 @@ const CreateUser = () => {
       } else {
         setState({ submitLoading: false }); // Stop loading after unexpected error
         if (error?.email) {
-          Failure(error.email[0])
+          Failure(error.email[0]);
         } else {
           Failure("An error occurred. Please try again.");
-
         }
       }
     }
   };
 
+   const handlePhoneChange = (value) => {
+    const valid = value && isValidPhoneNumber(value);
+    if (valid == false) {
+      setState({
+        errors: {
+          ...state.errors,
+          phone_number: "Please enter a valid phone number",
+        },
+        phone_number: value,
+      });
+    } else {
+      setState({
+        errors: { ...state.errors, phone_number: "" },
+        phone_number: value,
+      });
+    }
+  };
 
-  // const onSubmit = async () => {
-  //   try {
-  //     setState({ submitLoading: true });
-
-  //     let body = {
-  //       name: state.name,
-  //       email: state.email,
-  //       department: state?.user_type?.label !== "Admin" ? state?.department : undefined,
-  //       address: state.address || "", // Set an empty string if address is falsy
-  //       dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "", // Format dob to YYYY-MM-DD if it exists
-  //       user_type: state.user_type?.value,
-  //       thumbnail_image: state.thumbnail_images || "", // Default empty string if image doesn't exist
-  //       phone_number: state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
-  //       year_of_entry: state?.user_type?.label === "Student" ? state.year_of_entry : undefined,
-  //       university: state?.user_type?.label !== "Admin" ? state?.university?.value : undefined,
-  //       intrested_topics: state?.user_type?.label !== "Admin" ? state?.intrested_topics?.label == "Others" ? state?.intrested_topics1 : state?.intrested_topics?.label : undefined,
-  //       work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-  //       year_of_graduation: state?.user_type?.label === "Alumni" ? state?.year_of_graduation : undefined,
-  //       is_open_to_be_mentor: state?.user_type?.label === "Alumni" ? state?.is_open_to_be_mentor?.value == "Yes" ? true : false : undefined,
-  //       country: state?.user_type?.label === "Alumni" ? state?.country?.value : undefined,
-  //     };
-
-  //     console.log("state?.user_type?.label ", state?.user_type?.label);
-
-  //     await Validation.createUser.validate(body, {
-  //       abortEarly: false,
-  //     });
-
-  //     let groups = [state.user_type?.value];
-  //     let formData = new FormData();
-  //     formData.append("username", body.name);
-  //     formData.append("email", body.email);
-
-  //     if (body.department) formData.append("department", body.department);
-  //     if (body.phone_number) formData.append("phone_number", body.phone_number);
-  //     formData.append("date_of_birth", body.dob);
-
-  //     groups.forEach((group) => {
-  //       formData.append("groups", group?.toString());
-  //     });
-
-  //     if (body.thumbnail_image) {
-  //       formData.append("profile_picture", body.thumbnail_image);
-  //     } else {
-  //       formData.append("profile_picture", "");
-  //     }
-
-  //     if (state?.user_type?.label !== "Admin") {
-  //       if (body.university) formData.append("university", body.university);
-  //       if (body.intrested_topics) formData.append("intrested_topics", body.intrested_topics);
-  //     }
-
-  //     if (body.phone_number && state?.user_type?.label === "Alumni") {
-  //       formData.append("phone_number", body.phone_number);
-  //     }
-
-  //     if (body.year_of_entry && state?.user_type?.label === "Student") {
-  //       formData.append("year_of_entry", body.year_of_entry);
-  //     }
-
-  //     if (body.work && state?.user_type?.label === "Alumni") {
-  //       formData.append("work", body.work);
-  //     }
-
-  //     if (body.country && state?.user_type?.label === "Alumni") {
-  //       formData.append("country", body.country);
-  //     }
-
-  //     if (body.address && state?.user_type?.label === "Alumni") {
-  //       formData.append("address", body.address);
-  //     }
-
-  //     if (body.year_of_graduation !== undefined && state?.user_type?.label === "Alumni") {
-  //       formData.append("year_of_graduation", body.year_of_graduation);
-  //     }
-
-  //     if (body.is_open_to_be_mentor !== undefined & state?.user_type?.label === "Alumni") {
-  //       formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
-  //     }
-
-  //     await Models.user.updateUser(formData, id);
-  //     setState({ submitLoading: false });
-  //     router?.back();
-  //     Success("User updated successfully");
-  //   } catch (error) {
-  //     if (error instanceof Yup.ValidationError) {
-  //       const validationErrors = {};
-  //       error.inner.forEach((err) => {
-  //         validationErrors[err.path] = err?.message;
-  //       });
-  //       setState({ errors: validationErrors });
-  //       setState({ submitLoading: false });
-  //     } else {
-  //       setState({ submitLoading: false });
-  //     }
-  //   }
-  // };
-
-  console.log("state.intrested_topics?.label", state.intrested_topics?.label)
+  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+    const year = 1951 + i;
+    return { value: year.toString(), label: year.toString() };
+  });
 
   return (
     <div className="container mx-auto">
@@ -415,7 +378,6 @@ const CreateUser = () => {
             required
           />
 
-
           <DatePicker
             placeholder="Date Of Birth"
             title="Date Of Birth"
@@ -426,8 +388,8 @@ const CreateUser = () => {
                 dob: date,
               });
             }}
-          // error={state.errors?.dob}
-          // required
+            // error={state.errors?.dob}
+            // required
           />
           {isValidImageUrl(state.thumbnail_image) ? (
             <div>
@@ -463,15 +425,24 @@ const CreateUser = () => {
               type="file"
             />
           )}
-
-
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <CustomSelect
             options={state.groupList}
             value={state.user_type?.value || ""}
-            onChange={(value) => setState({ user_type: value, phone_number: "", year_of_graduation: "", work: "", country: null, address: "", is_open_to_be_mentor: null, year_of_entry: "" })}
+            onChange={(value) =>
+              setState({
+                user_type: value,
+                phone_number: "",
+                year_of_graduation: "",
+                work: "",
+                country: null,
+                address: "",
+                is_open_to_be_mentor: null,
+                year_of_entry: "",
+              })
+            }
             title="User Type"
             error={state.errors?.user_type}
             required
@@ -480,27 +451,35 @@ const CreateUser = () => {
             state?.user_type?.label === "Alumni" ? (
               // Add the component or content you want to render for "Alumni" here
               <>
-                <TextInput
+                {/* <TextInput
                   value={state.phone_number}
                   onChange={(e) => {
                     setState({ phone_number: e.target.value });
                   }}
                   placeholder="Phone Number"
                   title="Phone Number"
-                // error={state.errors?.phone_number}
-                // required
-                />
+                  // error={state.errors?.phone_number}
+                  // required
+                /> */}
 
-
-
-
-                <TextInput
+                {/* <TextInput
                   id="year_of_graduation"
                   type="text"
                   placeholder="Enter Year of Graduated"
                   title="Year Graduated"
                   value={state.year_of_graduation}
-                  onChange={(e) => setState({ year_of_graduation: e.target.value })}
+                  onChange={(e) =>
+                    setState({ year_of_graduation: e.target.value })
+                  }
+                /> */}
+
+                <CustomSelect
+                  options={years || []} // Safely pass empty array if universityList is null
+                  value={state.year_of_graduation?.value || ""}
+                  onChange={(value) => setState({ year_of_graduation: value })}
+                  error={state.errors?.year_of_graduation}
+                  title="Year Graduated"
+                  placeholder="Select Year of Graduated"
                 />
 
                 <TextInput
@@ -512,13 +491,69 @@ const CreateUser = () => {
                   onChange={(e) => setState({ work: e.target.value })}
                 />
 
-                <CustomSelect
+                {/* <CustomSelect
                   options={state?.countryList || []} // Safely pass empty array if universityList is null
                   value={state.country?.value || ""}
                   onChange={(value) => setState({ country: value })}
                   error={state.errors?.country}
                   title="country"
                   placeholder="Select Your Country"
+                /> */}
+
+                <SingleSelectDropdown
+                  options={state?.countryList || []} // Safely pass empty array if universityList is null
+                  value={state.country || ""}
+                  onChange={(value) => {
+                    setState({ country: value, phone_number: "" });
+                  }}
+                  error={state.errors?.country}
+                  title="Country"
+                  placeholder="Select Your Country"
+                />
+
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700">
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="phone-input-wrapper pt-1">
+                    <PhoneInput
+                      placeholder="Enter phone number"
+                      country={state.country?.code}
+                      defaultCountry={state.country?.code}
+                      value={state.phone_number}
+                      onChange={handlePhoneChange}
+                      international
+                      className="custom-phone-input"
+                    />
+                    {state.errors?.phone_number && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.phone_number}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <MultiSelectDropdown
+                  options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
+                  value={state.intrested_topics || ""}
+                  onChange={(value) => {
+                    console.log("✌️value --->", value);
+                    if (value.length > 0) {
+                      if (value?.some((item) => item.value === "others")) {
+                        setState({
+                          intrested_topics: [
+                            { value: "others", label: "Others" },
+                          ],
+                        });
+                      } else {
+                        setState({ intrested_topics: value });
+                      }
+                    } else {
+                      setState({ intrested_topics: value });
+                    }
+                  }}
+                  error={state.errors?.intrested_topics}
+                  placeholder="Select Topics"
+                  title="Interests in Topics"
                 />
 
                 <TextArea
@@ -535,7 +570,9 @@ const CreateUser = () => {
                 <CustomSelect
                   options={mentorList || []}
                   value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) => setState({ is_open_to_be_mentor: value })}
+                  onChange={(value) =>
+                    setState({ is_open_to_be_mentor: value })
+                  }
                   error={state.errors?.is_open_to_be_mentor}
                   title="Are you open to being a mentor?"
                   placeholder="Select Topics"
@@ -544,46 +581,52 @@ const CreateUser = () => {
             ) : state?.user_type?.label === "Student" ? (
               // Add the component or content you want to render for "student" here
               <>
-                <TextInput
+                {/* <TextInput
                   id="year_of_entry"
                   type="text"
                   placeholder="Enter Year of Entry"
-
                   value={state.year_of_entry}
                   onChange={(e) => setState({ year_of_entry: e.target.value })}
                   title="Year of Entry"
+                /> */}
+
+                <CustomSelect
+                  options={years || []} // Safely pass empty array if universityList is null
+                  value={state.year_of_entry?.value || ""}
+                  onChange={(value) => setState({ year_of_entry: value })}
+                  error={state.errors?.year_of_graduation}
+                  title="Year of Entry"
+                  placeholder="Select Year of Entry"
                 />
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
 
-          {
-            state?.user_type?.label !== "Admin" && (
-              <>
-                <div className="space-y-1">
-                  <TextInput
-                    id="department"
-                    type="text"
-                    placeholder="Enter Your Department Name"
-                    error={state.errors?.department}
-                    title="Department"
-                    value={state.department}
-                    onChange={(e) => setState({ department: e.target.value })}
+          {state?.user_type?.label !== "Admin" && (
+            <>
+              <div className="space-y-1">
+                <TextInput
+                  id="department"
+                  type="text"
+                  placeholder="Enter Your Department Name"
+                  error={state.errors?.department}
+                  title="Department"
+                  value={state.department}
+                  onChange={(e) => setState({ department: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <CustomSelect
+                  options={state?.universityList || []} // Safely pass empty array if universityList is null
+                  value={state.university?.value || ""}
+                  onChange={(value) => setState({ university: value })}
+                  error={state.errors?.university}
+                  title="University"
+                  placeholder="Select University"
+                />
+              </div>
 
-                  />
-                </div>
-                <div className="space-y-1">
-                  <CustomSelect
-                    options={state?.universityList || []} // Safely pass empty array if universityList is null
-                    value={state.university?.value || ""}
-                    onChange={(value) => setState({ university: value })}
-                    error={state.errors?.university}
-                    title="University"
-                    placeholder="Select University"
-                  />
-                </div>
-
-                {/* <div className="space-y-1">
+              {/* <div className="space-y-1">
                   <CustomSelect
                     options={state.intrestedTopicsList || []}
                     value={state.intrested_topics?.label || ""}
@@ -606,21 +649,20 @@ const CreateUser = () => {
                     />
                   </div>
                 } */}
-              </>
-            )
-          }
-
-
+            </>
+          )}
 
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton
               variant={"outline"}
-              name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+              name="Cancel"
+              className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               onClick={() => router.back()}
             />
 
             <PrimaryButton
-              name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+              name="Submit"
+              className="bg-themeGreen hover:bg-themeGreen"
               onClick={() => onSubmit()}
               loading={state.submitLoading}
             />
@@ -629,8 +671,6 @@ const CreateUser = () => {
       </div>
     </div>
   );
-}
-
+};
 
 export default ProtectedRoute(CreateUser);
-
