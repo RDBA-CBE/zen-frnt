@@ -20,6 +20,7 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
+import { forgetPassword } from "@/utils/validation.utils";
 
 const ForgotPasswordEmailForm = () => {
     const router = useRouter();
@@ -42,6 +43,16 @@ const ForgotPasswordEmailForm = () => {
                 email: state.username,
                 // password: state.password,
             };
+
+            const validatebody = {
+                email: state.username,
+            }
+
+             await forgetPassword.validate(validatebody, {
+                    abortEarly: false,
+               });
+            
+
             const res = await Models.auth.forgotpassword(body);
             console.log("res", res)
 
@@ -70,8 +81,8 @@ const ForgotPasswordEmailForm = () => {
                 setState({ submitLoading: false }); // Stop loading after error
             } else {
                 setState({ submitLoading: false }); // Stop loading after unexpected error
-                if (error?.email) {
-                    Failure(error.email[0])
+                if (error?.detail) {
+                    Failure(error.detail)
                 } else {
                     Failure("An error occurred. Please try again.");
 
@@ -104,6 +115,7 @@ const ForgotPasswordEmailForm = () => {
                                     required
                                     value={state.username}
                                     onChange={(e) => setState({ username: e.target.value })}
+                                    error={state.errors?.email}
                                 />
                             </div>
                             {/* <div className="grid gap-2">

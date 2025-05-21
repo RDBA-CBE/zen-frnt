@@ -41,7 +41,8 @@ export const updateSessionOrder = Yup.object().shape({
   event: Yup.string().required("Event is required"),
 });
 export const createUser = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  firstname: Yup.string().required("First Name is required"),
+  lastname: Yup.string().required("Last Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   // phone_number: Yup.string().required("Phone number is required"),
   // address: Yup.string().nullable(), // Optional field, allows empty string
@@ -66,6 +67,17 @@ export const studentRegistration = Yup.object().shape({
   year_of_entry: Yup.string().required("Year of entry is required"),
   // .typeError("Year of entry must be a number")
   // .integer("Year of entry must be a valid year"),
+});
+
+export const login = Yup.object().shape({
+  email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required"),
+ 
+});
+
+export const forgetPassword = Yup.object().shape({
+  email: Yup.string().required("Email is required"),
+ 
 });
 
 export const AlumniRegistration = Yup.object().shape({

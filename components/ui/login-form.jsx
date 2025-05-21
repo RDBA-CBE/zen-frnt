@@ -23,6 +23,8 @@ import * as Yup from "yup";
 import Loading from "../common-components/Loading";
 import { Loader } from "lucide-react";
 import Link from "next/link";
+import {login} from "@/utils/validation.utils"
+import { Eye, EyeOff } from "lucide-react"
 
 const LoginForm = (props) => {
   const { isRefresh } = props;
@@ -35,6 +37,7 @@ const LoginForm = (props) => {
     password: "",
     eventid: null,
     loading: false,
+    showPassword:false
   });
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
@@ -48,12 +51,23 @@ const LoginForm = (props) => {
   }, [state?.eventid]);
 
   const handleSubmit = async () => {
-    setState({ loading: true });
     try {
+      setState({ loading: true });
+
+      const validatebody = {
+        email: state.username,
+        password: state.password,
+      }
+
       const body = {
         email: state.username,
         password: state.password,
       };
+
+      await login.validate(validatebody, {
+        abortEarly: false,
+      });
+
       const res = await Models.auth.login(body);
 
       // Store tokens and group in localStorage
@@ -101,9 +115,12 @@ const LoginForm = (props) => {
         const validationErrors = {};
         error.inner.forEach((err) => {
           validationErrors[err.path] = err?.message;
+          
         });
 
         console.log("validationErrors: ", validationErrors);
+
+       
 
         // Set validation errors in state
         setState({ errors: validationErrors, loading: false });
@@ -117,6 +134,8 @@ const LoginForm = (props) => {
       }
     }
   };
+  console.log(state.showPassword);
+  
 
   // 🚀 Prevent hydration errors by ensuring the component renders only after mount
   if (!isMounted) return null;
@@ -142,6 +161,8 @@ const LoginForm = (props) => {
                   required
                   value={state.username}
                   onChange={(e) => setState({ username: e.target.value })}
+                  error={state.errors?.email}
+                  
                 />
               </div>
               <div className="grid gap-2">
@@ -154,14 +175,30 @@ const LoginForm = (props) => {
                     Forgot your password?
                   </a>
                 </div>
+                
+              <div className="relative">
                 <Input
                   id="password"
-                  type="password"
+                  type={state.showPassword ? "text" : "password"}
                   placeholder="Enter Your Password"
                   required
                   value={state.password}
                   onChange={(e) => setState({ password: e.target.value })}
+                  error={state.errors?.password}
+                  className="pr-10" 
                 />
+                <button
+                  type="button"
+                 
+                 onClick={() => {
+                    
+                    setState({ showPassword: !state.showPassword });
+                  }}
+                  className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                >
+                  {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               </div>
               <Button
                 type="button"

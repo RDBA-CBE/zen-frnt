@@ -7,6 +7,7 @@ import { Toaster, toast } from "sonner";
 //   duration?: number;
 // }
 
+
 // Background colors based on type
 const toastStyles = {
   success: { background: "#22C55E", color: "#FFFFFF" }, // Green
@@ -14,27 +15,46 @@ const toastStyles = {
   info: { background: "#2563EB", color: "#FFFFFF" }, // Blue
 };
 
+// function getCloseAction(dismiss) {
+//   return {
+//     label: "Close",
+//     onClick: dismiss,
+//   };
+// }
+
 // Success Message
-export function Success(message, duration = 3000) {
+export function Success(message) {
   toast(message, {
-    duration,
+    duration: Infinity,
     style: toastStyles.success,
+      action: {
+            label: "x",
+            onClick: () => console.log("Undo"),
+          },
   });
 }
 
 // Error Message
-export function Failure(message, duration = 3000) {
+export function Failure(message) {
   toast(message, {
-    duration,
+    duration: Infinity,
     style: toastStyles.error,
+    action: {
+            label: "x",
+            onClick: () => console.log("Undo"),
+          },
   });
 }
 
 // Info Message
-export function Info(message, duration = 3000) {
+export function Info(message) {
   toast(message, {
-    duration,
+    duration: Infinity,
     style: toastStyles.info,
+  action: {
+            label: "x",
+            onClick: () => console.log("Undo"),
+          },
   });
 }
 

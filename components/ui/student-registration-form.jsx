@@ -18,7 +18,7 @@ import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
 import MultiSelectDropdown from "../common-components/multiSelectDropdown";
-import { Loader } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 
 const StudentRegistrationForm = () => {
   const router = useRouter();
@@ -52,6 +52,7 @@ const StudentRegistrationForm = () => {
     year_of_graduation: "",
     alumniPassword: "",
     btnLoading: false,
+    showPassword:false
   });
 
   useEffect(() => {
@@ -380,7 +381,8 @@ const StudentRegistrationForm = () => {
             </div>
 
             <div className="space-y-1">
-              <TextInput
+              <div className="relative">
+                <TextInput
                 id="password"
                 type="password"
                 placeholder="Enter Your password"
@@ -390,6 +392,21 @@ const StudentRegistrationForm = () => {
                 onChange={(e) => setState({ password: e.target.value })}
                 error={state.errors?.password}
               />
+                <button
+                  type="button"
+                 
+                 onClick={() => {
+                    
+                    setState({ showPassword: !state.showPassword });
+                  }}
+                  className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                  style={{top:"55%"}}
+                >
+                  {state?.showPassword ? <EyeOff size={18} /> : <Eye
+                   size={18} />}
+                </button>
+              </div>
+              
             </div>
           </div>
 

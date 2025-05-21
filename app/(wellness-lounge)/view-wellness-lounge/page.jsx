@@ -165,7 +165,7 @@ const viewWellnessLounge = () => {
                   )}
                 </p>
 
-                {state?.group === "Student" && (
+                {state?.group === "Student" && state?.orderData?.is_registered === false && (
                   <div>
                     <Button
                       className={`mt-3 ${
@@ -175,7 +175,7 @@ const viewWellnessLounge = () => {
                       }`}
                       onClick={() => setState({ isOpen: true })}
                     >
-                      Interested
+                      Enroll
                     </Button>
                   </div>
                 )}

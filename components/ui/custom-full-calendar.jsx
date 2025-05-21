@@ -384,14 +384,14 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             onClick={handleEnroll}
             className="p-2 rounded bg-themePurple hover:bg-themePurple text-white"
           >
-            Enroll
+            Read More
           </Button>
-          <Button
+          {/* <Button
             onClick={handleSignUp}
             className="p-2 rounded bg-themeGreen hover:bg-themeGreen text-white"
           >
             Sign Up
-          </Button>
+          </Button> */}
         </DialogContent>
       </Dialog>
     </div>
