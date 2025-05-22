@@ -112,6 +112,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   // Handle day click
   const handleDayClick = (day) => {
+
+    
     const clickedDate = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
@@ -122,6 +124,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     // Check if there are any events for the clicked day
     const eventsForClickedDay = getEventsForDate(day);
+    console.log(eventsForClickedDay,"eventsForClickedDay");
+    
     if (eventsForClickedDay.length > 0) {
       setModalIsOpen(true);
       setSelectedEvent(eventsForClickedDay[0]); // Store the first event
@@ -129,6 +133,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
       setModalIsOpen(false); // Close the modal if no events for that day
     }
   };
+
+  console.log(selectedEvent,"selectedEvent");
+  
 
   // Handle form input changes for new events
   const handleEventChange = (e) => {
@@ -291,7 +298,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                       className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
-                      //   onClick={() => day && handleDayClick(day)}
+                        onClick={() => day && handleDayClick(day)}
                     >
                       <div className="text-end">{day}</div>
                       {/* Only show events for this specific day */}
@@ -378,7 +385,27 @@ const CustomFullCalendar = ({ events, setEvents }) => {
       <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
         <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
           <DialogTitle className="text-lg font-semibold mb-2">
-            Here you can enroll or sign up for the course.
+            {/* Here you can enroll or sign up for the course. */}
+            <p className="font-bold text-[18px] leading-[22px] mb-2">
+                                      {selectedEvent?.title} - {selectedEvent?.lounge_type?.name}
+                                    </p>
+                                    <p className="" style={{fontSize:"15px"}}>
+                                      Event Start Date and Time{" "}
+                                      <span className="font-bold" >
+                                        {moment(selectedEvent?.start_date).format(
+                                          "YYYY-MMM-DD"
+                                        )}
+                                        , {selectedEvent?.start_time}
+                                      </span>
+                                      <br />
+                                      End Date and Time{" "}
+                                      <span className="font-bold">
+                                        {moment(selectedEvent?.end_date).format(
+                                          "YYYY-MMM-DD"
+                                        )}
+                                        , {selectedEvent?.end_time}
+                                      </span>
+                                    </p>
           </DialogTitle>
           <Button
             onClick={handleEnroll}

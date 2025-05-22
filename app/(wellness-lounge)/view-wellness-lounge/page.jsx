@@ -180,14 +180,16 @@ const viewWellnessLounge = () => {
                   </div>
                 ) : <div>
                     <Button
+                    style={{cursor:"not-allowed"}}
                       className={`mt-3 ${
                         state?.orderData?.is_registered
                           ? "bg-themeGreen hover:bg-themeGreen"
                           : "bg-themePurple hover:bg-themePurple"
                       }`}
-                      onClick={() => setState({ isOpen: true })}
+                      // onClick={() => setState({ isOpen: true })}
                     >
-                      Already Enrolled
+                     <span style={{color: "white",fontSize:"22px"}}>✓</span> Already Enrolled <span style={{color:" #88c742"}}></span>
+
                     </Button>
                   </div>}
               </div>

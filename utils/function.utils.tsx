@@ -31,6 +31,14 @@ export const Dropdown = (arr: any, label: string) => {
   return array;
 };
 
+export const UserDropdown = (arr: any, labelFn: (item: any) => string) => {
+  const array = arr?.map((item: any) => ({
+    value: item?.id,
+    label: labelFn(item),
+  }));
+  return array;
+};
+
 export const getFileNameFromUrl = (url: string) => {
   const urlObject = new URL(url);
   const pathname = urlObject.pathname;

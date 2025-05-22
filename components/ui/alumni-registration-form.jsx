@@ -53,6 +53,8 @@ const AlumniRegistrationForm = () => {
     intrestedTopicsList: [],
     universityList: null,
     alumniUsername: "",
+    aluminifirstname:"",
+    aluminilastname:"",
     alumniEmail: "",
     alumniPhone: "",
     alumniDepartment: "",
@@ -124,8 +126,8 @@ const AlumniRegistrationForm = () => {
   const StudentRegistration = async () => {
     try {
       const body = {
-        firstname: state?.firstname,
-        lastname: state?.lastname,
+        first_name: state?.firstname,
+        last_name: state?.lastname,
         email: state?.email,
         department: state?.department,
         year_of_entry: state?.year_of_entry,
@@ -250,12 +252,14 @@ const AlumniRegistrationForm = () => {
   // };
 
   const AlumniRegistration = async () => {
+    console.log("hello");
+    
     try {
       setState({ btnLoading: true });
 
       const body = {
-        firstname: state?.aluminifirstname,
-        lastname: state?.aluminilastname,
+        first_name: state?.aluminifirstname,
+        last_name: state?.aluminilastname,
         email: state?.alumniEmail,
         phone_number: state?.alumniPhone,
         department: state?.alumniDepartment,
@@ -394,9 +398,10 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Your First Name"
                 title="First Name"
                 required
-                value={state.alumnifirstname}
-                onChange={(e) => setState({ alumnifirstname: e.target.value })}
-                error={state?.errors?.firstname}
+                
+                value={state?.aluminifirstname}
+                onChange={(e) => setState({ aluminifirstname: e.target.value })}
+                error={state?.errors?.first_name}
               />
             </div>
 
@@ -407,9 +412,9 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Your Last Name"
                 title="Last Name"
                 required
-                value={state.alumnilastname}
-                onChange={(e) => setState({ alumnilastname: e.target.value })}
-                error={state?.errors?.lastname}
+                value={state.aluminilastname}
+                onChange={(e) => setState({ aluminilastname: e.target.value })}
+                error={state?.errors?.last_name}
               />
             </div>
 

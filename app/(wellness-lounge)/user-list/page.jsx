@@ -97,9 +97,13 @@ const UserList = () => {
 
   const columns = [
     {
-      Header: "Name",
-      accessor: "username",
-    },
+  Header: "Name",
+  accessor: "first_name", // required for sorting/search, can be any relevant field
+  Cell: (row) => {
+    const { first_name, last_name } = row.row;
+    return <Label>{`${first_name || ""} ${last_name || ""}`}</Label>;
+  },
+},
     {
       Header: "Email",
       accessor: "email",

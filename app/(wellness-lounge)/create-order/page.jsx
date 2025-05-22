@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, useSetState } from "@/utils/function.utils";
+import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
 import { DatePicker } from "@/components/common-components/datePicker";
@@ -62,7 +62,8 @@ const CreateOrder = () => {
         try {
             const res = await Models.user.dropdownUserserList();
 
-            const Dropdowns = Dropdown(res?.results, "username");
+            // const Dropdowns = Dropdown(res?.results, "username");
+            const Dropdowns = UserDropdown(res?.results, (item) => `${item.first_name} ${item.last_name}`);
             setState({ userList: Dropdowns, userData: res?.results });
         } catch (error) {
             console.log("error: ", error);
@@ -73,11 +74,16 @@ const CreateOrder = () => {
         try {
             const res = await Models.session.dropdownLoungelist();
             const Dropdowns = Dropdown(res, "title");
+            // console.log(res, "Dropdowns");
+            
             setState({ loungeList: Dropdowns, loungeData: res });
         } catch (error) {
             console.log("error: ", error);
         }
     };
+
+    console.log(state.loungeList,"loungeList");
+    
 
 
     const onSubmit = async () => {
@@ -224,7 +230,7 @@ const CreateOrder = () => {
                                         <div className="pl-3 pt-3">
                                             <ul className="text-sm">
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Profile Picture:</span> <img src={SelectedUser[0]?.profile_picture} alt="Profile" className="w-[100px] h-[100px] rounded pt-2" /></li>
-                                                <li className="pb-3"><span className="font-bold text-gray-700">Name:</span> {SelectedUser[0]?.username}</li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Name:</span> {SelectedUser[0]?.first_name} {SelectedUser[0]?.last_name}</li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Email:</span> {SelectedUser[0]?.email || 'N/A'}</li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Contact Number:</span> {SelectedUser[0]?.phone_number || 'N/A'}</li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Date of Birth:</span> {SelectedUser[0]?.date_of_birth || 'N/A'}</li>

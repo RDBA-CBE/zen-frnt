@@ -113,8 +113,8 @@ const CreateUser = () => {
 
       console.log("resss", res);
       setState({
-          firstname: res.firstname ? res.firstname : "",
-            lastname: res.lastname ? res.lastname : "",
+          firstname: res.first_name ? res.first_name : "",
+            lastname: res.last_name ? res.last_name : "",
         email: res.email ? res.email : "",
       
         address: res.address ? res.address : "",
@@ -202,8 +202,8 @@ const CreateUser = () => {
       setState({ submitLoading: true });
 
       let body = {
-        firstname: state.firstname,
-        lastname:state.lastname,
+        first_name: state.firstname,
+        last_name:state.lastname,
         email: state.email,
         department:
           state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -251,8 +251,8 @@ const CreateUser = () => {
 
       let groups = [state.user_type?.value];
       let formData = new FormData();
-      formData.append("firstname", body.firstname);
-      formData.append("lastname", body.lastname);
+      formData.append("first_name", body.first_name);
+      formData.append("last_name", body.last_name);
       formData.append("email", body.email);
 
       if (body.department) formData.append("department", body.department);
@@ -368,7 +368,7 @@ const CreateUser = () => {
             }}
             placeholder="First Name"
             title="First Name"
-            error={state.errors?.firstname}
+            error={state.errors?.first_name}
             required
           />
 
@@ -379,7 +379,7 @@ const CreateUser = () => {
             }}
             placeholder="Last Name"
             title="Last Name"
-            error={state.errors?.lastname}
+            error={state.errors?.last_name}
             required
           />
 

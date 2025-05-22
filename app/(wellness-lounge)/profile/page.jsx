@@ -207,7 +207,7 @@ const ProfilePage = () => {
                             </div>
                             <div>
                               <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                                {state?.userData.username}
+                                {state?.userData.first_name} {state?.userData.last_name}
                               </h2>
                               <blockquote className="italic">
                                 {state?.userData?.group?.name}

@@ -121,11 +121,11 @@ const viewWellnessLounge = () => {
         <div className="grid auto-rows-min gap-4 md:grid-cols-2">
           <div className="border rounded-xl p-4 gap-4 flex flex-col ">
             <div>
-              <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                {state?.userData.username}
+              <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
+                {state?.userData.first_name} {state?.userData.last_name}
               </h2>
               <blockquote className="italic">
-                {state?.userData?.group_name}
+                {state?.userData?.group?.name}
               </blockquote>
             </div>
             <div>
@@ -143,7 +143,7 @@ const viewWellnessLounge = () => {
                   <li>Phone Number: {state?.userData?.phone_number}</li>
                 )}
                 {state?.userData?.department && (
-                  <li>Date of Birth: {state?.userData?.department}</li>
+                  <li>Department: {state?.userData?.department}</li>
                 )}
                 {state?.userData?.group?.name == "Alumni" ? (
                   <>

@@ -81,8 +81,8 @@ const ForgotPasswordEmailForm = () => {
                 setState({ submitLoading: false }); // Stop loading after error
             } else {
                 setState({ submitLoading: false }); // Stop loading after unexpected error
-                if (error?.detail) {
-                    Failure(error.detail)
+                if (error?.email) {
+                    Failure(error.email[0])
                 } else {
                     Failure("An error occurred. Please try again.");
 

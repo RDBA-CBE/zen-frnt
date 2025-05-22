@@ -54,10 +54,17 @@ const CategoriesList = () => {
       Header: "Name",
       accessor: "name",
     },
+    // {
+    //   Header: "Description",
+    //   accessor: "description" || N/A,
+    // },
     {
-      Header: "Description",
-      accessor: "description",
-    },
+  Header: "Description",
+  accessor: "description",
+  Cell: ({ value }) => {
+    return value && value.trim() !== "" ? value : "N/A";
+  },
+},
 
     {
       Header: "Action",

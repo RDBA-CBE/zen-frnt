@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, useSetState } from "@/utils/function.utils";
+import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
 import { DatePicker } from "@/components/common-components/datePicker";
@@ -79,14 +79,14 @@ const UpdateOrder = () => {
       console.log("getDetails: ", res?.user);
       const data = {
         value: res?.user?.id,
-        label: res?.user?.username,
+        label: res?.user?.first_name + " " + res?.user?.last_name,
       };
       console.log("✌️data --->", data);
 
       setState({
         user: {
           value: res?.user?.id,
-          label: res?.user?.username,
+          label: res?.user?.first_name + " " + res?.user?.last_name,
         },
         registration_status: {
           value: res?.registration_status,
@@ -116,7 +116,8 @@ const UpdateOrder = () => {
     try {
       const res = await Models.user.dropdownUserserList();
 
-      const Dropdowns = Dropdown(res?.results, "username");
+      // const Dropdowns = Dropdown(res?.results, "username");
+      const Dropdowns = UserDropdown(res?.results, (item) => `${item.first_name} ${item.last_name}`);
       setState({ userList: Dropdowns, userData: res?.results });
     } catch (error) {
       console.log("error: ", error);
@@ -280,7 +281,7 @@ const UpdateOrder = () => {
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Name:</span>{" "}
-                      {SelectedUser[0]?.username}
+                      {SelectedUser[0]?.first_name} {SelectedUser[0]?.last_name || "N/A"}
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Email:</span>{" "}

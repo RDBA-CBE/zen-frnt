@@ -126,8 +126,8 @@ const CreateUser = () => {
 
       // Construct the body object with necessary fields, conditionally included
       let body = {
-        firstname: state.firstname,
-         lastname: state.lastname,
+        first_name: state.firstname,
+         last_name: state.lastname,
         email: state.email,
         department:
           state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -189,8 +189,8 @@ const CreateUser = () => {
       // Prepare the formData to submit
       let groups = [state.user_type?.value];
       let formData = new FormData();
-      formData.append("firstname", body.firstname);
-       formData.append("lastname", body.lastname);
+      formData.append("first_name", body.first_name);
+       formData.append("last_name", body.last_name);
       formData.append("email", body.email);
 
       // Append other fields conditionally
@@ -326,7 +326,7 @@ const CreateUser = () => {
             }}
             placeholder="First Name"
             title="First Name"
-            error={state.errors?.firstname}
+            error={state.errors?.first_name}
             required
           />
 
@@ -337,7 +337,7 @@ const CreateUser = () => {
             }}
             placeholder="Last Name"
             title="Last Name"
-            error={state.errors?.lastname}
+            error={state.errors?.last_name}
             required
           />
 

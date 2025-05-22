@@ -25,7 +25,8 @@ const StudentRegistrationForm = () => {
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
   const [state, setState] = useSetState({
-    username: "",
+    firstname: "",
+    lastname:"",
     email: "",
     password: "",
     phone_number: "",
@@ -117,8 +118,8 @@ const StudentRegistrationForm = () => {
       );
 
       const body = {
-        firstname: state?.firstname,
-        lastname: state?.lastname,
+        first_name: state?.firstname,
+        last_name: state?.lastname,
         email: state?.email,
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
@@ -254,7 +255,7 @@ const StudentRegistrationForm = () => {
                 required
                 value={state.firstname}
                 onChange={(e) => setState({ firstname: e.target.value })}
-                error={state.errors?.firstname}
+                error={state.errors?.first_name}
                 title="First Name"
               />
             </div>
@@ -268,7 +269,7 @@ const StudentRegistrationForm = () => {
                 required
                 value={state.lastname}
                 onChange={(e) => setState({ lastname: e.target.value })}
-                error={state.errors?.lastname}
+                error={state.errors?.last_name}
                 title="Last Name"
               />
             </div>
@@ -400,7 +401,7 @@ const StudentRegistrationForm = () => {
               <div className="relative">
                 <TextInput
                   id="password"
-                  type="password"
+                   type={state.showPassword ? "text" : "password"}
                   placeholder="Enter Your password"
                   required
                   title="Password"
@@ -416,7 +417,7 @@ const StudentRegistrationForm = () => {
                     setState({ showPassword: !state.showPassword });
                   }}
                   className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-                  style={{ top: "55%" }}
+                  style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
                 >
                   {state?.showPassword ? <EyeOff size={18} /> : <Eye
                     size={18} />}

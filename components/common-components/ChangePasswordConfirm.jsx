@@ -141,6 +141,7 @@ const ChangePasswordConfirmForm = () => {
                     )}
                   </button>
                   </div>
+                 
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">New Password</Label>
@@ -168,6 +169,7 @@ const ChangePasswordConfirmForm = () => {
                     )}
                   </button>
                   </div>
+                   <p  style={{fontSize:"12px"}}>min 8 characters required</p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Confirm New Password</Label>
@@ -197,6 +199,7 @@ const ChangePasswordConfirmForm = () => {
                     )}
                   </button>
                   </div>
+                  <p  style={{fontSize:"12px"}}>min 8 characters required</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
