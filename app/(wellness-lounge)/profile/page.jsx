@@ -262,7 +262,13 @@ const ProfilePage = () => {
                         <img
                           src="/assets/images/ab-3-1.webp"
                           alt="thumbnail"
+                          // className="w-[100] h-[100]"
                           className="w-[300px] h-[300px]"
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "10px",
+                            objectPosition:"top"
+                          }}
                         />
                       </div>
                     </div>

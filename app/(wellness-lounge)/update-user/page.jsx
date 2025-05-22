@@ -215,7 +215,7 @@ const CreateUser = () => {
           state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
         year_of_entry:
           state?.user_type?.label === "Student"
-            ? state.year_of_entry
+            ? state.year_of_entry?.value
             : undefined,
         university:
           state?.user_type?.label !== "Admin"

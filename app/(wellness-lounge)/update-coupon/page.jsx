@@ -50,25 +50,14 @@ const UpdateCoupon = () => {
   const getDetails = async () => {
     try {
       const res = await Models.coupon.details(id);
-      // setState({
-      //   code: res.code,
-      //   discount_type: { value: res.discount_type, label: res.discount_type },
-      //   discount_value: res.discount_value.toString(),
-      //   valid_from: res.valid_from ? new Date(res.valid_from) : null,
-      //   valid_to: res.valid_to ? new Date(res.valid_to) : null,
-      // });
       setState({
-  code: res.code || "",
-  discount_type: res.discount_type
-    ? { value: res.discount_type, label: res.discount_type }
-    : null,
-  discount_value:
-    res.discount_value !== undefined && res.discount_value !== null
-      ? res.discount_value.toString()
-      : "",
-  valid_from: res.valid_from ? new Date(res.valid_from) : null,
-  valid_to: res.valid_to ? new Date(res.valid_to) : null,
-});
+        code: res.code,
+        discount_type: { value: res.discount_type, label: res.discount_type },
+        discount_value: res.discount_value.toString(),
+        valid_from: res.valid_from ? new Date(res.valid_from) : null,
+        valid_to: res.valid_to ? new Date(res.valid_to) : null,
+      });
+
       
     } catch (error) {
       console.log("error: ", error);
