@@ -252,8 +252,8 @@ const CreateUser = () => {
          intrested_topics:
           state?.user_type?.label !== "Admin"
             ? state?.intrested_topics?.label == "Others"
-              ? state?.intrested_topics1
-              : state?.intrested_topics?.map((item) => item.value)
+              ? state?.intrested_topics
+              : state?.intrested_topics?.map((item) => item.label)
             : undefined,
 
         work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
