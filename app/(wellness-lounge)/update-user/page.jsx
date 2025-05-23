@@ -54,7 +54,7 @@ const CreateUser = () => {
 
   const [state, setState] = useSetState({
     firstname: "",
-    lastname:"",
+    lastname: "",
     email: "",
     phone_number: "",
     address: "",
@@ -99,9 +99,8 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
-      console.log(res.intrested_topics,"res");
-      
-      
+      console.log(res.intrested_topics, "res");
+
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
         const thumbnail = await convertUrlToFile(
@@ -114,12 +113,13 @@ const CreateUser = () => {
         });
       }
 
+
       console.log("resss", res);
       setState({
-          firstname: res.first_name ? res.first_name : "",
-            lastname: res.last_name ? res.last_name : "",
+        firstname: res.first_name ? res.first_name : "",
+        lastname: res.last_name ? res.last_name : "",
         email: res.email ? res.email : "",
-      
+
         address: res.address ? res.address : "",
         phone_number: res?.phone_number ? res?.phone_number : "",
         year_of_entry: res?.year_of_entry
@@ -137,9 +137,14 @@ const CreateUser = () => {
           value: res?.university?.id ? res?.university?.id : null,
           label: res?.university?.name ? res?.university?.name : null,
         },
-        intrested_topics: 
-           res?.intrested_topics?.length > 0 ? res?.intrested_topics?.map((item)=>({value:item, label:item})) : [] ,
-        
+        intrested_topics:
+          res?.intrested_topics?.length > 0
+            ? res?.intrested_topics?.map((item) => ({
+                value: item,
+                label: item,
+              }))
+            : [],
+
         country: {
           value: res?.country ? res?.country?.id : null,
           label: res?.country ? res?.country?.name : null,
@@ -161,8 +166,6 @@ const CreateUser = () => {
   };
 
   console.log("intrested_topics", state.intrested_topics);
-  
-
 
   const getUniversity = async () => {
     try {
@@ -187,19 +190,19 @@ const CreateUser = () => {
   // };
 
   const getCountry = async () => {
-      try {
-        const res = await Models.auth.getCountries();
-        const dropdowns = res?.map((item) => ({
-          value: item?.id,
-          label: item?.name,
-          code: item?.code,
-        }));
-  
-        setState({ countryList: dropdowns });
-      } catch (error) {
-        console.log("error");
-      }
-    };
+    try {
+      const res = await Models.auth.getCountries();
+      const dropdowns = res?.map((item) => ({
+        value: item?.id,
+        label: item?.name,
+        code: item?.code,
+      }));
+
+      setState({ countryList: dropdowns });
+    } catch (error) {
+      console.log("error");
+    }
+  };
 
   const getIntrestedTopics = async () => {
     try {
@@ -221,245 +224,248 @@ const CreateUser = () => {
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
+      console.log("state?.intrested_topics: ", state?.intrested_topics);
 
-      if(state.user_type?.label === "Alumni") {
-         let body = {
-        first_name: state.firstname,
-        last_name:state.lastname,
-        email: state.email.trim(),
-        department:
-          state?.user_type?.label !== "Admin" ? state?.department : undefined,
-        address: state.address || "",
-        dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
-        user_type: state.user_type?.value,
-        thumbnail_image: state.thumbnail_images || "",
-        phone_number:
-          state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
-        year_of_entry:
-          state?.user_type?.label === "Student"
-            ? state.year_of_entry?.value
-            : undefined,
-        university:
-          state?.user_type?.label !== "Admin"
-            ? state?.university?.value
-            : undefined,
-        // intrested_topics:
-        //   state?.user_type?.label !== "Admin"
-        //     ? state?.intrested_topics?.label == "Others"
-        //       ? state?.intrested_topics1
-        //       : state?.intrested_topics?.label
-        //     : undefined,
-         intrested_topics:
-          state?.user_type?.label !== "Admin"
-            ? state?.intrested_topics?.label == "Others"
-              ? state?.intrested_topics
-              : state?.intrested_topics?.map((item) => item.label)
-            : undefined,
+      if (state.user_type?.label === "Alumni") {
+        let body = {
+          first_name: state.firstname,
+          last_name: state.lastname,
+          email: state.email.trim(),
+          department:
+            state?.user_type?.label !== "Admin" ? state?.department : undefined,
+          address: state.address || "",
+          dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
+          user_type: state.user_type?.value,
+          thumbnail_image: state.thumbnail_images || "",
+          phone_number:
+            state?.user_type?.label === "Alumni"
+              ? state.phone_number
+              : undefined,
+          year_of_entry:
+            state?.user_type?.label === "Student"
+              ? state.year_of_entry?.value
+              : undefined,
+          university:
+            state?.user_type?.label !== "Admin"
+              ? state?.university?.value
+              : undefined,
+          // intrested_topics:
+          //   state?.user_type?.label !== "Admin"
+          //     ? state?.intrested_topics?.label == "Others"
+          //       ? state?.intrested_topics1
+          //       : state?.intrested_topics?.label
+          //     : undefined,
+          intrested_topics:
+            state?.user_type?.label !== "Admin"
+              ? state.intrested_topics.some(
+                  (item) => item.value == "others" || item.value == "Others"
+                )
+                ? state?.intrested_topics1
+                : state?.intrested_topics?.map((item) => item.label)
+              : undefined,
 
-        work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-        year_of_graduation:
+          work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
+          year_of_graduation:
+            state?.user_type?.label === "Alumni"
+              ? state?.year_of_graduation
+              : undefined,
+          is_open_to_be_mentor:
+            state?.user_type?.label === "Alumni"
+              ? state?.is_open_to_be_mentor?.value == "Yes"
+                ? true
+                : false
+              : undefined,
+          country:
+            state?.user_type?.label === "Alumni"
+              ? state?.country?.value
+              : undefined,
+        };
+
+        console.log("body", body);
+        await Validation.createUser.validate(body, {
+          abortEarly: false,
+        });
+
+        let groups = [state.user_type?.value];
+        let formData = new FormData();
+        formData.append("first_name", body.first_name);
+        formData.append("last_name", body.last_name);
+        formData.append("email", body.email);
+
+        if (body.department) formData.append("department", body.department);
+        if (body.phone_number)
+          formData.append("phone_number", body.phone_number);
+        formData.append("date_of_birth", body.dob);
+
+        groups.forEach((group) => {
+          formData.append("groups", group?.toString());
+        });
+
+        if (body.thumbnail_image) {
+          formData.append("profile_picture", body.thumbnail_image);
+        } else {
+          formData.append("profile_picture", "");
+        }
+
+        if (state?.user_type?.label !== "Admin") {
+          if (body.university) formData.append("university", body.university);
+          if (body.intrested_topics)
+            formData.append("intrested_topics", body.intrested_topics);
+        }
+
+        if (body.phone_number && state?.user_type?.label === "Alumni") {
+          formData.append("phone_number", body.phone_number);
+        }
+        if (body.work && state?.user_type?.label === "Alumni") {
+          formData.append("work", body.work);
+        }
+
+        if (body.country && state?.user_type?.label === "Alumni") {
+          formData.append("country", body.country);
+        }
+
+        if (body.address && state?.user_type?.label === "Alumni") {
+          formData.append("address", body.address);
+        }
+
+        if (
+          body.year_of_graduation !== undefined &&
           state?.user_type?.label === "Alumni"
-            ? state?.year_of_graduation
-            : undefined,
-        is_open_to_be_mentor:
+        ) {
+          formData.append("year_of_graduation", body.year_of_graduation);
+        }
+
+        if (
+          body.is_open_to_be_mentor !== undefined &&
           state?.user_type?.label === "Alumni"
-            ? state?.is_open_to_be_mentor?.value == "Yes"
-              ? true
-              : false
-            : undefined,
-        country:
-          state?.user_type?.label === "Alumni"
-            ? state?.country?.value
-            : undefined,
-      };
-
-      console.log("body", body);
-      await Validation.createUser.validate(body, {
-        abortEarly: false,
-      });
-
-      let groups = [state.user_type?.value];
-      let formData = new FormData();
-      formData.append("first_name", body.first_name);
-      formData.append("last_name", body.last_name);
-      formData.append("email", body.email);
-
-      if (body.department) formData.append("department", body.department);
-      if (body.phone_number) formData.append("phone_number", body.phone_number);
-      formData.append("date_of_birth", body.dob);
-
-      groups.forEach((group) => {
-        formData.append("groups", group?.toString());
-      });
-
-      if (body.thumbnail_image) {
-        formData.append("profile_picture", body.thumbnail_image);
+        ) {
+          formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
+        }
+        if (body.year_of_entry && state?.user_type?.label === "Student") {
+          formData.append("year_of_entry", body.year_of_entry);
+        }
+        await Models.user.updateUser(formData, id);
+        setState({ submitLoading: false });
+        router?.back();
+        Success("User updated successfully");
       } else {
-        formData.append("profile_picture", "");
-      }
+        let body = {
+          first_name: state.firstname,
+          last_name: state.lastname,
+          email: state.email.trim(),
+          department:
+            state?.user_type?.label !== "Admin" ? state?.department : undefined,
+          // address: state.address || "",
+          // dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
+          user_type: state.user_type?.value,
+          thumbnail_image: state.thumbnail_images || "",
+          // phone_number:
+          //   state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
+          year_of_entry:
+            state?.user_type?.label === "Student"
+              ? state.year_of_entry?.value
+              : undefined,
+          university:
+            state?.user_type?.label !== "Admin"
+              ? state?.university?.value
+              : undefined,
+          // intrested_topics:
+          //   state?.user_type?.label !== "Admin"
+          //     ? state?.intrested_topics?.label == "Others"
+          //       ? state?.intrested_topics1
+          //       : state?.intrested_topics?.label
+          //     : undefined,
+          // work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
+          // year_of_graduation:
+          //   state?.user_type?.label === "Alumni"
+          //     ? state?.year_of_graduation
+          //     : undefined,
+          // is_open_to_be_mentor:
+          //   state?.user_type?.label === "Alumni"
+          //     ? state?.is_open_to_be_mentor?.value == "Yes"
+          //       ? true
+          //       : false
+          //     : undefined,
+          // country:
+          //   state?.user_type?.label === "Alumni"
+          //     ? state?.country?.value              console.log('state?.intrested_topics: ', state?.intrested_topics);
+        };
 
-      if (state?.user_type?.label !== "Admin") {
-        if (body.university) formData.append("university", body.university);
-        if (body.intrested_topics)
-          formData.append("intrested_topics", body.intrested_topics);
-      }
+        console.log("body", body);
+        await Validation.createStudentUser.validate(body, {
+          abortEarly: false,
+        });
 
-      if (body.phone_number && state?.user_type?.label === "Alumni") {
-        formData.append("phone_number", body.phone_number);
-      }
-      if (body.work && state?.user_type?.label === "Alumni") {
-        formData.append("work", body.work);
-      }
+        let groups = [state.user_type?.value];
+        let formData = new FormData();
+        formData.append("first_name", body.first_name);
+        formData.append("last_name", body.last_name);
+        formData.append("email", body.email);
 
-      if (body.country && state?.user_type?.label === "Alumni") {
-        formData.append("country", body.country);
-      }
+        if (body.department) formData.append("department", body.department);
+        // if (body.phone_number) formData.append("phone_number", body.phone_number);
+        // formData.append("date_of_birth", body.dob);
 
-      if (body.address && state?.user_type?.label === "Alumni") {
-        formData.append("address", body.address);
-      }
+        groups.forEach((group) => {
+          formData.append("groups", group?.toString());
+        });
+        console.log("state?.intrested_topics: ", state?.intrested_topics);
 
-      if (
-        body.year_of_graduation !== undefined &&
-        state?.user_type?.label === "Alumni"
-      ) {
-        formData.append("year_of_graduation", body.year_of_graduation);
-      }
+        if (body.thumbnail_image) {
+          formData.append("profile_picture", body.thumbnail_image);
+        } else {
+          formData.append("profile_picture", "");
+        }
 
-      if (
-        body.is_open_to_be_mentor !== undefined &&
-        state?.user_type?.label === "Alumni"
-      ) {
-        formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
-      }
-      if (body.year_of_entry && state?.user_type?.label === "Student") {
-        formData.append("year_of_entry", body.year_of_entry);
-      }
-      await Models.user.updateUser(formData, id);
-      setState({ submitLoading: false });
-      router?.back();
-      Success("User updated successfully");
+        if (state?.user_type?.label !== "Admin") {
+          if (body.university) formData.append("university", body.university);
+          if (body.intrested_topics)
+            formData.append("intrested_topics", body.intrested_topics);
+        }
 
-      }
-      else{
-         let body = {
-        first_name: state.firstname,
-        last_name:state.lastname,
-        email: state.email.trim(),
-        department:
-          state?.user_type?.label !== "Admin" ? state?.department : undefined,
-        // address: state.address || "",
-        // dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
-        user_type: state.user_type?.value,
-        thumbnail_image: state.thumbnail_images || "",
-        // phone_number:
-        //   state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
-        year_of_entry:
-          state?.user_type?.label === "Student"
-            ? state.year_of_entry?.value
-            : undefined,
-        university:
-          state?.user_type?.label !== "Admin"
-            ? state?.university?.value
-            : undefined,
-        // intrested_topics:
-        //   state?.user_type?.label !== "Admin"
-        //     ? state?.intrested_topics?.label == "Others"
-        //       ? state?.intrested_topics1
-        //       : state?.intrested_topics?.label
-        //     : undefined,
-        // work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-        // year_of_graduation:
+        // if (body.phone_number && state?.user_type?.label === "Alumni") {
+        //   formData.append("phone_number", body.phone_number);
+        // }
+        // if (body.work && state?.user_type?.label === "Alumni") {
+        //   formData.append("work", body.work);
+        // }
+
+        // if (body.country && state?.user_type?.label === "Alumni") {
+        //   formData.append("country", body.country);
+        // }
+
+        // if (body.address && state?.user_type?.label === "Alumni") {
+        //   formData.append("address", body.address);
+        // }
+
+        // if (
+        //   body.year_of_graduation !== undefined &&
         //   state?.user_type?.label === "Alumni"
-        //     ? state?.year_of_graduation
-        //     : undefined,
-        // is_open_to_be_mentor:
+        // ) {
+        //   formData.append("year_of_graduation", body.year_of_graduation);
+        // }
+
+        // if (
+        //   body.is_open_to_be_mentor !== undefined &&
         //   state?.user_type?.label === "Alumni"
-        //     ? state?.is_open_to_be_mentor?.value == "Yes"
-        //       ? true
-        //       : false
-        //     : undefined,
-        // country:
-        //   state?.user_type?.label === "Alumni"
-        //     ? state?.country?.value
-        //     : undefined,
-      };
-
-      console.log("body", body);
-      await Validation.createStudentUser.validate(body, {
-        abortEarly: false,
-      });
-
-      let groups = [state.user_type?.value];
-      let formData = new FormData();
-      formData.append("first_name", body.first_name);
-      formData.append("last_name", body.last_name);
-      formData.append("email", body.email);
-
-      if (body.department) formData.append("department", body.department);
-      // if (body.phone_number) formData.append("phone_number", body.phone_number);
-      // formData.append("date_of_birth", body.dob);
-
-      groups.forEach((group) => {
-        formData.append("groups", group?.toString());
-      });
-
-      if (body.thumbnail_image) {
-        formData.append("profile_picture", body.thumbnail_image);
-      } else {
-        formData.append("profile_picture", "");
+        // ) {
+        //   formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
+        // }
+        if (body.year_of_entry && state?.user_type?.label === "Student") {
+          formData.append("year_of_entry", body.year_of_entry);
+        }
+        await Models.user.updateUser(formData, id);
+        setState({ submitLoading: false });
+        router?.back();
+        Success("User updated successfully");
       }
-
-      if (state?.user_type?.label !== "Admin") {
-        if (body.university) formData.append("university", body.university);
-        if (body.intrested_topics)
-          formData.append("intrested_topics", body.intrested_topics);
-      }
-
-      // if (body.phone_number && state?.user_type?.label === "Alumni") {
-      //   formData.append("phone_number", body.phone_number);
-      // }
-      // if (body.work && state?.user_type?.label === "Alumni") {
-      //   formData.append("work", body.work);
-      // }
-
-      // if (body.country && state?.user_type?.label === "Alumni") {
-      //   formData.append("country", body.country);
-      // }
-
-      // if (body.address && state?.user_type?.label === "Alumni") {
-      //   formData.append("address", body.address);
-      // }
-
-      // if (
-      //   body.year_of_graduation !== undefined &&
-      //   state?.user_type?.label === "Alumni"
-      // ) {
-      //   formData.append("year_of_graduation", body.year_of_graduation);
-      // }
-
-      // if (
-      //   body.is_open_to_be_mentor !== undefined &&
-      //   state?.user_type?.label === "Alumni"
-      // ) {
-      //   formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
-      // }
-      if (body.year_of_entry && state?.user_type?.label === "Student") {
-        formData.append("year_of_entry", body.year_of_entry);
-      }
-      await Models.user.updateUser(formData, id);
-      setState({ submitLoading: false });
-      router?.back();
-      Success("User updated successfully");
-      }
-
-     
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
         error.inner.forEach((err) => {
           validationErrors[err.path] = err?.message;
         });
+        console.log("state?.intrested_topics: ", state?.intrested_topics);
 
         console.log("validationErrors: ", validationErrors);
 
@@ -477,7 +483,7 @@ const CreateUser = () => {
     }
   };
 
-   const handlePhoneChange = (value) => {
+  const handlePhoneChange = (value) => {
     const valid = value && isValidPhoneNumber(value);
     if (valid == false) {
       setState({
@@ -516,7 +522,7 @@ const CreateUser = () => {
             required
           />
 
-           <TextInput
+          <TextInput
             value={state.lastname}
             onChange={(e) => {
               setState({ lastname: e.target.value });
@@ -693,7 +699,7 @@ const CreateUser = () => {
                     )}
                   </div>
                 </div>
-                 <TextArea
+                <TextArea
                   name="Address"
                   value={state.address}
                   onChange={(e) => {
@@ -704,7 +710,6 @@ const CreateUser = () => {
                   title="Address"
                 />
                 <MultiSelectDropdown
-                
                   options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
                   value={state.intrested_topics || ""}
                   onChange={(value) => {
@@ -728,7 +733,23 @@ const CreateUser = () => {
                   title="Interests in Topics"
                 />
 
-               
+                {Array.isArray(state.intrested_topics) &&
+                  state.intrested_topics.some(
+                    (item) => item.value == "others" || item.value == "Others"
+                  ) && (
+                    <div className="space-y-1">
+                      <TextInput
+                        id="intrested_topics1"
+                        type="text"
+                        placeholder="Enter Your Intrested Topics"
+                        title="Interests in Topics"
+                        value={state.intrested_topics1}
+                        onChange={(e) =>
+                          setState({ intrested_topics1: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
 
                 <CustomSelect
                   options={mentorList || []}
