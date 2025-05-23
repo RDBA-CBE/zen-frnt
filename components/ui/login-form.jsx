@@ -60,7 +60,7 @@ const LoginForm = (props) => {
       };
 
       const body = {
-        email: state.username,
+        email: state.username.trim(),
         password: state.password,
       };
 

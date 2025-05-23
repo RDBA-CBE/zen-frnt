@@ -355,7 +355,7 @@ const UpdateWellnessLounge = () => {
             type="number"
             error={state.errors?.seat_count}
           />
-          <CheckboxDemo
+          {/* <CheckboxDemo
             label="Featured Lounge"
             value="isFeatured"
             selectedValues={
@@ -370,7 +370,7 @@ const UpdateWellnessLounge = () => {
               setState({ isFeatured: isChecked });
             }}
             isMulti={false} // Single selection
-          />
+          /> */}
           {isValidImageUrl(state.thumbnail_image) ? (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">

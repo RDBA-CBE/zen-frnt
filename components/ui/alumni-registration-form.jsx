@@ -260,7 +260,7 @@ const AlumniRegistrationForm = () => {
       const body = {
         first_name: state?.aluminifirstname,
         last_name: state?.aluminilastname,
-        email: state?.alumniEmail,
+        email: state?.alumniEmail.trim(),
         phone_number: state?.alumniPhone,
         department: state?.alumniDepartment,
         work: state?.work,
@@ -305,8 +305,8 @@ const AlumniRegistrationForm = () => {
 
       setState({
         errors: null,
-        alumnifirstname: "",
-        alumnilastname: "",
+        aluminifirstname: "",
+        aluminilastname: "",
         alumniEmail: "",
         alumniPhone: "",
         alumniDepartment: "",
@@ -320,7 +320,9 @@ const AlumniRegistrationForm = () => {
         is_open_to_be_mentor: false,
       });
     } catch (error) {
-      setState({ btnLoading: false });
+      setState({ btnLoading: false,
+        errors: null
+       });
 
       const validationErrors = {};
 

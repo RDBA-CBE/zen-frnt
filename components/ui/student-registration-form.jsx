@@ -120,7 +120,7 @@ const StudentRegistrationForm = () => {
       const body = {
         first_name: state?.firstname,
         last_name: state?.lastname,
-        email: state?.email,
+        email: state?.email.trim(),
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
           ? state?.year_of_entry?.value
@@ -157,7 +157,9 @@ const StudentRegistrationForm = () => {
       });
     } catch (error) {
       console.log("error", error);
-      setState({ btnLoading: false });
+      setState({ btnLoading: false ,
+        errors: null
+      });
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -423,6 +425,7 @@ const StudentRegistrationForm = () => {
                     size={18} />}
                 </button>
               </div>
+              <p  style={{fontSize:"12px"}}>min 8 characters required</p>
 
             </div>
           </div>

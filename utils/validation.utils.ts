@@ -43,7 +43,9 @@ export const updateSessionOrder = Yup.object().shape({
 export const createUser = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
   last_name: Yup.string().required("Last Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+   email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
   // phone_number: Yup.string().required("Phone number is required"),
   // address: Yup.string().nullable(), // Optional field, allows empty string
   user_type: Yup.string().required("User type is required"),
@@ -63,7 +65,9 @@ export const createCategory = Yup.object().shape({
 export const studentRegistration = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
   last_name: Yup.string().required("Last Name is required"),
-  email: Yup.string().required("Email is required"),
+   email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
   year_of_entry: Yup.string().required("Year of entry is required"),
   // .typeError("Year of entry must be a number")
@@ -72,7 +76,9 @@ export const studentRegistration = Yup.object().shape({
 export const aluminiRegistration = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
   last_name: Yup.string().required("Last Name is required"),
-  email: Yup.string().required("Email is required"),
+   email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
   phone_number: Yup.string().required("Phone Number is required"),
   year_of_entry: Yup.string().required("Year of entry is required"),
@@ -81,13 +87,17 @@ export const aluminiRegistration = Yup.object().shape({
 });
 
 export const login = Yup.object().shape({
-  email: Yup.string().required("Email is required"),
+   email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
  
 });
 
 export const forgetPassword = Yup.object().shape({
-  email: Yup.string().required("Email is required"),
+   email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
  
 });
 

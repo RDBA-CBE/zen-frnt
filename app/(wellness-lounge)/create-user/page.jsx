@@ -128,7 +128,7 @@ const CreateUser = () => {
       let body = {
         first_name: state.firstname,
          last_name: state.lastname,
-        email: state.email,
+        email: state.email.trim(),
         department:
           state?.user_type?.label !== "Admin" ? state?.department : undefined,
         address: state.address || "", // Set an empty string if address is falsy
