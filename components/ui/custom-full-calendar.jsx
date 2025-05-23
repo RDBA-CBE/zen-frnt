@@ -10,6 +10,7 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
 import { XIcon } from "lucide-react";
+import { Info } from "../common-components/toast";
 
 const daysOfWeek = [
   "Sunday",
@@ -298,7 +299,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                       className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
-                        onClick={() => day && handleDayClick(day)}
+                        // onClick={() => day && handleDayClick(day)}
                     >
                       <div className="text-end">{day}</div>
                       {/* Only show events for this specific day */}
@@ -315,8 +316,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                     <div
                                       onClick={() =>
                                         day &&
-                                        !isPastEvent(event) &&
-                                        handleDayClick(day)
+                                        !isPastEvent(event) ?
+                                        handleDayClick(day) : Info("Event cannot be accessed")
                                       }
                                       className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
                                       style={{
