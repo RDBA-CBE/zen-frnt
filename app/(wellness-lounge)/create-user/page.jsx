@@ -367,7 +367,7 @@ const CreateUser = () => {
           /> */}
 
           <TextInput
-            title="Profile Image"
+            title="Profile Image (size: 300x300)"
             placeholder="Profile Image"
             value={state.thumbnail_image}
             onChange={(e) => {

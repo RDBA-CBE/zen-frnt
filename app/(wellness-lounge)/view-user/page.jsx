@@ -123,7 +123,7 @@ const viewWellnessLounge = () => {
 
             <div>
               <img
-              src="/assets/images/placeholder.jpg"
+              src="/assets/images/dummy-profile.jpg"
               alt="thumbnail"
               className="w-[200px] h-[200px]"
               style={{borderRadius: "10px", objectFit: "cover" }}

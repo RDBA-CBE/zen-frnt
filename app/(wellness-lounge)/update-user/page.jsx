@@ -426,7 +426,7 @@ const CreateUser = () => {
             </div>
           ) : (
             <TextInput
-              title="Profile Image"
+              title="Profile Image (size: 300x300)"
               placeholder="Profile Image"
               onChange={(e) => {
                 const file = e.target.files[0];
