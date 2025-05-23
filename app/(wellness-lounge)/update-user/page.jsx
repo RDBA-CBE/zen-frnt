@@ -99,7 +99,8 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
-      console.log(res,"res");
+      console.log(res.intrested_topics,"res");
+      
       
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
@@ -136,10 +137,9 @@ const CreateUser = () => {
           value: res?.university?.id ? res?.university?.id : null,
           label: res?.university?.name ? res?.university?.name : null,
         },
-        intrested_topics: {
-          value: res?.intrested_topics ? res?.intrested_topics?.label : null,
-          label: res?.intrested_topics ? res?.intrested_topics?.label : null,
-        },
+        intrested_topics: 
+           res?.intrested_topics?.length > 0 ? res?.intrested_topics?.map((item)=>({value:item, label:item})) : [] ,
+        
         country: {
           value: res?.country ? res?.country?.id : null,
           label: res?.country ? res?.country?.name : null,
@@ -159,6 +159,9 @@ const CreateUser = () => {
       console.log("error: ", error);
     }
   };
+
+  console.log("intrested_topics", state.intrested_topics);
+  
 
 
   const getUniversity = async () => {
@@ -240,12 +243,19 @@ const CreateUser = () => {
           state?.user_type?.label !== "Admin"
             ? state?.university?.value
             : undefined,
-        intrested_topics:
+        // intrested_topics:
+        //   state?.user_type?.label !== "Admin"
+        //     ? state?.intrested_topics?.label == "Others"
+        //       ? state?.intrested_topics1
+        //       : state?.intrested_topics?.label
+        //     : undefined,
+         intrested_topics:
           state?.user_type?.label !== "Admin"
             ? state?.intrested_topics?.label == "Others"
               ? state?.intrested_topics1
-              : state?.intrested_topics?.label
+              : state?.intrested_topics?.map((item) => item.value)
             : undefined,
+
         work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
         year_of_graduation:
           state?.user_type?.label === "Alumni"
