@@ -123,6 +123,7 @@ const CreateUser = () => {
     try {
       // Set loading state to true
       setState({ submitLoading: true });
+      if(state.user_type?.label === "Alumni") {
 
       // Construct the body object with necessary fields, conditionally included
       let body = {
@@ -266,6 +267,153 @@ const CreateUser = () => {
       Success("User added successfully");
 
       console.log("res: ", res); // Log the response for debugging
+      }
+      else{
+
+      // Construct the body object with necessary fields, conditionally included
+      let body = {
+        first_name: state.firstname,
+         last_name: state.lastname,
+        email: state.email.trim(),
+        department:
+          state?.user_type?.label !== "Admin" ? state?.department : undefined,
+        // address: state.address || "", // Set an empty string if address is falsy
+        // dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "", // Format dob to YYYY-MM-DD if it exists
+        user_type: state.user_type?.value,
+        thumbnail_image: state.thumbnail_images || "", // Default empty string if image doesn't exist
+        // phone_number:
+        //   state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
+        year_of_entry:
+          state?.user_type?.label === "Student"
+            ? state?.year_of_entry?.value
+            : undefined,
+        university:
+          state?.user_type?.label !== "Alumni"
+            ? state?.university?.value
+            : undefined,
+        // intrested_topics: state?.intrested_topics?.some(
+        //   (item) => item.value === "others"
+        // )
+        //   ? state?.intrested_topics1
+        //   : state?.intrested_topics?.map((item) => item.label),
+
+        // work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
+        // year_of_graduation:
+        //   state?.user_type?.label === "Alumni"
+        //     ? state?.year_of_graduation?.value
+        //     : undefined,
+        // is_open_to_be_mentor:
+        //   state?.user_type?.label === "Alumni"
+        //     ? state?.is_open_to_be_mentor?.value == "Yes"
+        //       ? true
+        //       : false
+        //     : undefined,
+        // country:
+        //   state?.user_type?.label === "Alumni"
+        //     ? state?.country?.value
+        //     : undefined,
+      };
+
+      console.log("body: ", body); // For debugging purposes
+
+      // Validate the body object using Yup
+      await Validation.createStudentUser.validate(body, {
+        abortEarly: false,
+      });
+
+      if (state?.user_type?.label === "Alumni") {
+        if (!isValidPhoneNumber(body.phone_number)) {
+          setState({
+            submitLoading: false,
+            errors: {
+              phone_number: "Please enter a valid phone number",
+            },
+          });
+          return;
+        }
+      }
+      // Prepare the formData to submit
+      let groups = [state.user_type?.value];
+      let formData = new FormData();
+      formData.append("first_name", body.first_name);
+       formData.append("last_name", body.last_name);
+      formData.append("email", body.email);
+
+      // Append other fields conditionally
+      if (body.department) formData.append("department", body.department);
+      // if (body.phone_number) formData.append("phone_number", body.phone_number);
+      // formData.append("date_of_birth", body.dob);
+
+      groups.forEach((group) => {
+        formData.append("groups", group?.toString());
+      });
+
+      // Handle thumbnail image
+      if (body.thumbnail_image) {
+        formData.append("profile_picture", body.thumbnail_image);
+      } else {
+        formData.append("profile_picture", ""); // Empty string if no image
+      }
+
+      const topics = state?.intrested_topics?.some(
+        (item) => item.value === "others"
+      )
+        ? state?.intrested_topics1
+        : state?.intrested_topics?.map((item) => item.label);
+
+      // Convert the array or string to JSON if it's complex data
+      if (state?.intrested_topics?.length > 0) {
+        formData.append("intrested_topics", JSON.stringify(topics));
+      }
+      // Conditionally append fields based on user type
+      // if (state?.user_type?.label !== "Admin") {
+      //   if (body.university) formData.append("university", body.university);
+      //   if (body.intrested_topics)
+      //     formData.append("intrested_topics", body.intrested_topics);
+      // }
+
+      // Append alumni-specific fields
+      // if (body.phone_number && state?.user_type?.label === "Alumni") {
+      //   formData.append("phone_number", body.phone_number);
+      // }
+
+      if (body.year_of_entry && state?.user_type?.label === "Student") {
+        formData.append("year_of_entry", body.year_of_entry);
+      }
+
+      // if (body.work && state?.user_type?.label === "Alumni") {
+      //   formData.append("work", body.work);
+      // }
+
+      // if (body.country && state?.user_type?.label === "Alumni") {
+      //   formData.append("country", body.country);
+      // }
+
+      // if (body.address && state?.user_type?.label === "Alumni") {
+      //   formData.append("address", body.address);
+      // }
+
+      // if (body.year_of_graduation && state?.user_type?.label === "Alumni") {
+      //   formData.append("year_of_graduation", body.year_of_graduation);
+      // }
+
+      // if (body.is_open_to_be_mentor && state?.user_type?.label === "Alumni") {
+      //   formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
+      // }
+      console.log("formData", formData);
+      // Submit the formData
+      const res = await Models.user.addUser(formData);
+
+      // Reset submitLoading to false after submission
+      setState({ submitLoading: false });
+
+      // Redirect to user list page
+      router.push("/user-list");
+      Success("User added successfully");
+
+      console.log("res: ", res); // Log the response for debugging
+      }
+
     } catch (error) {
       console.log("error", error?.email);
 
@@ -414,6 +562,7 @@ const CreateUser = () => {
                   error={state.errors?.year_of_graduation}
                   title="Year Graduated"
                   placeholder="Select Year of Graduated"
+                  required
                 />
 
                 <TextInput
@@ -486,9 +635,10 @@ const CreateUser = () => {
                   options={years || []} // Safely pass empty array if universityList is null
                   value={state.year_of_entry?.value || ""}
                   onChange={(value) => setState({ year_of_entry: value })}
-                  error={state.errors?.year_of_graduation}
+                  error={state.errors?.year_of_entry}
                   title="Year of Entry"
                   placeholder="Select Year of Entry"
+                  required
                 />
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered

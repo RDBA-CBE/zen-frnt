@@ -192,7 +192,7 @@ const viewWellnessLounge = () => {
               alt="thumbnail"
               className="w-[300px] h-50"
             /> */}
-            {(state?.userData?.event_registrations ?? []).length > 0 && (
+            {(state?.userData?.event_registrations ?? []).length > 0 ? (
           <div className=" rounded-xl p-2 gap-4 flex flex-col ">
             <h1 className="font-[500]">Registered Events</h1>
 
@@ -202,6 +202,19 @@ const viewWellnessLounge = () => {
                 data={state?.userData?.event_registrations ?? []}
               />
             </div>
+          </div>
+        ) : (
+          <div className=" rounded-xl p-2 gap-4 flex flex-col ">
+            <h1 className="font-[500]">No Events Registered yet! </h1>
+           
+             {/* <Link
+                      href="https://irepute.in/"
+                      className="font-bold"
+                      target="_blank"
+                    >
+                      Click here to regester a event
+                    </Link> */}
+
           </div>
         )}
           </div>
