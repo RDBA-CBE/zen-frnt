@@ -118,18 +118,26 @@ const viewWellnessLounge = () => {
           </h2>
         </div>
 
-        <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-          <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+        <div className=" auto-rows-min gap-4 flex flex-col xl:flex-row">
+          <div className="border w-full xl:w-2/4 rounded-xl p-4 gap-10 flex flex-row flex-wrap ">
+
             <div>
-              <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
+              <img
+              src="/assets/images/placeholder.jpg"
+              alt="thumbnail"
+              className="w-[200px] h-[200px]"
+              style={{borderRadius: "10px", objectFit: "cover" }}
+            />
+             
+            </div>
+            <div>
+               <h2 className="mt-3 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
                 {state?.userData.first_name} {state?.userData.last_name}
               </h2>
               <blockquote className="italic">
                 {state?.userData?.group?.name}
               </blockquote>
-            </div>
-            <div>
-              <ul className="my-6 ml-6 [&>li]:mt-2">
+              <ul className="mb-6 [&>li]:mt-2">
                 {/* {state?.userData?.event_registrations && (
                                     <li>
                                         Event Registrations:{state?.userData?.event_registrations[0]}
@@ -178,16 +186,14 @@ const viewWellnessLounge = () => {
               </ul>
             </div>
           </div>
-          <div className="border rounded-xl p-4 gap-4 justify-center items-center flex flex-col ">
-            <img
+          <div className="border w-full xl:w-3/4 rounded-xl p-4 gap-4  flex flex-col ">
+            {/* <img
               src="/assets/images/placeholder.jpg"
               alt="thumbnail"
               className="w-[300px] h-50"
-            />
-          </div>
-        </div>
-        {(state?.userData?.event_registrations ?? []).length > 0 && (
-          <div className="border rounded-xl p-4 gap-4 mt-5 flex flex-col ">
+            /> */}
+            {(state?.userData?.event_registrations ?? []).length > 0 && (
+          <div className=" rounded-xl p-2 gap-4 flex flex-col ">
             <h1 className="font-[500]">Registered Events</h1>
 
             <div className="rounded-lg border">
@@ -198,6 +204,20 @@ const viewWellnessLounge = () => {
             </div>
           </div>
         )}
+          </div>
+        </div>
+        {/* {(state?.userData?.event_registrations ?? []).length > 0 && (
+          <div className="border rounded-xl p-4 gap-4 mt-5 flex flex-col ">
+            <h1 className="font-[500]">Registered Events</h1>
+
+            <div className="rounded-lg border">
+              <DataTable
+                columns={columns}
+                data={state?.userData?.event_registrations ?? []}
+              />
+            </div>
+          </div>
+        )} */}
       </div>
     </div>
   );

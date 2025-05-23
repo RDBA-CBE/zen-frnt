@@ -190,7 +190,7 @@ const ProfilePage = () => {
                       <div className="lg:w-1/2 w-[100%]">
                         <div className="flex justify-between items-center">
                           <div className="flex justify-between gap-2">
-                            <div>
+                            {/* <div>
                               {state?.userData?.profile_picture ? (
                                 <img
                                   src={state?.userData?.profile_picture}
@@ -204,9 +204,9 @@ const ProfilePage = () => {
                                   className="w-[70px] h-[70px] rounded"
                                 />
                               )}
-                            </div>
+                            </div> */}
                             <div>
-                              <h2 className="mt-10 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
+                              <h2 className="mt-2 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
                                 {state?.userData.first_name} {state?.userData.last_name}
                               </h2>
                               <blockquote className="italic">
@@ -259,17 +259,33 @@ const ProfilePage = () => {
                         </div>
                       </div>
                       <div className="lg:w-1/2 w-[100%] md:block hidden">
+                       {state?.userData?.profile_picture ? (
                         <img
-                          src="/assets/images/ab-3-1.webp"
+                          src={state?.userData?.profile_picture}
                           alt="thumbnail"
                           // className="w-[100] h-[100]"
-                          className="w-[300px] h-[300px]"
+                          className="w-[200px] h-[200px]"
                           style={{
                             objectFit: "cover",
                             borderRadius: "10px",
                             objectPosition:"top"
                           }}
                         />
+                       ) : (
+                         <img
+                          src="/assets/images/dummy-profile.jpg"
+                          alt="thumbnail"
+                          // className="w-[100] h-[100]"
+                          className="w-[200px] h-[200px]"
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "10px",
+                            objectPosition:"top"
+                          }}
+                        />
+                       ) }
+                        
+                        
                       </div>
                     </div>
                   </CardContent>

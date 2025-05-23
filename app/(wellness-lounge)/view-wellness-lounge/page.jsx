@@ -120,11 +120,14 @@ const viewWellnessLounge = () => {
           <>
             <div className="grid auto-rows-min gap-4 lg:grid-cols-2">
               <div className="border rounded-xl p-4 gap-4 flex flex-col">
-                <img
+                {state?.orderData?.thumbnail ? (
+                   <img
                   src={state?.orderData?.thumbnail}
                   alt="thumbnail"
                   className="w-100 h-auto"
                 />
+                ) : (<p style={{width:"100%", height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>No image uploaded</p>)}
+               
               </div>
               <div className="border rounded-xl p-4 flex flex-col">
                 <h2 className="mt-10 scroll-m-20 text-2xl font-[500] tracking-tight transition-colors first:mt-0">
