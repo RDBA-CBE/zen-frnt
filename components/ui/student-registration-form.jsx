@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, Success, ToastAndNavigate, useToastAndNavigate } from "../common-components/toast";
+import { Failure, InfinitySuccess, Success, ToastAndNavigate, useToastAndNavigate } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -172,32 +172,32 @@ const StudentRegistrationForm = () => {
 
     
     } catch (error) {
-      // console.log("error", error);
-      // setState({ btnLoading: false ,
-      //   errors: null
-      // });
+      console.log("error", error);
+      setState({ btnLoading: false ,
+        errors: null
+      });
 
-      // if (error instanceof Yup.ValidationError) {
-      //   const validationErrors = {};
-      //   error.inner.forEach((err) => {
-      //     validationErrors[err.path] = err?.message;
-      //   });
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
 
-      //   console.log("validationErrors: ", validationErrors);
+        console.log("validationErrors: ", validationErrors);
 
-      //   // Set validation errors in state
-      //   setState({ errors: validationErrors });
-      //   setState({ btnLoading: false }); // Stop loading after error
-      // } else {
-      //   setState({ btnLoading: false }); // Stop loading after unexpected error
-      //   if (error?.email) {
-      //     Failure(error.email[0]);
-      //   } else if (error?.password) {
-      //     Failure(error.password[0]);
-      //   } else {
-      //     Failure("An error occurred. Please try again.");
-      //   }
-      // }
+        // Set validation errors in state
+        setState({ errors: validationErrors });
+        setState({ btnLoading: false }); // Stop loading after error
+      } else {
+        setState({ btnLoading: false }); // Stop loading after unexpected error
+        if (error?.email) {
+          Failure(error.email[0]);
+        } else if (error?.password) {
+          Failure(error.password[0]);
+        } else {
+          Failure("An error occurred. Please try again.");
+        }
+      }
     }
   };
 

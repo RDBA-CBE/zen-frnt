@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, Success } from "../common-components/toast";
+import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import { mentorList } from "@/utils/constant.utils";
 import TextArea from "../common-components/textArea";
@@ -300,9 +300,15 @@ const AlumniRegistrationForm = () => {
 
       setState({ btnLoading: false });
 
-      Success(
+      // Success(
+      //   "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
+      // );
+
+
+      InfinitySuccess(
         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
       );
+
 
       setState({
         errors: null,

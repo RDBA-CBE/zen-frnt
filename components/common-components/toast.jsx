@@ -46,15 +46,30 @@ export function Success(message,onClick) {
   dismissAndToast(message, toastStyles.success,onClick);
 }
 
-export function InfinitySuccess(message,onClick) {
-  toast.dismiss()
+// export function InfinitySuccess(message,onClick) {
+//   toast.dismiss()
+//   toast(message, {
+//     duration: Infinity,
+//     style: toastStyles.success,
+//       action: {
+//             label: "x",
+//             onClick: onClick,
+//           },
+//   });
+// }
+
+export function InfinitySuccess(message, onClick) {
+  toast.dismiss();
   toast(message, {
     duration: Infinity,
     style: toastStyles.success,
-      action: {
-            label: "x",
-            onClick: onClick,
-          },
+    action: {
+      label: "x",
+      onClick: () => {
+        toast.dismiss();
+        if (onClick) onClick();
+      },
+    },
   });
 }
 
