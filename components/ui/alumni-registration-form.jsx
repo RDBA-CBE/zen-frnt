@@ -22,6 +22,7 @@ import { TextInput } from "../common-components/textInput";
 import "react-phone-number-input/style.css";
 
 import MultiSelectDropdown from "../common-components/multiSelectDropdown";
+import InterestTopicsMultiSelect from "../common-components/interestTopicsMultiSelect";
 
 import SingleSelectDropdown from "../common-components/singleSelectDropdown";
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const SingleSelectDropdown = ({
@@ -19,6 +19,7 @@ const SingleSelectDropdown = ({
   const [search, setSearch] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
 
+
   useEffect(() => {
     if (value) {
       setSelectedOption(value);
@@ -27,14 +28,33 @@ const SingleSelectDropdown = ({
     }
   }, [value]);
 
+
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
+    setSearch("")
   };
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
     onChange(option);
     setIsOpen(false);
+    setSearch("")
   };
 
   const filteredOptions = options.filter((option) =>
@@ -51,7 +71,7 @@ const SingleSelectDropdown = ({
   };
 
   return (
-    <div className="dropdown-wrapper">
+    <div className="dropdown-wrapper" ref={dropdownRef}>
       <div className="dropdown-container">
         {title && (
           <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -60,6 +80,7 @@ const SingleSelectDropdown = ({
         )}
 
         <div
+         
           className="dropdown-toggle-btn rounded-md border border-input bg-background"
           onClick={handleToggleDropdown}
           role="button"

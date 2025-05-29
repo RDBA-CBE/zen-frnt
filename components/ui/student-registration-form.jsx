@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, Success } from "../common-components/toast";
+import { Failure, Success, ToastAndNavigate, useToastAndNavigate } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -140,12 +140,26 @@ const StudentRegistrationForm = () => {
       });
       const res = await Models.auth.registration(body);
 
-      Success(
-        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests."
+       
+
+      InfinitySuccess(
+        "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+        () => {
+          router?.push("/login");
+          // console.log("jghjfgjhmv");
+        }
       );
 
-      router?.push("/login");
-      setState({
+      // router?.push("/login");
+
+// useToastAndNavigate
+      // useToastAndNavigate(
+      //   "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests.",
+      //   toastStyles.success,
+      //   "/login"
+      // );
+
+       setState({
         btnLoading: false,
         firstname: "",
         lastname: "",
@@ -155,33 +169,35 @@ const StudentRegistrationForm = () => {
         password: "",
         university: null,
       });
+
+    
     } catch (error) {
-      console.log("error", error);
-      setState({ btnLoading: false ,
-        errors: null
-      });
+      // console.log("error", error);
+      // setState({ btnLoading: false ,
+      //   errors: null
+      // });
 
-      if (error instanceof Yup.ValidationError) {
-        const validationErrors = {};
-        error.inner.forEach((err) => {
-          validationErrors[err.path] = err?.message;
-        });
+      // if (error instanceof Yup.ValidationError) {
+      //   const validationErrors = {};
+      //   error.inner.forEach((err) => {
+      //     validationErrors[err.path] = err?.message;
+      //   });
 
-        console.log("validationErrors: ", validationErrors);
+      //   console.log("validationErrors: ", validationErrors);
 
-        // Set validation errors in state
-        setState({ errors: validationErrors });
-        setState({ btnLoading: false }); // Stop loading after error
-      } else {
-        setState({ btnLoading: false }); // Stop loading after unexpected error
-        if (error?.email) {
-          Failure(error.email[0]);
-        } else if (error?.password) {
-          Failure(error.password[0]);
-        } else {
-          Failure("An error occurred. Please try again.");
-        }
-      }
+      //   // Set validation errors in state
+      //   setState({ errors: validationErrors });
+      //   setState({ btnLoading: false }); // Stop loading after error
+      // } else {
+      //   setState({ btnLoading: false }); // Stop loading after unexpected error
+      //   if (error?.email) {
+      //     Failure(error.email[0]);
+      //   } else if (error?.password) {
+      //     Failure(error.password[0]);
+      //   } else {
+      //     Failure("An error occurred. Please try again.");
+      //   }
+      // }
     }
   };
 
@@ -438,6 +454,7 @@ const StudentRegistrationForm = () => {
             >
               Cancel
             </Button>
+            
             <Button
               onClick={StudentRegistration}
               className="w-full bg-themeGreen hover:bg-themeGreen"

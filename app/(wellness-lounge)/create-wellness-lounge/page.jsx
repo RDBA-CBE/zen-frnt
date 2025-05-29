@@ -292,6 +292,8 @@ const CreateWellnessLounge = () => {
                 }}
                 className="mt-2 w-full"
                 type="file"
+                required
+                error={state.errors?.thumbnail_image}
               />
 
               <div className="flex justify-end gap-5 mt-10">

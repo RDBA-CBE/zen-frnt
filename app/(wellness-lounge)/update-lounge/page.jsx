@@ -403,6 +403,8 @@ const UpdateWellnessLounge = () => {
                   thumbnail_image: imageUrl, // Use preview URL instead of fakepath
                 });
               }}
+              required
+              error={state.errors?.thumbnail_image}
             />
           )}
 

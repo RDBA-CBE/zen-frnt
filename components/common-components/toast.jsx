@@ -1,64 +1,84 @@
 "use client";
 
 import { Toaster, toast } from "sonner";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
-// interface ToastProps {
-//   message: string;
-//   duration?: number;
-// }
-
-
-// Background colors based on type
+// Toast styles
 const toastStyles = {
-  success: { background: "#22C55E", color: "#FFFFFF" }, // Green
-  error: { background: "#DC2626", color: "#FFFFFF" }, // Red
-  info: { background: "#2563EB", color: "#FFFFFF" }, // Blue
+  success: { background: "#22C55E", color: "#FFFFFF" },
+  error: { background: "#DC2626", color: "#FFFFFF" },
+  info: { background: "#2563EB", color: "#FFFFFF" },
 };
 
-// function getCloseAction(dismiss) {
-//   return {
-//     label: "Close",
-//     onClick: dismiss,
-//   };
+// Dismiss and Show
+// function dismissAndToast(message, style) {
+//   toast.dismiss(); // Dismiss existing toasts
+//   toast(message, {
+//     duration: 5000,
+//     style,
+//     action: {
+//       label: "x",
+//       onClick: () => toast.dismiss(),
+//     },
+//   });
 // }
 
-// Success Message
-export function Success(message) {
+// // Success
+// export function Success(message) {
+//   dismissAndToast(message, toastStyles.success);
+// }
+
+function dismissAndToast(message, style,onClick) {
+  toast.dismiss(); // Dismiss existing toasts
+  toast(message, {
+    duration: 5000,
+    style,
+    action: {
+      label: "x",
+      onClick: () => onClick,
+    },
+  });
+}
+
+Success
+export function Success(message,onClick) {
+  dismissAndToast(message, toastStyles.success,onClick);
+}
+
+export function InfinitySuccess(message,onClick) {
+  toast.dismiss()
   toast(message, {
     duration: Infinity,
     style: toastStyles.success,
       action: {
             label: "x",
-            onClick: () => console.log("Undo"),
+            onClick: onClick,
           },
   });
 }
 
-// Error Message
+// Failure
 export function Failure(message) {
-  toast(message, {
-    duration: Infinity,
-    style: toastStyles.error,
-    action: {
-            label: "x",
-            onClick: () => console.log("Undo"),
-          },
-  });
+  dismissAndToast(message, toastStyles.error);
 }
 
-// Info Message
+// Info
 export function Info(message) {
-  toast(message, {
-    duration: Infinity,
-    style: toastStyles.info,
-  action: {
-            label: "x",
-            onClick: () => console.log("Undo"),
-          },
-  });
+  dismissAndToast(message, toastStyles.info);
 }
 
-// Global Toaster (should be placed at the root of your app)
+
+
+// Toaster with route change handler
 export function ToastContainer() {
+  const pathname = usePathname();
+
+  
+
+  useEffect(() => {
+    toast.dismiss(); // Clear toasts on route change
+  }, [pathname]);
+
   return <Toaster position="top-center" />;
 }
