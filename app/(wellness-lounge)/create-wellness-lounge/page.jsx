@@ -311,7 +311,7 @@ const CreateWellnessLounge = () => {
                   variant={"outline"}
                   name="Cancel"
                   className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen"
-                  onClick={() => router.back()}
+                  onClick={() => router.push("/wellness-lounge-list")}
                 />
 
                 <PrimaryButton

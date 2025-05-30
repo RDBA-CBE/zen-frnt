@@ -77,7 +77,12 @@ const ChangePasswordConfirmForm = () => {
       await Validation.change_password.validate(body);
       const res = await Models.auth.changepassword(body);
       console.log("res", res);
-      setState({ btnLoading: false });
+      setState({
+        btnLoading: false,
+        old_password: "",
+        new_password: "",
+        confirm_password: "",
+      });
 
       Success(res?.detail);
 
@@ -118,21 +123,25 @@ const ChangePasswordConfirmForm = () => {
               <div className="grid gap-2">
                 <Label htmlFor="old password">Old Password</Label>
                 <div className="relative">
-                <Input
-                  id="old-password"
-                  type={state.showPassword ? "text" : "password"}
-                  placeholder="Enter Your New Password"
-                  required
-                  value={state.old_password}
-                  onChange={(e) => setState({ old_password: e.target.value })}
-                   className="pr-10"
-                />
-                <button
+                  <Input
+                    id="old-password"
+                    type={state.showPassword ? "text" : "password"}
+                    placeholder="Enter Your New Password"
+                    required
+                    value={state.old_password}
+                    onChange={(e) => setState({ old_password: e.target.value })}
+                    className="pr-10"
+                  />
+                  <button
                     type="button"
                     onClick={() => {
                       setState({ showPassword: !state.showPassword });
                     }}
-                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                    className={` ${
+                      state.errors?.password
+                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                    }`}
                   >
                     {state?.showPassword ? (
                       <EyeOff size={18} />
@@ -140,27 +149,30 @@ const ChangePasswordConfirmForm = () => {
                       <Eye size={18} />
                     )}
                   </button>
-                  </div>
-                 
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">New Password</Label>
                 <div className="relative">
-                <Input
-                  id="new-password"
-                  type={state.showNewPassword ? "text" : "password"}
-                  placeholder="Enter Your New Password"
-                  required
-                  value={state.new_password}
-                  onChange={(e) => setState({ new_password: e.target.value })}
-                  className="pr-10"
-                />
-                <button
+                  <Input
+                    id="new-password"
+                    type={state.showNewPassword ? "text" : "password"}
+                    placeholder="Enter Your New Password"
+                    required
+                    value={state.new_password}
+                    onChange={(e) => setState({ new_password: e.target.value })}
+                    className="pr-10"
+                  />
+                  <button
                     type="button"
                     onClick={() => {
                       setState({ showNewPassword: !state.showNewPassword });
                     }}
-                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                    className={` ${
+                      state.errors?.password
+                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                    }`}
                   >
                     {state?.showNewPassword ? (
                       <EyeOff size={18} />
@@ -168,29 +180,35 @@ const ChangePasswordConfirmForm = () => {
                       <Eye size={18} />
                     )}
                   </button>
-                  </div>
-                   <p  style={{fontSize:"12px"}}>min 8 characters required</p>
+                </div>
+                <p style={{ fontSize: "12px" }}>min 8 characters required</p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Confirm New Password</Label>
-                 <div className="relative">
-                <Input
-                  id="confirm-passsword"
-                 type={state.showConfirmPassword ? "text" : "password"}
-                  placeholder="Enter Your Confirm Password"
-                   className="pr-10"
-                  required
-                  value={state.confirm_password}
-                  onChange={(e) =>
-                    setState({ confirm_password: e.target.value })
-                  }
-                />
-                <button
+                <div className="relative">
+                  <Input
+                    id="confirm-passsword"
+                    type={state.showConfirmPassword ? "text" : "password"}
+                    placeholder="Enter Your Confirm Password"
+                    className="pr-10"
+                    required
+                    value={state.confirm_password}
+                    onChange={(e) =>
+                      setState({ confirm_password: e.target.value })
+                    }
+                  />
+                  <button
                     type="button"
                     onClick={() => {
-                      setState({ showConfirmPassword: !state.showConfirmPassword });
+                      setState({
+                        showConfirmPassword: !state.showConfirmPassword,
+                      });
                     }}
-                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                    className={` ${
+                      state.errors?.password
+                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                    }`}
                   >
                     {state?.showConfirmPassword ? (
                       <EyeOff size={18} />
@@ -198,16 +216,24 @@ const ChangePasswordConfirmForm = () => {
                       <Eye size={18} />
                     )}
                   </button>
-                  </div>
-                  <p  style={{fontSize:"12px"}}>min 8 characters required</p>
+                </div>
+                <p style={{ fontSize: "12px" }}>min 8 characters required</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => router?.back()}
+                  // onClick={() => router?.back()}
+                  onClick={() =>
+                    setState({
+                      btnLoading: false,
+                      old_password: "",
+                      new_password: "",
+                      confirm_password: "",
+                    })
+                  }
                   variant="outline"
                   className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
                 >
-                  Cancel
+                  Reset
                 </Button>
 
                 <Button

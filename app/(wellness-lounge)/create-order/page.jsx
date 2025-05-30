@@ -357,7 +357,7 @@ const CreateOrder = () => {
                             <PrimaryButton
                                 variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                                 name="Cancel"
-                                onClick={() => router.back()}
+                                onClick={() => router.push("/order-list")}
                             />
 
                             <PrimaryButton className="bg-themeGreen hover:bg-themeGreen"

@@ -12,7 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, InfinitySuccess, Success, ToastAndNavigate, useToastAndNavigate } from "../common-components/toast";
+import {
+  Failure,
+  InfinitySuccess,
+  Success,
+  ToastAndNavigate,
+  useToastAndNavigate,
+} from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -26,7 +32,7 @@ const StudentRegistrationForm = () => {
 
   const [state, setState] = useSetState({
     firstname: "",
-    lastname:"",
+    lastname: "",
     email: "",
     password: "",
     phone_number: "",
@@ -53,7 +59,7 @@ const StudentRegistrationForm = () => {
     year_of_graduation: "",
     alumniPassword: "",
     btnLoading: false,
-    showPassword: false
+    showPassword: false,
   });
 
   useEffect(() => {
@@ -140,8 +146,6 @@ const StudentRegistrationForm = () => {
       });
       const res = await Models.auth.registration(body);
 
-       
-
       InfinitySuccess(
         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
         () => {
@@ -152,14 +156,14 @@ const StudentRegistrationForm = () => {
 
       // router?.push("/login");
 
-// useToastAndNavigate
+      // useToastAndNavigate
       // useToastAndNavigate(
       //   "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests.",
       //   toastStyles.success,
       //   "/login"
       // );
 
-       setState({
+      setState({
         btnLoading: false,
         firstname: "",
         lastname: "",
@@ -169,13 +173,9 @@ const StudentRegistrationForm = () => {
         password: "",
         university: null,
       });
-
-    
     } catch (error) {
       console.log("error", error);
-      setState({ btnLoading: false ,
-        errors: null
-      });
+      setState({ btnLoading: false, errors: null });
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -277,7 +277,6 @@ const StudentRegistrationForm = () => {
                 title="First Name"
               />
             </div>
-
 
             <div className="space-y-1">
               <TextInput
@@ -419,7 +418,7 @@ const StudentRegistrationForm = () => {
               <div className="relative">
                 <TextInput
                   id="password"
-                   type={state.showPassword ? "text" : "password"}
+                  type={state.showPassword ? "text" : "password"}
                   placeholder="Enter Your password"
                   required
                   title="Password"
@@ -429,32 +428,44 @@ const StudentRegistrationForm = () => {
                 />
                 <button
                   type="button"
-
                   onClick={() => {
-
                     setState({ showPassword: !state.showPassword });
                   }}
                   className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
                   style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
                 >
-                  {state?.showPassword ? <EyeOff size={18} /> : <Eye
-                    size={18} />}
+                  {state?.showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
-              <p  style={{fontSize:"12px"}}>min 8 characters required</p>
-
+              <p style={{ fontSize: "12px" }}>min 8 characters required</p>
             </div>
           </div>
 
           <div className="flex justify-center gap-2">
             <Button
-              onClick={() => router?.back()}
+              // onClick={() => router?.back()}
+              onClick={() =>
+                setState({
+                  btnLoading: false,
+                  firstname: "",
+                  lastname: "",
+                  email: "",
+                  department: "",
+                  year_of_entry: "",
+                  password: "",
+                  university: null,
+                })
+              }
               variant="outline"
               className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
             >
-              Cancel
+              Reset
             </Button>
-            
+
             <Button
               onClick={StudentRegistration}
               className="w-full bg-themeGreen hover:bg-themeGreen"

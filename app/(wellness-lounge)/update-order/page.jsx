@@ -273,11 +273,23 @@ const UpdateOrder = () => {
                       <span className="font-bold text-gray-700">
                         Profile Picture:
                       </span>{" "}
-                      <img
+                      {SelectedUser[0]?.profile_picture ? (
+<img
                         src={SelectedUser[0]?.profile_picture}
                         alt="Profile"
                         className="w-[100px] h-[100px] rounded pt-2"
+                        style={{borderRadius:"15px",objectFit:"cover" }}
                       />
+                      ) :
+                      (
+                        <img
+                        src="/assets/images/dummy-profile.jpg"
+                        alt="Profile"
+                        className="w-[100px] h-[100px] rounded pt-2"
+                        style={{borderRadius:"15px",objectFit:"cover" }}
+                      />
+                      )}
+                      
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Name:</span>{" "}
@@ -356,7 +368,7 @@ const UpdateOrder = () => {
               variant={"outline"}
               className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               name="Cancel"
-              onClick={() => router.back()}
+              onClick={() => router.push("/order-list")}
             />
 
             <PrimaryButton

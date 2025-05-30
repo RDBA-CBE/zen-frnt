@@ -138,7 +138,7 @@ const ForgotPasswordEmailForm = () => {
                                 />
                             </div> */}
                             <div className="flex items-center gap-2">
-                                <Button onClick={() => router?.back()} variant="outline" className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen">Cancel</Button>
+                                <Button onClick={() => router?.push("/login")} variant="outline" className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen">Cancel</Button>
 
                                 <Button type="button" className="w-full bg-themeGreen hover:bg-themeGreen " onClick={handleSubmit}>
                                     Submit

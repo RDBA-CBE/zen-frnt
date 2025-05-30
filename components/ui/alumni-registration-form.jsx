@@ -39,7 +39,7 @@ const AlumniRegistrationForm = () => {
 
   const [state, setState] = useSetState({
     firstname: "",
-    lastname:"",
+    lastname: "",
     email: "",
     password: "",
     phone_number: "",
@@ -54,8 +54,8 @@ const AlumniRegistrationForm = () => {
     intrestedTopicsList: [],
     universityList: null,
     alumniUsername: "",
-    aluminifirstname:"",
-    aluminilastname:"",
+    aluminifirstname: "",
+    aluminilastname: "",
     alumniEmail: "",
     alumniPhone: "",
     alumniDepartment: "",
@@ -254,7 +254,7 @@ const AlumniRegistrationForm = () => {
 
   const AlumniRegistration = async () => {
     console.log("hello");
-    
+
     try {
       setState({ btnLoading: true });
 
@@ -304,11 +304,9 @@ const AlumniRegistrationForm = () => {
       //   "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
       // );
 
-
       InfinitySuccess(
         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
       );
-
 
       setState({
         errors: null,
@@ -327,9 +325,7 @@ const AlumniRegistrationForm = () => {
         is_open_to_be_mentor: false,
       });
     } catch (error) {
-      setState({ btnLoading: false,
-        errors: null
-       });
+      setState({ btnLoading: false, errors: null });
 
       const validationErrors = {};
 
@@ -407,7 +403,6 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Your First Name"
                 title="First Name"
                 required
-                
                 value={state?.aluminifirstname}
                 onChange={(e) => setState({ aluminifirstname: e.target.value })}
                 error={state?.errors?.first_name}
@@ -622,11 +617,29 @@ const AlumniRegistrationForm = () => {
           </div>
           <div className="flex justify-center gap-2">
             <Button
-              onClick={() => router?.back()}
+              // onClick={() => router?.back()}
+              onClick={() =>
+                setState({
+                  errors: null,
+                  aluminifirstname: "",
+                  aluminilastname: "",
+                  alumniEmail: "",
+                  alumniPhone: "",
+                  alumniDepartment: "",
+                  work: "",
+                  country: "",
+                  address: "",
+                  year_of_graduation: "",
+                  alumniIntrested_topics1: "",
+                  alumniIntrested_topics: [],
+                  alumniUniversity: null,
+                  is_open_to_be_mentor: false,
+                })
+              }
               variant="outline"
               className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
             >
-              Cancel
+              Reset
             </Button>
             <Button
               onClick={AlumniRegistration}
