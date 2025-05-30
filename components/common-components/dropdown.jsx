@@ -52,7 +52,7 @@ const CustomSelect = (props) => {
           }}
           value={value}
         >
-          <SelectTrigger>
+         <SelectTrigger hideIcon={!!value}>
             {" "}
             {/* Space for clear icon */}
             <SelectValue placeholder={placeholder} />
