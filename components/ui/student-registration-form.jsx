@@ -272,7 +272,7 @@ const StudentRegistrationForm = () => {
                 placeholder="Enter Your First Name"
                 required
                 value={state.firstname}
-                onChange={(e) => setState({ firstname: e.target.value })}
+                onChange={(e) => setState({ firstname: e.target.value, errors:{...state.errors, first_name:""}})}
                 error={state.errors?.first_name}
                 title="First Name"
               />
@@ -285,7 +285,7 @@ const StudentRegistrationForm = () => {
                 placeholder="Enter Your Last Name"
                 required
                 value={state.lastname}
-                onChange={(e) => setState({ lastname: e.target.value })}
+                onChange={(e) => setState({ lastname: e.target.value , errors:{...state.errors, last_name:""}})}
                 error={state.errors?.last_name}
                 title="Last Name"
               />
@@ -298,7 +298,7 @@ const StudentRegistrationForm = () => {
                 placeholder="user@gmail.com"
                 required
                 value={state.email}
-                onChange={(e) => setState({ email: e.target.value })}
+                onChange={(e) => setState({ email: e.target.value , errors:{...state.errors, email:""}})}
                 error={state.errors?.email}
                 title="E-Mail"
               />
@@ -406,7 +406,7 @@ const StudentRegistrationForm = () => {
               <CustomSelect
                 options={years || []} // Safely pass empty array if universityList is null
                 value={state.year_of_entry?.value || ""}
-                onChange={(value) => setState({ year_of_entry: value })}
+                onChange={(value) => setState({ year_of_entry: value , errors:{...state.errors, year_of_entry:""}})}
                 error={state.errors?.year_of_entry}
                 title="Year of Entry"
                 placeholder="Select Year of Entry"
@@ -423,7 +423,7 @@ const StudentRegistrationForm = () => {
                   required
                   title="Password"
                   value={state.password}
-                  onChange={(e) => setState({ password: e.target.value })}
+                  onChange={(e) => setState({ password: e.target.value , errors:{...state.errors, password:""}})}
                   error={state.errors?.password}
                 />
                 <button
@@ -458,8 +458,8 @@ const StudentRegistrationForm = () => {
                   year_of_entry: "",
                   password: "",
                   university: null,
-                  intrested_topics: null,
-                  intrested_topics1: "",
+                  alumniIntrested_topics: null,
+                  // intrested_topics1: "",
                 })
               }
               variant="outline"

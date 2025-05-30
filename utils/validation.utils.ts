@@ -32,7 +32,7 @@ export const createSession = Yup.object().shape({
 
 export const createSessionOrder = Yup.object().shape({
   user: Yup.string().required("User is required"),
-  registration_status: Yup.string().required("Registration  is required"),
+  registration_status: Yup.string().required("Registration status is required"),
   event: Yup.array().required("Event is required"),
 });
 

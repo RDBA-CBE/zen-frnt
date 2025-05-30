@@ -404,7 +404,7 @@ const AlumniRegistrationForm = () => {
                 title="First Name"
                 required
                 value={state?.aluminifirstname}
-                onChange={(e) => setState({ aluminifirstname: e.target.value })}
+                onChange={(e) => setState({ aluminifirstname: e.target.value , errors:{...state.errors, first_name:""}})}
                 error={state?.errors?.first_name}
               />
             </div>
@@ -417,7 +417,7 @@ const AlumniRegistrationForm = () => {
                 title="Last Name"
                 required
                 value={state.aluminilastname}
-                onChange={(e) => setState({ aluminilastname: e.target.value })}
+                onChange={(e) => setState({ aluminilastname: e.target.value, errors:{...state.errors, last_name:""} })}
                 error={state?.errors?.last_name}
               />
             </div>
@@ -430,7 +430,7 @@ const AlumniRegistrationForm = () => {
                 required
                 title="E-Mail"
                 value={state.alumniEmail}
-                onChange={(e) => setState({ alumniEmail: e.target.value })}
+                onChange={(e) => setState({ alumniEmail: e.target.value,  errors:{...state.errors, email:""} })}
                 error={state?.errors?.email}
               />
             </div>
@@ -509,7 +509,7 @@ const AlumniRegistrationForm = () => {
               <CustomSelect
                 options={years || []} // Safely pass empty array if universityList is null
                 value={state.year_of_graduation?.value || ""}
-                onChange={(value) => setState({ year_of_graduation: value })}
+                onChange={(value) => setState({ year_of_graduation: value , errors:{...state.errors, year_of_graduation:""}})}
                 error={state.errors?.year_of_graduation}
                 title="Year Graduated"
                 placeholder="Select Year of Graduated"

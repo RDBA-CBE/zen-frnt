@@ -256,7 +256,9 @@ const UpdateOrder = () => {
           <CustomSelect
             options={state.userList}
             value={state.user?.value || ""}
-            onChange={(value) => setState({ user: value })}
+            onChange={(value) => setState({ user: value,
+               errors:{...state.errors, user:""}
+             })}
             title="Select User"
             error={state.errors?.user}
             required
@@ -331,7 +333,9 @@ const UpdateOrder = () => {
           <CustomSelect
             options={state.loungeList}
             value={state.event?.value || ""}
-            onChange={(value) => setState({ event: value })}
+            onChange={(value) => setState({ event: value,
+               errors:{...state.errors, event:""}
+             })}
             title="Select Lounge"
             error={state.errors?.event}
             required
@@ -346,7 +350,10 @@ const UpdateOrder = () => {
           <CustomSelect
             options={orderStatusList}
             value={state.registration_status?.value || ""}
-            onChange={(value) => setState({ registration_status: value })}
+            onChange={(value) => setState({ registration_status: value ,
+              errors:{...state.errors, registration_status:""}
+ 
+            })}
             title="Select Session Status"
             error={state.errors?.registration_status}
             required

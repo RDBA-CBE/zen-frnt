@@ -171,7 +171,7 @@ const CreateWellnessLounge = () => {
               <TextInput
                 value={state.title}
                 onChange={(e) => {
-                  setState({ title: e.target.value });
+                  setState({ title: e.target.value , errors:{...state.errors, title:""}});
                 }}
                 placeholder="Title"
                 title="Title"
@@ -198,6 +198,7 @@ const CreateWellnessLounge = () => {
                     setState({
                       start_date: date,
                       end_date: null,
+                      errors:{...state.errors, start_date:""}
                     });
                   }}
                   error={state.errors?.start_date}
@@ -211,6 +212,7 @@ const CreateWellnessLounge = () => {
                     console.log("date: ", date);
                     setState({
                       end_date: date,
+                      errors:{...state.errors, end_date:""}
                     });
                   }}
                   error={state.errors?.end_date}
@@ -221,7 +223,7 @@ const CreateWellnessLounge = () => {
               <div className="grid auto-rows-min gap-4 grid-cols-2">
                 <TimePicker
                   value={state.start_time}
-                  onChange={(e) => setState({ start_time: e })}
+                  onChange={(e) => setState({ start_time: e, errors:{...state.errors, start_time:""} })}
                   title="Start Time"
                   placeholder="Start Time"
                   error={state.errors?.start_time}
@@ -229,7 +231,7 @@ const CreateWellnessLounge = () => {
                 />
                 <TimePicker
                   value={state.end_time}
-                  onChange={(e) => setState({ end_time: e })}
+                  onChange={(e) => setState({ end_time: e, errors:{...state.errors, end_time:""} })}
                   title="End Time"
                   placeholder="End Time"
                   error={state.errors?.end_time}
@@ -242,7 +244,7 @@ const CreateWellnessLounge = () => {
               <CustomSelect
                 options={state.categoryList}
                 value={state.lounge_type?.value || ""}
-                onChange={(value) => setState({ lounge_type: value })}
+                onChange={(value) => setState({ lounge_type: value, errors:{...state.errors, lounge_type:""} })}
                 title="Lounge Type"
                 error={state.errors?.lounge_type}
                 required
@@ -250,7 +252,7 @@ const CreateWellnessLounge = () => {
               <TextInput
                 value={state.session_link}
                 onChange={(e) => {
-                  setState({ session_link: e.target.value });
+                  setState({ session_link: e.target.value, errors:{...state.errors, session_link:""} });
                 }}
                 placeholder="Session Link"
                 title="Session Link"
@@ -288,6 +290,7 @@ const CreateWellnessLounge = () => {
                   setState({
                     thumbnail_images: e.target.files[0],
                     thumbnail_image: e.target.value,
+                    errors:{...state.errors, thumbnail_image:""}
                   });
                 }}
                 className="mt-2 w-full"

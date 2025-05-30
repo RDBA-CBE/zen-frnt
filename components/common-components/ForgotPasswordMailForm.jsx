@@ -113,7 +113,9 @@ const ForgotPasswordEmailForm = () => {
                   placeholder="Enter Your mail ID"
                   required
                   value={state.username}
-                  onChange={(e) => setState({ username: e.target.value })}
+                  onChange={(e) => setState({ username: e.target.value, 
+                    errors:{...state.errors, email:""}
+                   })}
                   error={state.errors?.email}
                 />
               </div>
