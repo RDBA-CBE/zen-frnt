@@ -458,6 +458,8 @@ const StudentRegistrationForm = () => {
                   year_of_entry: "",
                   password: "",
                   university: null,
+                  intrested_topics: null,
+                  intrested_topics1: "",
                 })
               }
               variant="outline"
