@@ -34,6 +34,7 @@ import PhoneInput, {
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
+import Select from "react-select";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -99,7 +100,7 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
-      console.log(res.intrested_topics, "res");
+      console.log("getDetails --->", res);
 
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
@@ -113,12 +114,12 @@ const CreateUser = () => {
         });
       }
 
-
       console.log("resss", res);
       setState({
         firstname: res.first_name ? res.first_name : "",
         lastname: res.last_name ? res.last_name : "",
         email: res.email ? res.email : "",
+        intrested_topics1: res?.lable,
 
         address: res.address ? res.address : "",
         phone_number: res?.phone_number ? res?.phone_number : "",
@@ -128,28 +129,37 @@ const CreateUser = () => {
               label: res?.year_of_entry.toString(),
             }
           : null,
+        // year_of_graduation: res?.year_of_graduation
+        //   ? res?.year_of_graduation
+        //   : "",
+
         year_of_graduation: res?.year_of_graduation
-          ? res?.year_of_graduation
-          : "",
+          ? {
+              value: res?.year_of_graduation,
+              label: res?.year_of_graduation,
+            }
+          : null,
         work: res?.work ? res?.work : "",
         department: res?.department ? res?.department : "",
-        university: {
-          value: res?.university?.id ? res?.university?.id : null,
-          label: res?.university?.name ? res?.university?.name : null,
-        },
+        university: res?.university?{
+          value: res?.university?.id ,
+          label: res?.university?.name,
+        }:null,
         intrested_topics:
           res?.intrested_topics?.length > 0
             ? res?.intrested_topics?.map((item) => ({
-                value: item,
-                label: item,
+                value: item?.id,
+                label: item?.topic,
               }))
             : [],
 
-        country: {
-          value: res?.country ? res?.country?.id : null,
-          label: res?.country ? res?.country?.name : null,
-          code: res?.country ? res?.country?.code : null,
-        },
+        country: res?.country
+          ? {
+              value: res?.country?.id,
+              label: res?.country?.name,
+              code: res?.country?.code,
+            }
+          : null,
         is_open_to_be_mentor: {
           value: res?.is_open_to_be_mentor == true ? "Yes" : "No",
           label: res?.is_open_to_be_mentor == true ? "Yes" : "No",
@@ -209,12 +219,7 @@ const CreateUser = () => {
       const res = await Models.auth.getIntrestedTopics();
       const Dropdowns = Dropdown(res?.results, "topic");
 
-      const updatedDropdowns = [
-        ...Dropdowns,
-        { label: "Others", value: "others" },
-      ];
-
-      setState({ intrestedTopicsList: updatedDropdowns });
+      setState({ intrestedTopicsList: Dropdowns });
       console.log("res", res);
     } catch (error) {
       console.log(error);
@@ -256,19 +261,12 @@ const CreateUser = () => {
           //       : state?.intrested_topics?.label
           //     : undefined,
           intrested_topics:
-            state?.user_type?.label !== "Admin"
-              ? state.intrested_topics.some(
-                  (item) => item.value == "others" || item.value == "Others"
-                )
-                ? state?.intrested_topics1
-                : state?.intrested_topics?.map((item) => item.label)
-              : undefined,
+            state?.intrested_topics?.length > 0
+              ? state?.intrested_topics?.map((item) => item.value)
+              : [],
 
           work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-          year_of_graduation:
-            state?.user_type?.label === "Alumni"
-              ? state?.year_of_graduation
-              : undefined,
+          year_of_graduation: state?.year_of_graduation?.value,
           is_open_to_be_mentor:
             state?.user_type?.label === "Alumni"
               ? state?.is_open_to_be_mentor?.value == "Yes"
@@ -307,11 +305,25 @@ const CreateUser = () => {
           formData.append("profile_picture", "");
         }
 
-        if (state?.user_type?.label !== "Admin") {
-          if (body.university) formData.append("university", body.university);
-          if (body.intrested_topics)
-            formData.append("intrested_topics", body.intrested_topics);
+        // if (state?.user_type?.label !== "Admin") {
+        if (body.university) {
+          formData.append("university", body.university);
+        }else{
+          formData.append("university", '');
+
         }
+
+        if (body?.intrested_topics?.length > 0) {
+          body.intrested_topics.forEach((topicId) => {
+            formData.append("intrested_topics", topicId);
+          });
+          if (body?.intrested_topics?.some((item) => item == 13)) {
+            formData.append("lable", state?.intrested_topics1);
+          } else {
+            formData.append("lable", "");
+          }
+        }
+        // }
 
         if (body.phone_number && state?.user_type?.label === "Alumni") {
           formData.append("phone_number", body.phone_number);
@@ -355,12 +367,10 @@ const CreateUser = () => {
           email: state.email.trim(),
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
-          // address: state.address || "",
-          // dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
+
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
-          // phone_number:
-          //   state?.user_type?.label === "Alumni" ? state.phone_number : undefined,
+
           year_of_entry:
             state?.user_type?.label === "Student"
               ? state.year_of_entry?.value
@@ -369,29 +379,12 @@ const CreateUser = () => {
             state?.user_type?.label !== "Admin"
               ? state?.university?.value
               : undefined,
-          // intrested_topics:
-          //   state?.user_type?.label !== "Admin"
-          //     ? state?.intrested_topics?.label == "Others"
-          //       ? state?.intrested_topics1
-          //       : state?.intrested_topics?.label
-          //     : undefined,
-          // work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
-          // year_of_graduation:
-          //   state?.user_type?.label === "Alumni"
-          //     ? state?.year_of_graduation
-          //     : undefined,
-          // is_open_to_be_mentor:
-          //   state?.user_type?.label === "Alumni"
-          //     ? state?.is_open_to_be_mentor?.value == "Yes"
-          //       ? true
-          //       : false
-          //     : undefined,
-          // country:
-          //   state?.user_type?.label === "Alumni"
-          //     ? state?.country?.value              console.log('state?.intrested_topics: ', state?.intrested_topics);
+          intrested_topics:
+            state?.intrested_topics?.length > 0
+              ? state?.intrested_topics?.map((item) => item?.value)
+              : [],
         };
 
-        console.log("body", body);
         await Validation.createStudentUser.validate(body, {
           abortEarly: false,
         });
@@ -403,54 +396,29 @@ const CreateUser = () => {
         formData.append("email", body.email);
 
         if (body.department) formData.append("department", body.department);
-        // if (body.phone_number) formData.append("phone_number", body.phone_number);
-        // formData.append("date_of_birth", body.dob);
+
+        if (body?.intrested_topics?.length > 0) {
+          body.intrested_topics.forEach((topicId) => {
+            formData.append("intrested_topics", topicId);
+          });
+          if (body?.intrested_topics?.some((item) => item == 13)) {
+            formData.append("lable", state?.intrested_topics1);
+          } else {
+            formData.append("lable", "");
+          }
+        }
 
         groups.forEach((group) => {
           formData.append("groups", group?.toString());
         });
-        console.log("state?.intrested_topics: ", state?.intrested_topics);
 
         if (body.thumbnail_image) {
           formData.append("profile_picture", body.thumbnail_image);
         } else {
           formData.append("profile_picture", "");
         }
+        if (body.university) formData.append("university", body.university);
 
-        if (state?.user_type?.label !== "Admin") {
-          if (body.university) formData.append("university", body.university);
-          if (body.intrested_topics)
-            formData.append("intrested_topics", body.intrested_topics);
-        }
-
-        // if (body.phone_number && state?.user_type?.label === "Alumni") {
-        //   formData.append("phone_number", body.phone_number);
-        // }
-        // if (body.work && state?.user_type?.label === "Alumni") {
-        //   formData.append("work", body.work);
-        // }
-
-        // if (body.country && state?.user_type?.label === "Alumni") {
-        //   formData.append("country", body.country);
-        // }
-
-        // if (body.address && state?.user_type?.label === "Alumni") {
-        //   formData.append("address", body.address);
-        // }
-
-        // if (
-        //   body.year_of_graduation !== undefined &&
-        //   state?.user_type?.label === "Alumni"
-        // ) {
-        //   formData.append("year_of_graduation", body.year_of_graduation);
-        // }
-
-        // if (
-        //   body.is_open_to_be_mentor !== undefined &&
-        //   state?.user_type?.label === "Alumni"
-        // ) {
-        //   formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
-        // }
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
@@ -514,8 +482,9 @@ const CreateUser = () => {
           <TextInput
             value={state.firstname}
             onChange={(e) => {
-              setState({ firstname: e.target.value ,
-                errors:{...state.errors, first_name:""}
+              setState({
+                firstname: e.target.value,
+                errors: { ...state.errors, first_name: "" },
               });
             }}
             placeholder="First Name"
@@ -527,8 +496,9 @@ const CreateUser = () => {
           <TextInput
             value={state.lastname}
             onChange={(e) => {
-              setState({ lastname: e.target.value ,
-                errors:{...state.errors, last_name:""}
+              setState({
+                lastname: e.target.value,
+                errors: { ...state.errors, last_name: "" },
               });
             }}
             placeholder="Last Name"
@@ -540,8 +510,9 @@ const CreateUser = () => {
           <TextInput
             value={state.email}
             onChange={(e) => {
-              setState({ email: e.target.value ,
-                errors:{...state.errors, email:""}
+              setState({
+                email: e.target.value,
+                errors: { ...state.errors, email: "" },
               });
             }}
             placeholder="Email"
@@ -606,8 +577,8 @@ const CreateUser = () => {
             onChange={(value) =>
               setState({
                 user_type: value,
-                 errors:{...state.errors, user_type:""}
-                
+                errors: { ...state.errors, user_type: "" },
+
                 // phone_number: "",
                 // year_of_graduation: "",
                 // work: "",
@@ -625,39 +596,34 @@ const CreateUser = () => {
             state?.user_type?.label === "Alumni" ? (
               // Add the component or content you want to render for "Alumni" here
               <>
-                {/* <TextInput
-                  value={state.phone_number}
-                  onChange={(e) => {
-                    setState({ phone_number: e.target.value });
-                  }}
-                  placeholder="Phone Number"
-                  title="Phone Number"
-                  // error={state.errors?.phone_number}
-                  // required
-                /> */}
-
-                {/* <TextInput
-                  id="year_of_graduation"
-                  type="text"
-                  placeholder="Enter Year of Graduated"
-                  title="Year Graduated"
-                  value={state.year_of_graduation}
-                  onChange={(e) =>
-                    setState({ year_of_graduation: e.target.value })
-                  }
-                /> */}
-
-                <CustomSelect
-                  options={years || []} // Safely pass empty array if universityList is null
-                  value={state.year_of_graduation?.value || ""}
-                  onChange={(value) => setState({ year_of_graduation: value,
-                     errors:{...state.errors, year_of_graduation:""}
-                   })}
-                  error={state.errors?.year_of_graduation}
-                  title="Year Graduated"
-                  placeholder="Select Year of Graduated"
-                  required
-                />
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"Year Graduated"} {<span className="text-red-500">*</span>}
+                  </label>
+                  <Select
+                    options={years || []}
+                    value={state.year_of_graduation || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_graduation: value,
+                        errors: { ...state.errors, year_of_graduation: "" },
+                      })
+                    }
+                    placeholder="Select Year of Graduated"
+                    className=" text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                  />
+                  {state.errors?.year_of_graduation && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {state.errors?.year_of_graduation}{" "}
+                      {/* Display the error message if it exists */}
+                    </p>
+                  )}
+                </div>
 
                 <TextInput
                   id="work"
@@ -668,25 +634,25 @@ const CreateUser = () => {
                   onChange={(e) => setState({ work: e.target.value })}
                 />
 
-                {/* <CustomSelect
-                  options={state?.countryList || []} // Safely pass empty array if universityList is null
-                  value={state.country?.value || ""}
-                  onChange={(value) => setState({ country: value })}
-                  error={state.errors?.country}
-                  title="country"
-                  placeholder="Select Your Country"
-                /> */}
-
-                <SingleSelectDropdown
-                  options={state?.countryList || []} // Safely pass empty array if universityList is null
-                  value={state.country || ""}
-                  onChange={(value) => {
-                    setState({ country: value, phone_number: "" });
-                  }}
-                  error={state.errors?.country}
-                  title="Country"
-                  placeholder="Select Your Country"
-                />
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"Country"}
+                  </label>
+                  <Select
+                    options={state.countryList || []}
+                    value={state.country || ""}
+                    onChange={(value) => {
+                      setState({ country: value, phone_number: "" });
+                    }}
+                    placeholder="Select Your Country"
+                    className=" text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                  />
+                </div>
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">
@@ -719,34 +685,140 @@ const CreateUser = () => {
                   placeholder="Address"
                   title="Address"
                 />
-                <MultiSelectDropdown
-                  options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
-                  value={state.intrested_topics || ""}
-                  onChange={(value) => {
-                    console.log("✌️value --->", value);
-                    if (value.length > 0) {
-                      if (value?.some((item) => item.value === "others")) {
-                        setState({
-                          intrested_topics: [
-                            { value: "others", label: "Others" },
-                          ],
-                        });
-                      } else {
-                        setState({ intrested_topics: value });
-                      }
-                    } else {
-                      setState({ intrested_topics: value });
-                    }
-                  }}
-                  error={state.errors?.intrested_topics}
-                  placeholder="Select Topics"
-                  title="Interests in Topics"
+                <CustomSelect
+                  options={mentorList || []}
+                  value={state.is_open_to_be_mentor?.value || ""}
+                  onChange={(value) =>
+                    setState({ is_open_to_be_mentor: value })
+                  }
+                  error={state.errors?.is_open_to_be_mentor}
+                  title="Are you open to being a mentor?"
+                  placeholder="Select"
                 />
 
+                <div className="space-y-1">
+                  <TextInput
+                    id="department"
+                    type="text"
+                    placeholder="Enter Your Department Name"
+                    title="Department"
+                    value={state.department}
+                    onChange={(e) => setState({ department: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"Interests in Topics"}
+                  </label>
+                  <Select
+                    value={state.intrested_topics}
+                    isMulti
+                    options={state.intrestedTopicsList || []}
+                    placeholder="Select Topics"
+                    onChange={(value) => setState({ intrested_topics: value })}
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body} // required when using menuPosition="fixed"
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  />
+                </div>
+
                 {Array.isArray(state.intrested_topics) &&
-                  state.intrested_topics.some(
-                    (item) => item.value == "others" || item.value == "Others"
-                  ) && (
+                  state.intrested_topics.some((item) => item.value == 13) && (
+                    <div className="space-y-1">
+                      <TextInput
+                        id="intrested_topics1"
+                        type="text"
+                        placeholder="Enter Your Intrested Topics"
+                        title="New Topics"
+                        value={state.intrested_topics1}
+                        onChange={(e) =>
+                          setState({ intrested_topics1: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"University"}
+                  </label>
+                  <Select
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) => setState({ university: value })}
+                    placeholder="Select University"
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                  />
+                </div>
+              </>
+            ) : state?.user_type?.label === "Student" ? (
+              <>
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"Year of Entry"} {<span className="text-red-500">*</span>}
+                  </label>
+                  <Select
+                    options={years || []}
+                    value={state.year_of_entry || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_entry: value,
+                        errors: { ...state.errors, year_of_entry: "" },
+                      })
+                    }
+                    placeholder="Year Of Entry"
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                  />
+                  {state.errors?.year_of_entry && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {state.errors?.year_of_entry}{" "}
+                      {/* Display the error message if it exists */}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <TextInput
+                    id="department"
+                    type="text"
+                    placeholder="Enter Your Department Name"
+                    title="Department"
+                    value={state.department}
+                    onChange={(e) => setState({ department: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"Interests in Topics"}
+                  </label>
+                  <Select
+                    value={state.intrested_topics}
+                    isMulti
+                    options={state.intrestedTopicsList || []}
+                    placeholder="Select Topics"
+                    onChange={(value) => setState({ intrested_topics: value })}
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body} // required when using menuPosition="fixed"
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  />
+                </div>
+
+                {Array.isArray(state.intrested_topics) &&
+                  state.intrested_topics.some((item) => item.value == 13) && (
                     <div className="space-y-1">
                       <TextInput
                         id="intrested_topics1"
@@ -761,93 +833,26 @@ const CreateUser = () => {
                     </div>
                   )}
 
-                <CustomSelect
-                  options={mentorList || []}
-                  value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) =>
-                    setState({ is_open_to_be_mentor: value })
-                  }
-                  error={state.errors?.is_open_to_be_mentor}
-                  title="Are you open to being a mentor?"
-                  placeholder="Select Topics"
-                />
-              </>
-            ) : state?.user_type?.label === "Student" ? (
-              // Add the component or content you want to render for "student" here
-              <>
-                {/* <TextInput
-                  id="year_of_entry"
-                  type="text"
-                  placeholder="Enter Year of Entry"
-                  value={state.year_of_entry}
-                  onChange={(e) => setState({ year_of_entry: e.target.value })}
-                  title="Year of Entry"
-                /> */}
-
-                <CustomSelect
-                  options={years || []} // Safely pass empty array if universityList is null
-                  value={state.year_of_entry?.value || ""}
-                  onChange={(value) => setState({ year_of_entry: value,
-                    errors:{...state.errors, year_of_entry:""}
-                   })}
-                  error={state.errors?.year_of_entry}
-                  title="Year of Entry"
-                  placeholder="Select Year of Entry"
-                  required
-                />
+                <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"University"}
+                  </label>
+                  <Select
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) => setState({ university: value })}
+                    placeholder="Select University"
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                  />
+                </div>
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
-
-          {state?.user_type?.label !== "Admin" && (
-            <>
-              <div className="space-y-1">
-                <TextInput
-                  id="department"
-                  type="text"
-                  placeholder="Enter Your Department Name"
-                  error={state.errors?.department}
-                  title="Department"
-                  value={state.department}
-                  onChange={(e) => setState({ department: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1">
-                <CustomSelect
-                  options={state?.universityList || []} // Safely pass empty array if universityList is null
-                  value={state.university?.value || ""}
-                  onChange={(value) => setState({ university: value })}
-                  error={state.errors?.university}
-                  title="University"
-                  placeholder="Select University"
-                />
-              </div>
-
-              {/* <div className="space-y-1">
-                  <CustomSelect
-                    options={state.intrestedTopicsList || []}
-                    value={state.intrested_topics?.label || ""}
-                    onChange={(value) => setState({ intrested_topics: value })}
-                    error={state.errors?.intrested_topics}
-                    title="Intrested Topics"
-                    placeholder="Select Intrested Topics"
-                  />
-                </div>
-                {
-                  state.intrested_topics?.value == "others" &&
-                  <div className="space-y-1">
-                    <TextInput
-                      id="intrested_topics1"
-                      type="text"
-                      placeholder="Enter Your Intrested Topics"
-                      title="Interests in Topics"
-                      value={state.intrested_topics1}
-                      onChange={(e) => setState({ intrested_topics1: e.target.value })}
-                    />
-                  </div>
-                } */}
-            </>
-          )}
 
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton

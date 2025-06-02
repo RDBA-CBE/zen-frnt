@@ -503,7 +503,7 @@ const RegistrationForm = ({ className, ...props }) => {
                                         onChange={(value) => setState({ is_open_to_be_mentor: value })}
                                         error={state.errors?.is_open_to_be_mentor}
                                         title="Are you open to being a mentor?"
-                                        placeholder="Select Topics"
+                                        placeholder="Select"
                                     />
                                 </div>
                                 <div className="space-y-1">

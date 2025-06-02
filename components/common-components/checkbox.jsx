@@ -8,6 +8,7 @@ export function CheckboxDemo({
   selectedValues,
   onChange,
   isMulti,
+  className
 }) {
   const handleCheckboxChange = (checked) => {
     let newSelectedValues;
@@ -19,7 +20,7 @@ export function CheckboxDemo({
         newSelectedValues = [...selectedValues, selectedItem];
       } else {
         newSelectedValues = selectedValues?.filter(
-          (item) => item.value !== value,
+          (item) => item.value !== value
         );
       }
     } else {
@@ -38,7 +39,7 @@ export function CheckboxDemo({
       />
       <label
         htmlFor={value}
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+        className={`${className}"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer`}
       >
         {label}
       </label>

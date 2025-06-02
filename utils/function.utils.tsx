@@ -31,6 +31,15 @@ export const Dropdown = (arr: any, label: string) => {
   return array;
 };
 
+
+export const MultiDropdown = (arr: any, label: string) => {
+  const array = arr?.map((item: any) => ({
+    value: item?.id,
+    name: item[label],
+  }));
+  return array;
+};
+
 export const UserDropdown = (arr: any, labelFn: (item: any) => string) => {
   const array = arr?.map((item: any) => ({
     value: item?.id,

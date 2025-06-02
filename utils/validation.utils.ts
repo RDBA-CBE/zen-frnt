@@ -123,9 +123,9 @@ export const forgetPassword = Yup.object().shape({
 export const AlumniRegistration = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
    last_name: Yup.string().required("Last Name is required"),
-  email: Yup.string().required("Email is required").email("Email is not valid"),
+  email: Yup.string().required("Email is required").email("Invalid email address"),
   // email: Yup.string().required("Email is required"),
-  // password: Yup.string().required("Password is required"),
+  password: Yup.string().required("Password is required"),
   phone_number: Yup.string().required("Phone number is required"),
   year_of_graduation: Yup.string().required("Year of graduation is required"),
 });

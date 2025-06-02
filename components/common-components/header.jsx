@@ -188,7 +188,7 @@ const Header = () => {
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                     <Link
                       prefetch={true}
-                      href="/student-registration"
+                      href="/registration"
                       className="hover:underline md:text-[16px] text-[10px] "
                     >
                       Student Registration
@@ -198,7 +198,7 @@ const Header = () => {
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                     <Link
                       prefetch={true}
-                      href="/alumni-registration"
+                      href="/registration"
                       className="hover:underline  md:text-[16px] text-[10px]"
                     >
                       Alumni Registration
