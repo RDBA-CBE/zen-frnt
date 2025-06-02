@@ -514,7 +514,9 @@ const CreateUser = () => {
           <TextInput
             value={state.firstname}
             onChange={(e) => {
-              setState({ firstname: e.target.value });
+              setState({ firstname: e.target.value ,
+                errors:{...state.errors, first_name:""}
+              });
             }}
             placeholder="First Name"
             title="First Name"
@@ -525,7 +527,9 @@ const CreateUser = () => {
           <TextInput
             value={state.lastname}
             onChange={(e) => {
-              setState({ lastname: e.target.value });
+              setState({ lastname: e.target.value ,
+                errors:{...state.errors, last_name:""}
+              });
             }}
             placeholder="Last Name"
             title="Last Name"
@@ -536,7 +540,9 @@ const CreateUser = () => {
           <TextInput
             value={state.email}
             onChange={(e) => {
-              setState({ email: e.target.value });
+              setState({ email: e.target.value ,
+                errors:{...state.errors, email:""}
+              });
             }}
             placeholder="Email"
             title="Email"
@@ -600,6 +606,8 @@ const CreateUser = () => {
             onChange={(value) =>
               setState({
                 user_type: value,
+                 errors:{...state.errors, user_type:""}
+                
                 // phone_number: "",
                 // year_of_graduation: "",
                 // work: "",
@@ -642,7 +650,9 @@ const CreateUser = () => {
                 <CustomSelect
                   options={years || []} // Safely pass empty array if universityList is null
                   value={state.year_of_graduation?.value || ""}
-                  onChange={(value) => setState({ year_of_graduation: value })}
+                  onChange={(value) => setState({ year_of_graduation: value,
+                     errors:{...state.errors, year_of_graduation:""}
+                   })}
                   error={state.errors?.year_of_graduation}
                   title="Year Graduated"
                   placeholder="Select Year of Graduated"
@@ -777,7 +787,9 @@ const CreateUser = () => {
                 <CustomSelect
                   options={years || []} // Safely pass empty array if universityList is null
                   value={state.year_of_entry?.value || ""}
-                  onChange={(value) => setState({ year_of_entry: value })}
+                  onChange={(value) => setState({ year_of_entry: value,
+                    errors:{...state.errors, year_of_entry:""}
+                   })}
                   error={state.errors?.year_of_entry}
                   title="Year of Entry"
                   placeholder="Select Year of Entry"
@@ -842,7 +854,7 @@ const CreateUser = () => {
               variant={"outline"}
               name="Cancel"
               className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
-              onClick={() => router.back()}
+              onClick={() => router.push("/user-list")}
             />
 
             <PrimaryButton

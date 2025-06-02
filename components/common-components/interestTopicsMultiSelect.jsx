@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
-const MultiSelectDropdown = ({
+const InterestTopicsMultiSelect = ({
   options = [],
   placeholder = "Select...",
   value = [],
@@ -173,7 +173,7 @@ const MultiSelectDropdown = ({
 
         {isOpen && (
           <div
-            className="dropdown-menu"
+            className="dropdown-menu no-scrollbar"
             style={{
               border: "1px solid #ccc",
               borderRadius: "4px",
@@ -185,7 +185,7 @@ const MultiSelectDropdown = ({
               zIndex: 9999,
               position: "absolute",
               width: "100%",
-              
+              top:"-180px"
             }}
           >
             <input
@@ -238,4 +238,4 @@ const MultiSelectDropdown = ({
   );
 };
 
-export default MultiSelectDropdown;
+export default InterestTopicsMultiSelect;

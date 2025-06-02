@@ -256,7 +256,9 @@ const UpdateOrder = () => {
           <CustomSelect
             options={state.userList}
             value={state.user?.value || ""}
-            onChange={(value) => setState({ user: value })}
+            onChange={(value) => setState({ user: value,
+               errors:{...state.errors, user:""}
+             })}
             title="Select User"
             error={state.errors?.user}
             required
@@ -273,11 +275,23 @@ const UpdateOrder = () => {
                       <span className="font-bold text-gray-700">
                         Profile Picture:
                       </span>{" "}
-                      <img
+                      {SelectedUser[0]?.profile_picture ? (
+<img
                         src={SelectedUser[0]?.profile_picture}
                         alt="Profile"
                         className="w-[100px] h-[100px] rounded pt-2"
+                        style={{borderRadius:"15px",objectFit:"cover" }}
                       />
+                      ) :
+                      (
+                        <img
+                        src="/assets/images/dummy-profile.jpg"
+                        alt="Profile"
+                        className="w-[100px] h-[100px] rounded pt-2"
+                        style={{borderRadius:"15px",objectFit:"cover" }}
+                      />
+                      )}
+                      
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Name:</span>{" "}
@@ -319,7 +333,9 @@ const UpdateOrder = () => {
           <CustomSelect
             options={state.loungeList}
             value={state.event?.value || ""}
-            onChange={(value) => setState({ event: value })}
+            onChange={(value) => setState({ event: value,
+               errors:{...state.errors, event:""}
+             })}
             title="Select Lounge"
             error={state.errors?.event}
             required
@@ -334,7 +350,10 @@ const UpdateOrder = () => {
           <CustomSelect
             options={orderStatusList}
             value={state.registration_status?.value || ""}
-            onChange={(value) => setState({ registration_status: value })}
+            onChange={(value) => setState({ registration_status: value ,
+              errors:{...state.errors, registration_status:""}
+ 
+            })}
             title="Select Session Status"
             error={state.errors?.registration_status}
             required
@@ -356,7 +375,7 @@ const UpdateOrder = () => {
               variant={"outline"}
               className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               name="Cancel"
-              onClick={() => router.back()}
+              onClick={() => router.push("/order-list")}
             />
 
             <PrimaryButton

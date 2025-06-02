@@ -17,7 +17,7 @@ export default function AlumniRegistration() {
   }
 
   return (
-    <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">
+    <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6 alumini-form" >
       <AlumniRegistrationForm />
     </div>
   );

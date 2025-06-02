@@ -12,7 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, Success } from "../common-components/toast";
+import {
+  Failure,
+  InfinitySuccess,
+  Success,
+  ToastAndNavigate,
+  useToastAndNavigate,
+} from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -150,11 +156,23 @@ const StudentRegistrationForm = () => {
       });
       const res = await Models.auth.registration(body);
 
-      Success(
-        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests."
+      InfinitySuccess(
+        "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+        () => {
+          router?.push("/login");
+          // console.log("jghjfgjhmv");
+        }
       );
 
-      router?.push("/login");
+      // router?.push("/login");
+
+      // useToastAndNavigate
+      // useToastAndNavigate(
+      //   "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests.",
+      //   toastStyles.success,
+      //   "/login"
+      // );
+
       setState({
         btnLoading: false,
         firstname: "",

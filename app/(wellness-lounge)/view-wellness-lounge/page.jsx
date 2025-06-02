@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Failure, Success } from "@/components/common-components/toast";
+import { Failure, InfinitySuccess, Success } from "@/components/common-components/toast";
 import { Loader, Loader2Icon, LoaderIcon } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 
@@ -94,10 +94,18 @@ const viewWellnessLounge = () => {
       }
 
       const res = await Models.session.createRegistration(body);
-      router.push(`/view-order?id=${res[0]?.id}`);
-      Success(
-        `Thank you! Your booking for the session titled ${state?.orderData.title} has been confirmed. We invite you to explore our calendar and take advantage of additional sessions that may interest you.`
+      InfinitySuccess(
+       `Thank you! Your booking for the session titled ${state?.orderData.title} has been confirmed. We invite you to explore our calendar and take advantage of additional sessions that may interest you.`,
+        () => {
+          router?.push(`/view-order?id=${res[0]?.id}`);
+          
+        }
       );
+
+      // router.push(`/view-order?id=${res[0]?.id}`);
+      // Success(
+      //   `Thank you! Your booking for the session titled ${state?.orderData.title} has been confirmed. We invite you to explore our calendar and take advantage of additional sessions that may interest you.`
+      // );
 
       setState({ isOpen: false, btnLoading: false });
     } catch (error) {
@@ -124,7 +132,8 @@ const viewWellnessLounge = () => {
                    <img
                   src={state?.orderData?.thumbnail}
                   alt="thumbnail"
-                  className="w-100 h-auto"
+                  className="w-100"
+                  style={{height:"600px",objectFit: "cover"}}
                 />
                 ) : (<p style={{width:"100%", height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>No image uploaded</p>)}
                

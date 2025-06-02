@@ -215,7 +215,9 @@ const CreateOrder = () => {
                         <CustomSelect
                             options={state.userList}
                             value={state.user?.value || ""}
-                            onChange={(value) => setState({ user: value })}
+                            onChange={(value) => setState({ user: value,
+                                 errors:{...state.errors, user:""}
+                             })}
                             title="Select User"
                             error={state.errors?.user}
                             required
@@ -316,7 +318,9 @@ const CreateOrder = () => {
                         <CustomMultiSelect
                             options={state.loungeList}
                             value={state.event || ""}
-                            onChange={(value) => setState({ event: value })}
+                            onChange={(value) => setState({ event: value ,
+                                errors:{...state.errors, event:""}
+                            })}
                             title="Select Lounge"
                             error={state.errors?.event}
                             required
@@ -335,7 +339,10 @@ const CreateOrder = () => {
                         <CustomSelect
                             options={orderStatusList}
                             value={state.registration_status?.value || ""}
-                            onChange={(value) => setState({ registration_status: value })}
+                            onChange={(value) => setState({ registration_status: value ,
+                                errors:{...state.errors, registration_status:""}
+ 
+                            })}
                             title="Select Session Status"
                             error={state.errors?.registration_status}
                             required
@@ -357,7 +364,7 @@ const CreateOrder = () => {
                             <PrimaryButton
                                 variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                                 name="Cancel"
-                                onClick={() => router.back()}
+                                onClick={() => router.push("/order-list")}
                             />
 
                             <PrimaryButton className="bg-themeGreen hover:bg-themeGreen"

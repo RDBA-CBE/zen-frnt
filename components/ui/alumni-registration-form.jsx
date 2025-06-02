@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Models from "@/imports/models.import";
-import { Failure, Success } from "../common-components/toast";
+import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
 import { mentorList } from "@/utils/constant.utils";
 import TextArea from "../common-components/textArea";
@@ -21,6 +21,7 @@ import { TextInput } from "../common-components/textInput";
 import "react-phone-number-input/style.css";
 
 import MultiSelectDropdown from "../common-components/multiSelectDropdown";
+import InterestTopicsMultiSelect from "../common-components/interestTopicsMultiSelect";
 
 import SingleSelectDropdown from "../common-components/singleSelectDropdown";
 
@@ -37,7 +38,7 @@ const AlumniRegistrationForm = () => {
 
   const [state, setState] = useSetState({
     firstname: "",
-    lastname:"",
+    lastname: "",
     email: "",
     password: "",
     phone_number: "",
@@ -52,8 +53,8 @@ const AlumniRegistrationForm = () => {
     intrestedTopicsList: [],
     universityList: null,
     alumniUsername: "",
-    aluminifirstname:"",
-    aluminilastname:"",
+    aluminifirstname: "",
+    aluminilastname: "",
     alumniEmail: "",
     alumniPhone: "",
     alumniDepartment: "",
@@ -252,7 +253,7 @@ const AlumniRegistrationForm = () => {
 
   const AlumniRegistration = async () => {
     console.log("hello");
-    
+
     try {
       setState({ btnLoading: true });
 
@@ -298,7 +299,11 @@ const AlumniRegistrationForm = () => {
 
       setState({ btnLoading: false });
 
-      Success(
+      // Success(
+      //   "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
+      // );
+
+      InfinitySuccess(
         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions."
       );
 
@@ -319,9 +324,7 @@ const AlumniRegistrationForm = () => {
         is_open_to_be_mentor: false,
       });
     } catch (error) {
-      setState({ btnLoading: false,
-        errors: null
-       });
+      setState({ btnLoading: false, errors: null });
 
       const validationErrors = {};
 
@@ -399,9 +402,8 @@ const AlumniRegistrationForm = () => {
                 placeholder="Enter Your First Name"
                 title="First Name"
                 required
-                
                 value={state?.aluminifirstname}
-                onChange={(e) => setState({ aluminifirstname: e.target.value })}
+                onChange={(e) => setState({ aluminifirstname: e.target.value , errors:{...state.errors, first_name:""}})}
                 error={state?.errors?.first_name}
               />
             </div>
@@ -414,7 +416,7 @@ const AlumniRegistrationForm = () => {
                 title="Last Name"
                 required
                 value={state.aluminilastname}
-                onChange={(e) => setState({ aluminilastname: e.target.value })}
+                onChange={(e) => setState({ aluminilastname: e.target.value, errors:{...state.errors, last_name:""} })}
                 error={state?.errors?.last_name}
               />
             </div>
@@ -427,7 +429,7 @@ const AlumniRegistrationForm = () => {
                 required
                 title="E-Mail"
                 value={state.alumniEmail}
-                onChange={(e) => setState({ alumniEmail: e.target.value })}
+                onChange={(e) => setState({ alumniEmail: e.target.value,  errors:{...state.errors, email:""} })}
                 error={state?.errors?.email}
               />
             </div>
@@ -506,7 +508,7 @@ const AlumniRegistrationForm = () => {
               <CustomSelect
                 options={years || []} // Safely pass empty array if universityList is null
                 value={state.year_of_graduation?.value || ""}
-                onChange={(value) => setState({ year_of_graduation: value })}
+                onChange={(value) => setState({ year_of_graduation: value , errors:{...state.errors, year_of_graduation:""}})}
                 error={state.errors?.year_of_graduation}
                 title="Year Graduated"
                 placeholder="Select Year of Graduated"
@@ -614,11 +616,29 @@ const AlumniRegistrationForm = () => {
           </div>
           <div className="flex justify-center gap-2">
             <Button
-              onClick={() => router?.back()}
+              // onClick={() => router?.back()}
+              onClick={() =>
+                setState({
+                  errors: null,
+                  aluminifirstname: "",
+                  aluminilastname: "",
+                  alumniEmail: "",
+                  alumniPhone: "",
+                  alumniDepartment: "",
+                  work: "",
+                  country: "",
+                  address: "",
+                  year_of_graduation: "",
+                  alumniIntrested_topics1: "",
+                  alumniIntrested_topics: [],
+                  alumniUniversity: null,
+                  is_open_to_be_mentor: false,
+                })
+              }
               variant="outline"
               className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
             >
-              Cancel
+              Reset
             </Button>
             <Button
               onClick={AlumniRegistration}

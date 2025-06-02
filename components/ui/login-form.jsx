@@ -156,7 +156,7 @@ const LoginForm = (props) => {
                   placeholder="Enter Your mail ID"
                   required
                   value={state.username}
-                  onChange={(e) => setState({ username: e.target.value })}
+                  onChange={(e) => setState({ username: e.target.value,  errors:{...state.errors, email:""}})}
                   error={state.errors?.email}
                 />
               </div>
@@ -178,7 +178,7 @@ const LoginForm = (props) => {
                     placeholder="Enter Your Password"
                     required
                     value={state.password}
-                    onChange={(e) => setState({ password: e.target.value })}
+                    onChange={(e) => setState({ password: e.target.value ,  errors:{...state.errors, password:""}})}
                     error={state.errors?.password}
                     className="pr-10"
                   />

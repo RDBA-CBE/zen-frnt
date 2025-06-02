@@ -27,11 +27,12 @@ export const createSession = Yup.object().shape({
     .required("Session link is required")
     .url("Invalid session link"),
   lounge_type: Yup.string().required("Lounge type is required"),
+  thumbnail_image : Yup.string().required("Session Image is required"),
 });
 
 export const createSessionOrder = Yup.object().shape({
   user: Yup.string().required("User is required"),
-  registration_status: Yup.string().required("Registration  is required"),
+  registration_status: Yup.string().required("Registration status is required"),
   event: Yup.array().required("Event is required"),
 });
 
