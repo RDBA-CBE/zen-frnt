@@ -207,7 +207,7 @@ const LoginForm = (props) => {
               <p className="text-center text-[14px]">
                 Don't have an account?{" "}
                 <Link
-                  href="/student-registration"
+                  href="/registration"
                   className="underline"
                   prefetch={true}
                 >
