@@ -177,7 +177,7 @@ const viewWellnessLounge = () => {
                   )}
                 </p>
 
-                {(state?.group === "Student" && state?.orderData?.is_registered === false)?  (
+                {(state?.group !== "Admin" && state?.orderData?.is_registered == false)?  (
                   <div>
                     <Button
                       className={`mt-3 ${
@@ -190,7 +190,8 @@ const viewWellnessLounge = () => {
                       Enroll
                     </Button>
                   </div>
-                ) : <div>
+                ) : state?.group !== "Admin" ? (
+                <div>
                     <Button
                     style={{cursor:"not-allowed"}}
                       className={`mt-3 ${
@@ -203,7 +204,22 @@ const viewWellnessLounge = () => {
                      <span style={{color: "white",fontSize:"22px"}}>✓</span> Already Enrolled <span style={{color:" #88c742"}}></span>
 
                     </Button>
-                  </div>}
+                  </div>
+                ) : (state?.group == "Admin" && (
+                   <div>
+                    <Button
+                      className={`mt-3 ${
+                        state?.orderData?.is_registered
+                          ? "bg-themeGreen hover:bg-themeGreen"
+                          : "bg-themePurple hover:bg-themePurple"
+                      }`}
+                      onClick={() => router.push("/wellness-lounge-list")}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                  ))}
+
               </div>
             </div>
 

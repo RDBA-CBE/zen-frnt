@@ -207,7 +207,8 @@ const ProfilePage = () => {
                             </div> */}
                             <div>
                               <h2 className="mt-2 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                                {state?.userData.first_name} {state?.userData.last_name}
+                                {state?.userData.first_name}{" "}
+                                {state?.userData.last_name}
                               </h2>
                               <blockquote className="italic">
                                 {state?.userData?.group?.name}
@@ -244,12 +245,22 @@ const ProfilePage = () => {
                                 Year of Entry: {state?.userData?.year_of_entry}
                               </li>
                             )}
-                            {state?.userData?.intrested_topics && (
+                            {/* {state?.userData?.intrested_topics && (
                               <li>
                                 Interested in Topics:{" "}
                                 {state?.userData?.intrested_topics}
                               </li>
+                            )} */}
+
+                            {state?.userData?.intrested_topics?.length > 0 && (
+                              <li>
+                                Intrested in Topics:{" "}
+                                {state?.userData?.intrested_topics
+                                  ?.map((topic) => topic?.topic)
+                                  .join(", ")}
+                              </li>
                             )}
+                            
                             {state?.userData?.university && (
                               <li>
                                 University: {state?.userData?.university.name}
@@ -259,33 +270,31 @@ const ProfilePage = () => {
                         </div>
                       </div>
                       <div className="lg:w-1/2 w-[100%] md:block hidden">
-                       {state?.userData?.profile_picture ? (
-                        <img
-                          src={state?.userData?.profile_picture}
-                          alt="thumbnail"
-                          // className="w-[100] h-[100]"
-                          className="w-[200px] h-[200px]"
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "10px",
-                            objectPosition:"top"
-                          }}
-                        />
-                       ) : (
-                         <img
-                          src="/assets/images/dummy-profile.jpg"
-                          alt="thumbnail"
-                          // className="w-[100] h-[100]"
-                          className="w-[200px] h-[200px]"
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "10px",
-                            objectPosition:"top"
-                          }}
-                        />
-                       ) }
-                        
-                        
+                        {state?.userData?.profile_picture ? (
+                          <img
+                            src={state?.userData?.profile_picture}
+                            alt="thumbnail"
+                            // className="w-[100] h-[100]"
+                            className="w-[200px] h-[200px]"
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "10px",
+                              objectPosition: "top",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="/assets/images/dummy-profile.jpg"
+                            alt="thumbnail"
+                            // className="w-[100] h-[100]"
+                            className="w-[200px] h-[200px]"
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "10px",
+                              objectPosition: "top",
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   </CardContent>

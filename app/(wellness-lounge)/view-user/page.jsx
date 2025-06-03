@@ -123,7 +123,7 @@ const viewWellnessLounge = () => {
 
             <div>
               <img
-              src="/assets/images/dummy-profile.jpg"
+               src={!state?.userData?.profile_picture ? "/assets/images/dummy-profile.jpg" : state?.userData?.profile_picture }
               alt="thumbnail"
               className="w-[200px] h-[200px]"
               style={{borderRadius: "10px", objectFit: "cover" }}
@@ -175,9 +175,9 @@ const viewWellnessLounge = () => {
                   <li>Work: {state?.userData?.work}</li>
                 )}
 
-                {state?.userData?.intrested_topics && (
+                {state?.userData?.intrested_topics?.length > 0 && (
                   <li>
-                    Intrested in Topics: {state?.userData?.intrested_topics}
+                    Intrested in Topics: {state?.userData?.intrested_topics?.map((topic) => topic?.topic).join(", ")}
                   </li>
                 )}
                 {state?.userData?.university && (
