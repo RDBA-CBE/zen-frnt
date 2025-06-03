@@ -142,3 +142,16 @@ export const change_password = Yup.object().shape({
 
   old_password: Yup.string().required("Old password is required"),
 });
+
+export const reset_password = Yup.object().shape({
+  confirm_password: Yup.string()
+    .required("Confirm password is required")
+    .oneOf([Yup.ref("new_password")], "Passwords must match"),
+    // .min(8, "New Password must be at least 8 characters"),
+
+   new_password: Yup.string()
+    .required("New password is required")
+    .min(8, "New Password must be at least 8 characters"),
+
+ 
+});

@@ -22,7 +22,7 @@ import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
 import { forgetPassword } from "@/utils/validation.utils";
 import Link from "next/link";
-
+import { Loader } from "lucide-react";
 
 const ForgotPasswordEmailForm = () => {
   const router = useRouter();
@@ -32,6 +32,7 @@ const ForgotPasswordEmailForm = () => {
   const [state, setState] = useSetState({
     username: "",
     password: "",
+    btnLoading: false,
   });
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const ForgotPasswordEmailForm = () => {
 
   const handleSubmit = async () => {
     try {
+      setState({ btnLoading: true });
       const body = {
         email: state.username,
         // password: state.password,
@@ -63,10 +65,14 @@ const ForgotPasswordEmailForm = () => {
 
       // ✅ Trigger storage event to notify other tabs
       // window.dispatchEvent(new Event("storage"));
-
+      setState({
+        btnLoading: false,
+        email: "",
+      });
       router.push("/");
     } catch (error) {
       console.log("error: ", error);
+      setState({ btnLoading: false });
 
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -113,9 +119,12 @@ const ForgotPasswordEmailForm = () => {
                   placeholder="Enter Your mail ID"
                   required
                   value={state.username}
-                  onChange={(e) => setState({ username: e.target.value, 
-                    errors:{...state.errors, email:""}
-                   })}
+                  onChange={(e) =>
+                    setState({
+                      username: e.target.value,
+                      errors: { ...state.errors, email: "" },
+                    })
+                  }
                   error={state.errors?.email}
                 />
               </div>
@@ -139,26 +148,34 @@ const ForgotPasswordEmailForm = () => {
                                 />
                             </div> */}
               <div className="flex items-center gap-2">
-                <Link href={"/"} className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen">
-                 <Button
-                //   onClick={() => {
-                //     console.log("hello");
-                //      router?.push("/")
-                //   }}
-                  variant="outline"
+                <Link
+                  href={"/"}
                   className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
                 >
-                  Cancel
-                </Button>
+                  <Button
+                    //   onClick={() => {
+                    //     console.log("hello");
+                    //      router?.push("/")
+                    //   }}
+                    onClick={() =>
+                    setState({
+                      btnLoading: false,
+                      email:""
+                    })
+                  }
+                    variant="outline"
+                    className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+                  >
+                    Cancel
+                  </Button>
                 </Link>
-               
 
                 <Button
                   type="button"
                   className="w-full bg-themeGreen hover:bg-themeGreen "
                   onClick={handleSubmit}
                 >
-                  Submit
+                   {state.btnLoading ? <Loader /> : "Confirm"}
                 </Button>
               </div>
             </div>
