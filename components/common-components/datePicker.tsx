@@ -82,15 +82,22 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   selected={selectedDate || undefined}
   onSelect={(date) => onChange?.(date ?? null)}
   initialFocus
-  disabled={
-    disablePastDates
-      ? (date) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0); // Strip time
-          return date < today;
-        }
-      : undefined
-  }
+  disabled={(date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // If fromDate is selected, disable all dates before it
+    if (fromDate) {
+      const from = new Date(fromDate);
+      from.setHours(0, 0, 0, 0);
+      return date < from;
+    }
+
+    // Else disable past dates before today
+    const current = new Date(date);
+    current.setHours(0, 0, 0, 0);
+    return current < today;
+  }}
   captionLayout="dropdown"
   fromYear={1900}
   toYear={new Date().getFullYear() + 5}
