@@ -303,7 +303,7 @@ const UserList = () => {
                 className="md:w-1/4 w-full  md:text-end"
                 onClick={() => router.push("/create-user")}
               >
-                <Button className="bg-themeGreen hover:bg-themeGreen ">
+                <Button className="bg-themeGreen hover:bg-themeGreen mt-2 md:mt-0">
                   <PlusIcon />
                 </Button>
               </div>

@@ -961,3 +961,51 @@ h6 {
   padding-bottom: 50px !important;
 }
 }
+
+
+.order-table{
+  width: 100%;
+}
+
+@media (max-width:650px){
+  .order-table{
+  max-width: 580px;
+  overflow-x: scroll;
+}
+}
+
+@media (max-width:630px){
+  .order-table{
+  max-width: 550px;
+  overflow-x: scroll;
+}
+}
+
+@media (max-width:580px){
+  .order-table{
+  max-width: 400px;
+  overflow-x: scroll;
+}
+}
+
+@media (max-width:530px){
+  .order-table{
+  max-width: 360px;
+  overflow-x: scroll;
+}
+}
+
+@media (max-width:410px){
+  .order-table{
+  max-width: 330px;
+  overflow-x: scroll;
+}
+}
+
+@media (max-width:380px){
+  .order-table{
+  max-width: 310px;
+  overflow-x: scroll;
+}
+}
+
