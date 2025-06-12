@@ -231,7 +231,12 @@ const CreateOrder = () => {
 
                                         <div className="pl-3 pt-3">
                                             <ul className="text-sm">
-                                                <li className="pb-3"><span className="font-bold text-gray-700">Profile Picture:</span> <img src={SelectedUser[0]?.profile_picture} alt="Profile" className="w-[100px] h-[100px] rounded pt-2" /></li>
+                                                <li className="pb-3"><span className="font-bold text-gray-700">Profile Picture:</span>
+                                                 <img 
+                                                 style={{borderRadius:"10px"}}
+                                                 src={!SelectedUser[0]?.profile_picture ? "/assets/images/dummy-profile.jpg" : SelectedUser[0]?.profile_picture }
+                                                //  src={SelectedUser[0]?.profile_picture} 
+                                                 alt="Profile" className="w-[100px] h-[100px] rounded mt-2" /></li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Name:</span> {SelectedUser[0]?.first_name} {SelectedUser[0]?.last_name}</li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Email:</span> {SelectedUser[0]?.email || 'N/A'}</li>
                                                 <li className="pb-3"><span className="font-bold text-gray-700">Contact Number:</span> {SelectedUser[0]?.phone_number || 'N/A'}</li>

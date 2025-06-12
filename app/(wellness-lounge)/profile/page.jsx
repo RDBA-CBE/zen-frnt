@@ -304,6 +304,15 @@ const ProfilePage = () => {
                               </li>
                             )}
 
+                            {/* {state?.userData?.intrested_topics?.length > 0 && (
+                              <li>
+                                Intrested in Topics:{" "}
+                                {state?.userData?.intrested_topics
+                                  ?.map((topic) => topic?.topic)
+                                  .join(", ")}
+                              </li>
+                            )} */}
+                            
                             {state?.userData?.university && (
                               <li>
                                 University: {state?.userData?.university.name}

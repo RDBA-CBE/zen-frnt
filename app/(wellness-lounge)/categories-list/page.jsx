@@ -236,6 +236,8 @@ const CategoriesList = () => {
             </div>
           </Card>
 
+          <p  style={{fontSize:"14px", color:"red"}}><strong style={{color:"black"}}>Note:</strong> Please don't delete any category</p>
+
           {/* <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div>

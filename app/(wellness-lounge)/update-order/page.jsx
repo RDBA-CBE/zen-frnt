@@ -279,7 +279,7 @@ const UpdateOrder = () => {
 <img
                         src={SelectedUser[0]?.profile_picture}
                         alt="Profile"
-                        className="w-[100px] h-[100px] rounded pt-2"
+                        className="w-[100px] h-[100px] rounded mt-2"
                         style={{borderRadius:"15px",objectFit:"cover" }}
                       />
                       ) :
@@ -287,7 +287,7 @@ const UpdateOrder = () => {
                         <img
                         src="/assets/images/dummy-profile.jpg"
                         alt="Profile"
-                        className="w-[100px] h-[100px] rounded pt-2"
+                        className="w-[100px] h-[100px] rounded mt-2"
                         style={{borderRadius:"15px",objectFit:"cover" }}
                       />
                       )}

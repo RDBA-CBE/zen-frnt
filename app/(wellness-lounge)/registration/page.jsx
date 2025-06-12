@@ -99,11 +99,13 @@ export default function studentRegistration() {
                 />
               ))}
             </div>
-            {state.loading ? (
+            {/* {state.loading ? (
               <div className="w-full items-center justify-center flex">
               <Loader />
               </div>
-            ) : state.role === "student" ? (
+            ) :  */}
+            
+            {state.role === "student" ? (
               <StudentRegistrationForm
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}

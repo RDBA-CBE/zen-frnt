@@ -215,7 +215,7 @@ const Header = () => {
                         href="/registration"
                         className="hover:underline md:text-[16px] text-[10px] "
                       >
-                        Sign Up
+                        SIGN UP
                       </Link>
                     </div>
                   {/* )} */}
@@ -227,7 +227,7 @@ const Header = () => {
                         href="/"
                         className="hover:underline  md:text-[16px] text-[10px]"
                       >
-                        Login
+                        LOGIN
                       </Link>
                     </div>
                   {/* )} */}
