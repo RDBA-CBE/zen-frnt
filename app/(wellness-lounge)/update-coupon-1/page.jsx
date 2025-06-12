@@ -163,6 +163,8 @@ const UpdateCoupon = () => {
             }}
             error={state.errors?.valid_from}
             required
+            disablePastDates
+
 
           />
           <DatePicker
@@ -176,6 +178,8 @@ const UpdateCoupon = () => {
             }
             error={state.errors?.valid_to}
             required
+            disablePastDates
+
 
           />
         </div>

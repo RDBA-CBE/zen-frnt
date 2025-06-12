@@ -46,6 +46,7 @@
     "react-phone-number-input": "^3.4.12",
     "react-redux": "^9.2.0",
     "react-select": "^5.10.1",
+    "react-select-async-paginate": "^0.7.10",
     "react-time-picker": "^7.0.0",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.1",

@@ -116,6 +116,8 @@ const CreateWellnessLounge = () => {
             }}
             error={state.errors?.valid_from}
             required
+            disablePastDates
+
 
           />
           <DatePicker
@@ -129,6 +131,8 @@ const CreateWellnessLounge = () => {
             }
             error={state.errors?.valid_to}
             required
+            disablePastDates
+
 
           />
         </div>

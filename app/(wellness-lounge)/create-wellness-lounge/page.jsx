@@ -203,6 +203,10 @@ const CreateWellnessLounge = () => {
                   }}
                   error={state.errors?.start_date}
                   required
+                  fromDate={new Date()}
+                  disablePastDates
+                  
+                  
                 />
                 <DatePicker
                   placeholder="End Date"
@@ -218,6 +222,8 @@ const CreateWellnessLounge = () => {
                   error={state.errors?.end_date}
                   required
                   fromDate={new Date(state.start_date)}
+                  disablePastDates
+
                 />
               </div>
               <div className="grid auto-rows-min gap-4 grid-cols-2">
