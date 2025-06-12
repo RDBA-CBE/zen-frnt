@@ -32,6 +32,33 @@ const LoadMoreDropdown = ({
           control: (base) => ({
             ...base,
             borderColor: error ? "#dc2626" : base.borderColor,
+            fontSize: "16px", 
+            color: "black",
+            minHeight: "40px",
+            borderRadius:"0.5rem"
+
+          }),
+          placeholder: (base) => ({
+            ...base,
+            color: "black",
+
+            
+            fontSize: "16px", 
+
+          }),
+          singleValue: (base) => ({
+            ...base,
+            color: "black",
+
+            fontSize: "16px", 
+            borderRadius:"10px"
+
+          }),
+          input: (base) => ({
+            ...base,
+            fontSize: "14px",
+            color: "#111827",
+            borderRadius:"10px"
           }),
         }}
       />
