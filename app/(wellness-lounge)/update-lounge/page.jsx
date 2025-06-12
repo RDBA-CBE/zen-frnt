@@ -279,6 +279,7 @@ const UpdateWellnessLounge = () => {
               error={state.errors?.start_date}
               // disablePastDates={true} // Disable past dates
               required
+              disablePastDates
             />
             <DatePicker
               fromDate={new Date(state.start_date)}
@@ -294,6 +295,7 @@ const UpdateWellnessLounge = () => {
               }}
               error={state.errors?.end_date}
               required
+              disablePastDates
               // disablePastDates={true} // Disable past dates
             />
           </div>

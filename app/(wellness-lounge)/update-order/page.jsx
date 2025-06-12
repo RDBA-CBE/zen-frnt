@@ -24,6 +24,7 @@ import { orderStatusList } from "@/utils/constant.utils";
 import CustomSelectMulti from "@/components/common-components/multi-select";
 import CustomMultiSelect from "@/components/common-components/multi-select";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 
 const UpdateOrder = () => {
   const router = useRouter();
@@ -76,12 +77,10 @@ const UpdateOrder = () => {
   const getDetails = async () => {
     try {
       const res = await Models.session.detailsRegistration(id);
-      console.log("getDetails: ", res?.user);
       const data = {
         value: res?.user?.id,
         label: res?.user?.first_name + " " + res?.user?.last_name,
       };
-      console.log("✌️data --->", data);
 
       setState({
         user: {
@@ -113,17 +112,19 @@ const UpdateOrder = () => {
   };
 
   const getUsersList = async () => {
-    try {
-      const res = await Models.user.dropdownUserserList();
+    let page = 1;
+    let allResults = [];
+    let nextPage = true;
 
-      // const Dropdowns = Dropdown(res?.results, "username");
-      const Dropdowns = UserDropdown(res?.results, (item) => `${item.first_name} ${item.last_name}`);
-      setState({ userList: Dropdowns, userData: res?.results });
-    } catch (error) {
-      console.log("error: ", error);
+    while (nextPage) {
+      const res = await Models.user.dropdownUserserList(page);
+      allResults = [...allResults, ...(res?.results || [])];
+
+      page += 1;
+      nextPage = !!res?.next;
     }
+    setState({ userData: allResults });
   };
-
   const getLoungeList = async () => {
     try {
       const res = await Models.session.dropdownLoungelist();
@@ -248,12 +249,37 @@ const UpdateOrder = () => {
     // }
   ];
 
+  const loadUserOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.user.dropdownUserserList(page); // API should support pagination
+      const Dropdowns = UserDropdown(
+        res?.results,
+        (item) => `${item.first_name} ${item.last_name}`
+      );
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
   return (
     <div className="container mx-auto">
       <h2 className="font-bold md:text-[20px] text-sm mb-3">Update Session</h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <CustomSelect
+          {/* <CustomSelect
             options={state.userList}
             value={state.user?.value || ""}
             onChange={(value) => setState({ user: value,
@@ -263,6 +289,24 @@ const UpdateOrder = () => {
             error={state.errors?.user}
             required
             placeholder="Select User"
+          /> */}
+
+          <LoadMoreDropdown
+            value={state.user}
+            onChange={(value) => {
+              console.log("✌️value --->", value);
+              console.log("✌️state.userData --->", state.userData);
+              setState({
+                user: value,
+                errors: { ...state.errors, user: "" },
+              });
+            }}
+            title="Select User"
+            error={state.errors?.user}
+            required
+            placeholder="Select User"
+            loadOptions={loadUserOptions}
+            height={"25px"}
           />
           <div>
             {SelectedUser?.length > 0 && (
@@ -276,26 +320,25 @@ const UpdateOrder = () => {
                         Profile Picture:
                       </span>{" "}
                       {SelectedUser[0]?.profile_picture ? (
-<img
-                        src={SelectedUser[0]?.profile_picture}
-                        alt="Profile"
-                        className="w-[100px] h-[100px] rounded mt-2"
-                        style={{borderRadius:"15px",objectFit:"cover" }}
-                      />
-                      ) :
-                      (
                         <img
-                        src="/assets/images/dummy-profile.jpg"
-                        alt="Profile"
-                        className="w-[100px] h-[100px] rounded mt-2"
-                        style={{borderRadius:"15px",objectFit:"cover" }}
-                      />
+                          src={SelectedUser[0]?.profile_picture}
+                          alt="Profile"
+                          className="w-[100px] h-[100px] rounded mt-2"
+                          style={{ borderRadius: "15px", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <img
+                          src="/assets/images/dummy-profile.jpg"
+                          alt="Profile"
+                          className="w-[100px] h-[100px] rounded mt-2"
+                          style={{ borderRadius: "15px", objectFit: "cover" }}
+                        />
                       )}
-                      
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Name:</span>{" "}
-                      {SelectedUser[0]?.first_name} {SelectedUser[0]?.last_name || "N/A"}
+                      {SelectedUser[0]?.first_name}{" "}
+                      {SelectedUser[0]?.last_name || "N/A"}
                     </li>
                     <li className="pb-3">
                       <span className="font-bold text-gray-700">Email:</span>{" "}
@@ -333,9 +376,9 @@ const UpdateOrder = () => {
           <CustomSelect
             options={state.loungeList}
             value={state.event?.value || ""}
-            onChange={(value) => setState({ event: value,
-               errors:{...state.errors, event:""}
-             })}
+            onChange={(value) =>
+              setState({ event: value, errors: { ...state.errors, event: "" } })
+            }
             title="Select Lounge"
             error={state.errors?.event}
             required
@@ -350,10 +393,12 @@ const UpdateOrder = () => {
           <CustomSelect
             options={orderStatusList}
             value={state.registration_status?.value || ""}
-            onChange={(value) => setState({ registration_status: value ,
-              errors:{...state.errors, registration_status:""}
- 
-            })}
+            onChange={(value) =>
+              setState({
+                registration_status: value,
+                errors: { ...state.errors, registration_status: "" },
+              })
+            }
             title="Select Session Status"
             error={state.errors?.registration_status}
             required

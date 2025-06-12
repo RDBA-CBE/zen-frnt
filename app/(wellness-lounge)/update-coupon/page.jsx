@@ -152,6 +152,8 @@ const UpdateCoupon = () => {
             }
             error={state.errors?.valid_from}
             required
+            disablePastDates
+
           />
           <DatePicker
             placeholder="End date"
@@ -162,6 +164,8 @@ const UpdateCoupon = () => {
             }
             error={state.errors?.valid_to}
             required
+            disablePastDates
+
           />
         </div>
 

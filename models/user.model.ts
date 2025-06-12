@@ -26,9 +26,9 @@ const user = {
     });
     return promise;
   },
-  dropdownUserserList: () => {
+  dropdownUserserList: (page:number) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/?&group_name=Student`;
+      let url = `auth/users/?page=${page}`;
 
       instance()
         .get(url)
