@@ -23,7 +23,6 @@ export default function studentRegistration() {
     intrestedTopicsList: [],
     loading: false,
   });
-  console.log('✌️loading --->', state.loading);
 
   useEffect(() => {
     getUniversity();

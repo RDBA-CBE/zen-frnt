@@ -71,7 +71,7 @@ const LoginForm = (props) => {
       const res = await Models.auth.login(body);
 
       // Store tokens and group in localStorage
-      localStorage.setItem("token", res.access);
+      localStorage.setItem("zentoken", res.access);
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("group", res.group[0]);
@@ -88,7 +88,7 @@ const LoginForm = (props) => {
       );
 
       Success("Login successful");
-      setState({ loading: false });
+      setState({ loading: false, username: "", password: "" });
 
       setTimeout(() => {
         if (res?.group[0] === "Student") {
@@ -131,7 +131,6 @@ const LoginForm = (props) => {
       }
     }
   };
-  console.log(state.showPassword);
 
   // 🚀 Prevent hydration errors by ensuring the component renders only after mount
   if (!isMounted) return null;
@@ -146,18 +145,25 @@ const LoginForm = (props) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form autoComplete="off">
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
+                  name="user_login_email" 
                   placeholder="Enter Your mail ID"
                   required
                   value={state.username}
-                  onChange={(e) => setState({ username: e.target.value,  errors:{...state.errors, email:""}})}
+                  onChange={(e) =>
+                    setState({
+                      username: e.target.value,
+                      errors: { ...state.errors, email: "" },
+                    })
+                  }
                   error={state.errors?.email}
+                  autoComplete="off"
                 />
               </div>
               <div className="grid gap-2">
@@ -177,17 +183,28 @@ const LoginForm = (props) => {
                     type={state.showPassword ? "text" : "password"}
                     placeholder="Enter Your Password"
                     required
+                    name="user_login_password" 
                     value={state.password}
-                    onChange={(e) => setState({ password: e.target.value ,  errors:{...state.errors, password:""}})}
+                    onChange={(e) =>
+                      setState({
+                        password: e.target.value,
+                        errors: { ...state.errors, password: "" },
+                      })
+                    }
                     error={state.errors?.password}
                     className="pr-10"
+                    autoComplete="off"
                   />
                   <button
                     type="button"
                     onClick={() => {
                       setState({ showPassword: !state.showPassword });
                     }}
-                    className={` ${state.errors?.password ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none" : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"}`}
+                    className={` ${
+                      state.errors?.password
+                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                    }`}
                   >
                     {state?.showPassword ? (
                       <EyeOff size={18} />

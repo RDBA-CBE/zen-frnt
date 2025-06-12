@@ -210,7 +210,7 @@ const App = () => {
   const [group, setGroup] = useState(null);
   useEffect(() => {
     const Group = localStorage?.getItem("group");
-    const token = localStorage?.getItem("token");
+    const token = localStorage?.getItem("zentoken");
 
     if (Group) {
       setGroup(Group);

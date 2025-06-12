@@ -65,7 +65,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const Token = localStorage?.getItem("token");
+      const Token = localStorage?.getItem("zentoken");
       setToken(Token);
     }
   }, []);

@@ -23,6 +23,7 @@ import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
+  Loader,
   LogIn,
   LogOut,
   MenuIcon,
@@ -33,7 +34,7 @@ import {
   UserIcon,
   UserX2Icon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
@@ -55,6 +56,8 @@ import {
 } from "@/components/ui/accordion";
 import { Label } from "@radix-ui/react-label";
 import { useSetState } from "@/utils/function.utils";
+import Modal from "./modal";
+import Models from "@/imports/models.import";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -67,6 +70,7 @@ const Header = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [group, setGroup] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
   const [token, setToken] = useState(null);
   const [isClient, setIsClient] = useState(false); // Track if we're in the client
 
@@ -74,6 +78,7 @@ const Header = () => {
     token: null,
     group: null,
     username: null,
+    logoutLoading: false,
   });
 
   // Set `isClient` to true after the component mounts (only runs on the client)
@@ -84,7 +89,7 @@ const Header = () => {
   // Fetch token and group from localStorage only on the client-side
   useEffect(() => {
     if (isClient) {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = localStorage.getItem("zentoken");
       const storedGroup = localStorage.getItem("group");
       const StoredUsername = localStorage.getItem("username");
       setToken(storedToken);
@@ -101,15 +106,33 @@ const Header = () => {
   }, [isClient, dispatch]); // Only run when `isClient` is true
 
   // Logout function to remove token and navigate to login page
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("group");
-    localStorage.removeItem("eventId");
-    localStorage.removeItem("username");
-    setDialogOpen(false);
-    router.push("/login");
-    window.location.reload();
-    dispatch(clearAuthData());
+  const handleLogout = async () => {
+    try {
+      setState({ logoutLoading: true });
+      const refresh = localStorage.getItem("refreshToken");
+
+      const body = {
+        refresh,
+      };
+      const res = await Models.auth.logOut(body);
+      setState({ logoutLoading: false });
+
+      localStorage.removeItem("zentoken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("group");
+      localStorage.removeItem("eventId");
+      localStorage.removeItem("username");
+      localStorage.clear();
+      document.cookie = "";  
+      setDialogOpen(false);
+      router.push("/login");
+      window.location.reload();
+      dispatch(clearAuthData());
+    } catch (error) {
+      setState({ logoutLoading: false });
+
+      console.log("✌️error --->", error);
+    }
   };
 
   // Cancel function to close the dialog without performing any action
@@ -184,26 +207,30 @@ const Header = () => {
             <div className="backcolor-purpole text-white py-2">
               <div className="container mx-auto flex  items-center justify-between px-5">
                 <div className="flex items-center gap-2 md:gap-4">
-                  <div className="flex items-center gap-1 border-r border-white md:pr-4 pr-2">
-                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link
-                      prefetch={true}
-                      href="/registration"
-                      className="hover:underline md:text-[16px] text-[10px] "
-                    >
-                      Student Registration
-                    </Link>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link
-                      prefetch={true}
-                      href="/registration"
-                      className="hover:underline  md:text-[16px] text-[10px]"
-                    >
-                      Alumni Registration
-                    </Link>
-                  </div>
+                  {/* {pathname !== "/registration" && ( */}
+                    <div className="flex items-center gap-1 md:pr-4 pr-2">
+                      <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                      <Link
+                        prefetch={true}
+                        href="/registration"
+                        className="hover:underline md:text-[16px] text-[10px] "
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  {/* )} */}
+                  {/* {pathname !== "/" && ( */}
+                    <div className="flex items-center gap-1">
+                      <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                      <Link
+                        prefetch={true}
+                        href="/"
+                        className="hover:underline  md:text-[16px] text-[10px]"
+                      >
+                        Login
+                      </Link>
+                    </div>
+                  {/* )} */}
                 </div>
                 <div className="flex gap-2  ">
                   <Link
@@ -455,7 +482,7 @@ const Header = () => {
                       onClick={handleLogout}
                       className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
                     >
-                      Confirm
+                      {state.logoutLoading ? <Loader /> : "Confirm"}
                     </Button>
                   </div>
                 </DialogContent>

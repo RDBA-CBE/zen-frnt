@@ -48,7 +48,7 @@ const AlumniRegistrationForm = () => {
     date_of_birth: "",
     university: null,
     intrested_topics: null,
-    intrested_topics1: "",
+    intrested_topics1: null,
     is_alumni: false,
     year_of_entry: "",
     department: "",
@@ -70,6 +70,7 @@ const AlumniRegistrationForm = () => {
     alumniPassword: "",
     btnLoading: false,
   });
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -436,7 +437,7 @@ const AlumniRegistrationForm = () => {
               })
             }
             placeholder="Select Year of Graduated"
-            className="z-50 text-sm"
+            className="z-0 text-sm"
             menuPortalTarget={document.body}
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             isClearable
@@ -492,9 +493,9 @@ const AlumniRegistrationForm = () => {
             value={state.alumniUniversity || ""}
             onChange={(value) => setState({ alumniUniversity: value })}
             placeholder="Select University"
-            className="z-50 text-sm"
+            className=" text-sm"
             menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // styles={{ menuPortal: (base) => ({ ...base,}) }}
             isClearable
           />
         </div>
@@ -544,9 +545,10 @@ const AlumniRegistrationForm = () => {
             options={state.intrestedTopicsList || []}
             placeholder="Select Topics"
             onChange={(value) => setState({ alumniIntrested_topics: value })}
-            className="z-50 text-sm"
+            className=" text-sm"
+            name="ejkfbkjew"
             menuPortalTarget={document.body} // required when using menuPosition="fixed"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // styles={{ menuPortal: (base) => ({ ...base}) }}
           />
         </div>
 

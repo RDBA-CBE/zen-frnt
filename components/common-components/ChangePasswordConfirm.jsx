@@ -64,7 +64,7 @@ const ChangePasswordConfirmForm = () => {
     setIsMounted(true); // Ensure component is only rendered on client
   }, []);
   console.log("id", id);
-  console.log("token", token);
+  // console.log("token", token);
 
   const handleSubmit = async () => {
     try {

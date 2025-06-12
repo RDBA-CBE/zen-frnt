@@ -27,6 +27,7 @@ import {
 } from "../../../components/ui/dialog";
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import { Loader } from "lucide-react";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -39,6 +40,7 @@ const ProfilePage = () => {
     userData: [],
     id: null,
     group: null,
+    logoutLoading: false,
   });
   const [isClient, setIsClient] = useState(false);
 
@@ -48,7 +50,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (isClient) {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = localStorage.getItem("zentoken");
       const storedGroup = localStorage.getItem("group");
       if (storedToken && storedGroup) {
         dispatch(setAuthData({ tokens: storedToken, groups: storedGroup }));
@@ -86,15 +88,45 @@ const ProfilePage = () => {
   };
 
   // Logout function to remove token and navigate to login page
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("group");
-    localStorage.removeItem("eventId");
-    localStorage.removeItem("username");
+  // const handleLogout = () => {
+  //   localStorage.removeItem("zentoken");
+  //   localStorage.removeItem("group");
+  //   localStorage.removeItem("eventId");
+  //   localStorage.removeItem("username");
+  //   localStorage.removeItem("refreshToken");
+  //   localStorage.clear();
+  //   setDialogOpen(false);
+  //   router.push("/login");
+  //   dispatch(clearAuthData());
+  // };
 
-    setDialogOpen(false);
-    router.push("/login");
-    dispatch(clearAuthData());
+  const handleLogout = async () => {
+    try {
+      setState({ logoutLoading: true });
+      const refresh = localStorage.getItem("refreshToken");
+
+      const body = {
+        refresh,
+      };
+      const res = await Models.auth.logOut(body);
+      setState({ logoutLoading: false });
+
+      localStorage.removeItem("zentoken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("group");
+      localStorage.removeItem("eventId");
+      localStorage.removeItem("username");
+      localStorage.clear();
+      document.cookie = "";
+      setDialogOpen(false);
+      router.push("/login");
+      window.location.reload();
+      dispatch(clearAuthData());
+    } catch (error) {
+      setState({ logoutLoading: false });
+
+      console.log("✌️error --->", error);
+    }
   };
 
   // Cancel function to close the dialog without performing any action
@@ -207,7 +239,8 @@ const ProfilePage = () => {
                             </div> */}
                             <div>
                               <h2 className="mt-2 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
-                                {state?.userData.first_name} {state?.userData.last_name}
+                                {state?.userData.first_name}{" "}
+                                {state?.userData.last_name}
                               </h2>
                               <blockquote className="italic">
                                 {state?.userData?.group?.name}
@@ -244,12 +277,33 @@ const ProfilePage = () => {
                                 Year of Entry: {state?.userData?.year_of_entry}
                               </li>
                             )}
-                            {state?.userData?.intrested_topics && (
+                            {state?.userData?.intrested_topics?.length > 0 && (
                               <li>
-                                Interested in Topics:{" "}
-                                {state?.userData?.intrested_topics}
+                                <div>Interested in Topics:</div>{" "}
+                                {state.userData.intrested_topics.map(
+                                  (item, index) => {
+                                    const topicText =
+                                      item.topic === "Others"
+                                        ? `Others ${
+                                            state?.userData?.lable &&
+                                            `(${state?.userData?.lable})`
+                                          }`
+                                        : item.topic;
+                                    return (
+                                      <span key={item.id}>
+                                        {topicText}
+                                        {index <
+                                        state.userData.intrested_topics.length -
+                                          1
+                                          ? ", "
+                                          : ""}
+                                      </span>
+                                    );
+                                  }
+                                )}
                               </li>
                             )}
+
                             {state?.userData?.university && (
                               <li>
                                 University: {state?.userData?.university.name}
@@ -259,33 +313,31 @@ const ProfilePage = () => {
                         </div>
                       </div>
                       <div className="lg:w-1/2 w-[100%] md:block hidden">
-                       {state?.userData?.profile_picture ? (
-                        <img
-                          src={state?.userData?.profile_picture}
-                          alt="thumbnail"
-                          // className="w-[100] h-[100]"
-                          className="w-[200px] h-[200px]"
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "10px",
-                            objectPosition:"top"
-                          }}
-                        />
-                       ) : (
-                         <img
-                          src="/assets/images/dummy-profile.jpg"
-                          alt="thumbnail"
-                          // className="w-[100] h-[100]"
-                          className="w-[200px] h-[200px]"
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "10px",
-                            objectPosition:"top"
-                          }}
-                        />
-                       ) }
-                        
-                        
+                        {state?.userData?.profile_picture ? (
+                          <img
+                            src={state?.userData?.profile_picture}
+                            alt="thumbnail"
+                            // className="w-[100] h-[100]"
+                            className="w-[200px] h-[200px]"
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "10px",
+                              objectPosition: "top",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="/assets/images/dummy-profile.jpg"
+                            alt="thumbnail"
+                            // className="w-[100] h-[100]"
+                            className="w-[200px] h-[200px]"
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "10px",
+                              objectPosition: "top",
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -479,7 +531,7 @@ const ProfilePage = () => {
                       onClick={handleLogout}
                       className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
                     >
-                      Confirm
+                      {state.logoutLoading ? <Loader /> : "Confirm"}
                     </Button>
                   </div>
                 </DialogContent>
