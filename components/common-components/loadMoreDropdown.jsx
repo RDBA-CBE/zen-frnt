@@ -3,15 +3,17 @@
 import React from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
-const LoadMoreDropdown = ({
-  value,
-  onChange,
-  loadOptions,
-  placeholder = "Select an option",
-  required,
-  title,
-  error,
-}) => {
+const LoadMoreDropdown = (props) => {
+  const {
+    value,
+    onChange,
+    loadOptions,
+    placeholder = "Select an option",
+    required,
+    title,
+    error,
+    height,
+  } = props;
   return (
     <div className="w-full">
       {title && (
@@ -32,42 +34,34 @@ const LoadMoreDropdown = ({
           control: (base) => ({
             ...base,
             borderColor: error ? "#dc2626" : base.borderColor,
-            fontSize: "16px", 
+            fontSize: "16px",
             color: "black",
-            minHeight: "40px",
-            borderRadius:"0.5rem"
-
+            height: height ? height : "40px",
+            borderRadius: "0.5rem",
           }),
           placeholder: (base) => ({
             ...base,
             color: "black",
 
-            
-            fontSize: "16px", 
-
+            fontSize: "16px",
           }),
           singleValue: (base) => ({
             ...base,
             color: "black",
 
-            fontSize: "16px", 
-            borderRadius:"10px"
-
+            fontSize: "16px",
+            borderRadius: "10px",
           }),
           input: (base) => ({
             ...base,
             fontSize: "14px",
             color: "#111827",
-            borderRadius:"10px"
+            borderRadius: "10px",
           }),
         }}
       />
 
-      {error && (
-        <p className="mt-2 text-sm text-red-600">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 };

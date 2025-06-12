@@ -306,6 +306,7 @@ const UpdateOrder = () => {
             required
             placeholder="Select User"
             loadOptions={loadUserOptions}
+            height={"25px"}
           />
           <div>
             {SelectedUser?.length > 0 && (
