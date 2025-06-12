@@ -19,7 +19,7 @@ interface DatePickerProps {
   required?: boolean;
   error?: string;
   closeIcon?: boolean;
-  disablePastDates?: boolean; // Added prop to disable past dates
+  // disablePastDates?: boolean; // Added prop to disable past dates
   fromDate?: Date;
 }
 
@@ -31,7 +31,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   required,
   error,
   closeIcon,
-  disablePastDates = false, // Default value is false
+  // disablePastDates = false, // Default value is false
   fromDate,
 }) => {
   return (
