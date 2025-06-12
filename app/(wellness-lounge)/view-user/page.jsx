@@ -120,18 +120,20 @@ const viewWellnessLounge = () => {
 
         <div className=" auto-rows-min gap-4 flex flex-col xl:flex-row">
           <div className="border w-full xl:w-2/4 rounded-xl p-4 gap-10 flex flex-row flex-wrap ">
-
             <div>
               <img
-               src={!state?.userData?.profile_picture ? "/assets/images/dummy-profile.jpg" : state?.userData?.profile_picture }
-              alt="thumbnail"
-              className="w-[200px] h-[200px]"
-              style={{borderRadius: "10px", objectFit: "cover" }}
-            />
-             
+                src={
+                  !state?.userData?.profile_picture
+                    ? "/assets/images/dummy-profile.jpg"
+                    : state?.userData?.profile_picture
+                }
+                alt="thumbnail"
+                className="w-[200px] h-[200px]"
+                style={{ borderRadius: "10px", objectFit: "cover" }}
+              />
             </div>
             <div>
-               <h2 className="mt-3 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
+              <h2 className="mt-3 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
                 {state?.userData.first_name} {state?.userData.last_name}
               </h2>
               <blockquote className="italic">
@@ -177,7 +179,21 @@ const viewWellnessLounge = () => {
 
                 {state?.userData?.intrested_topics?.length > 0 && (
                   <li>
-                    Intrested in Topics: {state?.userData?.intrested_topics?.map((topic) => topic?.topic).join(", ")}
+                    <div>Interested in Topics:</div>{" "}
+                    {state.userData.intrested_topics.map((item, index) => {
+                      const topicText =
+                        item.topic === "Other"
+                          ? "Other (New Data)"
+                          : item.topic;
+                      return (
+                        <span key={item.id}>
+                          {topicText}
+                          {index < state.userData.intrested_topics.length - 1
+                            ? ", "
+                            : ""}
+                        </span>
+                      );
+                    })}
                   </li>
                 )}
                 {state?.userData?.university && (
@@ -193,30 +209,29 @@ const viewWellnessLounge = () => {
               className="w-[300px] h-50"
             /> */}
             {(state?.userData?.event_registrations ?? []).length > 0 ? (
-          <div className=" rounded-xl p-2 gap-4 flex flex-col ">
-            <h1 className="font-[500]">Registered Events</h1>
+              <div className=" rounded-xl p-2 gap-4 flex flex-col ">
+                <h1 className="font-[500]">Registered Events</h1>
 
-            <div className="rounded-lg border">
-              <DataTable
-                columns={columns}
-                data={state?.userData?.event_registrations ?? []}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className=" rounded-xl p-2 gap-4 flex flex-col ">
-            <h1 className="font-[500]">No Events Registered yet! </h1>
-           
-             {/* <Link
+                <div className="rounded-lg border">
+                  <DataTable
+                    columns={columns}
+                    data={state?.userData?.event_registrations ?? []}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className=" rounded-xl p-2 gap-4 flex flex-col ">
+                <h1 className="font-[500]">No Events Registered yet! </h1>
+
+                {/* <Link
                       href="https://irepute.in/"
                       className="font-bold"
                       target="_blank"
                     >
                       Click here to regester a event
                     </Link> */}
-
-          </div>
-        )}
+              </div>
+            )}
           </div>
         </div>
         {/* {(state?.userData?.event_registrations ?? []).length > 0 && (
