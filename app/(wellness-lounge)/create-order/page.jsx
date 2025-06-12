@@ -330,11 +330,12 @@ const CreateOrder = () => {
                             error={state.errors?.event}
                             required
                             placeholder="Select Lounge"
+                            
                         />
                         {
                             filteredLoungeData?.length > 0 &&
                             (
-                                <Card className="w-[100%] mt-2 mb-4 p-2">
+                                <Card className="w-[100%] mt-2 mb-4 p-2" style={{maxHeight:"400px", overflowY:"scroll", scrollbarWidth:"thin"}}>
                                     <DataTable columns={columns} data={filteredLoungeData} />
                                 </Card>
                             )

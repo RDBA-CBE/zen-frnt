@@ -141,7 +141,7 @@ const ForgotPasswordForm = () => {
 
   return (
     <div className="flex items-center justify-center">
-      <Card className="md:w-[400px] w-[100%]">
+      <Card className="md:w-[400px] w-[320px]">
         <CardHeader>
           <CardTitle className="text-2xl">Confirm Password</CardTitle>
           {/* <CardDescription>

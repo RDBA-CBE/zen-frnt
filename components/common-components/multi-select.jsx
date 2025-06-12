@@ -40,7 +40,7 @@ const CustomMultiSelect = ({
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full" >
             {title && (
                 <label className="block text-sm font-bold text-gray-700 mb-2">
                     {title} {required && <span className="text-red-500">*</span>}
@@ -56,7 +56,7 @@ const CustomMultiSelect = ({
                 </Popover.Trigger>
 
                 <Popover.Portal>
-                    <Popover.Content className="bg-white border shadow-md rounded-md p-2 w-[100%]">
+                    <Popover.Content className="bg-white border shadow-md rounded-md p-2 w-[100%]" style={{maxHeight:"340px", overflowY:"scroll", scrollbarWidth:"thin"}}>
                         {options.map((option) => (
                             <div
                                 key={option.value}
@@ -89,7 +89,7 @@ const CustomMultiSelect = ({
 
                 {/* Selected items as pills */}
                 {value.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-2" >
                         {value.map((val) => {
                             const selectedOption = options.find((option) => option.value === val);
                             return (
