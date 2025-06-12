@@ -61,7 +61,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
+          {/* <Calendar
             fromDate={fromDate ? fromDate : null}
             mode="single"
             selected={selectedDate || undefined}
@@ -69,13 +69,33 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             initialFocus
             disabled={
               disablePastDates
-                ? (date) => date < new Date() // Disable dates before today
+                ? (date) => date <= new Date() // Disable dates before today
                 : undefined
             }
             captionLayout="dropdown" // <-- Enables month & year dropdowns
             fromYear={1900} // <-- Earliest year allowed
             toYear={new Date().getFullYear() + 5} // <-- Latest year
-          />
+          /> */}
+          <Calendar
+  fromDate={fromDate ?? null}
+  mode="single"
+  selected={selectedDate || undefined}
+  onSelect={(date) => onChange?.(date ?? null)}
+  initialFocus
+  disabled={
+    disablePastDates
+      ? (date) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Strip time
+          return date < today;
+        }
+      : undefined
+  }
+  captionLayout="dropdown"
+  fromYear={1900}
+  toYear={new Date().getFullYear() + 5}
+/>
+
         </PopoverContent>
       </Popover>
 
