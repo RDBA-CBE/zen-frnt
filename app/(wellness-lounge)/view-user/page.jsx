@@ -182,8 +182,11 @@ const viewWellnessLounge = () => {
                     <div>Interested in Topics:</div>{" "}
                     {state.userData.intrested_topics.map((item, index) => {
                       const topicText =
-                        item.topic === "Other"
-                          ? "Other (New Data)"
+                        item.topic === "Others"
+                          ? `Others ${
+                              state?.userData?.lable &&
+                              `(${state?.userData?.lable})`
+                            }`
                           : item.topic;
                       return (
                         <span key={item.id}>
