@@ -118,7 +118,7 @@ const viewWellnessLounge = () => {
                                     </div>
                                 </div>
                                 <blockquote className="mt-6 border-l-2 pl-6 italic  bg-fuchsia-100 py-4  border-l-[5px] border-fuchsia-900 ">
-                                    Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span>
+                                    Event Start Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.start_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.start_time}</span> <br />
                                     {" "}End Date and Time <span className="font-bold text-gray-700">{moment(state?.orderData?.event?.end_date).format("YYYY-MMM-DD")}, {state?.orderData?.event?.end_time}</span>
                                 </blockquote>
 
@@ -141,11 +141,15 @@ const viewWellnessLounge = () => {
                             </div>
 
                             <div>
-                                <h4 className="md:text-[22px] text-[18px]">   Session Link:{" "}
+                                <h4 className="md:text-[22px] text-[18px]">   Session Link:{" "} <br />
+                               <p className="mb-3" style={{fontSize:"16px"}}>Click the below button to join the meeting</p> 
                                     {state?.orderData?.event?.session_link ? (
-                                        <Link href={state.orderData.event?.session_link} className="text-fuchsia-900" target="_blank" rel="noopener noreferrer">
+                                       <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
+                                        <Link href={state.orderData.event?.session_link} className="text-fuchsia-900 text-white" target="_blank" rel="noopener noreferrer">
                                             Join Meeting
                                         </Link>
+                                       </Button>
+                                       
                                     ) : (
                                         " No session link available"
                                     )}</h4>

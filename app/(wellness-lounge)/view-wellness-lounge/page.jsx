@@ -148,7 +148,7 @@ const viewWellnessLounge = () => {
                   <span className="font-bold text-gray-700">
                     {moment(state?.orderData.start_date).format("YYYY-MMM-DD")},{" "}
                     {state?.orderData.start_time}
-                  </span>{" "}
+                  </span>{" "} <br />
                   End Date and Time:{" "}
                   <span className="font-bold text-gray-700">
                     {moment(state?.orderData.end_date).format("YYYY-MMM-DD")},{" "}
@@ -160,22 +160,30 @@ const viewWellnessLounge = () => {
                   {state?.orderData?.description}
                 </p>
 
-                <p className="pt-5 md:text-[20px] text-[18px]">
-                  Session Link:{" "}
+                {state?.orderData?.is_registered == true && 
+                 <p className="pt-5 md:text-[20px] text-[18px]">
+                  Session Link:{" "} <br />
+                  <p className="mb-3" style={{fontSize:"16px"}}>Click the below button to join the meeting</p> 
                   {state?.orderData?.session_link ? (
-                    <Link
+                    <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2">
+                        <Link
                       prefetch={true}
                       href={state?.orderData.session_link}
-                      className="text-fuchsia-900"
+                      className="text-fuchsia-900 text-white"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Join Meeting
                     </Link>
+                    </Button>
+                  
                   ) : (
                     " No session link available"
                   )}
                 </p>
+                }
+
+               
 
                 {(state?.group !== "Admin" && state?.orderData?.is_registered == false)?  (
                   <div>
