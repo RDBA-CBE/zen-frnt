@@ -69,7 +69,7 @@ export default function studentRegistration() {
   };
 
   return (
-    <div className="flex md:min-h-[70vh] min-h-[70vh] w-full items-center  md:p-6">
+    <div className="flex md:min-h-[70vh] min-h-[70vh] w-full items-center  md:p-6 pb-5 md:pb-0">
       <div className="flex items-center justify-center w-full">
         <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
           <CardHeader>
