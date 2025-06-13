@@ -43,7 +43,7 @@ export const instance = (): AxiosInstance => {
   // Response interceptor
   api.interceptors.response.use(
     (response) => response,
-    async (error: AxiosError) => {
+    async (error: AxiosError | any) => {
       const originalRequest: any = error.config;
 
       if (
