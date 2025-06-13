@@ -11,27 +11,27 @@ p {
 }
 
 h1 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h2 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h3 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h4 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h5 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h6 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 @layer base {
