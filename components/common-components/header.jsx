@@ -392,6 +392,7 @@ const Header = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
+                {tokens && groups && 
                 <div className="block lg:hidden">
                   <Sheet>
                     <SheetTrigger asChild>
@@ -462,6 +463,8 @@ const Header = () => {
                     </SheetContent>
                   </Sheet>
                 </div>
+                }
+                
               </div>
               {/* Confirmation Dialog for Log out */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
