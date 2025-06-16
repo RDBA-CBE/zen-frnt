@@ -430,7 +430,7 @@ const Header = () => {
                                 key={index}
                               >
                                 <AccordionItem value={`item-${index + 1}`}>
-                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-lg">
+                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
                                     {menu.title}
                                   </AccordionTrigger>
                                   <AccordionContent>
