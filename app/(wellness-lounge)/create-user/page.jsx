@@ -252,7 +252,9 @@ const CreateUser = () => {
 
         // Redirect to user list page
         router.push("/user-list");
-        Success("User added successfully");
+        Success(`The user ${state.firstname} ${state.lastname} has been successfully added to Zen Wellness.
+Login credentials have been generated, and the user can now access the platform and explore available wellness programs.
+`);
 
         console.log("res: ", res); // Log the response for debugging
       } else {
@@ -336,7 +338,9 @@ const CreateUser = () => {
 
         // Redirect to user list page
         router.push("/user-list");
-        Success("User added successfully");
+ Success(`The user ${state.firstname} ${state.lastname} has been successfully added to Zen Wellness.
+Login credentials have been generated, and the user can now access the platform and explore available wellness programs.
+`);
 
         console.log("res: ", res); // Log the response for debugging
       }

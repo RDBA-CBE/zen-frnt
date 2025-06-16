@@ -87,7 +87,7 @@ const LoginForm = (props) => {
         })
       );
 
-      Success("Login successful");
+      Success("Welcome back to Zen Wellness Redirecting you to your wellness dashboard to continue your journey toward your well-being.");
       setState({ loading: false, username: "", password: "" });
 
       setTimeout(() => {

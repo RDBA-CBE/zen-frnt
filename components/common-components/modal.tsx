@@ -27,14 +27,14 @@ export default function Modal({
 }: ModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="mt-5">{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
         {/* Dynamic content from parent */}
-        <div className="grid gap-4 py-4">{renderComponent()}</div>
+        <div className="grid gap-4 py-4 ">{renderComponent()}</div>
 
         {/* <DialogFooter>
           <Button type="submit" onClick={onSubmit}>

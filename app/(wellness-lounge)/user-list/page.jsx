@@ -418,7 +418,8 @@ const UserList = () => {
       <Modal
         isOpen={state.isDeleteOpen}
         setIsOpen={() => setState({ isDeleteOpen: false, deleteId: null })}
-        title={"Are you sure to delete user ?"}
+        title={`Are you sure to delete this user?
+           The user will been removed from Zen Wellness. All associated access, session enrollments and data will be revoked and will no longer be available on the platform.`}
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">

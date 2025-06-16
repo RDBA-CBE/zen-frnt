@@ -33,6 +33,8 @@ import PhoneInput, {
 } from "react-phone-number-input";
 import CustomMultiSelect from "../common-components/multi-select";
 import { Eye, EyeOff, Loader } from "lucide-react";
+import { getCountryCallingCode } from 'libphonenumber-js/core';
+import metadata from "libphonenumber-js/metadata.full.json";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
@@ -119,6 +121,42 @@ const AlumniRegistrationForm = () => {
       console.log("error");
     }
   };
+
+//   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
+//     console.log('selectedCountry, currentPhone: ', selectedCountry, currentPhone);
+//   if (!selectedCountry || !currentPhone?.startsWith("+")) return true;
+//   console.log("selectedCountry",selectedCountry);
+  
+
+//   try {
+//     const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., "91"
+//     console.log('selectedCallingCode: ', selectedCallingCode);
+//     const inputCode = currentPhone.match(/^\+(\d+)/)?.[1]; // extracts "91" from "+91xxxxxxxx"
+
+//     return selectedCallingCode !== inputCode;
+//     // false
+    
+    
+//   } catch {
+//     return true; // fallback to clear if any issue
+//   }
+// }
+
+function shouldClearPhoneNumber(selectedCountry, currentPhone) {
+  if (!selectedCountry || !currentPhone?.startsWith("+")) return true;
+
+  try {
+    const selectedCallingCode = getCountryCallingCode(selectedCountry.code, metadata); // Pass metadata
+    const inputCode = currentPhone.match(/^\+(\d+)/)?.[1];
+
+    return selectedCallingCode !== inputCode;
+  } catch (error) {
+    console.error("Error comparing country code:", error);
+    return true;
+  }
+}
+
+
 
   // 🚀 Prevent hydration errors by ensuring the component renders only after mount
   if (!isMounted) return null;
@@ -335,18 +373,41 @@ const AlumniRegistrationForm = () => {
           <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Country"}
           </label>
-          <Select
+          {/* <Select
             options={state.countryList || []}
             value={state.country || ""}
             onChange={(value) => {
-              setState({ country: value, alumniPhone: "" });
+               const clearPhone = shouldClearPhoneNumber(value, state.alumniPhone);
+
+               console.log("clearPhone",clearPhone);
+               
+              setState({ country: value,
+                  alumniPhone: clearPhone ? "" : state.alumniPhone,
+                 });
             }}
             placeholder="Select Your Country"
             className=" text-sm"
             menuPortalTarget={document.body}
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             isClearable
-          />
+          /> */}
+          <Select
+  options={state.countryList || []}
+  value={state.country || ""}
+  onChange={(value) => {
+    const shouldClear = shouldClearPhoneNumber(value, state.alumniPhone);
+
+    setState({
+      country: value,
+      alumniPhone: shouldClear ? "" : state.alumniPhone,
+    });
+  }}
+  placeholder="Select Your Country"
+  className="text-sm"
+  menuPortalTarget={document.body}
+  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+  isClearable
+/>
         </div>
         {/* 
         <div className="space-y-1 z-0">
@@ -373,6 +434,8 @@ const AlumniRegistrationForm = () => {
               value={state.alumniPhone}
               onChange={handlePhoneChange}
               international
+              countryCallingCodeEditable={false} // 🔒 disables editing country code
+              countrySelectComponent={() => null}
               className="custom-phone-input"
             />
             {state.errors?.phone_number && (

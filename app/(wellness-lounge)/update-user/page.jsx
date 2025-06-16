@@ -359,7 +359,7 @@ const CreateUser = () => {
         await Models.user.updateUser(formData, id);
         setState({ submitLoading: false });
         router?.back();
-        Success("User updated successfully");
+                Success(`The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`);
       } else {
         let body = {
           first_name: state.firstname,
@@ -425,7 +425,7 @@ const CreateUser = () => {
         await Models.user.updateUser(formData, id);
         setState({ submitLoading: false });
         router?.back();
-        Success("User updated successfully");
+                Success(`The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`);
       }
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
