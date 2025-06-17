@@ -439,7 +439,7 @@ const Header = () => {
                                         {menu.items.map((item, itemIndex) => (
                                           <li
                                             key={itemIndex}
-                                            className="pb-2 text-lg"
+                                            className="pb-2 text-sm"
                                           >
                                             <a href={item.url}>{item.title}</a>
                                           </li>
