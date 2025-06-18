@@ -343,9 +343,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                     </div>
                                   </TooltipTrigger>
                                   <TooltipContent className="w-[300px]">
-                                    <div className="flex flex-row flex-wrap mb-3 gap-x-2">
+                                    <div className="flex flex-col flex-wrap mb-3 gap-x-2">
                                       <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
-                                        {event.title} -
+                                        {event.title} 
                                       </h4>
                                       <p className="text-[15px] mt-1">
                                         {event.lounge_type?.name}
@@ -397,11 +397,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
           <DialogTitle className="text-lg font-semibold mb-2">
             {/* Here you can enroll or sign up for the course. */}
-            <div className="flex flex-wrap mb-2 gap-x-2">
+            <div className="flex flex-col flex-wrap mb-2 gap-x-2">
                 <p className="font-bold text-[22px] leading-[22px]  font-marce">
-              {selectedEvent?.title} - 
+              {selectedEvent?.title} 
             </p>
-            <p className="font-bold text-[16px] leading-[22px]" style={{paddingTop:"2px"}}> {selectedEvent?.lounge_type?.name}</p>
+            <p className="font-bold text-[14px] leading-[22px]" style={{paddingTop:"2px"}}> {selectedEvent?.lounge_type?.name}</p>
 
             </div>
           

@@ -8,13 +8,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Failure, InfinitySuccess, Success } from "@/components/common-components/toast";
+import {
+  Failure,
+  InfinitySuccess,
+  Success,
+} from "@/components/common-components/toast";
 import { Loader, Loader2Icon, LoaderIcon } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 
-
 const viewWellnessLounge = () => {
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const [id, setId] = useState(null);
@@ -95,10 +97,9 @@ const viewWellnessLounge = () => {
 
       const res = await Models.session.createRegistration(body);
       InfinitySuccess(
-       `Thank you! Your booking for the session titled ${state?.orderData.title} has been confirmed. We invite you to explore our calendar and take advantage of additional sessions that may interest you.`,
+        `Thank you! Your booking for the session titled ${state?.orderData.title} has been confirmed. We invite you to explore our calendar and take advantage of additional sessions that may interest you.`,
         () => {
           router?.push(`/view-order?id=${res[0]?.id}`);
-          
         }
       );
 
@@ -129,61 +130,86 @@ const viewWellnessLounge = () => {
             <div className="grid auto-rows-min gap-4 lg:grid-cols-2">
               <div className="border rounded-xl p-4 gap-4 flex flex-col">
                 {state?.orderData?.thumbnail ? (
-                   <img
-                  src={state?.orderData?.thumbnail}
-                  alt="thumbnail"
-                  className="w-100"
-                  style={{height:"600px",objectFit: "cover"}}
-                />
-                ) : (<p style={{width:"100%", height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>No image uploaded</p>)}
-               
+                  <img
+                    src={state?.orderData?.thumbnail}
+                    alt="thumbnail"
+                    className="w-100"
+                    style={{ height: "600px", objectFit: "cover" }}
+                  />
+                ) : (
+                  <p
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    No image uploaded
+                  </p>
+                )}
               </div>
               <div className="border rounded-xl p-4 flex flex-col">
-                <div className="flex">
+                <div className="flex flex-col ">
                   <h2 className="mt-10 scroll-m-20 text-2xl font-[500] tracking-tight transition-colors first:mt-0 font-marce">
-                  {state?.orderData.title} -{" "}
-                  
-                </h2> 
-                <p className="ps-3" style={{paddingTop:"7px", }}>{state?.orderData?.lounge_type?.name}</p>
+                    {state?.orderData.title} {" "}
+                  </h2>
+                  <p className="" style={{ paddingTop: "7px" }}>
+                    {state?.orderData?.lounge_type?.name}
+                  </p>
                 </div>
-                
+
                 <blockquote className="mt-4 border-l-[5px] border-fuchsia-900 pl-6  bg-fuchsia-100 py-4">
-                  
-                   Starts - <span className="font-bold" style={{color:"#4a4a4a"}}>{moment(state?.orderData?.start_date).format("DD MMM YYYY")}, {""}{moment(state?.orderData?.start_time, "HH:mm:ss").format("hh:mm A")
-                                                          }</span> <br />
-                                                      {" "}Ends - <span className="font-bold " style={{color:"#4a4a4a"}}>{moment(state?.orderData?.end_date).format("DD MMM YYYY")}, {""} {moment(state?.orderData?.end_time,"HH:mm:ss").format("hh:mm A")}</span>
+                  Starts -{" "}
+                  <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                    {moment(state?.orderData?.start_date).format("DD MMM YYYY")}
+                    , {""}
+                    {moment(state?.orderData?.start_time, "HH:mm:ss").format(
+                      "hh:mm A"
+                    )}
+                  </span>{" "}
+                  <br /> Ends -{" "}
+                  <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                    {moment(state?.orderData?.end_date).format("DD MMM YYYY")},{" "}
+                    {""}{" "}
+                    {moment(state?.orderData?.end_time, "HH:mm:ss").format(
+                      "hh:mm A"
+                    )}
+                  </span>
                 </blockquote>
 
                 <p className="leading-8 text-[18px] [&:not(:first-child)]:mt-4">
                   {state?.orderData?.description}
                 </p>
 
-                {state?.orderData?.is_registered == true && 
-                 <p className="pt-5 md:text-[20px] text-[18px]">
-                  Session Link:{" "} <br />
-                  <span className="mb-3 italic" style={{fontSize:"16px"}}>Click the below button to join the meeting</span> <br />
-                  {state?.orderData?.session_link ? (
-                    <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
+                {state?.orderData?.is_registered == true && (
+                  <p className="pt-5 md:text-[20px] text-[18px]">
+                    Session Link: <br />
+                    <span className="mb-3 italic" style={{ fontSize: "16px" }}>
+                      Click the below button to join the meeting
+                    </span>{" "}
+                    <br />
+                    {state?.orderData?.session_link ? (
+                      <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
                         <Link
-                      prefetch={true}
-                      href={state?.orderData.session_link}
-                      className="text-fuchsia-900 text-white "
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Join Meeting
-                    </Link>
-                    </Button>
-                  
-                  ) : (
-                    " No session link available"
-                  )}
-                </p>
-                }
+                          prefetch={true}
+                          href={state?.orderData.session_link}
+                          className="text-fuchsia-900 text-white "
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Join Meeting
+                        </Link>
+                      </Button>
+                    ) : (
+                      " No session link available"
+                    )}
+                  </p>
+                )}
 
-               
-
-                {(state?.group !== "Admin" && state?.orderData?.is_registered == false)?  (
+                {state?.group !== "Admin" &&
+                state?.orderData?.is_registered == false ? (
                   <div>
                     <Button
                       className={`mt-3 ${
@@ -197,9 +223,9 @@ const viewWellnessLounge = () => {
                     </Button>
                   </div>
                 ) : state?.group !== "Admin" ? (
-                <div>
+                  <div>
                     <Button
-                    style={{cursor:"not-allowed"}}
+                      style={{ cursor: "not-allowed" }}
                       className={`mt-3 ${
                         state?.orderData?.is_registered
                           ? "bg-themeGreen hover:bg-themeGreen"
@@ -207,25 +233,29 @@ const viewWellnessLounge = () => {
                       }`}
                       // onClick={() => setState({ isOpen: true })}
                     >
-                     <span style={{color: "white",fontSize:"22px"}}>✓</span> Already Enrolled <span style={{color:" #88c742"}}></span>
-
+                      <span style={{ color: "white", fontSize: "22px" }}>
+                        ✓
+                      </span>{" "}
+                      Already Enrolled{" "}
+                      <span style={{ color: " #88c742" }}></span>
                     </Button>
                   </div>
-                ) : (state?.group == "Admin" && (
-                   <div>
-                    <Button
-                      className={`mt-3 ${
-                        state?.orderData?.is_registered
-                          ? "bg-themeGreen hover:bg-themeGreen"
-                          : "bg-themePurple hover:bg-themePurple"
-                      }`}
-                      onClick={() => router.push("/wellness-lounge-list")}
-                    >
-                      Back
-                    </Button>
-                  </div>
-                  ))}
-
+                ) : (
+                  state?.group == "Admin" && (
+                    <div>
+                      <Button
+                        className={`mt-3 ${
+                          state?.orderData?.is_registered
+                            ? "bg-themeGreen hover:bg-themeGreen"
+                            : "bg-themePurple hover:bg-themePurple"
+                        }`}
+                        onClick={() => router.push("/wellness-lounge-list")}
+                      >
+                        Back
+                      </Button>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
@@ -255,7 +285,6 @@ const viewWellnessLounge = () => {
       )}
     </div>
   );
-}
-
+};
 
 export default ProtectedRoute(viewWellnessLounge);
