@@ -24,6 +24,14 @@ import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import * as Yup from "yup";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import dynamic from "next/dynamic";
+// import DateTimeField from "@/components/common-components/DateTimeField"
+
+// Dynamically import DateTimeField to avoid hydration issues (if needed)
+const DateTimeField = dynamic(
+  () => import("@/components/common-components/DateTimeField"),
+  { ssr: false }
+);
 
 const UpdateWellnessLounge = () => {
   const router = useRouter();
@@ -96,6 +104,14 @@ const UpdateWellnessLounge = () => {
         // start_time:moment(res.start_time).format("h:mm aa")
         start_time: moment(res.start_time, "h:mm aa").toDate(),
         end_time: moment(res.end_time, "h:mm aa").toDate(),
+        combinedStartDateTime: moment(
+          `${res.start_date} ${res.start_time}`,
+          "YYYY-MM-DD h:mm A"
+        ).toDate(),
+        combinedEndDateTime: moment(
+          `${res.end_date} ${res.end_time}`,
+          "YYYY-MM-DD h:mm A"
+        ).toDate(),
         lounge_type: {
           value: res?.lounge_type?.id,
           label: res?.lounge_type?.name,
@@ -110,6 +126,8 @@ const UpdateWellnessLounge = () => {
       console.log("error: ", error);
     }
   };
+
+  console.log("state.start_time", state.combinedDateTime);
 
   const getCategoryList = async () => {
     try {
@@ -127,7 +145,6 @@ const UpdateWellnessLounge = () => {
   };
 
   // console.log("state.lounge_type",state.lounge_type);
-  
 
   const onSubmit = async () => {
     try {
@@ -182,7 +199,9 @@ const UpdateWellnessLounge = () => {
       setState({ submitLoading: false });
 
       router.push("/wellness-lounge-list");
-      Success(`The session ${state.title} under the ${state.lounge_type?.label} category has been updated. All changes are now live and reflected across participant dashboards.`);
+      Success(
+        `The session ${state.title} under the ${state.lounge_type?.label} category has been updated. All changes are now live and reflected across participant dashboards.`
+      );
     } catch (error) {
       // console.log("error", error?.end_date[0])
       console.log("error", error);
@@ -246,8 +265,9 @@ const UpdateWellnessLounge = () => {
           <TextInput
             value={state.title}
             onChange={(e) => {
-              setState({ title: e.target.value ,
-                errors:{...state.errors, title:""}
+              setState({
+                title: e.target.value,
+                errors: { ...state.errors, title: "" },
               });
             }}
             placeholder="Title"
@@ -265,7 +285,7 @@ const UpdateWellnessLounge = () => {
             placeholder="Description"
             title="Description"
           />
-          <div className="grid auto-rows-min gap-4 grid-cols-2">
+          {/* <div className="grid auto-rows-min gap-4 grid-cols-2">
             <DatePicker
               formDate={new Date()}
               placeholder="Start Date"
@@ -301,8 +321,46 @@ const UpdateWellnessLounge = () => {
               disablePastDates
               // disablePastDates={true} // Disable past dates
             />
-          </div>
+          </div> */}
           <div className="grid auto-rows-min gap-4 grid-cols-2">
+            <DateTimeField
+              label={`Start Date & Time (Choose both date & time)`}
+              placeholder="Start Date & Time"
+              value={state.combinedStartDateTime}
+              onChange={(date) => {
+                setState({
+                  ...state,
+                  combinedStartDateTime: date,
+                  start_date: date,
+                  start_time: date,
+                  // end_date: null,
+                  errors: { ...state.errors, start_date: "", start_time: "" },
+                });
+              }}
+              error={state.errors?.start_date || state.errors?.start_time}
+              required
+              fromDate={new Date()}
+            />
+
+            <DateTimeField
+              label="End Date & Time (Choose both date & time)"
+              placeholder="End Date & Time"
+              value={state.combinedEndDateTime}
+              onChange={(date) => {
+                setState({
+                  ...state,
+                  combinedEndDateTime: date,
+                  end_date: date,
+                  end_time: date,
+                  errors: { ...state.errors, end_date: "", end_time: "" },
+                });
+              }}
+              error={state.errors?.end_date || state.errors?.end_time}
+              required
+              fromDate={state.start_date}
+            />
+          </div>
+          {/* <div className="grid auto-rows-min gap-4 grid-cols-2">
             <TimePicker
               value={state.start_time}
               onChange={(e) => {
@@ -325,16 +383,19 @@ const UpdateWellnessLounge = () => {
               error={state.errors?.end_time}
               required
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <CustomSelect
             options={state.categoryList}
             value={state.lounge_type?.value || ""}
-            onChange={(value) => setState({ lounge_type: value,
-              errors:{...state.errors, lounge_type:""}
-             })}
+            onChange={(value) =>
+              setState({
+                lounge_type: value,
+                errors: { ...state.errors, lounge_type: "" },
+              })
+            }
             title="Lounge Type"
             error={state.errors?.lounge_type}
             required
@@ -342,9 +403,10 @@ const UpdateWellnessLounge = () => {
           <TextInput
             value={state.session_link}
             onChange={(e) => {
-              setState({ session_link: e.target.value,
-                 errors:{...state.errors, session_link:""}
-               });
+              setState({
+                session_link: e.target.value,
+                errors: { ...state.errors, session_link: "" },
+              });
             }}
             placeholder="Session Link"
             title="Session Link"
@@ -418,10 +480,9 @@ const UpdateWellnessLounge = () => {
                 setState({
                   thumbnail_images: file, // Store actual file
                   thumbnail_image: imageUrl, // Use preview URL instead of fakepath
-                  errors:{...state.errors, thumbnail_image:""}
+                  errors: { ...state.errors, thumbnail_image: "" },
                 });
               }}
-              
               error={state.errors?.thumbnail_image}
             />
           )}

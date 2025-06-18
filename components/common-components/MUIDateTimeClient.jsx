@@ -10,8 +10,8 @@ export default function MUIDateTimeClient() {
   const [selectedDateTime, setSelectedDateTime] = useState(null);
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Event Date & Time</h2>
+    <div className="  rounded-xl shadow-md">
+      
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
@@ -23,7 +23,7 @@ export default function MUIDateTimeClient() {
           slotProps={{
             textField: {
               fullWidth: true,
-              size: 'small',
+              size: 'large',
             },
           }}
         />

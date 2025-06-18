@@ -623,8 +623,8 @@ Login credentials have been generated, and the user can now access the platform 
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
-                       countryCallingCodeEditable={false} // 🔒 disables editing country code
-              countrySelectComponent={() => null}
+              //          countryCallingCodeEditable={false} // 🔒 disables editing country code
+              // countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

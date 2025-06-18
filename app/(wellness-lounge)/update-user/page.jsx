@@ -653,7 +653,7 @@ const CreateUser = () => {
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"Country"}{""}<span className="text-red-500">*</span>
+                    {"Country"} {" "}<span className="text-red-500">*</span>
                   </label>
                    <div className="phone-input-wrapper pt-1">
                      <Select
@@ -687,7 +687,7 @@ const CreateUser = () => {
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">
-                    Phone Number <span className="text-red-500">*</span>
+                    Phone Number {""} <span className="text-red-500">*</span>
                   </label>
                   <div className="phone-input-wrapper pt-1">
                     <PhoneInput
@@ -698,8 +698,8 @@ const CreateUser = () => {
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
-                       countryCallingCodeEditable={false} // 🔒 disables editing country code
-              countrySelectComponent={() => null}
+              //          countryCallingCodeEditable={false} // 🔒 disables editing country code
+              // countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

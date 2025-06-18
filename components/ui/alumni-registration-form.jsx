@@ -457,8 +457,8 @@ const AlumniRegistrationForm = () => {
               value={state.alumniPhone}
               onChange={handlePhoneChange}
               international
-              countryCallingCodeEditable={false} // 🔒 disables editing country code
-              countrySelectComponent={() => null}
+              // countryCallingCodeEditable={false} // 🔒 disables editing country code
+              // countrySelectComponent={() => null}
               className="custom-phone-input"
             />
             {state.errors?.phone_number && (

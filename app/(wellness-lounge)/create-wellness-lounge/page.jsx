@@ -18,6 +18,14 @@ import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { Loader } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import dynamic from "next/dynamic";
+// import DateTimeField from "@/components/common-components/DateTimeField"
+
+// Dynamically import DateTimeField to avoid hydration issues (if needed)
+const DateTimeField = dynamic(
+  () => import("@/components/common-components/DateTimeField"),
+  { ssr: false }
+);
 
 const CreateWellnessLounge = () => {
   const router = useRouter();
@@ -73,10 +81,10 @@ const CreateWellnessLounge = () => {
           ? moment(state.end_date).format("YYYY-MM-DD")
           : null,
         end_time: state.end_time
-          ? moment(state.end_time).format("hh:mm:ss")
+          ? moment(state.end_time).format("HH:mm:ss")
           : null,
         start_time: state.start_time
-          ? moment(state.start_time).format("hh:mm:ss")
+          ? moment(state.start_time).format("HH:mm:ss")
           : null,
         price: state.price ? state.price : 0,
         session_link: state.session_link,
@@ -172,7 +180,10 @@ const CreateWellnessLounge = () => {
               <TextInput
                 value={state.title}
                 onChange={(e) => {
-                  setState({ title: e.target.value , errors:{...state.errors, title:""}});
+                  setState({
+                    title: e.target.value,
+                    errors: { ...state.errors, title: "" },
+                  });
                 }}
                 placeholder="Title"
                 title="Title"
@@ -189,7 +200,7 @@ const CreateWellnessLounge = () => {
                 placeholder="Description"
                 title="Description"
               />
-              <div className="grid auto-rows-min gap-4 grid-cols-2">
+              {/* <div className="grid auto-rows-min gap-4 grid-cols-2">
                 <DatePicker
                   placeholder="Start Date"
                   title="Start Date"
@@ -226,11 +237,54 @@ const CreateWellnessLounge = () => {
                   disablePastDates
 
                 />
-              </div>
+              </div> */}
+
               <div className="grid auto-rows-min gap-4 grid-cols-2">
+                <DateTimeField
+                  label={`Start Date & Time (Choose both date & time)`}
+                  placeholder="Start Date & Time"
+                  value={state.start_date}
+                  onChange={(date) => {
+                    setState({
+                      ...state,
+                      start_date: date,
+                      start_time: date,
+                      // end_date: null,
+                      errors: { ...state.errors, start_date: "" , start_time: ''},
+                    });
+                  }}
+                  error={state.errors?.start_date || state.errors?.start_time}
+                  required
+                  fromDate={new Date()}
+                />
+
+                <DateTimeField
+                  label="End Date & Time (Choose both date & time)"
+                  placeholder="End Date & Time"
+                  value={state.end_date}
+                  onChange={(date) => {
+                    setState({
+                      ...state,
+                      end_date: date,
+                      end_time:date,
+                      errors: { ...state.errors, end_date: "", end_time: "" },
+                    });
+                  }}
+                  error={state.errors?.end_date || state.errors?.end_time }
+                  required
+                  fromDate={state.start_date}
+                />
+              </div>
+
+              {/* <div className="grid auto-rows-min gap-4 grid-cols-2">
                 <TimePicker
                   value={state.start_time}
-                  onChange={(e) => setState({ start_time: e, errors:{...state.errors, start_time:""} })}
+                  onChange={(e) =>
+                    setState({
+                      start_time: e,
+                      errors: { ...state.errors, start_time: "" },
+                    })
+                  }
                   title="Start Time"
                   placeholder="Start Time"
                   error={state.errors?.start_time}
@@ -238,20 +292,30 @@ const CreateWellnessLounge = () => {
                 />
                 <TimePicker
                   value={state.end_time}
-                  onChange={(e) => setState({ end_time: e, errors:{...state.errors, end_time:""} })}
+                  onChange={(e) =>
+                    setState({
+                      end_time: e,
+                      errors: { ...state.errors, end_time: "" },
+                    })
+                  }
                   title="End Time"
                   placeholder="End Time"
                   error={state.errors?.end_time}
                   required
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="border rounded-xl p-4 gap-4 flex flex-col ">
               <CustomSelect
                 options={state.categoryList}
                 value={state.lounge_type?.value || ""}
-                onChange={(value) => setState({ lounge_type: value, errors:{...state.errors, lounge_type:""} })}
+                onChange={(value) =>
+                  setState({
+                    lounge_type: value,
+                    errors: { ...state.errors, lounge_type: "" },
+                  })
+                }
                 title="Lounge Type"
                 error={state.errors?.lounge_type}
                 required
@@ -259,7 +323,10 @@ const CreateWellnessLounge = () => {
               <TextInput
                 value={state.session_link}
                 onChange={(e) => {
-                  setState({ session_link: e.target.value, errors:{...state.errors, session_link:""} });
+                  setState({
+                    session_link: e.target.value,
+                    errors: { ...state.errors, session_link: "" },
+                  });
                 }}
                 placeholder="Session Link"
                 title="Session Link"
@@ -297,7 +364,7 @@ const CreateWellnessLounge = () => {
                   setState({
                     thumbnail_images: e.target.files[0],
                     thumbnail_image: e.target.value,
-                    errors:{...state.errors, thumbnail_image:""}
+                    errors: { ...state.errors, thumbnail_image: "" },
                   });
                 }}
                 className="mt-2 w-full"

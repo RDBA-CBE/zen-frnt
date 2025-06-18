@@ -16,13 +16,23 @@ export const createCoupon = Yup.object().shape({
 export const createSession = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   start_date: Yup.date()
-    .required("Start date is required")
+    .required("Start date and Time is required")
     .typeError("Invalid start date"),
   end_date: Yup.date()
-    .required("End date is required")
+    .required("End date and Time is required")
     .typeError("Invalid end date"),
-  start_time: Yup.string().required("Start time is required"),
-  end_time: Yup.string().required("End time is required"),
+  start_time: Yup.string().required("Start date and time is required"),
+  end_time: Yup.string().required("End date and time is required"),
+
+  // start_time: Yup.string().required("Start date and time is required")
+  //  .test("is-valid-time", "Start time is invalid", (value) => {
+  //     return !!value && /^\d{2}:\d{2}:\d{2}$/.test(value); // HH:mm:ss format
+  //   }),
+  // end_time: Yup.string().required("End date and time is required")
+  // .test("is-valid-time", "End time is invalid", (value) => {
+  //     return !!value && /^\d{2}:\d{2}:\d{2}$/.test(value); // HH:mm:ss format
+  //   }),
+  
   session_link: Yup.string()
     .required("Session link is required")
     .url("Invalid session link"),
