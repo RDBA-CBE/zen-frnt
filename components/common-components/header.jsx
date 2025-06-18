@@ -430,7 +430,7 @@ const Header = () => {
                                 key={index}
                               >
                                 <AccordionItem value={`item-${index + 1}`}>
-                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-lg">
+                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
                                     {menu.title}
                                   </AccordionTrigger>
                                   <AccordionContent>
@@ -439,7 +439,7 @@ const Header = () => {
                                         {menu.items.map((item, itemIndex) => (
                                           <li
                                             key={itemIndex}
-                                            className="pb-2 text-lg"
+                                            className="pb-2 text-sm"
                                           >
                                             <a href={item.url}>{item.title}</a>
                                           </li>

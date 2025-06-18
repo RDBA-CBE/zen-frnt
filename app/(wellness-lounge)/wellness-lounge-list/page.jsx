@@ -367,7 +367,7 @@ const WellnessLoungeList = () => {
       <Modal
         isOpen={state.isOpen}
         setIsOpen={() => setState({ isOpen: false, deleteId: null })}
-        title={"Are you sure to delete record"}
+        title={"Are you sure to delete the record. The selected wellness lounge will been removed from Zen Wellness. All associated content and access will be revoked, and the changes will be reflected across the platform."}
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">

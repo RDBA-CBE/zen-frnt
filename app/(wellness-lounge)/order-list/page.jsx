@@ -55,6 +55,12 @@ const WellnessLoungeList = () => {
         getOrdersList(1);
     }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 
+    const sessionId = (row)=>{
+        console.log(row);
+        
+        setState({ isOpen: true, deleteId: row?.row?.id , sessionID:row?.row?.registration_id})
+    }
+
     const getOrdersList = async (page) => {
         try {
             setState({ loading: true });
@@ -66,6 +72,7 @@ const WellnessLoungeList = () => {
             //     pages = 1;
             // }
             const res = await Models.session.registrationList(page, body);
+            console.log('getOrdersList: ', res);
 
             setState({
                 loungeList: res?.results,
@@ -88,10 +95,13 @@ const WellnessLoungeList = () => {
             let body = {};
 
             const res = await Models.session.list(pages, body);
+            console.log("res",res);
+            
             const Dropdowns = Dropdown(res?.results, "title");
             setState({
                 loungeSearch: Dropdowns,
             })
+
         } catch (error) {
             setState({ loading: false });
 
@@ -156,6 +166,7 @@ const WellnessLoungeList = () => {
         }
     };
 
+
     const columns = [
         {
             Header: "Session Id",
@@ -190,7 +201,10 @@ const WellnessLoungeList = () => {
                     <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
                         <Eye size={20} className="mr-2" />
                     </div>
-                    <div className="cursor-pointer" onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}>
+                    <div className="cursor-pointer" 
+                    onClick={()=>sessionId(row)}
+                    // onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
+                    >
                         <Trash size={18} className="mr-2" />
                     </div>
                 </div>
@@ -363,7 +377,7 @@ const WellnessLoungeList = () => {
             <Modal
                 isOpen={state.isOpen}
                 setIsOpen={() => setState({ isOpen: false, deleteId: null })}
-                title={"Are you sure to delete record"}
+                title={`Are You sure to delete this session. The session with session id ${state.sessionID}, will been deleted. This session is no longer visible to participants, and all associated access will been revoked.`}
                 renderComponent={() => (
                     <>
                         <div className="flex justify-end gap-5">

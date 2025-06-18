@@ -35,6 +35,7 @@ import PhoneInput, {
 import "react-phone-number-input/style.css";
 import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
 import Select from "react-select";
+import { getCountryCallingCode } from "libphonenumber-js";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -226,6 +227,22 @@ const CreateUser = () => {
     }
   };
 
+   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
+        if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
+    
+        try {
+          const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., '91'
+          const expectedPrefix = `+${selectedCallingCode}`;
+    
+          // ✅ If phone starts with +91 and selected country is also 91 → DON'T clear
+          // ❌ If phone starts with +91 and selected country is something else → CLEAR
+          return !currentPhone.startsWith(expectedPrefix);
+        } catch (err) {
+          console.error("Phone check failed:", err);
+          return false;
+        }
+      }
+
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
@@ -359,7 +376,7 @@ const CreateUser = () => {
         await Models.user.updateUser(formData, id);
         setState({ submitLoading: false });
         router?.back();
-        Success("User updated successfully");
+                Success(`The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`);
       } else {
         let body = {
           first_name: state.firstname,
@@ -425,7 +442,7 @@ const CreateUser = () => {
         await Models.user.updateUser(formData, id);
         setState({ submitLoading: false });
         router?.back();
-        Success("User updated successfully");
+                Success(`The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`);
       }
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
@@ -636,13 +653,19 @@ const CreateUser = () => {
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"Country"}
+                    {"Country"}{""}<span className="text-red-500">*</span>
                   </label>
-                  <Select
+                   <div className="phone-input-wrapper pt-1">
+                     <Select
                     options={state.countryList || []}
                     value={state.country || ""}
                     onChange={(value) => {
-                      setState({ country: value, phone_number: "" });
+                       const shouldClear = shouldClearPhoneNumber(value, state.phone_number);
+                      setState({ country: value,
+                        phone_number: shouldClear ? "" : state.phone_number,
+                        
+                        });
+                      // setState({ country: value, phone_number: "" });
                     }}
                     placeholder="Select Your Country"
                     className=" text-sm"
@@ -651,7 +674,15 @@ const CreateUser = () => {
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
                     isClearable
+
                   />
+                   {state.errors?.country && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.country}
+                      </p>
+                    )}
+                   </div>
+                 
                 </div>
 
                 <div className="space-y-1">
@@ -667,6 +698,8 @@ const CreateUser = () => {
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
+                       countryCallingCodeEditable={false} // 🔒 disables editing country code
+              countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

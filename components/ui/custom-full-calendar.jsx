@@ -113,8 +113,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   // Handle day click
   const handleDayClick = (day) => {
-
-    
     const clickedDate = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
@@ -125,8 +123,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     // Check if there are any events for the clicked day
     const eventsForClickedDay = getEventsForDate(day);
-    console.log(eventsForClickedDay,"eventsForClickedDay");
-    
+    console.log(eventsForClickedDay, "eventsForClickedDay");
+
     if (eventsForClickedDay.length > 0) {
       setModalIsOpen(true);
       setSelectedEvent(eventsForClickedDay[0]); // Store the first event
@@ -135,8 +133,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     }
   };
 
-  console.log(selectedEvent,"selectedEvent");
-  
+  console.log(selectedEvent, "selectedEvent");
 
   // Handle form input changes for new events
   const handleEventChange = (e) => {
@@ -299,7 +296,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                       className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
-                        // onClick={() => day && handleDayClick(day)}
+                      // onClick={() => day && handleDayClick(day)}
                     >
                       <div className="text-end">{day}</div>
                       {/* Only show events for this specific day */}
@@ -315,9 +312,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                   <TooltipTrigger>
                                     <div
                                       onClick={() =>
-                                        day &&
-                                        !isPastEvent(event) ?
-                                        handleDayClick(day) : Info("Event cannot be accessed")
+                                        day && !isPastEvent(event)
+                                          ? handleDayClick(day)
+                                          : Info("The selected session has already concluded or in progress and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com.")
                                       }
                                       className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
                                       style={{
@@ -346,24 +343,37 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                     </div>
                                   </TooltipTrigger>
                                   <TooltipContent className="w-[300px]">
-                                    <h4 className="font-bold text-[18px] leading-[22px] mb-2">
-                                      {event.title} - {event.lounge_type?.name}
-                                    </h4>
-                                    <blockquote className="mb-2 border-l-2 pl-6 italic">
-                                      Event Start Date and Time{" "}
+                                    <div className="flex flex-row flex-wrap mb-3 gap-x-2">
+                                      <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
+                                        {event.title} -
+                                      </h4>
+                                      <p className="text-[15px] mt-1">
+                                        {event.lounge_type?.name}
+                                      </p>
+                                    </div>
+
+                                    <blockquote className="mb-2 border-l-2 pl-6 ">
+                                      Starts -{" "}
                                       <span className="font-bold">
                                         {moment(event.start_date).format(
-                                          "YYYY-MMM-DD"
+                                          "DD MMM YYYY"
                                         )}
-                                        , {event.start_time}
-                                      </span>
-                                      <br />
-                                      End Date and Time{" "}
-                                      <span className="font-bold">
+                                        , {""}
+                                        {moment(
+                                          event.start_time,
+                                          "HH:mm:ss"
+                                        ).format("hh:mm A")}
+                                      </span>{" "}
+                                      <br /> Ends -{" "}
+                                      <span className="font-bold ">
                                         {moment(event.end_date).format(
-                                          "YYYY-MMM-DD"
+                                          "DD MMM YYYY"
                                         )}
-                                        , {event.end_time}
+                                        , {""}
+                                        {moment(
+                                          event?.end_time,
+                                          "HH:mm:ss"
+                                        ).format("hh:mm A")}
                                       </span>
                                     </blockquote>
                                   </TooltipContent>
@@ -387,26 +397,29 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
           <DialogTitle className="text-lg font-semibold mb-2">
             {/* Here you can enroll or sign up for the course. */}
-            <p className="font-bold text-[18px] leading-[22px] mb-2">
-                                      {selectedEvent?.title} - {selectedEvent?.lounge_type?.name}
-                                    </p>
-                                    <p className="" style={{fontSize:"15px"}}>
-                                      Event Start Date and Time{" "}
-                                      <span className="font-bold" >
-                                        {moment(selectedEvent?.start_date).format(
-                                          "YYYY-MMM-DD"
-                                        )}
-                                        , {selectedEvent?.start_time}
-                                      </span>
-                                      <br />
-                                      End Date and Time{" "}
-                                      <span className="font-bold">
-                                        {moment(selectedEvent?.end_date).format(
-                                          "YYYY-MMM-DD"
-                                        )}
-                                        , {selectedEvent?.end_time}
-                                      </span>
-                                    </p>
+            <div className="flex flex-wrap mb-2 gap-x-2">
+                <p className="font-bold text-[22px] leading-[22px]  font-marce">
+              {selectedEvent?.title} - 
+            </p>
+            <p className="font-bold text-[16px] leading-[22px]" style={{paddingTop:"2px"}}> {selectedEvent?.lounge_type?.name}</p>
+
+            </div>
+          
+            
+            <p className="" style={{ fontSize: "15px" }}>
+              Starts -{" "}
+              <span className="font-bold" style={{color:"#4a4a4a"}}>
+                {moment(selectedEvent?.start_date).format("DD MMM YYYY")}, {""}
+                {moment(selectedEvent?.start_time, "HH:mm:ss").format(
+                  "hh:mm A"
+                )}
+              </span>{" "}
+              <br /> Ends -{" "}
+              <span className="font-bold " style={{color:"#4a4a4a"}}>
+                {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
+                {moment(selectedEvent?.end_time, "HH:mm:ss").format("hh:mm A")}
+              </span>
+            </p>
           </DialogTitle>
           <Button
             onClick={handleEnroll}

@@ -126,6 +126,9 @@ const UpdateWellnessLounge = () => {
     }
   };
 
+  // console.log("state.lounge_type",state.lounge_type);
+  
+
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
@@ -148,7 +151,7 @@ const UpdateWellnessLounge = () => {
         session_link: state.session_link,
         seat_count: state.seat_count,
         lounge_type: state.lounge_type ? state.lounge_type?.value : null,
-        thumbnail_image: state.thumbnail_images,
+        // thumbnail_image: state.thumbnail_images,
         is_featured: state.isFeatured,
       };
       console.log("body: ", body);
@@ -179,7 +182,7 @@ const UpdateWellnessLounge = () => {
       setState({ submitLoading: false });
 
       router.push("/wellness-lounge-list");
-      Success("Lounge updated successfully");
+      Success(`The session ${state.title} under the ${state.lounge_type?.label} category has been updated. All changes are now live and reflected across participant dashboards.`);
     } catch (error) {
       // console.log("error", error?.end_date[0])
       console.log("error", error);
@@ -418,7 +421,7 @@ const UpdateWellnessLounge = () => {
                   errors:{...state.errors, thumbnail_image:""}
                 });
               }}
-              required
+              
               error={state.errors?.thumbnail_image}
             />
           )}

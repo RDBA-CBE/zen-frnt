@@ -82,7 +82,7 @@ const CreateWellnessLounge = () => {
         session_link: state.session_link,
         seat_count: state.seat_count,
         lounge_type: state.lounge_type ? state.lounge_type?.value : null,
-        thumbnail_image: state.thumbnail_images,
+        // thumbnail_image: state.thumbnail_images,
       };
       console.log("body: ", body);
 
@@ -109,7 +109,8 @@ const CreateWellnessLounge = () => {
       setState({ submitLoading: false });
 
       router.push("/wellness-lounge-list");
-      Success("Lounge created successfully");
+      Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
+`);
     } catch (error) {
       // Check if error for start_date exists and has at least one error message
       if (
@@ -301,7 +302,7 @@ const CreateWellnessLounge = () => {
                 }}
                 className="mt-2 w-full"
                 type="file"
-                required
+                // required
                 error={state.errors?.thumbnail_image}
               />
 

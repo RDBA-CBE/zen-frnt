@@ -313,10 +313,20 @@ const WellnessLoungeList = () => {
           </>
         ) : (
           <Card className="w-[100%] mt-5 p-4">
-            <div className="items-center justify-center flex">
+            <div className="flex flex-col items-center justify-center">
               <p className="text-gray-500 dark:text-gray-400">
                 No Record Found
               </p>
+
+              <p className="mt-4">Click the below button to get register in the session</p>
+
+               <Button
+                      className={`mt-3 bg-themePurple hover:bg-themePurple
+                      }`}
+                      onClick={() => { router.push('/calendar') }}
+                    >
+                      Get Register
+                    </Button>
             </div>
           </Card>
         )}
