@@ -100,6 +100,7 @@ export const studentRegistration = Yup.object().shape({
     .required("Email is required"),
   password: Yup.string().required("Password is required"),
   year_of_entry: Yup.string().required("Year of entry is required"),
+  university: Yup.string().required("University is required"),
   // .typeError("Year of entry must be a number")
   // .integer("Year of entry must be a valid year"),
 });
@@ -139,7 +140,8 @@ export const AlumniRegistration = Yup.object().shape({
   password: Yup.string().required("Password is required"),
   phone_number: Yup.string().required("Phone number is required"),
   year_of_graduation: Yup.string().required("Year of graduation is required"),
-  country: Yup.string().required("Country is required")
+  country: Yup.string().required("Country is required"),
+  university: Yup.string().required("University is required")
 });
 
 export const change_password = Yup.object().shape({

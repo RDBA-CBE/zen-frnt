@@ -412,6 +412,7 @@ const AlumniRegistrationForm = () => {
                 setState({
                   country: value,
                   alumniPhone: shouldClear ? "" : state.alumniPhone,
+                  errors: { ...state.errors, country: "" },
                 });
               }}
               placeholder="Select Your Country"
@@ -572,18 +573,27 @@ const AlumniRegistrationForm = () => {
 
         <div className="space-y-1">
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"University"}
+            {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
             options={state?.universityList || []}
             value={state.alumniUniversity || ""}
-            onChange={(value) => setState({ alumniUniversity: value })}
+            onChange={(value) => setState({ alumniUniversity: value ,
+               errors: { ...state.errors, university: "" },
+            })}
             placeholder="Select University"
             className=" text-sm"
             menuPortalTarget={document.body}
             // styles={{ menuPortal: (base) => ({ ...base,}) }}
             isClearable
+            
           />
+           {state.errors?.university && (
+            <p className="mt-2 text-sm text-red-600">
+              {state.errors?.university}{" "}
+              {/* Display the error message if it exists */}
+            </p>
+          )}
         </div>
 
         <div className="space-y-1">

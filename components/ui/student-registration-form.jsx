@@ -278,18 +278,26 @@ const StudentRegistrationForm = () => {
 
         <div className="space-y-1">
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"University"}
+            {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
             options={state?.universityList || []}
             value={state.university || ""}
-            onChange={(value) => setState({ university: value })}
+            onChange={(value) => setState({ university: value ,
+               errors: { ...state.errors, university: "" },
+            })}
             placeholder="Select University"
             className="z-50 text-sm"
             menuPortalTarget={document.body}
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             isClearable
           />
+          {state.errors?.university && (
+            <p className="mt-2 text-sm text-red-600">
+              {state.errors?.university}{" "}
+              {/* Display the error message if it exists */}
+            </p>
+          )}
         </div>
 
         <div className="space-y-1">
@@ -306,6 +314,7 @@ const StudentRegistrationForm = () => {
             menuPortalTarget={document.body} // required when using menuPosition="fixed"
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
+          
         </div>
         {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some(
