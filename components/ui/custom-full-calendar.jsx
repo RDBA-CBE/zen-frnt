@@ -112,7 +112,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
   };
 
   // Handle day click
-  const handleDayClick = (day) => {
+  const handleDayClick = (day, event) => {
+    console.log("event",event);
+    
     const clickedDate = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
@@ -127,7 +129,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     if (eventsForClickedDay.length > 0) {
       setModalIsOpen(true);
-      setSelectedEvent(eventsForClickedDay[0]); // Store the first event
+      setSelectedEvent(event)
+      // setSelectedEvent(eventsForClickedDay[0]); // Store the first event
     } else {
       setModalIsOpen(false); // Close the modal if no events for that day
     }
@@ -307,13 +310,15 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                         >
                           <TooltipProvider>
                             {getEventsForDate(day).map((event) => {
+                             
+                              
                               return (
                                 <Tooltip key={event.id}>
                                   <TooltipTrigger>
                                     <div
                                       onClick={() =>
                                         day && !isPastEvent(event)
-                                          ? handleDayClick(day)
+                                          ? handleDayClick(day, event)
                                           : Info(
                                               "The selected session has already concluded or in progress and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
                                             )
@@ -431,7 +436,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
               </p>
             </div>
 
-            <p className="font-[400]" style={{ fontSize: "15px" }}>
+            <div className="font-[400]" style={{ fontSize: "15px" }}>
               <div className="flex gap-x-1">
                 <span className="flex gap-1 ">
                   <CalendarClock
@@ -465,7 +470,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   )}
                 </span>
               </div>
-            </p>
+            </div>
           </DialogTitle>
           <Button
             onClick={handleEnroll}
