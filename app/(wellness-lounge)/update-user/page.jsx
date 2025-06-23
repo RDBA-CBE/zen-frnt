@@ -646,7 +646,7 @@ const CreateUser = () => {
                   id="work"
                   type="text"
                   placeholder="Enter Your Work"
-                  title="Work"
+                  title="Job Sector / Role"
                   value={state.work}
                   onChange={(e) => setState({ work: e.target.value })}
                 />
@@ -708,6 +708,50 @@ const CreateUser = () => {
                     )}
                   </div>
                 </div>
+
+                 <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"University"} {<span className="text-red-500">*</span>}
+                  </label> 
+                  <Select
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) => setState({ university: value,
+                      errors: { ...state.errors, university: "" },
+                     })}
+                    placeholder="Select University"
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                    required
+                  />
+                  {state.errors?.university && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {state.errors?.university}{" "}
+                      {/* Display the error message if it exists */}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <TextInput
+                    id="department"
+                    type="text"
+                    placeholder="Enter Your Department Name"
+                    title="Department"
+                    value={state.department}
+                    onChange={(e) => setState({ department: e.target.value,
+                      errors: { ...state.errors, department: "" },
+                     })}
+                     error={state.errors?.department}
+                    required
+                  />
+                </div>
+
+
                 <TextArea
                   name="Address"
                   value={state.address}
@@ -729,16 +773,7 @@ const CreateUser = () => {
                   placeholder="Select"
                 />
 
-                <div className="space-y-1">
-                  <TextInput
-                    id="department"
-                    type="text"
-                    placeholder="Enter Your Department Name"
-                    title="Department"
-                    value={state.department}
-                    onChange={(e) => setState({ department: e.target.value })}
-                  />
-                </div>
+                 
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -773,23 +808,7 @@ const CreateUser = () => {
                       />
                     </div>
                   )}
-                <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"University"}
-                  </label>
-                  <Select
-                    options={state?.universityList || []}
-                    value={state.university || ""}
-                    onChange={(value) => setState({ university: value })}
-                    placeholder="Select University"
-                    className="z-50 text-sm"
-                    menuPortalTarget={document.body}
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                    isClearable
-                  />
-                </div>
+              
               </>
             ) : state?.user_type?.label === "Student" ? (
               <>
@@ -821,14 +840,48 @@ const CreateUser = () => {
                     </p>
                   )}
                 </div>
+                 <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {"University"} {<span className="text-red-500">*</span>}
+                  </label>
+                  <Select
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) => setState({ university: value,
+                      errors: { ...state.errors, university: "" },
+                     })}
+                    placeholder="Select University"
+                    className="z-50 text-sm"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    isClearable
+                    required
+                  />
+                  {state.errors?.university && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {state.errors?.university}{" "}
+                      {/* Display the error message if it exists */}
+                    </p>
+                  )}
+                </div>
+                
                 <div className="space-y-1">
+
+                  
                   <TextInput
                     id="department"
                     type="text"
                     placeholder="Enter Your Department Name"
                     title="Department"
                     value={state.department}
-                    onChange={(e) => setState({ department: e.target.value })}
+                    onChange={(e) => setState({ department: e.target.value,
+                      errors: { ...state.errors, department: "" },
+                      
+                     })}
+                     error={state.errors?.department}
+                     required
                   />
                 </div>
 
@@ -866,23 +919,7 @@ const CreateUser = () => {
                     </div>
                   )}
 
-                <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"University"}
-                  </label>
-                  <Select
-                    options={state?.universityList || []}
-                    value={state.university || ""}
-                    onChange={(value) => setState({ university: value })}
-                    placeholder="Select University"
-                    className="z-50 text-sm"
-                    menuPortalTarget={document.body}
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                    isClearable
-                  />
-                </div>
+               
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }

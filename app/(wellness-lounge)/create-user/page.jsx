@@ -560,7 +560,7 @@ Login credentials have been generated, and the user can now access the platform 
                   id="work"
                   type="text"
                   placeholder="Enter Your Work"
-                  title="Work"
+                  title="Job Sector / Role"
                   value={state.work}
                   onChange={(e) => setState({ work: e.target.value })}
                 />
@@ -634,27 +634,7 @@ Login credentials have been generated, and the user can now access the platform 
                   </div>
                 </div>
 
-                <TextArea
-                  name="Address"
-                  value={state.address}
-                  onChange={(e) => {
-                    setState({ address: e.target.value });
-                  }}
-                  className="mt-2 w-full"
-                  placeholder="Address"
-                  title="Address"
-                />
-
-                <CustomSelect
-                  options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
-                  value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) =>
-                    setState({ is_open_to_be_mentor: value })
-                  }
-                  error={state.errors?.is_open_to_be_mentor}
-                  title="Are you open to being a mentor?"
-                  placeholder="Select"
-                />
+                
               </>
             ) : state?.user_type?.label === "Student" ? (
               <>
@@ -707,6 +687,29 @@ Login credentials have been generated, and the user can now access the platform 
 
           {state?.user_type?.label !== "Admin" && (
             <>
+            <div className="space-y-1">
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  {"University"}  <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  options={state?.universityList || []}
+                  value={state.university || ""}
+                  onChange={(value) => setState({ university: value ,
+                    errors: { ...state.errors, university: "" },
+                  })}
+                  placeholder="Select University"
+                  className="z-50 text-sm"
+                  menuPortalTarget={document.body}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                  isClearable
+                  required
+                />
+                 {state.errors?.university && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.university}
+                      </p>
+                    )}
+              </div>
               <div className="space-y-1">
                 <TextInput
                   id="department"
@@ -715,7 +718,11 @@ Login credentials have been generated, and the user can now access the platform 
                   error={state.errors?.department}
                   title="Department"
                   value={state.department}
-                  onChange={(e) => setState({ department: e.target.value })}
+                  onChange={(e) => setState({ department: e.target.value,
+                     errors: { ...state.errors, department: "" },
+                   })}
+                  required
+
                 />
               </div>
               {/* <div className="space-y-1">
@@ -743,6 +750,32 @@ Login credentials have been generated, and the user can now access the platform 
                   title="Interests in Topics"
                 />
               </div> */}
+
+              {state?.user_type?.label === "Alumni" && (
+                <>
+                <TextArea
+                  name="Address"
+                  value={state.address}
+                  onChange={(e) => {
+                    setState({ address: e.target.value });
+                  }}
+                  className="mt-2 w-full"
+                  placeholder="Address"
+                  title="Address"
+                />
+
+                <CustomSelect
+                  options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
+                  value={state.is_open_to_be_mentor?.value || ""}
+                  onChange={(value) =>
+                    setState({ is_open_to_be_mentor: value })
+                  }
+                  error={state.errors?.is_open_to_be_mentor}
+                  title="Are you open to being a mentor?"
+                  placeholder="Select"
+                />
+                </>
+              ) }
 
               <div className="space-y-1">
                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -784,21 +817,7 @@ Login credentials have been generated, and the user can now access the platform 
                   placeholder="Select University"
                 />
               </div> */}
-              <div className="space-y-1">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                  {"University"}
-                </label>
-                <Select
-                  options={state?.universityList || []}
-                  value={state.university || ""}
-                  onChange={(value) => setState({ university: value })}
-                  placeholder="Select University"
-                  className="z-50 text-sm"
-                  menuPortalTarget={document.body}
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                  isClearable
-                />
-              </div>
+              
             </>
           )}
 

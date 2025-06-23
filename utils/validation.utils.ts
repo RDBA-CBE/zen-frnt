@@ -61,7 +61,10 @@ export const createUser = Yup.object().shape({
   user_type: Yup.string().required("User type is required"),
   // year_of_entry:Yup.string().required("Year of entry is required"),
   year_of_graduation:Yup.string().required("Year of graduation is required"),
-  country: Yup.string().required("Country is required")
+  country: Yup.string().required("Country is required"),
+  university: Yup.string().required("University is required"),
+  department: Yup.string().required("Department is required")
+
   // address: Yup.string().nullable(), // Optional field, allows empty string
   
   // dob: Yup.string().required("Date of birth is required"), // Optional array of strings
@@ -77,6 +80,8 @@ export const createStudentUser = Yup.object().shape({
   // phone_number: Yup.string().required("Phone number is required"),
   user_type: Yup.string().required("User type is required"),
   year_of_entry:Yup.string().required("Year of entry is required"),
+    university: Yup.string().required("University is required"),
+    department: Yup.string().required("Department is required"),
   // address: Yup.string().nullable(), // Optional field, allows empty string
   
   // dob: Yup.string().required("Date of birth is required"), // Optional array of strings
