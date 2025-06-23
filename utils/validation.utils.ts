@@ -37,7 +37,7 @@ export const createSession = Yup.object().shape({
     .required("Session link is required")
     .url("Invalid session link"),
   lounge_type: Yup.string().required("Lounge type is required"),
-  // thumbnail_image : Yup.string().required("Session Image is required"),
+  thumbnail_image : Yup.string().required("Session Image is required"),
 });
 
 export const createSessionOrder = Yup.object().shape({
@@ -101,6 +101,7 @@ export const studentRegistration = Yup.object().shape({
   password: Yup.string().required("Password is required"),
   year_of_entry: Yup.string().required("Year of entry is required"),
   university: Yup.string().required("University is required"),
+   department: Yup.string().required("Department is required"),
   // .typeError("Year of entry must be a number")
   // .integer("Year of entry must be a valid year"),
 });
@@ -141,7 +142,8 @@ export const AlumniRegistration = Yup.object().shape({
   phone_number: Yup.string().required("Phone number is required"),
   year_of_graduation: Yup.string().required("Year of graduation is required"),
   country: Yup.string().required("Country is required"),
-  university: Yup.string().required("University is required")
+  university: Yup.string().required("University is required"),
+  department: Yup.string().required("Department is required")
 });
 
 export const change_password = Yup.object().shape({

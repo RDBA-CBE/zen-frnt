@@ -13,8 +13,9 @@ import {
   InfinitySuccess,
   Success,
 } from "@/components/common-components/toast";
-import { Loader, Loader2Icon, LoaderIcon } from "lucide-react";
+import { CalendarClock, Clock, Clock10Icon, Clock1Icon, ClockAlert, ClockIcon, Loader, Loader2Icon, LoaderIcon, Timer } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import { TimeClock } from "@mui/x-date-pickers/TimeClock";
 
 const viewWellnessLounge = () => {
   const router = useRouter();
@@ -134,7 +135,7 @@ const viewWellnessLounge = () => {
                     src={state?.orderData?.thumbnail}
                     alt="thumbnail"
                     className="w-100"
-                    style={{ height: "600px", objectFit: "cover" }}
+                    style={{ height: "500px", objectFit: "cover" }}
                   />
                 ) : (
                   <p
@@ -161,7 +162,8 @@ const viewWellnessLounge = () => {
                 </div>
 
                 <blockquote className="mt-4 border-l-[5px] border-fuchsia-900 pl-6  bg-fuchsia-100 py-4">
-                  Starts -{" "}
+                  <div className="flex gap-1 mb-4">
+                    <span className="flex gap-1 "><CalendarClock height={16} width={18} className="relative top-[3px]"/>  Starts -</span> 
                   <span className="font-bold" style={{ color: "#4a4a4a" }}>
                     {moment(state?.orderData?.start_date).format("DD MMM YYYY")}
                     , {""}
@@ -169,7 +171,11 @@ const viewWellnessLounge = () => {
                       "hh:mm A"
                     )}
                   </span>{" "}
-                  <br /> Ends -{" "}
+                  </div>
+                 
+                  
+                  <div className="flex gap-x-1">
+                  <span className="flex gap-1"><CalendarClock height={16} width={18} className="relative top-[3px]"/>Ends -{" "}</span> 
                   <span className="font-bold " style={{ color: "#4a4a4a" }}>
                     {moment(state?.orderData?.end_date).format("DD MMM YYYY")},{" "}
                     {""}{" "}
@@ -177,10 +183,11 @@ const viewWellnessLounge = () => {
                       "hh:mm A"
                     )}
                   </span>
+                  </div>
                 </blockquote>
 
-                <p className="leading-8 text-[18px] [&:not(:first-child)]:mt-4">
-                  {state?.orderData?.description}
+                <p className="leading-6 text-[15px] [&:not(:first-child)]:mt-4 line-height[20px]" dangerouslySetInnerHTML={{ __html: state?.orderData?.description.replace(/\n/g, "<br/>") }} >
+                  {/* {state?.orderData?.description} */}
                 </p>
 
                 {state?.orderData?.is_registered == true && (

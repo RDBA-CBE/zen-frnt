@@ -325,7 +325,7 @@ const WellnessLoungeList = () => {
                       }`}
                       onClick={() => { router.push('/calendar') }}
                     >
-                      Get Register
+                      Go to programs
                     </Button>
             </div>
           </Card>

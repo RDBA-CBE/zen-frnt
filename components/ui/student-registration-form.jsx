@@ -253,17 +253,7 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
-        <div className="space-y-1">
-          <TextInput
-            id="department"
-            type="text"
-            placeholder="Enter Your Department Name"
-            error={state.errors?.department}
-            title="Department"
-            value={state.department}
-            onChange={(e) => setState({ department: e.target.value })}
-          />
-        </div>
+       
 
         {/* <div className="space-y-1">
           <CustomSelect
@@ -298,6 +288,22 @@ const StudentRegistrationForm = () => {
               {/* Display the error message if it exists */}
             </p>
           )}
+        </div>
+
+         <div className="space-y-1">
+          <TextInput
+            id="department"
+            type="text"
+            placeholder="Enter Your Department Name"
+            error={state.errors?.department}
+            title="Department"
+            value={state.department}
+            onChange={(e) => setState({ department: e.target.value,
+               errors: { ...state.errors, department: "" },
+             })}
+            required
+            
+          />
         </div>
 
         <div className="space-y-1">

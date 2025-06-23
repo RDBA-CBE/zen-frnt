@@ -168,7 +168,7 @@ const UpdateWellnessLounge = () => {
         session_link: state.session_link,
         seat_count: state.seat_count,
         lounge_type: state.lounge_type ? state.lounge_type?.value : null,
-        // thumbnail_image: state.thumbnail_images,
+        thumbnail_image: state.thumbnail_images,
         is_featured: state.isFeatured,
       };
       console.log("body: ", body);
@@ -469,7 +469,7 @@ const UpdateWellnessLounge = () => {
             </div>
           ) : (
             <TextInput
-              title="Session Image Session Image ( Best Result: Image Size - 610*407)"
+              title="Session Image ( Best Result: Image Size - 610*407)"
               placeholder="Session Image"
               type="file"
               className="mt-2 w-full"
@@ -483,6 +483,7 @@ const UpdateWellnessLounge = () => {
                   errors: { ...state.errors, thumbnail_image: "" },
                 });
               }}
+              required
               error={state.errors?.thumbnail_image}
             />
           )}

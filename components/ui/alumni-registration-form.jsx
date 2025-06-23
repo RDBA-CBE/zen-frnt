@@ -470,6 +470,31 @@ const AlumniRegistrationForm = () => {
           </div>
         </div>
 
+         <div className="space-y-1">
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            {"University"} {<span className="text-red-500">*</span>}
+          </label>
+          <Select
+            options={state?.universityList || []}
+            value={state.alumniUniversity || ""}
+            onChange={(value) => setState({ alumniUniversity: value ,
+               errors: { ...state.errors, university: "" },
+            })}
+            placeholder="Select University"
+            className=" text-sm"
+            menuPortalTarget={document.body}
+            // styles={{ menuPortal: (base) => ({ ...base,}) }}
+            isClearable
+            
+          />
+           {state.errors?.university && (
+            <p className="mt-2 text-sm text-red-600">
+              {state.errors?.university}{" "}
+              {/* Display the error message if it exists */}
+            </p>
+          )}
+        </div>
+
         <div className="space-y-1">
           <TextInput
             id="alumniDepartment"
@@ -477,7 +502,11 @@ const AlumniRegistrationForm = () => {
             placeholder="Enter Your Department Name"
             title="Department"
             value={state.alumniDepartment}
-            onChange={(e) => setState({ alumniDepartment: e.target.value })}
+            onChange={(e) => setState({ alumniDepartment: e.target.value ,
+              errors: { ...state.errors, department: "" },
+            })}
+            required
+            error={state?.errors?.department}
           />
         </div>
 
@@ -554,7 +583,7 @@ const AlumniRegistrationForm = () => {
             id="work"
             type="text"
             placeholder="Enter Your Work"
-            title="Work"
+            title="Job Sector / Role"
             value={state.work}
             onChange={(e) => setState({ work: e.target.value })}
           />
@@ -571,30 +600,7 @@ const AlumniRegistrationForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"University"} {<span className="text-red-500">*</span>}
-          </label>
-          <Select
-            options={state?.universityList || []}
-            value={state.alumniUniversity || ""}
-            onChange={(value) => setState({ alumniUniversity: value ,
-               errors: { ...state.errors, university: "" },
-            })}
-            placeholder="Select University"
-            className=" text-sm"
-            menuPortalTarget={document.body}
-            // styles={{ menuPortal: (base) => ({ ...base,}) }}
-            isClearable
-            
-          />
-           {state.errors?.university && (
-            <p className="mt-2 text-sm text-red-600">
-              {state.errors?.university}{" "}
-              {/* Display the error message if it exists */}
-            </p>
-          )}
-        </div>
+       
 
         <div className="space-y-1">
           <TextArea

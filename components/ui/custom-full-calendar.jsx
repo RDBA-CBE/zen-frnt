@@ -320,7 +320,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                       style={{
                                         backgroundColor: isPastEvent(event)
                                           ? "transparent"
-                                          : event.lounge_type?.id === 5
+                                          : event.lounge_type?.id === 11
                                           ? "#7f4099" // fuchsia-900 hex color
                                           : event.lounge_type?.id === 6
                                           ? "#88c742" // fuchsia-500 hex color
@@ -398,15 +398,15 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           <DialogTitle className="text-lg font-semibold mb-2">
             {/* Here you can enroll or sign up for the course. */}
             <div className="flex flex-col flex-wrap mb-2 gap-x-2">
-                <p className="font-bold text-[22px] leading-[22px]  font-marce">
+                <p className="font-[400] text-[25px] leading-[22px]  font-marce">
               {selectedEvent?.title} 
             </p>
-            <p className="font-bold text-[14px] leading-[22px]" style={{paddingTop:"2px"}}> {selectedEvent?.lounge_type?.name}</p>
+            <p className="font-[400] text-[14px] leading-[22px]" style={{paddingTop:"4px"}}> {selectedEvent?.lounge_type?.name}</p>
 
             </div>
           
             
-            <p className="" style={{ fontSize: "15px" }}>
+            <p className="font-[400]" style={{ fontSize: "15px" }}>
               Starts -{" "}
               <span className="font-bold" style={{color:"#4a4a4a"}}>
                 {moment(selectedEvent?.start_date).format("DD MMM YYYY")}, {""}

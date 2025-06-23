@@ -369,7 +369,7 @@ const CreateWellnessLounge = () => {
                 }}
                 className="mt-2 w-full"
                 type="file"
-                // required
+                required
                 error={state.errors?.thumbnail_image}
               />
 
