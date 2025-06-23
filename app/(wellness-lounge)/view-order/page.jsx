@@ -147,7 +147,7 @@ const viewWellnessLounge = () => {
 
                             <div>
                                 <h4 className="md:text-[22px] text-[18px]">   Session Link:{" "} <br />
-                               <p className="mb-3" style={{fontSize:"16px"}}>Click the below button to join the meeting</p> 
+                               <p className="mb-3 italic" style={{fontSize:"16px"}}>Click the below button to join the meeting</p> 
                                     {state?.orderData?.event?.session_link ? (
                                        <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
                                         <Link href={state.orderData.event?.session_link} className="text-fuchsia-900 text-white" target="_blank" rel="noopener noreferrer">
