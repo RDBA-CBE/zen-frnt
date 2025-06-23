@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { XIcon } from "lucide-react";
+import { CalendarClock, XIcon } from "lucide-react";
 import { Info } from "../common-components/toast";
 
 const daysOfWeek = [
@@ -314,7 +314,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                       onClick={() =>
                                         day && !isPastEvent(event)
                                           ? handleDayClick(day)
-                                          : Info("The selected session has already concluded or in progress and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com.")
+                                          : Info(
+                                              "The selected session has already concluded or in progress and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
+                                            )
                                       }
                                       className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
                                       style={{
@@ -345,7 +347,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                   <TooltipContent className="w-[300px]">
                                     <div className="flex flex-col flex-wrap mb-3 gap-x-2">
                                       <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
-                                        {event.title} 
+                                        {event.title}
                                       </h4>
                                       <p className="text-[15px] mt-1">
                                         {event.lounge_type?.name}
@@ -353,28 +355,47 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                     </div>
 
                                     <blockquote className="mb-2 border-l-2 pl-6 ">
-                                      Starts -{" "}
-                                      <span className="font-bold">
-                                        {moment(event.start_date).format(
-                                          "DD MMM YYYY"
-                                        )}
-                                        , {""}
-                                        {moment(
-                                          event.start_time,
-                                          "HH:mm:ss"
-                                        ).format("hh:mm A")}
-                                      </span>{" "}
-                                      <br /> Ends -{" "}
-                                      <span className="font-bold ">
-                                        {moment(event.end_date).format(
-                                          "DD MMM YYYY"
-                                        )}
-                                        , {""}
-                                        {moment(
-                                          event?.end_time,
-                                          "HH:mm:ss"
-                                        ).format("hh:mm A")}
-                                      </span>
+                                      <div className="flex gap-1 mb-4">
+                                        <span className="flex gap-1 ">
+                                          <CalendarClock
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />{" "}
+                                          Starts -
+                                        </span>
+                                        <span className="font-bold">
+                                          {moment(event.start_date).format(
+                                            "DD MMM YYYY"
+                                          )}
+                                          , {""}
+                                          {moment(
+                                            event.start_time,
+                                            "HH:mm:ss"
+                                          ).format("hh:mm A")}
+                                        </span>{" "}
+                                      </div>
+
+                                      <div className="flex gap-x-1">
+                                        <span className="flex gap-1">
+                                          <CalendarClock
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />
+                                          Ends -{" "}
+                                        </span>
+                                        <span className="font-bold ">
+                                          {moment(event.end_date).format(
+                                            "DD MMM YYYY"
+                                          )}
+                                          , {""}
+                                          {moment(
+                                            event?.end_time,
+                                            "HH:mm:ss"
+                                          ).format("hh:mm A")}
+                                        </span>
+                                      </div>
                                     </blockquote>
                                   </TooltipContent>
                                 </Tooltip>
@@ -398,27 +419,52 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           <DialogTitle className="text-lg font-semibold mb-2">
             {/* Here you can enroll or sign up for the course. */}
             <div className="flex flex-col flex-wrap mb-2 gap-x-2">
-                <p className="font-[400] text-[25px] leading-[22px]  font-marce">
-              {selectedEvent?.title} 
-            </p>
-            <p className="font-[400] text-[14px] leading-[22px]" style={{paddingTop:"4px"}}> {selectedEvent?.lounge_type?.name}</p>
-
+              <p className="font-[400] text-[25px] leading-[22px]  font-marce">
+                {selectedEvent?.title}
+              </p>
+              <p
+                className="font-[400] text-[14px] leading-[22px]"
+                style={{ paddingTop: "4px" }}
+              >
+                {" "}
+                {selectedEvent?.lounge_type?.name}
+              </p>
             </div>
-          
-            
+
             <p className="font-[400]" style={{ fontSize: "15px" }}>
-              Starts -{" "}
-              <span className="font-bold" style={{color:"#4a4a4a"}}>
-                {moment(selectedEvent?.start_date).format("DD MMM YYYY")}, {""}
-                {moment(selectedEvent?.start_time, "HH:mm:ss").format(
-                  "hh:mm A"
-                )}
-              </span>{" "}
-              <br /> Ends -{" "}
-              <span className="font-bold " style={{color:"#4a4a4a"}}>
-                {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
-                {moment(selectedEvent?.end_time, "HH:mm:ss").format("hh:mm A")}
-              </span>
+              <div className="flex gap-x-1">
+                <span className="flex gap-1 ">
+                  <CalendarClock
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />{" "}
+                  Starts -
+                </span>
+                <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                  {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
+                  {""}
+                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                </span>{" "}
+              </div>
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <CalendarClock
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  Ends -{" "}
+                </span>
+                <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
+                  {moment(selectedEvent?.end_time, "HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                </span>
+              </div>
             </p>
           </DialogTitle>
           <Button
