@@ -113,8 +113,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   // Handle day click
   const handleDayClick = (day, event) => {
-    console.log("event",event);
-    
+    console.log("event", event);
+
     const clickedDate = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
@@ -129,7 +129,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     if (eventsForClickedDay.length > 0) {
       setModalIsOpen(true);
-      setSelectedEvent(event)
+      setSelectedEvent(event);
       // setSelectedEvent(eventsForClickedDay[0]); // Store the first event
     } else {
       setModalIsOpen(false); // Close the modal if no events for that day
@@ -218,10 +218,22 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     router?.push("/student-registration");
   };
   const isPastEvent = (event) => {
-    const eventDateTime = new Date(`${event.start_date}T${event.start_time}`);
+    const end = new Date(`${event.end_date}T${event.end_time}`);
     const now = new Date();
-    const isPast = eventDateTime <= now;
-    return isPast;
+    return end < now;
+  };
+
+  const isOngoingEvent = (event) => {
+    const start = new Date(`${event.start_date}T${event.start_time}`);
+    const end = new Date(`${event.end_date}T${event.end_time}`);
+    const now = new Date();
+    return now >= start && now <= end;
+  };
+
+  const isFutureEvent = (event) => {
+    const start = new Date(`${event.start_date}T${event.start_time}`);
+    const now = new Date();
+    return start > now;
   };
 
   return (
@@ -310,19 +322,23 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                         >
                           <TooltipProvider>
                             {getEventsForDate(day).map((event) => {
-                             
-                              
                               return (
                                 <Tooltip key={event.id}>
                                   <TooltipTrigger>
                                     <div
-                                      onClick={() =>
-                                        day && !isPastEvent(event)
-                                          ? handleDayClick(day, event)
-                                          : Info(
-                                              "The selected session has already concluded or in progress and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
-                                            )
-                                      }
+                                      onClick={() => {
+                                        if (day && isFutureEvent(event)) {
+                                          handleDayClick(day, event);
+                                        } else if (isOngoingEvent(event)) {
+                                          Info(
+                                            "The selected session is currently in progress and can no longer be accessed. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
+                                          );
+                                        } else if (isPastEvent(event)) {
+                                          Info(
+                                            "The selected session has already concluded and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
+                                          );
+                                        }
+                                      }}
                                       className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
                                       style={{
                                         backgroundColor: isPastEvent(event)
