@@ -375,6 +375,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                         } else if (isOngoingEvent(event)) {
                                           Info(
                                             <>
+                                            <h2 className="text-black font-bold text-[15px] mb-3">Session is currently in progress</h2>
                                               The selected session is{" "}
                                               <strong
                                                 style={{ color: "green" }}
@@ -392,6 +393,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                         } else if (isPastEvent(event)) {
                                           Info(
                                             <>
+                                            <h2 className="font-bold text-[15px] text-black mb-3">Session has already concluded</h2>
                                               The selected session has already{" "}
                                               <strong
                                                 style={{ color: "green" }}
