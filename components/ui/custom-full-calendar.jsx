@@ -238,10 +238,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   return (
     <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
+      
       {/* Calendar Header */}
-      <div className="md:flex md:justify-between items-center mb-4">
+      <div className="md:flex md:justify-between items-center mb-10">
         <div>
-          <h2 className="text-xl font-semibold text-left mb-3">
+          <h2 className="text-xl font-semibold text-left ">
             {new Date(selectedDate).toLocaleString("default", {
               month: "long",
             })}{" "}
@@ -285,6 +286,48 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           </div>
         </div>
       )}
+
+      <div className="flex justify-center items-center mb-8 flex-wrap gap-x-5 gap-y-2">
+        <div className="flex items-center">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#8f87871f]"></span>
+          <span className="text-black text-sm font-medium">
+            Completed Events
+          </span>
+        </div>
+
+        <div className="flex items-center">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#48badb]"></span>
+          <span className="text-black text-sm font-medium">Ongoing Events</span>
+        </div>
+
+        <div className="flex items-center">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#7f4099]"></span>
+          <span className="text-black text-sm font-medium">
+            Meditation Lounge Events
+          </span>
+        </div>
+
+        <div className="flex items-center ">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#e25197]"></span>
+          <span className="text-black text-sm font-medium">
+            Yoga Lounge Events
+          </span>
+        </div>
+
+        <div className="flex items-center ">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#834ae9]"></span>
+          <span className="text-black text-sm font-medium">
+            Mentorship Lounge Events
+          </span>
+        </div>
+
+        <div className="flex items-center">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#88c742]"></span>
+          <span className="text-black text-sm font-medium">
+            Tales & Echoes Lounge Events
+          </span>
+        </div>
+      </div>
 
       {/* Calendar Table */}
       <div className="overflow-x-auto">
@@ -331,18 +374,46 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           handleDayClick(day, event);
                                         } else if (isOngoingEvent(event)) {
                                           Info(
-                                            "The selected session is currently in progress and can no longer be accessed. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
+                                            <>
+                                              The selected session is{" "}
+                                              <strong
+                                                style={{ color: "green" }}
+                                              >
+                                                currently in progress{" "}
+                                              </strong>{" "}
+                                              and can no longer be accessed.
+                                              Please select a session scheduled
+                                              for a future date. For more
+                                              information or assistance, feel
+                                              free to contact the admin at
+                                              viji.zenwellnesslounge@gmail.com.
+                                            </>
                                           );
                                         } else if (isPastEvent(event)) {
                                           Info(
-                                            "The selected session has already concluded and is no longer accessible. Please select a session scheduled for a future date. For more information or assistance, feel free to contact the admin at viji.zenwellnesslounge@gmail.com."
+                                            <>
+                                              The selected session has already{" "}
+                                              <strong
+                                                style={{ color: "green" }}
+                                              >
+                                                concluded
+                                              </strong>{" "}
+                                              and is no longer accessible.
+                                              Please select a session scheduled
+                                              for a future date. For more
+                                              information or assistance, feel
+                                              free to contact the admin at
+                                              viji.zenwellnesslounge@gmail.com.
+                                            </>
                                           );
                                         }
                                       }}
                                       className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
                                       style={{
                                         backgroundColor: isPastEvent(event)
-                                          ? "transparent"
+                                          ? "#8f87871f"
+                                          : isOngoingEvent(event)
+                                          ? "#48badb"
                                           : event.lounge_type?.id === 11
                                           ? "#7f4099" // fuchsia-900 hex color
                                           : event.lounge_type?.id === 6

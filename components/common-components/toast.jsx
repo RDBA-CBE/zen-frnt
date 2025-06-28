@@ -3,12 +3,13 @@
 import { Toaster, toast } from "sonner";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { X } from 'lucide-react';
 
 // Toast styles
 const toastStyles = {
   success: { background: "#22C55E", color: "#FFFFFF" },
   error: { background: "#DC2626", color: "#FFFFFF" },
-  info: { background: "#2563EB", color: "#FFFFFF" },
+  info: { background: "#fae8ff", color: "#000" , fontWeight:"400"},
 };
 
 // Dismiss and Show
@@ -79,10 +80,23 @@ export function Failure(message) {
 }
 
 // Info
-export function Info(message) {
-  dismissAndToast(message, toastStyles.info);
-}
+// export function Info(message) {
+//   dismissAndToast(message, toastStyles.info);
+// }
 
+
+export function Info(message, onClick) {
+  toast.dismiss();
+  toast(message, {
+    duration: 5000,
+    style: toastStyles.info,
+    action: {
+      label: <X size={14} className="text-black hover:text-foreground" />,
+      onClick: () => onClick,
+      
+    },
+  });
+}
 
 
 // Toaster with route change handler
