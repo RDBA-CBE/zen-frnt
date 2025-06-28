@@ -90,7 +90,7 @@ const CreateWellnessLounge = () => {
         session_link: state.session_link,
         seat_count: state.seat_count,
         lounge_type: state.lounge_type ? state.lounge_type?.value : null,
-        // thumbnail_image: state.thumbnail_images,
+        thumbnail_image: state.thumbnail_images,
       };
       console.log("body: ", body);
 
