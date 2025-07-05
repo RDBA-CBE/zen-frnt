@@ -169,7 +169,7 @@ const viewWellnessLounge = () => {
                     , {""}
                     {moment(state?.orderData?.start_time, "HH:mm:ss").format(
                       "hh:mm A"
-                    )}
+                    )} (IST)
                   </span>{" "}
                   </div>
                  
@@ -181,7 +181,7 @@ const viewWellnessLounge = () => {
                     {""}{" "}
                     {moment(state?.orderData?.end_time, "HH:mm:ss").format(
                       "hh:mm A"
-                    )}
+                    )} (IST)
                   </span>
                   </div>
                 </blockquote>

@@ -466,7 +466,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           {moment(
                                             event.start_time,
                                             "HH:mm:ss"
-                                          ).format("hh:mm A")}
+                                          ).format("hh:mm A")} (IST)
                                         </span>{" "}
                                       </div>
 
@@ -487,7 +487,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           {moment(
                                             event?.end_time,
                                             "HH:mm:ss"
-                                          ).format("hh:mm A")}
+                                          ).format("hh:mm A")} (IST)
                                         </span>
                                       </div>
                                     </blockquote>
@@ -540,7 +540,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   {""}
                   {moment(selectedEvent?.start_time, "HH:mm:ss").format(
                     "hh:mm A"
-                  )}
+                  )} (IST)
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -556,7 +556,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
                   {moment(selectedEvent?.end_time, "HH:mm:ss").format(
                     "hh:mm A"
-                  )}
+                  )} (IST)
                 </span>
               </div>
             </div>

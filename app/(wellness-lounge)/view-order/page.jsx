@@ -160,7 +160,7 @@ const viewWellnessLounge = () => {
                     {moment(
                       state?.orderData?.event?.start_time,
                       "HH:mm:ss"
-                    ).format("hh:mm A")}
+                    ).format("hh:mm A")} (IST)
                   </span>{" "}
                   </div>
                   <div className="flex gap-x-1">
@@ -173,7 +173,7 @@ const viewWellnessLounge = () => {
                     {moment(
                       state?.orderData?.event?.end_time,
                       "HH:mm:ss"
-                    ).format("hh:mm A")}
+                    ).format("hh:mm A")} (IST)
                   </span>
                   </div>
                 </blockquote>
