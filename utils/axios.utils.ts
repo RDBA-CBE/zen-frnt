@@ -25,7 +25,7 @@ export const instance = (): AxiosInstance => {
   if (api) return api;
 
   api = axios.create({
-    baseURL: "https://zenbkad.zenwellnesslounge.com/api/",
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   });
 
   // Request interceptor
@@ -78,7 +78,7 @@ export const instance = (): AxiosInstance => {
         return new Promise(async (resolve, reject) => {
           try {
             const response = await axios.post(
-              "https://zenbkad.zenwellnesslounge.com/api/auth/login/refresh/",
+              `${process.env.BASE_URL}auth/login/refresh/`,
               {
                 refresh: refreshToken,
               }
