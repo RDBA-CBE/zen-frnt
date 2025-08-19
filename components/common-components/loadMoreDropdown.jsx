@@ -13,6 +13,7 @@ const LoadMoreDropdown = (props) => {
     title,
     error,
     height,
+    placeholderSize = "14px",
   } = props;
   return (
     <div className="w-full">
@@ -43,7 +44,7 @@ const LoadMoreDropdown = (props) => {
             ...base,
             color: "black",
 
-            fontSize: "16px",
+            fontSize: placeholderSize ? placeholderSize : "16px",
           }),
           singleValue: (base) => ({
             ...base,

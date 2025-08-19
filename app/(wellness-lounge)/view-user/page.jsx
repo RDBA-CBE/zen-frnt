@@ -70,18 +70,6 @@ const viewWellnessLounge = () => {
       console.log("error: ", error);
     }
   };
-  console.log("userData", state?.userData);
-
-  // const getCategoryList = async () => {
-  //     try {
-  //         const res: any = await Models.category.list();
-  //         console.log("res: ", res);
-  //         const Dropdowns = Dropdown(res?.results, "name");
-  //         setState({ categoryList: Dropdowns });
-  //     } catch (error) {
-  //         console.log("error: ", error);
-  //     }
-  // };
 
   const columns = [
     {

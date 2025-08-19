@@ -20,9 +20,28 @@ const category = {
     return promise;
   },
 
+  activeList: () => {
+    let promise = new Promise((resolve, reject) => {
+      let url = "zen/categories/?is_active=true";
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   catDropDownList: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = "zen/categories/?pagination=false";
+      let url = "zen/categories/?pagination=false&is_active=true";
       instance()
         .get(url)
         .then((res) => {

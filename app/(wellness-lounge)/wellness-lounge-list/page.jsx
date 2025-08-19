@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 import {
+  CircleX,
   Edit,
   Eye,
   MoreHorizontal,
@@ -58,7 +59,13 @@ const WellnessLoungeList = () => {
 
   useEffect(() => {
     getLoungeList(state.currentPage);
-  }, [debouncedSearch, state.lounge_type, state.start_date, state.end_date]);
+  }, [
+    debouncedSearch,
+    state.lounge_type,
+    state.lounge_status,
+    state.start_date,
+    state.end_date,
+  ]);
 
   const getLoungeList = async (page) => {
     try {
@@ -114,6 +121,10 @@ const WellnessLoungeList = () => {
       body.lounge_type = state.lounge_type?.value;
     }
 
+    if (state.lounge_status) {
+      body.status = state.lounge_status?.value;
+    }
+
     return body;
   };
 
@@ -139,6 +150,21 @@ const WellnessLoungeList = () => {
       setState({ submitLoading: false });
 
       console.log("error: ", error);
+    }
+  };
+
+  const changeSessionStatus = async () => {
+    try {
+      setState({ statusLoading: true });
+      const body = {
+        is_active: !state.activeData?.is_active,
+      };
+      const res = await Models.session.update(body, state.activeData?.id);
+      getLoungeList(state.currentPage);
+      setState({ statusLoading: false, isActiveOpen: false, activeData: null });
+      Success("Session status updated successfully");
+    } catch (error) {
+      setState({ statusLoading: false });
     }
   };
 
@@ -192,6 +218,18 @@ const WellnessLoungeList = () => {
             onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
           >
             <Trash size={18} className="mr-2" />
+          </div>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isActiveOpen: true, activeData: row?.row })
+            }
+          >
+            <CircleX
+              size={20}
+              className="mr-2"
+              color={row?.row?.is_active ? "#88c742" : "red"}
+            />
           </div>
         </div>
       ),
@@ -254,6 +292,23 @@ const WellnessLoungeList = () => {
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
+                <CustomSelect
+                  options={[
+                    {
+                      label: "Active",
+                      value: "true",
+                    },
+                    {
+                      label: "In Active",
+                      value: "false",
+                    },
+                  ]}
+                  value={state.lounge_status?.value || ""}
+                  onChange={(value) => setState({ lounge_status: value })}
+                  placeholder="Status"
+                />
+              </div>
+              <div className="md:w-1/5 w-full  md:mb-0 mb-2">
                 <DatePicker
                   placeholder="Start date"
                   closeIcon={true}
@@ -277,6 +332,7 @@ const WellnessLoungeList = () => {
                   }}
                 />
               </div>
+
               <div
                 className="md:w-1/5 w-full  md:text-end"
                 onClick={() => router.push("/create-wellness-lounge")}
@@ -364,10 +420,13 @@ const WellnessLoungeList = () => {
           </div>
         )}
       </div>
+
       <Modal
         isOpen={state.isOpen}
         setIsOpen={() => setState({ isOpen: false, deleteId: null })}
-        title={"Are you sure to delete the record. The selected wellness lounge will been removed from Zen Wellness. All associated content and access will be revoked, and the changes will be reflected across the platform."}
+        title={
+          "Are you sure to delete the record. The selected wellness lounge will been removed from Zen Wellness. All associated content and access will be revoked, and the changes will be reflected across the platform."
+        }
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">
@@ -383,6 +442,35 @@ const WellnessLoungeList = () => {
                 className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteSession()}
                 loading={state.submitLoading}
+              />
+            </div>
+          </>
+        )}
+      />
+
+      <Modal
+        isOpen={state.isActiveOpen}
+        setIsOpen={() => setState({ isActiveOpen: false, activeData: null })}
+        title={`Are you sure to ${
+          state.activeData?.is_active ? "In active" : "Active"
+        } record`}
+        renderComponent={() => (
+          <>
+            <div className="flex justify-end gap-5">
+              <PrimaryButton
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                name="Cancel"
+                onClick={() =>
+                  setState({ isActiveOpen: false, activeData: null })
+                }
+              />
+
+              <PrimaryButton
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
+                onClick={() => changeSessionStatus()}
+                loading={state.statusLoading}
               />
             </div>
           </>

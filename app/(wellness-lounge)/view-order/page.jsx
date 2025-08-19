@@ -71,20 +71,6 @@ const viewWellnessLounge = () => {
       console.log("error: ", error);
     }
   };
-  console.log("orderData", state?.orderData);
-
-  // const getCategoryList = async () => {
-  //     try {
-  //         const res: any = await Models.category.list();
-  //         console.log("res: ", res);
-  //         const Dropdowns = Dropdown(res?.results, "name");
-  //         setState({ categoryList: Dropdowns });
-  //     } catch (error) {
-  //         console.log("error: ", error);
-  //     }
-  // };
-
-  console.log("state?.orderData", state?.orderData);
 
   return (
     <div className="container mx-auto flex items-center">

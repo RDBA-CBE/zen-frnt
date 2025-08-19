@@ -54,7 +54,6 @@ const UpdateOrder = () => {
     Description: "",
     title: "",
     categoryName: "",
-    categoryList: [],
     userList: [],
     user: {},
     loungeList: [],
@@ -68,7 +67,6 @@ const UpdateOrder = () => {
   useEffect(() => {
     if (id) {
       getDetails();
-      getCategoryList();
       getUsersList();
       getLoungeList();
     }
@@ -96,16 +94,6 @@ const UpdateOrder = () => {
           label: res?.event?.title,
         },
       });
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const getCategoryList = async () => {
-    try {
-      const res = await Models.category.list();
-      const Dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: Dropdowns });
     } catch (error) {
       console.log("error: ", error);
     }

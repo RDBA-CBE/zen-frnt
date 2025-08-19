@@ -17,6 +17,44 @@ const session = {
         url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
       }
 
+      if (body.status) {
+        url += `&is_active=${encodeURIComponent(body.status)}`;
+      }
+
+      
+
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  activeList: (page: any, body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?page=${page}&is_active=true`;
+      if (body.search) {
+        url += `&title=${encodeURIComponent(body.search)}`;
+      }
+      if (body.end_date) {
+        url += `&end_date=${encodeURIComponent(body.end_date)}`;
+      }
+      if (body.start_date) {
+        url += `&start_date=${encodeURIComponent(body.start_date)}`;
+      }
+      if (body.lounge_type) {
+        url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
+      }
+
       instance()
         .get(url)
         .then((res) => {
@@ -112,7 +150,7 @@ const session = {
 
   dropdownLoungelist: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?pagination=false`;
+      let url = `zen/events/?is_active=true&pagination=false`;
       instance()
         .get(url)
         .then((res) => {
@@ -139,10 +177,14 @@ const session = {
         url += `&event=${encodeURIComponent(body.event)}`;
       }
       if (body.start_date) {
-        url += `&registration_date_before=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_before=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       if (body.start_date) {
-        url += `&registration_date_after=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_after=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       if (body.lounge_status) {
         url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
@@ -174,10 +216,14 @@ const session = {
         url += `&event=${encodeURIComponent(body.event)}`;
       }
       if (body.start_date) {
-        url += `&registration_date_before=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_before=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       if (body.start_date) {
-        url += `&registration_date_after=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_after=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       // if (body.lounge_status) {
       //   url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
@@ -198,7 +244,6 @@ const session = {
     });
     return promise;
   },
-
 
   registrationDetails: (id: any) => {
     let promise = new Promise((resolve, reject) => {
@@ -230,10 +275,14 @@ const session = {
         url += `&event=${encodeURIComponent(body.event)}`;
       }
       if (body.start_date) {
-        url += `&registration_date_before=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_before=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       if (body.start_date) {
-        url += `&registration_date_after=${encodeURIComponent(body.start_date)}`;
+        url += `&registration_date_after=${encodeURIComponent(
+          body.start_date
+        )}`;
       }
       if (body.lounge_status) {
         url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
@@ -293,7 +342,6 @@ const session = {
     return promise;
   },
 
-
   deleteRegistration: (id: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/${id}/`;
@@ -313,7 +361,6 @@ const session = {
     return promise;
   },
 
-
   detailsRegistration: (id: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/${id}/`;
@@ -332,7 +379,6 @@ const session = {
     });
     return promise;
   },
-
 
   // student
   calendar: (body) => {
@@ -357,6 +403,27 @@ const session = {
     return promise;
   },
 
+  activeCalendar: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?is_active=true&pagination=false`;
+      if (body.lounge_type) {
+        url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 };
 
 export default session;

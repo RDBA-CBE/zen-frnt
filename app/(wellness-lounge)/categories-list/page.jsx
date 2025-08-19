@@ -2,7 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  MoreHorizontal,
+  PlusIcon,
+  Trash,
+  CircleX,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,12 +66,12 @@ const CategoriesList = () => {
     //   accessor: "description" || N/A,
     // },
     {
-  Header: "Description",
-  accessor: "description",
-  Cell: ({ value }) => {
-    return value && value.trim() !== "" ? value : "N/A";
-  },
-},
+      Header: "Description",
+      accessor: "description",
+      Cell: ({ value }) => {
+        return value && value.trim() !== "" ? value : "N/A";
+      },
+    },
 
     {
       Header: "Action",
@@ -74,13 +81,27 @@ const CategoriesList = () => {
           <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
             <Edit size={18} className="mr-2" />
           </div>
-          {/* <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
-          <Eye size={20} className="mr-2" />
-        </div> */}
-          <div className="cursor-pointer" onClick={() => setState({ isOpenDelete: true, deleteId: row?.row?.id })}>
+
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isOpenDelete: true, deleteId: row?.row?.id })
+            }
+          >
             <Trash size={18} className="mr-2" />
           </div>
-
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isActiveOpen: true, activeData: row?.row })
+            }
+          >
+            <CircleX
+              size={20}
+              className="mr-2"
+              color={row?.row?.is_active ? "#88c742" : "red"}
+            />
+          </div>
           {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-2 rounded-md hover:bg-gray-200">
@@ -198,6 +219,22 @@ const CategoriesList = () => {
     }
   };
 
+  const changeCategoryStatus = async () => {
+    try {
+      setState({ statusLoading: true });
+      const body = {
+        is_active: !state.activeData?.is_active,
+      };
+
+      await Models.category.update(state.activeData?.id, body);
+      await getCategoryList();
+      setState({ statusLoading: false, isActiveOpen: false, activeData: null });
+      Success("Category status updated successfully");
+    } catch (error) {
+      setState({ statusLoading: false });
+    }
+  };
+
   const clearRecord = () => {
     setState({
       isOpen: false,
@@ -215,7 +252,9 @@ const CategoriesList = () => {
           <Card className="w-[100%] p-4">
             <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
               <div>
-                <h2 className="md:text-[20px] text-sm font-bold">Category List</h2>
+                <h2 className="md:text-[20px] text-sm font-bold">
+                  Category List
+                </h2>
               </div>
               <div className="text-end">
                 <Button
@@ -230,13 +269,16 @@ const CategoriesList = () => {
                     })
                   }
                 >
-                 <PlusIcon />
+                  <PlusIcon />
                 </Button>
               </div>
             </div>
           </Card>
 
-          <p  style={{fontSize:"14px", color:"red"}}><strong style={{color:"black"}}>Note:</strong> Please don't delete any category</p>
+          <p style={{ fontSize: "14px", color: "red" }}>
+            <strong style={{ color: "black" }}>Note:</strong> Please don't
+            delete any category
+          </p>
 
           {/* <Card className="w-[100%] p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -306,8 +348,6 @@ const CategoriesList = () => {
         </div>
       </div>
 
-
-
       <Modal
         isOpen={state.isOpen}
         setIsOpen={clearRecord}
@@ -337,13 +377,15 @@ const CategoriesList = () => {
 
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"} className="text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+                variant={"outline"}
+                className="text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
                 name="Cancel"
                 onClick={() => clearRecord()}
               />
 
               <PrimaryButton
-                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() =>
                   objIsEmpty(state.editData)
                     ? createCategory()
@@ -364,7 +406,8 @@ const CategoriesList = () => {
           <>
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                 name="Cancel"
                 onClick={() =>
                   setState({ isOpenDelete: false, deleteId: null })
@@ -372,9 +415,39 @@ const CategoriesList = () => {
               />
 
               <PrimaryButton
-                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteCategory()}
                 loading={state.deleteLoading}
+              />
+            </div>
+          </>
+        )}
+      />
+
+      <Modal
+        isOpen={state.isActiveOpen}
+        setIsOpen={() => setState({ isActiveOpen: false, activeData: null })}
+        title={`Are you sure to ${
+          state.activeData?.is_active ? "In active" : "Active"
+        } record`}
+        renderComponent={() => (
+          <>
+            <div className="flex justify-end gap-5">
+              <PrimaryButton
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                name="Cancel"
+                onClick={() =>
+                  setState({ isActiveOpen: false, activeData: null })
+                }
+              />
+
+              <PrimaryButton
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
+                onClick={() => changeCategoryStatus()}
+                loading={state.statusLoading}
               />
             </div>
           </>

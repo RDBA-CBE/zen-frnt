@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button } from "./button"; // Custom button component
-import { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip"; // Import Tooltip components
+import { Button } from "./button"; 
+import { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip"; 
 import Models from "@/imports/models.import";
 import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
@@ -22,18 +22,15 @@ const daysOfWeek = [
   "Saturday",
 ];
 
-// Function to get the first day of the month (i.e., which day the 1st falls on)
 const getFirstDayOfMonth = (year, month) => {
   return new Date(year, month, 1).getDay();
 };
 
-// Function to get the number of days in the month
 const getDaysInMonth = (year, month) => {
   return new Date(year, month + 1, 0).getDate();
 };
 
 const CustomFullCalendar = ({ events, setEvents }) => {
-  console.log("✌️events --->", events);
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -42,7 +39,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     description: "",
     date: "",
   });
-  const [lougeList, setLoungeList] = useState([]); // store events data fetched from the API
+  const [lougeList, setLoungeList] = useState([]); 
   const [token, setToken] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [state, setState] = useSetState({
@@ -53,13 +50,13 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      getLoungeList(); // Fetch data when the component mounts
+      getLoungeList(); 
       getCategoryList();
     }
   }, []);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      getLoungeList(); // Fetch data when the component mounts
+      getLoungeList(); 
     }
   }, [state.lounge_type]);
 
@@ -73,9 +70,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
   const getLoungeList = async () => {
     try {
       let body = bodyData();
-      const res = await Models.session.calendar(body);
-      setLoungeList(res); // Update loungeList state with fetched data
-      setEvents(res); // Also update events from the fetched data
+      const res = await Models.session.activeCalendar(body);
+      setLoungeList(res); 
+      setEvents(res); 
     } catch (error) {
       console.log("error: ", error);
     }
@@ -136,19 +133,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     }
   };
 
-  console.log(selectedEvent, "selectedEvent");
-
-  // Handle form input changes for new events
-  const handleEventChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent({ ...newEvent, [name]: value });
-  };
 
   // Save the event and close the modal
   const handleEnroll = () => {
     if (token) {
       if (selectedEvent) {
-        // Use the event ID and pass it dynamically to the URL
         router.push(`/view-wellness-lounge?id=${selectedEvent.id}`);
       } else {
         console.log("No event selected.");
@@ -175,7 +164,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
   // Generate the weeks with empty slots before the first day of the month
   const weeks = [];
-  let currentWeek = Array(firstDayOfMonth).fill(null); // Fill empty slots before the first day
+  let currentWeek = Array(firstDayOfMonth).fill(null); 
   days.forEach((day) => {
     if (currentWeek.length === 7) {
       weeks.push(currentWeek);
@@ -195,28 +184,22 @@ const CustomFullCalendar = ({ events, setEvents }) => {
       day
     );
 
-    // Set the time of selectedDayDate to midnight (00:00:00)
     selectedDayDate.setHours(0, 0, 0, 0);
 
     return events.filter((event) => {
       const eventStartDate = new Date(event.start_date);
       const eventEndDate = new Date(event.end_date);
 
-      // Set the time of eventStartDate and eventEndDate to midnight
       eventStartDate.setHours(0, 0, 0, 0);
       eventEndDate.setHours(0, 0, 0, 0);
 
-      // Check if the selectedDayDate is within the event's start and end date range
       return (
         selectedDayDate >= eventStartDate && selectedDayDate <= eventEndDate
       );
     });
   };
 
-  const handleSignUp = () => {
-    setModalIsOpen(false);
-    router?.push("/student-registration");
-  };
+
   const isPastEvent = (event) => {
     const end = new Date(`${event.end_date}T${event.end_time}`);
     const now = new Date();
@@ -299,37 +282,17 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#48badb]"></span>
           <span className="text-black text-sm font-medium">Ongoing Events</span>
         </div>
-
-        <div className="flex items-center">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#7f4099]"></span>
+        {state.categoryList?.map((item,index)=>
+        <div className="flex items-center" key={index}>
+          <span className={`event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[${item?.value == 15?"#e25197":item?.value == 14?"#7f4099":item?.value == 7?"#834ae9":item?.value == 6?"#88c742":"#48badb"}]`}></span>
           <span className="text-black text-sm font-medium">
-            Meditation Lounge Events
+          {item?.label} Events
           </span>
         </div>
-
-        <div className="flex items-center ">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#e25197]"></span>
-          <span className="text-black text-sm font-medium">
-            Yoga Lounge Events
-          </span>
-        </div>
-
-        <div className="flex items-center ">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#834ae9]"></span>
-          <span className="text-black text-sm font-medium">
-            Mentorship Lounge Events
-          </span>
-        </div>
-
-        <div className="flex items-center">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#88c742]"></span>
-          <span className="text-black text-sm font-medium">
-            Tales & Echoes Lounge Events
-          </span>
-        </div>
+)}
+       
       </div>
 
-      {/* Calendar Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse table-auto">
           <thead>
@@ -354,14 +317,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                       className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
-                      // onClick={() => day && handleDayClick(day)}
                     >
                       <div className="text-end">{day}</div>
-                      {/* Only show events for this specific day */}
                       {day && (
                         <div
                           className="events-container overflow-y-auto"
-                          // style={{ position: "absolute", top: "10px", left: "10px" }}
                         >
                           <TooltipProvider>
                             {getEventsForDate(day).map((event) => {
@@ -416,14 +376,14 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           ? "#8f87871f"
                                           : isOngoingEvent(event)
                                           ? "#48badb"
-                                          : event.lounge_type?.id === 11
-                                          ? "#7f4099" // fuchsia-900 hex color
+                                          : event.lounge_type?.id === 15
+                                          ? "#e25197" 
+                                          : event.lounge_type?.id === 14
+                                          ? "#7f4099" 
                                           : event.lounge_type?.id === 6
-                                          ? "#88c742" // fuchsia-500 hex color
+                                          ? "#88c742" 
                                           : event.lounge_type?.id === 7
-                                          ? "#834ae9" // fuchsia-300 hex color
-                                          : event.lounge_type?.id === 8
-                                          ? "#e25197" // fuchsia-100 hex color
+                                          ? "#834ae9" 
                                           : "#023e98",
                                       }}
                                     >

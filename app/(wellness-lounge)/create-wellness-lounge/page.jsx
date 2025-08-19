@@ -58,7 +58,7 @@ const CreateWellnessLounge = () => {
   const getCategoryList = async () => {
     try {
       setState({ loading: true });
-      const res = await Models.category.list();
+      const res = await Models.category.activeList();
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
     } catch (error) {

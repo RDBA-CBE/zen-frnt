@@ -2,7 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, MoreHorizontal, PlusIcon, Trash, X } from "lucide-react";
+import {
+  CircleX,
+  Edit,
+  MoreHorizontal,
+  PlusIcon,
+  Trash,
+  X,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +40,7 @@ const WellnessLoungeList = () => {
     categoryList: [],
     editData: {},
     deleteId: null,
-    submitLoading: false
+    submitLoading: false,
   });
 
   useEffect(() => {
@@ -46,6 +53,21 @@ const WellnessLoungeList = () => {
       setState({ categoryList: res?.results });
     } catch (error) {
       console.log("error: ", error);
+    }
+  };
+
+  const changeCouponStatus = async () => {
+    try {
+      setState({ statusLoading: true });
+      const body = {
+        is_active: !state.activeData?.is_active,
+      };
+      const res = await Models.coupon.update(body, state.activeData?.id);
+      await getCouponList();
+      setState({ statusLoading: false, isActiveOpen: false, activeData: null });
+      Success("Coupon status updated successfully");
+    } catch (error) {
+      setState({ statusLoading: false });
     }
   };
 
@@ -85,16 +107,34 @@ const WellnessLoungeList = () => {
       accessor: "action",
       Cell: (row) => (
         <div className="flex items-center gap-2">
-        <div className="cursor-pointer"  onClick={() => router.push(`/update-coupon?id=${row?.row?.id} `)}>
-          <Edit size={18} className="mr-2" />
-        </div>
-        {/* <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
+          <div
+            className="cursor-pointer"
+            onClick={() => router.push(`/update-coupon?id=${row?.row?.id} `)}
+          >
+            <Edit size={18} className="mr-2" />
+          </div>
+          {/* <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
           <Eye size={20} className="mr-2" />
         </div> */}
-        <div className="cursor-pointer"  onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}>
-          <Trash size={18} className="mr-2" />
+          <div
+            className="cursor-pointer"
+            onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
+          >
+            <Trash size={18} className="mr-2" />
+          </div>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isActiveOpen: true, activeData: row?.row })
+            }
+          >
+            <CircleX
+              size={20}
+              className="mr-2"
+              color={row?.row?.is_active ? "#88c742" : "red"}
+            />
+          </div>
         </div>
-      </div >
         // <DropdownMenu>
         //   <DropdownMenuTrigger asChild>
         //     <button className="p-2 rounded-md hover:bg-gray-200">
@@ -159,6 +199,7 @@ const WellnessLoungeList = () => {
           <DataTable columns={columns} data={state.categoryList} />
         </div>
       </div>
+
       <Modal
         isOpen={state.isOpen}
         setIsOpen={() => setState({ isOpen: false, deleteId: null })}
@@ -168,14 +209,45 @@ const WellnessLoungeList = () => {
             <div className="flex justify-end gap-5">
               <PrimaryButton
                 variant={"outline"}
-                name="Cancel" className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                name="Cancel"
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
                 onClick={() => setState({ isOpen: false, deleteId: null })}
               />
 
               <PrimaryButton
-                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteCoupon()}
                 loading={state.submitLoading}
+              />
+            </div>
+          </>
+        )}
+      />
+
+      <Modal
+        isOpen={state.isActiveOpen}
+        setIsOpen={() => setState({ isActiveOpen: false, activeData: null })}
+        title={`Are you sure to ${
+          state.activeData?.is_active ? "In active" : "Active"
+        } record`}
+        renderComponent={() => (
+          <>
+            <div className="flex justify-end gap-5">
+              <PrimaryButton
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
+                name="Cancel"
+                onClick={() =>
+                  setState({ isActiveOpen: false, activeData: null })
+                }
+              />
+
+              <PrimaryButton
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
+                onClick={() => changeCouponStatus()}
+                loading={state.statusLoading}
               />
             </div>
           </>

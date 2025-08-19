@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, useSetState } from "@/utils/function.utils";
+import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -21,6 +21,7 @@ import Loading from "@/components/common-components/Loading";
 import { orderStatusList } from "@/utils/constant.utils";
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -101,7 +102,7 @@ const WellnessLoungeList = () => {
       let pages = 1;
       let body = {};
 
-      const res = await Models.session.list(pages, body);
+      const res = await Models.session.activeList(pages, body);
       const Dropdowns = Dropdown(res?.results, "title");
       setState({
         loungeSearch: Dropdowns,
@@ -110,6 +111,29 @@ const WellnessLoungeList = () => {
       setState({ loading: false });
 
       console.log("error: ", error);
+    }
+  };
+
+  const loadSessionOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.session.activeList(page, {});
+      // API should support pagination
+      const Dropdowns = UserDropdown(res?.results, (item) => item?.title);
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
     }
   };
 
@@ -256,11 +280,21 @@ const WellnessLoungeList = () => {
                   />
                 </div>
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
-                  <CustomSelect
-                    options={state?.loungeSearch}
-                    value={state.event?.value || ""}
-                    onChange={(value) => setState({ event: value })}
+                 
+                  <LoadMoreDropdown
+                    value={state.event}
+                    onChange={(value) => {
+                      setState({
+                        event: value,
+                      });
+                    }}
+                    // title="Select User"
+                    error={state.errors?.user}
+                    required
                     placeholder="Lounge"
+                    height={34}
+                    placeholderSize={"14px"}
+                    loadOptions={loadSessionOptions}
                   />
                 </div>
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
@@ -318,15 +352,19 @@ const WellnessLoungeList = () => {
                 No Record Found
               </p>
 
-              <p className="mt-4">Click the below button to get register in the session</p>
+              <p className="mt-4">
+                Click the below button to get register in the session
+              </p>
 
-               <Button
-                      className={`mt-3 bg-themePurple hover:bg-themePurple
+              <Button
+                className={`mt-3 bg-themePurple hover:bg-themePurple
                       }`}
-                      onClick={() => { router.push('/calendar') }}
-                    >
-                      Go to programs
-                    </Button>
+                onClick={() => {
+                  router.push("/calendar");
+                }}
+              >
+                Go to programs
+              </Button>
             </div>
           </Card>
         )}
@@ -357,6 +395,4 @@ const WellnessLoungeList = () => {
   );
 };
 
-
 export default ProtectedRoute(WellnessLoungeList);
-

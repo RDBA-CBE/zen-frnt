@@ -133,7 +133,7 @@ const UpdateWellnessLounge = () => {
     try {
       setState({ loading: true });
 
-      const res = await Models.category.list();
+      const res = await Models.category.activeList();
       console.log("res: ", res);
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
