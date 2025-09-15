@@ -2,13 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, Eye, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Edit, Eye, PlusIcon, Trash } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
 
 import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
@@ -19,7 +14,6 @@ import TextArea from "@/components/common-components/textArea";
 import { TextInput } from "@/components/common-components/textInput";
 import { useRouter } from "next/navigation";
 import { Success } from "@/components/common-components/toast";
-import { DatePicker } from "@/components/common-components/datePicker";
 import CustomSelect from "@/components/common-components/dropdown";
 import moment from "moment";
 import { Label } from "@radix-ui/react-label";
@@ -95,15 +89,40 @@ const UserList = () => {
     }
   };
 
+  const updateUserRole = async (type, item) => {
+    try {
+      if (type == "approve") {
+        const body = {
+          user_id: item?.id,
+          group_id: 5,
+        };
+
+        const res = await Models.user.updateUserRole(body);
+        getUserList(state.currentPage);
+      } else {
+        const body = {
+          user_id: item?.id,
+          group_id: 5,
+        };
+
+        const res = await Models.user.romoveUserRole(body);
+        getUserList(state.currentPage);
+      }
+    } catch (error) {
+      setState({ loading: false });
+      console.log("error: ", error);
+    }
+  };
+
   const columns = [
     {
-  Header: "Name",
-  accessor: "first_name", // required for sorting/search, can be any relevant field
-  Cell: (row) => {
-    const { first_name, last_name } = row.row;
-    return <Label>{`${first_name || ""} ${last_name || ""}`}</Label>;
-  },
-},
+      Header: "Name",
+      accessor: "first_name", // required for sorting/search, can be any relevant field
+      Cell: (row) => {
+        const { first_name, last_name } = row.row;
+        return <Label>{`${first_name || ""} ${last_name || ""}`}</Label>;
+      },
+    },
     {
       Header: "Email",
       accessor: "email",
@@ -147,6 +166,24 @@ const UserList = () => {
           >
             <Trash size={18} className="mr-2" />
           </div>
+          {row?.row?.is_open_to_be_mentor &&
+            row?.row?.groups?.includes("Alumni") &&
+            row?.row?.groups?.length == 1 && (
+              <PrimaryButton
+                variant={"outline"}
+                className=" border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+                name={"Approve"}
+                onClick={() => updateUserRole("approve", row?.row)}
+              />
+            )}
+          {row?.row?.groups?.includes("Mentor") && (
+            <PrimaryButton
+              variant={"outline"}
+              name={"Reject"}
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              onClick={() => updateUserRole("reject", row?.row)}
+            />
+          )}
         </div>
         // <DropdownMenu>
         //   <DropdownMenuTrigger asChild>
