@@ -22,7 +22,8 @@ import dynamic from "next/dynamic";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 import BookingCalender from "@/components/common-components/bookingCalender";
 import { AYURVEDIC_LOUNGE, getTimeIntervals } from "@/utils/constant.utils";
-import TimezoneSelector from "@/components/common-components/TimezoneSelect";
+import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
+
 // import DateTimeField from "@/components/common-components/DateTimeField"
 
 // Dynamically import DateTimeField to avoid hydration issues (if needed)
