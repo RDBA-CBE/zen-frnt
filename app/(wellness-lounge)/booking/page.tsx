@@ -1,3 +1,5 @@
+"use client"
+
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import React from "react";
 import Calendar from "../calendar/page";
