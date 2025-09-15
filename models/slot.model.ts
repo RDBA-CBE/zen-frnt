@@ -1,37 +1,9 @@
 import instance from "@/utils/axios.utils";
 
-const user = {
-  userList: (page: any, body: any) => {
+const slot = {
+  list: (id) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/?page=${page}`;
-      if (body.search) {
-        url += `&search=${encodeURIComponent(body.search)}`;
-      }
-
-      if (body?.group_name) {
-        url += `&group_name=${encodeURIComponent(body?.group_name)}`;
-      }
-      instance()
-        .get(url)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response.message);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
-  dropdownUserserList: (page: number, body = null) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/?page=${page}`;
-      if (body?.search) {
-        url += `&search=${encodeURIComponent(body?.search)}`;
-      }
+      let url = `zen/event-slots/?event=${id}`;
       instance()
         .get(url)
         .then((res) => {
@@ -48,28 +20,9 @@ const user = {
     return promise;
   },
 
-  updateUser: (data: any, id: any) => {
+  create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
-      instance()
-        .patch(url, data)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response.data);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
-
-  updateUserRole: (data: any, id: any) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = `auth/user-groups/add/`;
+      let url = `zen/event-slots/`;
       instance()
         .post(url, data)
         .then((res) => {
@@ -77,7 +30,7 @@ const user = {
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -86,49 +39,12 @@ const user = {
     return promise;
   },
 
-  romoveUserRole: (data: any, id: any) => {
+  update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/user-groups/remove/`;
+      let url = `lead/update/${id}`;
+
       instance()
         .post(url, data)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response.data);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
-
-  addUser: (data: any) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = "auth/users/";
-      instance()
-        .post(url, data)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response.data);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
-
-  getUserId: (id: any) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
-      instance()
-        .get(url)
         .then((res) => {
           resolve(res.data);
         })
@@ -145,7 +61,8 @@ const user = {
 
   delete: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/users/${id}/`;
+      let url = `zen/slots/${id}/`;
+
       instance()
         .delete(url)
         .then((res) => {
@@ -161,6 +78,51 @@ const user = {
     });
     return promise;
   },
+
+  details: (id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/slots/${id}/`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  uploadFile: (file: any) => {
+    let promise = new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      let url = "/hdd/upload_file";
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data; charset=utf-8;",
+        },
+      };
+      instance()
+        .post(url, formData, config)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 };
 
-export default user;
+export default slot;

@@ -21,8 +21,35 @@ const session = {
         url += `&is_active=${encodeURIComponent(body.status)}`;
       }
 
-      
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 
+  linesList: (page: any, body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?page=${page}&pagination=false&is_active=true`;
+
+      if (body.start_date) {
+        url += `&start_date=${encodeURIComponent(body.start_date)}`;
+      }
+      if (body.lounge_type) {
+        url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
+      }
+      if (body.start_date__gt) {
+        url += `&start_date__gt=${encodeURIComponent(body.start_date__gt)}`;
+      }
       instance()
         .get(url)
         .then((res) => {
@@ -167,29 +194,114 @@ const session = {
     return promise;
   },
 
+  dropdownLoungelistWithPage: (page) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?page=${page}&is_active=true`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   registrationList: (page: any, body: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/?page=${page}`;
-      if (body.search) {
+      if (body?.search) {
         url += `&registration_id=${encodeURIComponent(body.search)}`;
       }
-      if (body.event) {
+      if (body?.event) {
         url += `&event=${encodeURIComponent(body.event)}`;
       }
-      if (body.start_date) {
+
+      if (body?.user) {
+        url += `&user=${encodeURIComponent(body.user)}`;
+      }
+      if (body?.start_date) {
         url += `&registration_date_before=${encodeURIComponent(
           body.start_date
         )}`;
       }
-      if (body.start_date) {
+      if (body?.start_date) {
         url += `&registration_date_after=${encodeURIComponent(
           body.start_date
         )}`;
       }
-      if (body.lounge_status) {
+      if (body?.lounge_status) {
         url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
       }
+      
+      if (body?.exclude_category) {
+        url += `&exclude_category=${encodeURIComponent(body.exclude_category)}`;
+      }
 
+      if (body?.category) {
+        url += `&category=${encodeURIComponent(body.category)}`;
+      }
+
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  registrationWithoutPageList: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/?pagination=false`;
+      if (body?.search) {
+        url += `&registration_id=${encodeURIComponent(body.search)}`;
+      }
+      if (body?.event) {
+        url += `&event=${encodeURIComponent(body.event)}`;
+      }
+
+      if (body?.user) {
+        url += `&user=${encodeURIComponent(body.user)}`;
+      }
+      if (body?.start_date) {
+        url += `&registration_date_after=${encodeURIComponent(
+          body.start_date
+        )}`;
+      }
+      if (body?.end_date) {
+        url += `&registration_date_before=${encodeURIComponent(body.end_date)}`;
+      } else {
+        if (body?.start_date) {
+          url += `&registration_date_before=${encodeURIComponent(
+            body.start_date
+          )}`;
+        }
+      }
+
+      if (body?.lounge_status) {
+        url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
+      }
+      if (body?.exclude_category) {
+        url += `&exclude_category=${encodeURIComponent(body.exclude_category)}`;
+      }
+
+      if (body?.category) {
+        url += `&category=${encodeURIComponent(body.category)}`;
+      }
       instance()
         .get(url)
         .then((res) => {
@@ -256,6 +368,26 @@ const session = {
         })
         .catch((error) => {
           if (error.response) {
+            reject(error.response.data);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  registrationUserDetails: (userId: any, eventId: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/event-registrations/?event=${eventId}&user=${userId}`;
+
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
             reject(error.response.message);
           } else {
             reject(error);
@@ -303,6 +435,7 @@ const session = {
     });
     return promise;
   },
+
   createRegistration: (data: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/`;
@@ -409,6 +542,44 @@ const session = {
       if (body.lounge_type) {
         url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
       }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  verifyPayment: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/verify-payment/`;
+      instance()
+        .post(url, body)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports: (type) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/?type=${type}`;
       instance()
         .get(url)
         .then((res) => {

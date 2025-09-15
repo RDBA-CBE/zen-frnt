@@ -1,29 +1,9 @@
 import instance from '@/utils/axios.utils';
 
-const coupon = {
-    list: () => {
+const attendance = {
+    list: (meeting_id) => {
         let promise = new Promise((resolve, reject) => {
-            let url = 'zen/coupons/';
-            instance()
-                .get(url)
-                .then((res) => {
-                    resolve(res.data);
-                })
-                .catch((error) => {
-                    if (error.response) {
-                        reject(error.response.message);
-                    } else {
-                        reject(error);
-                    }
-                });
-        });
-        return promise;
-    },
-
-
-    filter: (code) => {
-        let promise = new Promise((resolve, reject) => {
-            let url = `zen/coupons/?code=${code}`;
+            let url = `zen/zoom-participants/${meeting_id}`;
             instance()
                 .get(url)
                 .then((res) => {
@@ -42,7 +22,7 @@ const coupon = {
 
     create: (data: any) => {
         let promise = new Promise((resolve, reject) => {
-            let url = `zen/coupons/`;
+            let url = `lead/create/`;
             instance()
                 .post(url, data)
                 .then((res) => {
@@ -61,9 +41,10 @@ const coupon = {
 
     update: (data: any, id: any) => {
         let promise = new Promise((resolve, reject) => {
-            let url = `zen/coupons/${id}/`;
+            let url = `lead/update/${id}`;
+
             instance()
-                .patch(url, data)
+                .post(url, data)
                 .then((res) => {
                     resolve(res.data);
                 })
@@ -80,10 +61,10 @@ const coupon = {
 
     delete: (id: any) => {
         let promise = new Promise((resolve, reject) => {
-            let url = `zen/coupons/${id}/`;
+            let url = `lead/delete/${id}`;
 
             instance()
-                .delete(url)
+                .post(url)
                 .then((res) => {
                     resolve(res.data);
                 })
@@ -100,9 +81,9 @@ const coupon = {
 
     details: (id: any) => {
         let promise = new Promise((resolve, reject) => {
-            let url = `zen/coupons/${id}/`;
+            let url = `auth/view_user/${id}`;
             instance()
-                .get(url)
+                .post(url)
                 .then((res) => {
                     resolve(res.data);
                 })
@@ -144,4 +125,4 @@ const coupon = {
     },
 };
 
-export default coupon;
+export default attendance;
