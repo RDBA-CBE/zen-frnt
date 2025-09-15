@@ -2,13 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip";
-import Models from "@/imports/models.import";
 import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Dropdown, useSetState } from "@/utils/function.utils";
-import CustomSelect from "../common-components/dropdown";
+import {
+  getDaysInMonth,
+  getFirstDayOfMonth,
+  isFutureEvent,
+  isOngoingEvent,
+  isPastEvent,
+  useSetState,
+} from "@/utils/function.utils";
 import { CalendarClock, XIcon } from "lucide-react";
 import { Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
@@ -23,15 +28,18 @@ const daysOfWeek = [
   "Saturday",
 ];
 
-const getFirstDayOfMonth = (year, month) => {
-  return new Date(year, month, 1).getDay();
+const getLoungeTypeColor = (loungeTypeId) => {
+  const colorMap = {
+    15: "#e25197", // Ayurvedic One-on-One Counseling Lounge - Pink
+    14: "#7f4099", // Yoga/Meditation Lounge - Purple
+    7: "#834ae9", // Mentorship Lounge - Light Purple
+    6: "#88c742", // Tales & Echoes Lounge - Green
+  };
+
+  return colorMap[loungeTypeId] || "#48badb"; // Default color
 };
 
-const getDaysInMonth = (year, month) => {
-  return new Date(year, month + 1, 0).getDate();
-};
-
-const CustomFullCalendar = ({ events, setEvents }) => {
+const AdminCalendar = ({ registrations }) => {
   const router = useRouter();
 
   const now = new Date();
@@ -43,9 +51,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     description: "",
     date: "",
   });
-  const [lougeList, setLoungeList] = useState([]);
   const [token, setToken] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
   const [state, setState] = useSetState({
     categoryList: [],
     loading: false,
@@ -53,19 +61,27 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     role: null,
   });
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      getLoungeList();
-      getCategoryList();
-      getRole();
-    }
-  }, []);
+  const getOrderCountsByDate = () => {
+    const counts = {};
+
+    registrations.forEach((registration) => {
+      const date = moment(
+        registration?.slot?.event_slot?.date || registration?.registration_date
+      ).format("YYYY-MM-DD");
+      counts[date] = (counts[date] || 0) + 1;
+    });
+
+    return counts;
+  };
+
+  // Add this state to store the order counts
+  const [orderCounts, setOrderCounts] = useState({});
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      getLoungeList();
+      getRole();
     }
-  }, [state.lounge_type]);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -74,48 +90,31 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     }
   }, []);
 
+  // Update the order counts when registrations change
+  useEffect(() => {
+    setOrderCounts(getOrderCountsByDate());
+  }, [registrations]);
+
   const getRole = async () => {
     try {
-      let body = localStorage.getItem("group");
-      console.log("✌️body --->", body);
+      const body = localStorage.getItem("group");
       setState({ role: body });
     } catch (error) {
       console.log("error: ", error);
     }
   };
 
-  const getLoungeList = async () => {
-    try {
-      let body = bodyData();
-      const res = await Models.session.activeCalendar(body);
-      setLoungeList(res);
-      setEvents(res);
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
+  const getOrderCountForDay = (day) => {
+    if (!day) return 0;
 
-  const getCategoryList = async () => {
-    try {
-      setState({ loading: true });
+    const selectedDayDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      day
+    );
 
-      const res = await Models.category.catDropDownList();
-      const dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: dropdowns, loading: false });
-    } catch (error) {
-      setState({ loading: false });
-
-      console.log("error: ", error);
-    }
-  };
-
-  const bodyData = () => {
-    let body = {};
-    if (state.lounge_type) {
-      body.lounge_type = state.lounge_type?.value;
-    }
-
-    return body;
+    const formattedDate = moment(selectedDayDate).format("YYYY-MM-DD");
+    return orderCounts[formattedDate] || 0;
   };
 
   // Navigate between months
@@ -139,7 +138,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     // Check if there are any events for the clicked day
     const eventsForClickedDay = getEventsForDate(day);
-    console.log(eventsForClickedDay, "eventsForClickedDay");
 
     if (eventsForClickedDay.length > 0) {
       setModalIsOpen(true);
@@ -147,26 +145,19 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         ...event,
         eventDate: moment(
           `${event?.start_date} ${event?.start_time}`,
-          "YYYY-MM-DD HH:mm:ss" // adjust format based on your data
+          "YYYY-MM-DD HH:mm:ss"
         )?.toDate(),
       });
-      // setSelectedEvent(eventsForClickedDay[0]); // Store the first event
     } else {
-      setModalIsOpen(false); // Close the modal if no events for that day
+      setModalIsOpen(false);
     }
   };
 
   // Save the event and close the modal
   const handleEnroll = () => {
-    console.log("✌️selectedEvent --->", selectedEvent);
-
     if (token) {
       if (selectedEvent) {
-        if (selectedEvent?.lounge_type?.id == AYURVEDIC_LOUNGE) {
-          router.push(`/view-wellness-lounges?id=${selectedEvent.id}`);
-        } else {
-          router.push(`/view-wellness-lounge?id=${selectedEvent.id}`);
-        }
+        router.push(`/view-wellness-lounge?id=${selectedEvent.id}`);
       } else {
         console.log("No event selected.");
       }
@@ -228,7 +219,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
     selectedDayDate.setHours(0, 0, 0, 0);
 
-    return events.filter((event) => {
+    return registrations.filter((event) => {
       const eventStartDate = new Date(event.start_date);
       const eventEndDate = new Date(event.end_date);
 
@@ -241,42 +232,46 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     });
   };
 
-  const isPastEvent = (event) => {
-    const end = new Date(`${event.end_date}T${event.end_time}`);
-    const now = new Date();
-    return end < now;
-  };
-
-  const isOngoingEvent = (event) => {
-    const start = new Date(`${event.start_date}T${event.start_time}`);
-    const end = new Date(`${event.end_date}T${event.end_time}`);
-    const now = new Date();
-    return now >= start && now <= end;
-  };
-
-  const isFutureEvent = (event) => {
-    const start = new Date(`${event.start_date}T${event.start_time}`);
-    const now = new Date();
-    return start > now;
-  };
-
-  const addNewEvent = (clickedDate) => {
-    const dateToUse = clickedDate || selectedDate;
-    const now = new Date();
-    const finalDate = new Date(dateToUse);
-    finalDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
-
-    const formattedDate = moment(finalDate).format("DD-MM-YYYY HH:mm:ss");
-
-    router.push(
-      `/create-wellness-lounge?date=${encodeURIComponent(formattedDate)}`
+  // Function to get registrations for a specific date
+  const getRegistrationsForDate = (day) => {
+    const selectedDayDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      day
     );
+
+    const formattedDate = moment(selectedDayDate).format("YYYY-MM-DD");
+
+    return registrations.filter((registration) => {
+      // Check if slot exists and has event_slot with date
+      if (registration.slot && registration.slot.event_slot) {
+        return (
+          moment(registration.slot.event_slot.date).format("YYYY-MM-DD") ===
+          formattedDate
+        );
+      }
+
+      // Fallback to registration_date if slot data is not available
+      return (
+        moment(registration.registration_date).format("YYYY-MM-DD") ===
+        formattedDate
+      );
+    });
+  };
+
+
+  const handleOrderClick = (item) => {
+    console.log("✌️item --->", item);
+    if (item?.lounge_type?.id == AYURVEDIC_LOUNGE) {
+      router.push(`/view-paid-order/?id=${item?.id}`);
+    } else {
+      router.push(`/view-order/?id=${item?.id}`);
+    }
   };
 
   return (
-    <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
-      {/* Calendar Header */}
-      <div className="md:flex md:justify-between items-center mb-10">
+    <div className="">
+      <div className="flex gap-2 justify-between items-center mb-4">
         <div>
           <h2 className="text-xl font-semibold text-left ">
             {new Date(selectedDate).toLocaleString("default", {
@@ -285,30 +280,20 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             {selectedDate.getFullYear()}
           </h2>
         </div>
-        <div className="md:flex md:gap-10 ">
-          <div className="md:w-[200px] w-full mb-2 md:mb-0">
-            <CustomSelect
-              options={state.categoryList}
-              value={state.lounge_type?.value || ""}
-              onChange={(value) => setState({ lounge_type: value })}
-              placeholder="Lounge Type"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => handleNavigate(-1)}
-              className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded"
-            >
-              Previous
-            </Button>
+        <div className="flex gap-2  items-center">
+          <Button
+            onClick={() => handleNavigate(-1)}
+            className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded"
+          >
+            Previous
+          </Button>
 
-            <Button
-              onClick={() => handleNavigate(1)}
-              className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded"
-            >
-              Next
-            </Button>
-          </div>
+          <Button
+            onClick={() => handleNavigate(1)}
+            className="text-white bg-themeGreen hover:bg-themeGreen p-2 rounded"
+          >
+            Next
+          </Button>
         </div>
       </div>
       {state.lounge_type && (
@@ -322,43 +307,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           </div>
         </div>
       )}
-
-      <div className="flex justify-center items-center mb-8 flex-wrap gap-x-5 gap-y-2">
-        <div className="flex items-center">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#8f87871f]"></span>
-          <span className="text-black text-sm font-medium">
-            Completed Events
-          </span>
-        </div>
-
-        <div className="flex items-center">
-          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#48badb]"></span>
-          <span className="text-black text-sm font-medium">Ongoing Events</span>
-        </div>
-        {state.categoryList?.map((item, index) => (
-          <div className="flex items-center" key={index}>
-            <span
-              className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2"
-              style={{
-                backgroundColor:
-                  item?.value == 15
-                    ? "#e25197"
-                    : item?.value == 14
-                    ? "#7f4099"
-                    : item?.value == 7
-                    ? "#834ae9"
-                    : item?.value == 6
-                    ? "#88c742"
-                    : "#48badb",
-              }}
-            ></span>
-
-            <span className="text-black text-sm font-medium">
-              {item?.label} Events
-            </span>
-          </div>
-        ))}
-      </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse table-auto">
@@ -381,13 +329,21 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   return (
                     <td
                       key={dayIndex}
-                      className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
+                      className={`p-4 h-[120px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div className="text-end">{day}</div>
-                        {state.role == "Admin" &&
+
+                        {/* Show order count badge if count > 0 */}
+                        {day && getOrderCountForDay(day) > 0 && (
+                          <div className="absolute top-1 right-8 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                            {getOrderCountForDay(day)}
+                          </div>
+                        )}
+
+                       {state.role == "Admin" &&
                           (() => {
                             if (!day) return null;
 
@@ -406,18 +362,19 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  addNewEvent(cellDate);
+                                  // addNewEvent(cellDate);
                                 }}
                                 className="absolute top-1 right-1 ml-2 text-white bg-green-600 hover:bg-green-700 rounded-full w-6 h-6 flex items-center justify-center text-sm"
                               >
                                 +
                               </button>
                             );
-                          })()}
+                          })()} 
                       </div>
                       {day && (
-                        <div className="events-container overflow-y-auto">
+                        <div className="events-container overflow-y-auto max-h-[80px]">
                           <TooltipProvider>
+                            {/* Show events for this date */}
                             {getEventsForDate(day).map((event) => {
                               return (
                                 <Tooltip key={event.id}>
@@ -440,10 +397,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                               </strong>{" "}
                                               and can no longer be accessed.
                                               Please select a session scheduled
-                                              for a future date. For more
-                                              information or assistance, feel
-                                              free to contact the admin at
-                                              viji.zenwellnesslounge@gmail.com.
+                                              for a future date.
                                             </>
                                           );
                                         } else if (isPastEvent(event)) {
@@ -460,37 +414,20 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                               </strong>{" "}
                                               and is no longer accessible.
                                               Please select a session scheduled
-                                              for a future date. For more
-                                              information or assistance, feel
-                                              free to contact the admin at
-                                              viji.zenwellnesslounge@gmail.com.
+                                              for a future date.
                                             </>
                                           );
                                         }
                                       }}
-                                      className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
+                                      className="event p-0 border rounded-lg mr-2 mb-1"
                                       style={{
-                                        backgroundColor: isPastEvent(event)
-                                          ? "#8f87871f"
-                                          : isOngoingEvent(event)
-                                          ? "#48badb"
-                                          : event.lounge_type?.id === 15
-                                          ? "#e25197"
-                                          : event.lounge_type?.id === 14
-                                          ? "#7f4099"
-                                          : event.lounge_type?.id === 6
-                                          ? "#88c742"
-                                          : event.lounge_type?.id === 7
-                                          ? "#834ae9"
-                                          : "#023e98",
+                                        backgroundColor: getLoungeTypeColor(
+                                          event.lounge_type?.id
+                                        ),
                                       }}
                                     >
                                       <h4
-                                        className={`text-xs ${
-                                          isPastEvent(event)
-                                            ? "text-black"
-                                            : "text-white"
-                                        } py-1 px-2 truncate max-w-[15ch]`}
+                                        className={`text-xs text-white py-1 px-2 truncate max-w-[15ch]`}
                                       >
                                         {event.title}
                                       </h4>
@@ -498,14 +435,13 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                   </TooltipTrigger>
                                   <TooltipContent className="w-[300px]">
                                     <div className="flex flex-col flex-wrap mb-3 gap-x-2">
-                                      <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
+                                      <h4 className="font-bold text-[18px] leading-[22px] font-marce">
                                         {event.title}
                                       </h4>
                                       <p className="text-[15px] mt-1">
                                         {event.lounge_type?.name}
                                       </p>
                                     </div>
-
                                     <blockquote className="mb-2 border-l-2 pl-6 ">
                                       <div className="flex gap-1 mb-4">
                                         <span className="flex gap-1 ">
@@ -555,6 +491,72 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                 </Tooltip>
                               );
                             })}
+
+                            {/* Show registrations for this date */}
+                            {getRegistrationsForDate(day).map(
+                              (registration) => {
+                                const event = registration.event;
+                                return (
+                                  <Tooltip key={registration.id}>
+                                    <TooltipTrigger>
+                                      <div
+                                        className="event p-0 border rounded-lg mr-2 mb-1"
+                                        style={{
+                                          backgroundColor: getLoungeTypeColor(
+                                            event.lounge_type?.id
+                                          ),
+                                          opacity: 0.7,
+                                          border: "2px dashed white",
+                                        }}
+                                        onClick={() => handleOrderClick(event)}
+                                      >
+                                        <h4
+                                          className={`text-xs text-white py-1 px-2 truncate max-w-[15ch]`}
+                                        >
+                                          {event.title}
+                                        </h4>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="w-[300px]">
+                                      <div className="flex flex-col flex-wrap mb-3 gap-x-2">
+                                        <h4 className="font-bold text-[18px] leading-[22px] font-marce">
+                                          {event.title}
+                                        </h4>
+                                        <p className="text-[15px] mt-1">
+                                          {event.lounge_type?.name}
+                                        </p>
+                                        <div className="pt-3">
+                                          <p className="text-sm text-white-600">
+                                            Registered by:{" "}
+                                            {registration.user.first_name}{" "}
+                                            {registration.user.last_name}
+                                          </p>
+                                          <p className="text-sm text-white-600">
+                                            Date:{" "}
+                                            {moment(
+                                              registration.slot == null
+                                                ? registration.registration_date
+                                                : registration?.slot?.event_slot
+                                                    ?.date
+                                            ).format("DD MMM YYYY")}
+                                          </p>
+                                          {registration.slot != null && (
+                                            <p className="text-sm text-white-600">
+                                              Slot:{" "}
+                                              {registration?.slot?.start_time}
+                                            </p>
+                                          )}
+                                          <p className="text-sm text-white-600">
+                                            Status:{" "}
+                                            {registration.registration_status}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                );
+                              }
+                            )}
                           </TooltipProvider>
                         </div>
                       )}
@@ -571,7 +573,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
       <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
         <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
           <DialogTitle className="text-lg font-semibold mb-2">
-            {/* Here you can enroll or sign up for the course. */}
             <div className="flex flex-col flex-wrap mb-2 gap-x-2">
               <p className="font-[400] text-[25px] leading-[22px]  font-marce">
                 {selectedEvent?.title}
@@ -630,7 +631,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             >
               Read More
             </Button>
-            {selectedEvent?.eventDate > now && state.role == "Admin" && (
+            {selectedEvent?.eventDate > now && (
               <Button
                 onClick={handleEditEvent}
                 className="flex-1 p-2 rounded bg-themeGreen hover:bg-themeGreen text-white"
@@ -645,4 +646,4 @@ const CustomFullCalendar = ({ events, setEvents }) => {
   );
 };
 
-export default CustomFullCalendar;
+export default AdminCalendar;
