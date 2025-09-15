@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+
 // HOC version
 const ProtectedRoute = (WrappedComponent) => {
   return function ProtectedComponentWrapper(props) {
