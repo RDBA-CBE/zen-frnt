@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
+import razorPay from "../../public/assets/images/razorpay.png";
 export function CheckboxDemo({
   label,
   value,
   selectedValues,
   onChange,
   isMulti,
-  className
+  className,
 }) {
   const handleCheckboxChange = (checked) => {
     let newSelectedValues;
@@ -37,12 +39,21 @@ export function CheckboxDemo({
         checked={selectedValues?.some((item) => item.value === value)}
         onCheckedChange={handleCheckboxChange}
       />
-      <label
-        htmlFor={value}
-        className={`${className}"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer`}
-      >
-        {label}
-      </label>
+      {label ? (
+        <label
+          htmlFor={value}
+          className={`${className}"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer`}
+        >
+          {label}
+        </label>
+      ) : (
+        <Image
+          src={razorPay} 
+          alt="RazorPay logo"
+          width={100} 
+          height={100}
+        />
+      )}
     </div>
   );
 }

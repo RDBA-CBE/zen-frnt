@@ -8,7 +8,6 @@ import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -16,34 +15,21 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
-  BadgeCheck,
-  Bell,
-  CreditCard,
-  DiscAlbum,
-  FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
   Loader,
   LogIn,
   LogOut,
   MenuIcon,
-  SparklesIcon,
-  TwitchIcon,
-  User2,
   User2Icon,
   UserIcon,
-  UserX2Icon,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { Separator } from "../ui/separator";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -54,9 +40,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Label } from "@radix-ui/react-label";
 import { useSetState } from "@/utils/function.utils";
-import Modal from "./modal";
 import Models from "@/imports/models.import";
 
 const Header = () => {
@@ -123,14 +107,16 @@ const Header = () => {
       localStorage.removeItem("eventId");
       localStorage.removeItem("username");
       localStorage.clear();
-      document.cookie = "";  
+      document.cookie = "";
       setDialogOpen(false);
       router.push("/login");
       window.location.reload();
       dispatch(clearAuthData());
     } catch (error) {
+      dispatch(clearAuthData());
+      window.location.reload();
+      localStorage.clear();
       setState({ logoutLoading: false });
-
       console.log("✌️error --->", error);
     }
   };
@@ -143,8 +129,12 @@ const Header = () => {
   // Left side menus for Admin and Student
   const AdminLeftSideMenu = [
     {
+      title: "Dashboard",
+      url: "/",
+    },
+    {
       title: "Wellness Lounge",
-      url: "#",
+      url: "/wellness-lounge-list",
       items: [
         { title: "Lounge Session List", url: "/wellness-lounge-list" },
         { title: "Create Lounge Session", url: "/create-wellness-lounge" },
@@ -158,8 +148,10 @@ const Header = () => {
         { title: "Registered Users", url: "/order-list" },
         { title: "Add User", url: "/create-order" },
         { title: "Cancelled Users", url: "/cancel-order" },
+        { title: "Booking List", url: "/booking_list" },
       ],
     },
+
     {
       title: "Users",
       url: "#",
@@ -168,6 +160,7 @@ const Header = () => {
         { title: "Create User", url: "/create-user" },
       ],
     },
+
     {
       title: "Payment Gateways",
       url: "#",
@@ -180,6 +173,10 @@ const Header = () => {
         { title: "Coupon List", url: "/coupon-list" },
         { title: "Create Coupon", url: "/create-coupon" },
       ],
+    },
+    {
+      title: "Reports",
+      url: "/reports",
     },
   ];
 
@@ -208,28 +205,28 @@ const Header = () => {
               <div className="container mx-auto flex  items-center justify-between px-5">
                 <div className="flex items-center gap-2 md:gap-4">
                   {/* {pathname !== "/registration" && ( */}
-                    <div className="flex items-center gap-1 md:pr-4 pr-2">
-                      <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                      <Link
-                        prefetch={true}
-                        href="/registration"
-                        className="hover:underline md:text-[16px] text-[10px] "
-                      >
-                        SIGN UP
-                      </Link>
-                    </div>
+                  <div className="flex items-center gap-1 md:pr-4 pr-2">
+                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                    <Link
+                      prefetch={true}
+                      href="/registration"
+                      className="hover:underline md:text-[16px] text-[10px] "
+                    >
+                      SIGN UP
+                    </Link>
+                  </div>
                   {/* )} */}
                   {/* {pathname !== "/" && ( */}
-                    <div className="flex items-center gap-1">
-                      <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                      <Link
-                        prefetch={true}
-                        href="/"
-                        className="hover:underline  md:text-[16px] text-[10px]"
-                      >
-                        LOGIN
-                      </Link>
-                    </div>
+                  <div className="flex items-center gap-1">
+                    <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
+                    <Link
+                      prefetch={true}
+                      href="/"
+                      className="hover:underline  md:text-[16px] text-[10px]"
+                    >
+                      LOGIN
+                    </Link>
+                  </div>
                   {/* )} */}
                 </div>
                 <div className="flex gap-2  ">
@@ -392,79 +389,80 @@ const Header = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                {tokens && groups && 
-                <div className="block lg:hidden">
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <MenuIcon />
-                    </SheetTrigger>
-                    <SheetContent>
-                      <SheetHeader>
-                        <SheetTitle></SheetTitle>
-                      </SheetHeader>
-                      <div className="flex justify-center">
-                        <Link
-                          href="https://zenwellnesslounge.com/"
-                          target="_blank"
-                        >
-                          <Image
-                            src="/assets/images/logo.png"
-                            alt="logo"
-                            width={200}
-                            height={80}
-                          />
-                        </Link>
-                      </div>
-                      <div className="mt-10">
-                        {tokens &&
-                          groups &&
-                          (groups === "Admin"
-                            ? AdminLeftSideMenu
-                            : StudentLeftSideMenu
-                          ).map((menu, index) => {
-                            return (
-                              <Accordion
-                                type="single"
-                                collapsible
-                                className="w-full"
-                                key={index}
-                              >
-                                <AccordionItem value={`item-${index + 1}`}>
-                                  <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
-                                    {menu.title}
-                                  </AccordionTrigger>
-                                  <AccordionContent>
-                                    {menu.items ? (
-                                      <ul className="pl-5 uppercase">
-                                        {menu.items.map((item, itemIndex) => (
-                                          <li
-                                            key={itemIndex}
-                                            className="pb-2 text-sm"
-                                          >
-                                            <a href={item.url}>{item.title}</a>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    ) : (
-                                      <p className="uppercase">
-                                        <a href={menu.url}>{menu.title}</a>
-                                      </p>
-                                    )}
-                                  </AccordionContent>
-                                </AccordionItem>
-                              </Accordion>
-                            );
-                          })}
-                      </div>
-                      {/* <div className="mt-10 flex justify-center items-center gap-4">
+                {tokens && groups && (
+                  <div className="block lg:hidden">
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <MenuIcon />
+                      </SheetTrigger>
+                      <SheetContent>
+                        <SheetHeader>
+                          <SheetTitle></SheetTitle>
+                        </SheetHeader>
+                        <div className="flex justify-center">
+                          <Link
+                            href="https://zenwellnesslounge.com/"
+                            target="_blank"
+                          >
+                            <Image
+                              src="/assets/images/logo.png"
+                              alt="logo"
+                              width={200}
+                              height={80}
+                            />
+                          </Link>
+                        </div>
+                        <div className="mt-10">
+                          {tokens &&
+                            groups &&
+                            (groups === "Admin"
+                              ? AdminLeftSideMenu
+                              : StudentLeftSideMenu
+                            ).map((menu, index) => {
+                              return (
+                                <Accordion
+                                  type="single"
+                                  collapsible
+                                  className="w-full"
+                                  key={index}
+                                >
+                                  <AccordionItem value={`item-${index + 1}`}>
+                                    <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
+                                      {menu.title}
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                      {menu.items ? (
+                                        <ul className="pl-5 uppercase">
+                                          {menu.items.map((item, itemIndex) => (
+                                            <li
+                                              key={itemIndex}
+                                              className="pb-2 text-sm"
+                                            >
+                                              <a href={item.url}>
+                                                {item.title}
+                                              </a>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      ) : (
+                                        <p className="uppercase">
+                                          <a href={menu.url}>{menu.title}</a>
+                                        </p>
+                                      )}
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                </Accordion>
+                              );
+                            })}
+                        </div>
+                        {/* <div className="mt-10 flex justify-center items-center gap-4">
                         <InstagramIcon />
                         <LinkedinIcon />
                       </div> */}
-                    </SheetContent>
-                  </Sheet>
-                </div>
-                }
-                
+                      </SheetContent>
+                    </Sheet>
+                  </div>
+                )}
               </div>
               {/* Confirmation Dialog for Log out */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

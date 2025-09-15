@@ -14,6 +14,7 @@ const LoadMoreDropdown = (props) => {
     error,
     height,
     placeholderSize = "14px",
+    disabled,
   } = props;
   return (
     <div className="w-full">
@@ -30,6 +31,7 @@ const LoadMoreDropdown = (props) => {
         additional={{ page: 1 }}
         placeholder={placeholder}
         isClearable
+        isDisabled={disabled}
         debounceTimeout={300}
         styles={{
           control: (base) => ({
