@@ -343,7 +343,7 @@ const AdminCalendar = ({ registrations }) => {
                           </div>
                         )}
 
-                       {state.role == "Admin" &&
+                       {/* {state.role == "Admin" &&
                           (() => {
                             if (!day) return null;
 
@@ -369,7 +369,7 @@ const AdminCalendar = ({ registrations }) => {
                                 +
                               </button>
                             );
-                          })()} 
+                          })()}  */}
                       </div>
                       {day && (
                         <div className="events-container overflow-y-auto max-h-[80px]">

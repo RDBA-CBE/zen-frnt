@@ -32,6 +32,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 const CancelOrderList = () => {
   const router = useRouter();
@@ -142,7 +143,11 @@ const CancelOrderList = () => {
   };
 
   const handleView = (item) => {
-    router.push(`/view-order/?id=${item?.id}`);
+    if (item?.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
+      router.push(`/view-paid-order/?id=${item?.id}`);
+    } else {
+      router.push(`/view-order/?id=${item?.id}`);
+    }
   };
 
   const deleteSession = async () => {

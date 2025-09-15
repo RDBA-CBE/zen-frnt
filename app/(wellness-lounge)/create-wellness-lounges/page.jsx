@@ -3,7 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { buildFormData, Dropdown, useSetState } from "@/utils/function.utils";
+import {
+  buildFormData,
+  Dropdown,
+  extractTimeFromDateTime,
+  useSetState,
+} from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
 import { DatePicker } from "@/components/common-components/datePicker";
@@ -23,6 +28,7 @@ import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 import BookingCalender from "@/components/common-components/bookingCalender";
 import { AYURVEDIC_LOUNGE, getTimeIntervals } from "@/utils/constant.utils";
 import TimezoneSelector from "@/components/common-components/TimezoneSelect";
+import { format } from "date-fns";
 // import DateTimeField from "@/components/common-components/DateTimeField"
 
 // Dynamically import DateTimeField to avoid hydration issues (if needed)
@@ -58,7 +64,8 @@ const CreateWellnessLounge = () => {
     intrested_topics: [],
     timezone: "",
     passcode: "",
-    start_date: "",
+    // start_date: "",
+    start_date: null,
   });
 
   useEffect(() => {
@@ -69,14 +76,47 @@ const CreateWellnessLounge = () => {
   }, []);
 
   useEffect(() => {
-    const dateParam = searchParams.get("date");
-    if (dateParam) {
-      const parsedDate = moment(dateParam, "DD-MM-YYYY HH:mm:ss");
-      setState({
-        start_date: parsedDate?.format("ddd MMM DD YYYY HH:mm:ss [GMT]ZZ"),
-      });
-    }
+    setParamsData();
   }, [searchParams]);
+
+  const setParamsData = async () => {
+    try {
+      setState({ loading: true });
+      const dateParam = searchParams.get("date");
+      if (dateParam) {
+        const parsedDate = moment(dateParam, "DD-MM-YYYY HH:mm:ss");
+        setState({
+          start_date: parsedDate.toDate(),
+        });
+      }
+
+      const lounge = searchParams.get("lounge");
+      console.log("✌️lounge --->", lounge);
+      if (lounge) {
+        const res = await Models.category.activeList();
+        const Dropdowns = Dropdown(res?.results, "name");
+        console.log("✌️Dropdowns --->", Dropdowns);
+
+        const filter = Dropdowns.find((item) => item.value == lounge);
+        console.log("✌️filter --->", filter);
+        setState({ lounge_type: filter });
+      }
+
+      const time = searchParams.get("time");
+      if (time) {
+        const times = extractTimeFromDateTime(time);
+
+        setState({
+          start_time: times,
+        });
+      }
+      setState({ loading: false });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
 
   const getCategoryList = async () => {
     try {
@@ -160,7 +200,7 @@ const CreateWellnessLounge = () => {
           abortEarly: false,
         });
       } else {
-        await Validation.createFreeSession.validate(validForFree, {
+        await Validation.calenderCreateFreeSession.validate(validForFree, {
           abortEarly: false,
         });
       }
@@ -315,7 +355,6 @@ const CreateWellnessLounge = () => {
         event_credits: state.price ? state.price : 0,
         price: state.price ? state.price : 0,
         is_active: true,
-
       };
       console.log("✌️body --->", body);
 
@@ -323,9 +362,9 @@ const CreateWellnessLounge = () => {
       const res = await Models.session.create(formData);
       setState({ submitLoading: false });
 
-      router.push("/wellness-lounge-list");
+      router.push("/");
       Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
-      // `);
+      `);
     } catch (error) {
       setState({ submitLoading: false });
       console.log("error: ", error);
@@ -341,8 +380,8 @@ const CreateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.end_date
-          ? moment(state.end_date).format("YYYY-MM-DD")
+        end_date: state.start_date
+          ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
         interval:
           state.lounge_type?.value == AYURVEDIC_LOUNGE && state.interval
@@ -360,7 +399,6 @@ const CreateWellnessLounge = () => {
         seat_count: state.seat_count || 0,
         thumbnail: state.thumbnail_images,
         is_active: true,
-
       };
 
       if (state.slots?.length > 0) {
@@ -379,7 +417,7 @@ const CreateWellnessLounge = () => {
       createSlot(res);
       setState({ submitLoading: false });
 
-      router.push("/wellness-lounge-list");
+      router.push("/");
       Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
       `);
     } catch (error) {
@@ -444,7 +482,7 @@ const CreateWellnessLounge = () => {
       };
     }
   };
-
+  console.log("✌️state.errors --->", state.errors);
 
   return state.loading ? (
     <div className="container mx-auto flex justify-center items-center">
@@ -513,6 +551,7 @@ const CreateWellnessLounge = () => {
                         });
                       }}
                     />
+
                     <DatePicker
                       placeholder="End Date"
                       title="End Date"
@@ -528,8 +567,6 @@ const CreateWellnessLounge = () => {
                       }}
                       fromDate={state.start_date}
                     />
-                  </div>
-                  <div className="w-full grid auto-rows-min gap-4 md:grid-cols-2">
                     <CustomSelect
                       options={getTimeIntervals}
                       value={state.interval?.value || ""}
@@ -543,21 +580,20 @@ const CreateWellnessLounge = () => {
                       error={state.errors?.interval}
                       required
                     />
-                    <TimezoneSelector
-                      title="Timezone"
-                      required
-                      error={state.errors?.timezone}
-                      value={state.timezone}
-                      onChange={(tz) => {
-                        setState({
-                          timezone: tz?.value,
-                          timezones: tz?.label,
-                          errors: { ...state.errors, timezone: "" },
-                        });
-                      }}
-                    />
                   </div>
-
+                  <TimezoneSelector
+                    title="Timezone"
+                    required
+                    error={state.errors?.timezone}
+                    value={state.timezone}
+                    onChange={(tz) => {
+                      setState({
+                        timezone: tz?.value,
+                        timezones: tz?.label,
+                        errors: { ...state.errors, timezone: "" },
+                      });
+                    }}
+                  />
                   <BookingCalender
                     error={state.errors?.slot}
                     startDate={
@@ -579,49 +615,63 @@ const CreateWellnessLounge = () => {
               {state.lounge_type?.value != AYURVEDIC_LOUNGE && (
                 <>
                   <div className="grid auto-rows-min gap-4 grid-cols-2">
-                    <DateTimeField
-                      label={`Start Date & Time (Choose both date & time)`}
-                      placeholder="Start Date & Time"
-                      value={state.start_date}
+                    <DatePicker
+                      placeholder="Start Date"
+                      title="Start Date"
+                      required
+                      error={state.errors?.start_date}
+                      closeIcon={true}
+                      selectedDate={state.start_date}
                       onChange={(date) => {
                         setState({
-                          ...state,
                           start_date: date,
-                          start_time: date,
-                          // end_date: null,
-                          errors: {
-                            ...state.errors,
-                            start_date: "",
-                            start_time: "",
-                          },
+                          errors: { ...state.errors, end_date: "" },
                         });
                       }}
-                      error={
-                        state.errors?.start_date || state.errors?.start_time
-                      }
-                      required
-                      fromDate={new Date()}
                     />
 
-                    <DateTimeField
-                      label="End Date & Time (Choose both date & time)"
-                      placeholder="End Date & Time"
-                      value={state.end_date}
+                    <DatePicker
+                      placeholder="End Date"
+                      title="End Date"
+                      required
+                      error={state.errors?.end_date}
+                      closeIcon={true}
+                      selectedDate={state.end_date}
                       onChange={(date) => {
                         setState({
-                          ...state,
                           end_date: date,
-                          end_time: date,
-                          errors: {
-                            ...state.errors,
-                            end_date: "",
-                            end_time: "",
-                          },
+                          errors: { ...state.errors, end_date: "" },
                         });
                       }}
-                      error={state.errors?.end_date || state.errors?.end_time}
-                      required
                       fromDate={state.start_date}
+                    />
+                  </div>
+                  <div className="grid auto-rows-min gap-4 grid-cols-2">
+                    <TimePicker
+                      title="Start Time"
+                      onChange={(value) => {
+                        console.log("✌️value --->", value);
+                        setState({
+                          start_time: value,
+                          errors: { ...state.errors, start_time: "" }
+                        });
+                      }}
+                      required
+                      error={state.errors?.start_time}
+                      value={state.start_time}
+                    />
+
+                    <TimePicker
+                      title="End Time"
+                      onChange={(value) => {
+                        setState({
+                          end_time: value,
+                          errors: { ...state.errors, end_time: "" }
+                        });
+                      }}
+                      error={state.errors?.end_time}
+                      required
+                      value={state.end_time}
                     />
                   </div>
 

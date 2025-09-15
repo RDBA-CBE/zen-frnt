@@ -213,24 +213,30 @@ const WellnessLoungeList = () => {
           <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
             <Eye size={20} className="mr-2" />
           </div>
-          <div
-            className="cursor-pointer"
-            onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
-          >
-            <Trash size={18} className="mr-2" />
-          </div>
-          <div
-            className="cursor-pointer"
-            onClick={() =>
-              setState({ isActiveOpen: true, activeData: row?.row })
-            }
-          >
-            <CircleX
-              size={20}
-              className="mr-2"
-              color={row?.row?.is_active ? "#88c742" : "red"}
-            />
-          </div>
+          {!row?.row?.is_booked && (
+            <>
+              <div
+                className="cursor-pointer"
+                onClick={() =>
+                  setState({ isOpen: true, deleteId: row?.row?.id })
+                }
+              >
+                <Trash size={18} className="mr-2" />
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() =>
+                  setState({ isActiveOpen: true, activeData: row?.row })
+                }
+              >
+                <CircleX
+                  size={20}
+                  className="mr-2"
+                  color={row?.row?.is_active ? "#88c742" : "red"}
+                />
+              </div>
+            </>
+          )}
         </div>
       ),
     },
