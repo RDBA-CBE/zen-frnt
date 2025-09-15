@@ -1,3 +1,10 @@
+export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
+
+export const AYURVEDIC_LOUNGE = 15;
+
+export const CLIENT_ID =
+  "652976835328-gr64duovnelh6j0tmts52huqa7aiodrc.apps.googleusercontent.com";
+
 export const welness_data = [
   {
     id: 1,
@@ -239,4 +246,30 @@ export const ROLE = [
     name: "Alumni Registration",
     value: "alumni",
   },
+];
+
+export const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+export const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const getTimeIntervals = [
+  { label: "30 Minutes", value: 30 },
+  { label: "1 Hour", value: 60 },
+  { label: "1.5 Hours", value: 90 },
+  { label: "2 Hours", value: 120 },
+  { label: "2.5 Hours", value: 150 },
+  { label: "3 Hours", value: 180 },
 ];
