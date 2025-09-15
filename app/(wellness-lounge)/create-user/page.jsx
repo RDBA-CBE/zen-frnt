@@ -27,6 +27,7 @@ import PhoneInput, {
 import "react-phone-number-input/style.css";
 import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
+import Checkboxs from "@/components/ui/singleCheckbox";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -55,6 +56,7 @@ const CreateUser = () => {
     work: "",
     country: null,
     countryList: [],
+    notify: false,
   });
 
   useEffect(() => {
@@ -118,20 +120,20 @@ const CreateUser = () => {
   };
 
   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
-      if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
-  
-      try {
-        const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., '91'
-        const expectedPrefix = `+${selectedCallingCode}`;
-  
-        // ✅ If phone starts with +91 and selected country is also 91 → DON'T clear
-        // ❌ If phone starts with +91 and selected country is something else → CLEAR
-        return !currentPhone.startsWith(expectedPrefix);
-      } catch (err) {
-        console.error("Phone check failed:", err);
-        return false;
-      }
+    if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
+
+    try {
+      const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., '91'
+      const expectedPrefix = `+${selectedCallingCode}`;
+
+      // ✅ If phone starts with +91 and selected country is also 91 → DON'T clear
+      // ❌ If phone starts with +91 and selected country is something else → CLEAR
+      return !currentPhone.startsWith(expectedPrefix);
+    } catch (err) {
+      console.error("Phone check failed:", err);
+      return false;
     }
+  }
 
   const onSubmit = async () => {
     try {
@@ -182,9 +184,8 @@ const CreateUser = () => {
             state?.user_type?.label === "Alumni"
               ? state?.country?.value
               : undefined,
+          notify: state.notify,
         };
-
-        console.log("body: ", body);
 
         await Validation.createUser.validate(body, {
           abortEarly: false,
@@ -206,6 +207,7 @@ const CreateUser = () => {
         formData.append("first_name", body.first_name);
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
+        formData.append("notify", body.notify);
 
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
@@ -295,6 +297,7 @@ Login credentials have been generated, and the user can now access the platform 
           university: state?.university?.value,
           intrested_topics: state?.intrested_topics?.map((item) => item.value),
           lable: state?.intrested_topics1,
+          notify: state.notify,
         };
 
         console.log("body: ", body); // For debugging purposes
@@ -321,6 +324,7 @@ Login credentials have been generated, and the user can now access the platform 
         formData.append("first_name", body.first_name);
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
+        formData.append("notify", body.notify);
 
         if (body.department) formData.append("department", body.department);
         if (body.university) formData.append("university", body.university);
@@ -355,7 +359,7 @@ Login credentials have been generated, and the user can now access the platform 
 
         // Redirect to user list page
         router.push("/user-list");
- Success(`The user ${state.firstname} ${state.lastname} has been successfully added to Zen Wellness.
+        Success(`The user ${state.firstname} ${state.lastname} has been successfully added to Zen Wellness.
 Login credentials have been generated, and the user can now access the platform and explore available wellness programs.
 `);
 
@@ -578,36 +582,38 @@ Login credentials have been generated, and the user can now access the platform 
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"Country"} {""}<span className="text-red-500">*</span>
+                    {"Country"} {""}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="phone-input-wrapper pt-1">
-                     <Select
-                    options={state.countryList || []}
-                    value={state.country || ""}
-                    onChange={(value) => {
-                       const shouldClear = shouldClearPhoneNumber(value, state.phone_number);
-                      setState({ country: value,
-                        phone_number: shouldClear ? "" : state.phone_number,
-                        
+                    <Select
+                      options={state.countryList || []}
+                      value={state.country || ""}
+                      onChange={(value) => {
+                        const shouldClear = shouldClearPhoneNumber(
+                          value,
+                          state.phone_number
+                        );
+                        setState({
+                          country: value,
+                          phone_number: shouldClear ? "" : state.phone_number,
                         });
-                    }}
-                    placeholder="Select Your Country"
-                    className="text-sm"
-                    menuPortalTarget={document.body}
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                    isClearable
-                  />
+                      }}
+                      placeholder="Select Your Country"
+                      className="text-sm"
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      }}
+                      isClearable
+                    />
 
-                   {state.errors?.country && (
+                    {state.errors?.country && (
                       <p className="mt-2 text-sm text-red-600">
                         {state.errors?.country}
                       </p>
                     )}
-                  
                   </div>
-                 
                 </div>
 
                 <div className="space-y-1">
@@ -623,8 +629,8 @@ Login credentials have been generated, and the user can now access the platform 
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
-              //          countryCallingCodeEditable={false} // 🔒 disables editing country code
-              // countrySelectComponent={() => null}
+                      //          countryCallingCodeEditable={false} // 🔒 disables editing country code
+                      // countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">
@@ -633,8 +639,6 @@ Login credentials have been generated, and the user can now access the platform 
                     )}
                   </div>
                 </div>
-
-                
               </>
             ) : state?.user_type?.label === "Student" ? (
               <>
@@ -687,16 +691,19 @@ Login credentials have been generated, and the user can now access the platform 
 
           {state?.user_type?.label !== "Admin" && (
             <>
-            <div className="space-y-1">
+              <div className="space-y-1">
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  {"University"}  <span className="text-red-500">*</span>
+                  {"University"} <span className="text-red-500">*</span>
                 </label>
                 <Select
                   options={state?.universityList || []}
                   value={state.university || ""}
-                  onChange={(value) => setState({ university: value ,
-                    errors: { ...state.errors, university: "" },
-                  })}
+                  onChange={(value) =>
+                    setState({
+                      university: value,
+                      errors: { ...state.errors, university: "" },
+                    })
+                  }
                   placeholder="Select University"
                   className="z-50 text-sm"
                   menuPortalTarget={document.body}
@@ -704,11 +711,11 @@ Login credentials have been generated, and the user can now access the platform 
                   isClearable
                   required
                 />
-                 {state.errors?.university && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {state.errors?.university}
-                      </p>
-                    )}
+                {state.errors?.university && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {state.errors?.university}
+                  </p>
+                )}
               </div>
               <div className="space-y-1">
                 <TextInput
@@ -718,11 +725,13 @@ Login credentials have been generated, and the user can now access the platform 
                   error={state.errors?.department}
                   title="Department"
                   value={state.department}
-                  onChange={(e) => setState({ department: e.target.value,
-                     errors: { ...state.errors, department: "" },
-                   })}
+                  onChange={(e) =>
+                    setState({
+                      department: e.target.value,
+                      errors: { ...state.errors, department: "" },
+                    })
+                  }
                   required
-
                 />
               </div>
               {/* <div className="space-y-1">
@@ -753,29 +762,29 @@ Login credentials have been generated, and the user can now access the platform 
 
               {state?.user_type?.label === "Alumni" && (
                 <>
-                <TextArea
-                  name="Address"
-                  value={state.address}
-                  onChange={(e) => {
-                    setState({ address: e.target.value });
-                  }}
-                  className="mt-2 w-full"
-                  placeholder="Address"
-                  title="Address"
-                />
+                  <TextArea
+                    name="Address"
+                    value={state.address}
+                    onChange={(e) => {
+                      setState({ address: e.target.value });
+                    }}
+                    className="mt-2 w-full"
+                    placeholder="Address"
+                    title="Address"
+                  />
 
-                <CustomSelect
-                  options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
-                  value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) =>
-                    setState({ is_open_to_be_mentor: value })
-                  }
-                  error={state.errors?.is_open_to_be_mentor}
-                  title="Are you open to being a mentor?"
-                  placeholder="Select"
-                />
+                  <CustomSelect
+                    options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
+                    value={state.is_open_to_be_mentor?.value || ""}
+                    onChange={(value) =>
+                      setState({ is_open_to_be_mentor: value })
+                    }
+                    error={state.errors?.is_open_to_be_mentor}
+                    title="Are you open to being a mentor?"
+                    placeholder="Select"
+                  />
                 </>
-              ) }
+              )}
 
               <div className="space-y-1">
                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -807,6 +816,7 @@ Login credentials have been generated, and the user can now access the platform 
                     />
                   </div>
                 )}
+
               {/* <div className="space-y-1">
                 <CustomSelect
                   options={state?.universityList || []} // Safely pass empty array if universityList is null
@@ -817,7 +827,16 @@ Login credentials have been generated, and the user can now access the platform 
                   placeholder="Select University"
                 />
               </div> */}
-              
+              <div className="pt-2 pb-2">
+                <Checkboxs
+                  label={"Notify me on these topics"}
+                  checked={state.notify}
+                  onChange={(val) => {
+                    console.log("✌️val --->", val);
+                    setState({ notify: val });
+                  }}
+                />
+              </div>
             </>
           )}
 
