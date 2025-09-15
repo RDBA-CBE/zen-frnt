@@ -36,7 +36,7 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
-import { orderStatusList } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 
@@ -81,13 +81,8 @@ const WellnessLoungeList = () => {
   const getOrdersList = async (page) => {
     try {
       setState({ loading: true });
-      // let pages = 1;
       let body = bodyData();
-      // if (objIsEmpty(body)) {
-      //     pages = page;
-      // } else {
-      //     pages = 1;
-      // }
+
       const res = await Models.session.registrationList(page, body);
 
       setState({
@@ -137,7 +132,10 @@ const WellnessLoungeList = () => {
   };
 
   const bodyData = () => {
-    let body = {};
+    let body = {
+      exclude_category:AYURVEDIC_LOUNGE
+
+    };
     if (state.search) {
       body.search = state.search;
     }
@@ -161,8 +159,11 @@ const WellnessLoungeList = () => {
   };
 
   const handleView = (item) => {
-    console.log("Viewing:", item);
-    router.push(`/view-order/?id=${item?.id}`);
+    if (item?.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
+      router.push(`/view-paid-order/?id=${item?.id}`);
+    } else {
+      router.push(`/view-order/?id=${item?.id}`);
+    }
   };
 
   const deleteSession = async () => {

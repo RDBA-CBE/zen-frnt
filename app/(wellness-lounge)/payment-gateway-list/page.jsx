@@ -1,14 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-
-import { Edit, Eye, MoreHorizontal, PlusIcon, Trash } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Edit, Eye, EyeOff, PlusIcon, Trash } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
@@ -35,6 +28,11 @@ const PaymentGatewayList = () => {
     submitLoading: false,
     errors: {},
     isOpenView: false,
+    public_key: "",
+    secret_key: "",
+    description: "",
+    isPublic_key: false,
+    isSecret_key: false,
   });
 
   useEffect(() => {
@@ -78,49 +76,27 @@ const PaymentGatewayList = () => {
           <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
             <Eye size={20} className="mr-2" />
           </div>
-          <div className="cursor-pointer" onClick={() =>
-            setState({ isOpenDelete: true, deleteId: row?.row?.id })
-          }>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              setState({ isOpenDelete: true, deleteId: row?.row?.id })
+            }
+          >
             <Trash size={18} className="mr-2" />
           </div>
-        </div >
-        // <DropdownMenu>
-        //   <DropdownMenuTrigger asChild>
-        //     <button className="p-2 rounded-md hover:bg-gray-200">
-        //       <MoreHorizontal size={20} />
-        //     </button>
-        //   </DropdownMenuTrigger>
-        //   <DropdownMenuContent align="end" className="w-32">
-        //     <DropdownMenuItem onClick={() => handleEdit(row?.row)}>
-        //       <Edit size={16} className="mr-2" />
-        //       Edit
-        //     </DropdownMenuItem>
-        //     <DropdownMenuItem onClick={() => handleView(row?.row)}>
-        //       <Eye size={16} className="mr-2" />
-        //       View
-        //     </DropdownMenuItem>
-        //     <DropdownMenuItem
-        //       onClick={() =>
-        //         setState({ isOpenDelete: true, deleteId: row?.row?.id })
-        //       }
-        //       className="text-red-500"
-        //     >
-        //       <Trash size={16} className="mr-2" />
-        //       Delete
-        //     </DropdownMenuItem>
-        //   </DropdownMenuContent>
-        // </DropdownMenu>
+        </div>
       ),
     },
   ];
 
   const handleEdit = (item) => {
+    console.log("✌️item --->", item);
     setState({
       editData: item,
       name: item.name,
       description: item.description,
-      public_key: item?.public_key,
-      secret_key: item.secret_key,
+      public_key: item?.credentials?.public_key,
+      secret_key: item.credentials?.secret_key,
       isOpen: true,
     });
   };
@@ -187,14 +163,23 @@ const PaymentGatewayList = () => {
   const updateGatway = async () => {
     try {
       setState({ submitLoading: true });
-
-      const body = {
+      const validation = {
         name: state.name,
         description: state.description,
         public_key: state?.public_key,
         secret_key: state.secret_key,
       };
-      await Validation.createPaymetGayway.validate(body, {
+
+      const body = {
+        name: state.name,
+        description: state.description,
+        credentials: {
+          public_key: state?.public_key,
+
+          secret_key: state.secret_key,
+        },
+      };
+      await Validation.createPaymetGayway.validate(validation, {
         abortEarly: false,
       });
       await Models.payment_gateway.update(body, state.editData?.id);
@@ -287,7 +272,7 @@ const PaymentGatewayList = () => {
               required
               error={state.errors?.name}
             />
-            <TextInput
+            {/* <TextInput
               value={state.public_key}
               onChange={(e) => {
                 setState({ public_key: e.target.value });
@@ -296,8 +281,34 @@ const PaymentGatewayList = () => {
               title="Public Key"
               required
               error={state.errors?.public_key}
-            />
-            <TextInput
+            /> */}
+            <div className="relative">
+              <TextInput
+                id="public_key"
+                type={state.isPublic_key ? "text" : "password"}
+                placeholder="Public Key"
+                required
+                title="Public Key"
+                value={state.public_key}
+                onChange={(e) =>
+                  setState({
+                    public_key: e.target.value,
+                  })
+                }
+                error={state.errors?.public_key}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setState({ isPublic_key: !state.isPublic_key });
+                }}
+                className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+              >
+                {state?.isPublic_key ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
+            {/* <TextInput
               value={state.secret_key}
               onChange={(e) => {
                 setState({ secret_key: e.target.value });
@@ -306,7 +317,34 @@ const PaymentGatewayList = () => {
               title="Secret Key"
               required
               error={state.errors?.secret_key}
-            />
+            /> */}
+
+            <div className="relative">
+              <TextInput
+                id="public_key"
+                type={state.isSecret_key ? "text" : "password"}
+                required
+                placeholder="Secret Key"
+                title="Secret Key"
+                value={state.secret_key}
+                onChange={(e) =>
+                  setState({
+                    secret_key: e.target.value,
+                  })
+                }
+                error={state.errors?.secret_key}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setState({ isSecret_key: !state.isSecret_key });
+                }}
+                className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+              >
+                {state?.isSecret_key ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
 
             <TextArea
               name="Description"
@@ -321,13 +359,15 @@ const PaymentGatewayList = () => {
 
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 name="Cancel"
                 onClick={() => clearRecord()}
               />
 
               <PrimaryButton
-                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() =>
                   objIsEmpty(state.editData) ? createGatway() : updateGatway()
                 }
@@ -394,7 +434,8 @@ const PaymentGatewayList = () => {
             <div className="flex justify-end gap-5">
               <PrimaryButton
                 variant={"outline"}
-                name="Close" className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
+                name="Close"
+                className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 onClick={() =>
                   setState({
                     isOpenView: false,
@@ -414,7 +455,8 @@ const PaymentGatewayList = () => {
           <>
             <div className="flex justify-end gap-5">
               <PrimaryButton
-                variant={"outline"} className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
+                variant={"outline"}
+                className="border-themeGreen hover:border-themeGreen text-themeGreen text:border-themeGreen "
                 name="Cancel"
                 onClick={() =>
                   setState({ isOpenDelete: false, deleteId: null })
@@ -422,7 +464,8 @@ const PaymentGatewayList = () => {
               />
 
               <PrimaryButton
-                name="Submit" className="bg-themeGreen hover:bg-themeGreen"
+                name="Submit"
+                className="bg-themeGreen hover:bg-themeGreen"
                 onClick={() => deleteGatway()}
                 loading={state.deleteLoading}
               />
