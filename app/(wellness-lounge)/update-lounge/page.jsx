@@ -82,6 +82,7 @@ const UpdateWellnessLounge = () => {
     isAnyBooked: false,
     intrested_topics: [],
     passcode: "",
+    timezone: "",
   });
 
   useEffect(() => {
@@ -691,19 +692,19 @@ const UpdateWellnessLounge = () => {
                   }}
                   fromDate={state.start_date}
                 />
-                <TimezoneSelector
-                  title="Timezone"
-                  required
-                  error={state.errors?.timezone}
-                  value={state.timezone}
-                  onChange={(tz) => {
-                    setState({
-                      timezone: tz?.value,
-                      timezones: tz?.label,
-                      errors: { ...state.errors, timezone: "" },
-                    });
-                  }}
-                />
+                 <TimezoneSelector
+                title="Timezone"
+                required
+                error={state.errors?.timezone}
+                value={state.timezone}
+                onChange={(tz) => {
+                  setState({
+                    timezone: tz?.value,
+                    timezones: tz?.label,
+                    errors: { ...state.errors, timezone: "" },
+                  });
+                }}
+              />
               </div>
 
               <SlideCalender
