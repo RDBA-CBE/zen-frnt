@@ -91,9 +91,9 @@ const SingleAppointmentBooking = () => {
 
     try {
       const res = await Models.session.details(id);
-      slotList(id);
+      await slotList(id);
 
-      setState({ orderData: res, loading: false }); // Set data and stop loading
+      setState({ orderData: re}); // Set data and stop loading
     } catch (error) {
       console.log("Error:", error);
 
@@ -103,6 +103,8 @@ const SingleAppointmentBooking = () => {
 
   const slotList = async (id) => {
     try {
+    setState({ loading: true }); // Start loading
+
       const res = await Models.session.details(id);
 
       let total = 0;
@@ -111,7 +113,8 @@ const SingleAppointmentBooking = () => {
       const startDate = new Date(res?.start_date);
 
       const endDate = new Date(res?.end_date);
-      setState({ startDate, endDate, total: total, selectedRecord: res });
+      setState({ startDate, endDate, total: total, selectedRecord: res,loading:false });
+
     } catch (error) {
       if (error?.length > 0) {
         Failure(error[0]);
@@ -126,7 +129,7 @@ const SingleAppointmentBooking = () => {
 
       const res = await Models.payment_gateway.list();
 
-      setState({ paymentGatewayList: res?.results });
+      setState({ paymentGatewayList: res?.results, loading: false });
     } catch (error) {
       setState({ loading: false });
 
@@ -437,7 +440,11 @@ const SingleAppointmentBooking = () => {
     });
   };
 
-  return (
+  return state.loading ? (
+    <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+    </div>
+  ) : (
     <div className="container mx-auto max-w-6xl p-4 border border-1 rounded-md">
       <h1 className="text-2xl font-bold mb-3">Book an appointment</h1>
       <p className="text-gray-600 mb-1  font-bold">

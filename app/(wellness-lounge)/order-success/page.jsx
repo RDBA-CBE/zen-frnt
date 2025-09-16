@@ -2,7 +2,15 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { CheckCircle, Calendar, Clock, Home, User, MapPin } from "lucide-react";
+import {
+  CheckCircle,
+  Calendar,
+  Clock,
+  Home,
+  User,
+  MapPin,
+  Video,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,6 +22,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import Models from "@/imports/models.import";
 import moment from "moment";
+import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 export default function BookingConfirmationPage() {
   const searchParams = useSearchParams();
@@ -51,7 +60,11 @@ export default function BookingConfirmationPage() {
 
   const handleClick = (type) => {
     if (type == "detail") {
-      router.push(`/profile`);
+      if (state.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
+        router.push(`/view-paid-order?id=${state.orderDetail?.id}`);
+      } else {
+        router.push(`/view-order?id=${state.orderDetail?.id}`);
+      }
     } else {
       router.push("/calendar");
     }
@@ -113,11 +126,13 @@ export default function BookingConfirmationPage() {
                     <div className="flex justify-between items-start py-3 border-t  ">
                       <div className="flex-1">
                         <p className="font-medium text-green-500">
-                          {`Coupon Code : ${ state.orderDetail?.coupon?.code}`}
+                          {`Coupon Code : ${state.orderDetail?.coupon?.code}`}
                         </p>
                       </div>
                       <p className="font-semibold text-green-500">
-                        {`- ₹${formatNumber(state.orderDetail?.discount_amount|| 0)}`}
+                        {`- ₹${formatNumber(
+                          state.orderDetail?.discount_amount || 0
+                        )}`}
                       </p>
                     </div>
                   )}
@@ -177,7 +192,6 @@ export default function BookingConfirmationPage() {
                   <p>{bookingDetails.studioAddress.country}</p>
                 </div>
               </div> */}
-
               <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -187,6 +201,19 @@ export default function BookingConfirmationPage() {
                   {state.event?.moderator?.email}
                 </p>
               </div>
+              {state.event?.session_link && (
+                <Button className="bg-themePurple hover:bg-themePurple/90 text-white px-6 py-3 rounded-lg">
+                  <Link
+                    href={state.event?.session_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <Video className="w-5 h-5" />
+                    Join Meeting
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
