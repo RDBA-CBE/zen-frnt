@@ -45,13 +45,12 @@ const CreateUser = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const idFromSearchParams = searchParams.get("id");
+      console.log("idFromSearchParams: ", idFromSearchParams);
       if (idFromSearchParams) {
         setId(idFromSearchParams);
       }
     }
   }, [searchParams]);
-
-  const groups = useSelector((state) => state.auth.groups);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -88,11 +87,26 @@ const CreateUser = () => {
     getCountry();
   }, [id]);
 
+  useEffect(() => {
+    const preventBackNavigation = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener("popstate", preventBackNavigation);
+
+    return () => {
+      window.removeEventListener("popstate", preventBackNavigation);
+    };
+  }, []);
+
   const getGroupList = async () => {
     try {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
-      setState({ groupList: Dropdowns });
+      const filter = Dropdowns.filter((item) => item?.value != 5);
+      setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
     }
@@ -372,9 +386,19 @@ const CreateUser = () => {
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
-        await Models.user.updateUser(formData, id);
+        const res = await Models.user.updateUser(formData, id);
+        console.log("updated --->", res);
+         localStorage.setItem(
+          "username",
+          `${res?.first_name || ""} ${res?.last_name || ""}`
+        );
+        localStorage.setItem("group", res.groups?.[0] || "");
         setState({ submitLoading: false });
-        router?.back();
+        router.push("/");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 100);
+
         Success(
           `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
         );
@@ -442,9 +466,21 @@ const CreateUser = () => {
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
-        await Models.user.updateUser(formData, id);
+        const res = await Models.user.updateUser(formData, id);
+        console.log("updated 1--->", res);
+
+        localStorage.setItem(
+          "username",
+          `${res?.first_name || ""} ${res?.last_name || ""}`
+        );
+        localStorage.setItem("group", res.groups?.[0] || "");
+
         setState({ submitLoading: false });
-        router?.back();
+        router.push("/");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 100);
+
         Success(
           `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
         );
@@ -954,12 +990,12 @@ const CreateUser = () => {
           }
 
           <div className="flex justify-end gap-5 mt-10">
-            <PrimaryButton
+            {/* <PrimaryButton
               variant={"outline"}
               name="Cancel"
               className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
               onClick={() => router.push("/user-list")}
-            />
+            /> */}
 
             <PrimaryButton
               name="Submit"
