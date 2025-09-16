@@ -2,7 +2,12 @@
 
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
+import {
+  Dropdown,
+  formatNumber,
+  UserDropdown,
+  useSetState,
+} from "@/utils/function.utils";
 
 import CustomSelect from "@/components/common-components/dropdown";
 
@@ -17,6 +22,10 @@ import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import BookingSlots from "@/components/common-components/bookingSlots";
 import moment from "moment";
+import { TextInput } from "@/components/common-components/textInput";
+import { Card } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/dataTable";
+import { Label } from "@radix-ui/react-label";
 
 const CreateOrder = () => {
   const router = useRouter();
@@ -38,6 +47,8 @@ const CreateOrder = () => {
     lounge_type: null,
     eventSlot: [],
     eventId: null,
+    price: 0,
+    sessionDetail: [],
   });
 
   useEffect(() => {
@@ -210,6 +221,8 @@ const CreateOrder = () => {
           eventId: res?.id,
           event: value,
           errors: { ...state.errors, event: "", lounge_type: "" },
+          price: formatNumber(res?.price),
+          sessionDetail: [res],
         });
       } else {
         setState({ lounge_type: null, event: null });
@@ -217,93 +230,48 @@ const CreateOrder = () => {
     } catch (error) {}
   };
 
-  // const handleLoungeChange = async (value) => {
-  //   try {
-  //     if (value) {
-  //       const res = await Models.session.details(value?.value);
-  //       console.log('✌️res --->', res);
-
-  //       const currentDateTime = moment();
-
-  //       // Check if the lounge has already ended
-  //       const loungeEndDate = moment(res.end_date);
-  //       const loungeEndTime = moment(res.end_time, 'HH:mm:ss');
-
-  //       // Combine date and time for the lounge end
-  //       const loungeEndDateTime = loungeEndDate
-  //         .set({
-  //           hour: loungeEndTime.hour(),
-  //           minute: loungeEndTime.minute(),
-  //           second: loungeEndTime.second()
-  //         });
-
-  //       // Check if lounge has already ended
-  //       if (loungeEndDateTime.isBefore(currentDateTime)) {
-  //         setState({
-  //           event: null,
-  //           errors: {
-  //             ...state.errors,
-  //             event: "Cannot book this lounge. It has already ended."
-  //           },
-  //         });
-  //         return;
-  //       }
-
-  //       // Check if the lounge start date/time is at least one day from now
-  //       const loungeStartDate = moment(res.start_date);
-  //       const loungeStartTime = moment(res.start_time, 'HH:mm:ss');
-
-  //       // Combine date and time for the lounge start
-  //       const loungeStartDateTime = loungeStartDate
-  //         .set({
-  //           hour: loungeStartTime.hour(),
-  //           minute: loungeStartTime.minute(),
-  //           second: loungeStartTime.second()
-  //         });
-
-  //       // Calculate 24 hours from now
-  //       const twentyFourHoursFromNow = moment().add(24, 'hours');
-
-  //       // Check if lounge starts at least 24 hours from now OR is already ongoing
-  //       if (loungeStartDateTime.isAfter(twentyFourHoursFromNow) ||
-  //           (loungeStartDateTime.isBefore(currentDateTime) && loungeEndDateTime.isAfter(currentDateTime))) {
-  //         getEventSlot(res?.id);
-  //         setState({
-  //           lounge_type: res?.lounge_type?.id,
-  //           start_date: res?.start_date,
-  //           end_date: res?.end_date,
-  //           eventId: res?.id,
-  //           event: value,
-  //           errors: { ...state.errors, event: "", lounge_type: "" },
-  //         });
-  //       } else {
-  //         // Show error if lounge starts in less than 24 hours and hasn't started yet
-  //         setState({
-  //           event: null,
-  //           errors: {
-  //             ...state.errors,
-  //             event: "Cannot book this lounge. It starts in less than 24 hours."
-  //           },
-  //         });
-  //       }
-  //     } else {
-  //       setState({
-  //         lounge_type: null,
-  //         event: null,
-  //         errors: { ...state.errors, event: "" }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error handling lounge change:", error);
-  //     setState({
-  //       event: null,
-  //       errors: {
-  //         ...state.errors,
-  //         event: "Error loading lounge details."
-  //       },
-  //     });
-  //   }
-  // };
+  const columns = [
+    {
+      Header: "Title",
+      accessor: "title",
+    },
+    {
+      Header: "Lounge Type",
+      accessor: "lounge_type",
+      Cell: (row) => <Label>{row?.row?.lounge_type?.name}</Label>,
+    },
+    {
+      Header: "Start Date",
+      accessor: "start_date",
+      Cell: (row) => (
+        <Label>{moment(row?.row?.start_date).format("DD-MM-YYYY")}</Label>
+      ),
+    },
+    {
+      Header: "End Date",
+      accessor: "end_date",
+      Cell: (row) => (
+        <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
+      ),
+    },
+    {
+      Header: "Start Time",
+      accessor: "start_time",
+      Cell: (row) => <Label>{row?.row?.start_time}</Label>,
+    },
+    {
+      Header: "End Time",
+      accessor: "end_time",
+      Cell: (row) => <Label>{row?.row?.end_time}</Label>,
+    },
+    // {
+    //     Header: "Action",
+    //     accessor: "action",
+    //     Cell: (row: any) => (
+    //         <XIcon onClick={setState({lounge: null})}/>
+    //     )
+    // }
+  ];
 
   const getEventSlot = async (id) => {
     try {
@@ -418,40 +386,58 @@ const CreateOrder = () => {
               placeholder="Select Lounge"
               loadOptions={loadLoungeOptions}
             />
-            {state.lounge_type == AYURVEDIC_LOUNGE && (
-              <>
-                <BookingSlots
-                  error={state.errors?.slot}
-                  startDate={state.start_date || new Date()}
-                  endDate={state.end_date || new Date()}
-                  slotInterval={state.interval?.value || 30}
-                  getSlots={(data) => {
-                    if (data) {
-                      setState({ errors: { ...state.errors, slot: "" } });
-                    }
-                    setState({ slots: data });
-                  }}
-                  eventSlot={state.eventSlot}
-                  eventId={state.eventId}
-                />
-              </>
-            )}
-            {state.lounge_type != 15 && (
-              <CustomSelect
-                options={orderStatusList}
-                value={state.registration_status?.value || ""}
-                onChange={(value) =>
-                  setState({
-                    registration_status: value,
-                    errors: { ...state.errors, registration_status: "" },
-                  })
-                }
-                title="Select Session Status"
-                error={state.errors?.registration_status}
-                required
-                placeholder="Select Session Status"
-              />
-            )}
+            {state.lounge_type ? (
+              state.lounge_type == AYURVEDIC_LOUNGE ? (
+                <>
+                  <BookingSlots
+                    error={state.errors?.slot}
+                    startDate={state.start_date || new Date()}
+                    endDate={state.end_date || new Date()}
+                    slotInterval={state.interval?.value || 30}
+                    getSlots={(data) => {
+                      if (data) {
+                        setState({ errors: { ...state.errors, slot: "" } });
+                      }
+                      setState({ slots: data });
+                    }}
+                    eventSlot={state.eventSlot}
+                    eventId={state.eventId}
+                  />
+                </>
+              ) : (
+                <Card className="w-[100%] mt-2 mb-4 p-2">
+                  <DataTable columns={columns} data={state.sessionDetail} />
+                </Card>
+              )
+            ) : null}
+            <TextInput
+              value={state.price}
+              onChange={(e) => {
+                setState({ price: e.target.value });
+              }}
+              placeholder={
+                state.lounge_type == AYURVEDIC_LOUNGE ? "Price" : "Credits"
+              }
+              title={
+                state.lounge_type == AYURVEDIC_LOUNGE ? "Price" : "Credits"
+              }
+              type="number"
+              disabled
+            />
+            <CustomSelect
+              options={orderStatusList}
+              value={state.registration_status?.value || ""}
+              onChange={(value) =>
+                setState({
+                  registration_status: value,
+                  errors: { ...state.errors, registration_status: "" },
+                })
+              }
+              title="Select Session Status"
+              error={state.errors?.registration_status}
+              required
+              placeholder="Select Session Status"
+            />
             <div className="flex justify-end gap-5 mt-10">
               <PrimaryButton
                 variant={"outline"}
