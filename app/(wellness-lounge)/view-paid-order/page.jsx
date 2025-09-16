@@ -282,7 +282,8 @@ const viewWellnessLounge = () => {
     if (user == "Admin") {
       router.push("/booking_list");
     } else {
-      router.push("/profile");
+      router.push("/student-order");
+
     }
   };
 

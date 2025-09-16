@@ -380,7 +380,7 @@ export default function BookingFailedPage() {
           <Button
             asChild
             className="flex-1 sm:flex-none poiner"
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push("/student-order")}
           >
             <div className="flex items-center gap-2 cursor-pointer">
               <Calendar className="h-4 w-4" />

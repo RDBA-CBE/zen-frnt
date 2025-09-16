@@ -88,7 +88,6 @@ const ProfilePage = () => {
       console.log("Error fetching user details: ", error);
     }
   };
-  console.log("✌️state?.id --->", state?.id);
 
   const orderList = async (page) => {
     try {
@@ -219,12 +218,13 @@ const ProfilePage = () => {
               >
                 Profile
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="orders"
                 className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
+
               >
                 Orders
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger
                 value="change-password"
                 className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
