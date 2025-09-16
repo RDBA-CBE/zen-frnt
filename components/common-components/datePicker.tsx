@@ -21,6 +21,7 @@ interface DatePickerProps {
   closeIcon?: boolean;
   // disablePastDates?: boolean; // Added prop to disable past dates
   fromDate?: Date;
+  disabled?: boolean;
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
@@ -33,7 +34,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   closeIcon,
   // disablePastDates = false, // Default value is false
   fromDate,
+  disabled,
 }) => {
+ 
+
   return (
     <div className="w-full relative">
       {title && (
@@ -43,69 +47,64 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       )}
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full justify-between text-left font-normal pr-10 relative",
-              !selectedDate && "text-muted-foreground"
-            )}
-          >
-            <div className="flex items-center gap-3">
-              <CalendarIcon height={20} width={20} />
-              {selectedDate ? (
-                format(selectedDate, "PPP")
-              ) : (
-                <span>{placeholder}</span>
+          <div className="relative w-full">
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-between text-left font-normal pr-10",
+                !selectedDate && "text-muted-foreground"
               )}
-            </div>
-          </Button>
+            >
+              <div className="flex items-center gap-3">
+                <CalendarIcon height={20} width={20} />
+                {selectedDate ? (
+                  format(selectedDate, "PPP")
+                ) : (
+                  <span>{placeholder}</span>
+                )}
+              </div>
+            </Button>
+
+            {selectedDate && closeIcon && !disabled && (
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange?.(null);
+                }}
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          {/* <Calendar
-            fromDate={fromDate ? fromDate : null}
+          <Calendar
             mode="single"
             selected={selectedDate || undefined}
             onSelect={(date) => onChange?.(date ?? null)}
             initialFocus
-            disabled={
-              disablePastDates
-                ? (date) => date <= new Date() // Disable dates before today
-                : undefined
-            }
-            captionLayout="dropdown" // <-- Enables month & year dropdowns
-            fromYear={1900} // <-- Earliest year allowed
-            toYear={new Date().getFullYear() + 5} // <-- Latest year
-          /> */}
-          <Calendar
-  fromDate={fromDate ?? null}
-  mode="single"
-  selected={selectedDate || undefined}
-  onSelect={(date) => onChange?.(date ?? null)}
-  initialFocus
-  disabled={(date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // If fromDate is selected, disable all dates before it
-    if (fromDate) {
-      const from = new Date(fromDate);
-      from.setHours(0, 0, 0, 0);
-      return date < from;
-    }
+            disabled={(date) => {
+              if (disabled) return true;
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
 
-    // Else disable past dates before today
-    const current = new Date(date);
-    current.setHours(0, 0, 0, 0);
-    return current < today;
-  }}
-  captionLayout="dropdown"
-  fromYear={1900}
-  toYear={new Date().getFullYear() + 5}
-/>
+              if (fromDate) {
+                const from = new Date(fromDate);
+                from.setHours(0, 0, 0, 0);
+                return date < from;
+              }
 
+              return date < today;
+            }}
+            captionLayout="dropdown"
+            fromYear={1900}
+            toYear={new Date().getFullYear() + 5}
+          />
         </PopoverContent>
       </Popover>
-
+      {/* 
       {selectedDate && closeIcon && (
         <button
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
@@ -116,7 +115,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         >
           <X size={18} />
         </button>
-      )}
+      )} */}
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
