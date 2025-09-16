@@ -320,7 +320,7 @@ const LoginForm = (props) => {
                         size="large"
                         text="signin_with"
                         logo_alignment="left"
-                        width="300"
+                        // width="300"
                       />
                     </div>
 
