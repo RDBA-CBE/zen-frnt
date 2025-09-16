@@ -209,11 +209,11 @@ const WellnessLoungeList = () => {
 
   const columns = [
     {
-      Header: "Booking Id",
+      Header: "Session Id",
       accessor: "registration_id",
     },
     {
-      Header: "Booking Date",
+      Header: "Session Date",
       accessor: "registration_date",
       Cell: (row) => (
         <Label>
@@ -222,7 +222,7 @@ const WellnessLoungeList = () => {
       ),
     },
     {
-      Header: "Booking Status",
+      Header: "Session Status",
       accessor: "registration_status",
     },
     {
