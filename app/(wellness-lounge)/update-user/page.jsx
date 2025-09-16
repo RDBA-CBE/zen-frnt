@@ -23,7 +23,7 @@ import { Failure, Success } from "@/components/common-components/toast";
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
-import { mentorList } from "@/utils/constant.utils";
+import { MENTOR, mentorList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
 
@@ -92,7 +92,8 @@ const CreateUser = () => {
     try {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
-      setState({ groupList: Dropdowns });
+      const filter = Dropdowns?.filter((item) => item.value != MENTOR);
+      setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
     }

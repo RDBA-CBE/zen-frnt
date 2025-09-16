@@ -71,10 +71,8 @@ const CreateUser = () => {
   const getGroupList = async () => {
     try {
       const res = await Models.Common.groups();
-      console.log("res: ", res);
       const Dropdowns = Dropdown(res?.results, "name");
       const filter=Dropdowns?.filter((item)=>item.value != MENTOR)
-      console.log("Dropdowns: ", Dropdowns);
       setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
