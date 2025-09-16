@@ -203,18 +203,18 @@ const WellnessLoungeList = () => {
       Cell: (row) => <Label>{row?.row?.end_time}</Label>,
     },
 
-    {
-      Header: "Registration Count",
-      accessor: "event_registrations_count",
-      Cell: (row) => (
-        <Label
-          className="underline cursor-pointer"
-          onClick={() => handleClick(row?.row)}
-        >
-          {row?.row?.event_registrations_count}
-        </Label>
-      ),
-    },
+    // {
+    //   Header: "Registration Count",
+    //   accessor: "event_registrations_count",
+    //   Cell: (row) => (
+    //     <Label
+    //       className="underline cursor-pointer"
+    //       onClick={() => handleClick(row?.row)}
+    //     >
+    //       {row?.row?.event_registrations_count}
+    //     </Label>
+    //   ),
+    // },
     {
       Header: "Action",
       accessor: "action",
