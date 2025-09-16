@@ -277,6 +277,15 @@ const viewWellnessLounge = () => {
     return moment().isAfter(eventEnd);
   };
 
+  const handleClickOrder = async () => {
+    const user = localStorage.getItem("group");
+    if (user == "Admin") {
+      router.push("/booking_list");
+    } else {
+      router.push("/profile");
+    }
+  };
+
   return (
     <div className="container mx-auto py-6">
       {state.loading ? (
@@ -311,13 +320,23 @@ const viewWellnessLounge = () => {
                     </p>
                   )} */}
                 </div>
-                <div className="text-right">
-                  <p className="text-gray-600">
-                    Registration Date:{" "}
-                    {moment(state?.orderData?.registration_date).format(
-                      "DD-MMM-YYYY"
-                    )}
-                  </p>
+                <div>
+                  <div className="text-right">
+                    <p className="text-gray-600">
+                      Registration Date:{" "}
+                      {moment(state?.orderData?.registration_date).format(
+                        "DD-MMM-YYYY"
+                      )}
+                    </p>
+                  </div>
+                  <div className="pt-5 justify-end flex">
+                    <Button
+                      className="p-2 rounded bg-green-500 hover:themePurple text-white"
+                      onClick={() => handleClickOrder()}
+                    >
+                      <div className="rounded-sm">Booking List</div>
+                    </Button>
+                  </div>
                 </div>
               </div>
 

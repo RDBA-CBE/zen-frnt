@@ -16,6 +16,7 @@ import ProtectedRoute from "@/components/common-components/privateRouter";
 import NoEventFound from "@/components/common-components/noEventFound";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 const viewWellnessLounge = () => {
   const router = useRouter();
@@ -37,7 +38,7 @@ const viewWellnessLounge = () => {
   const [state, setState] = useSetState({
     orderData: [],
     error: null,
-    group:null
+    group: null,
   });
 
   useEffect(() => {
@@ -49,16 +50,13 @@ const viewWellnessLounge = () => {
   const getDetails = async () => {
     try {
       const res = await Models.session.registrationDetails(id);
-      console.log("✌️res --->", res);
       setState({
         orderData: res,
       });
       const link = extractZoomMeetingId(res?.event?.session_link);
-      console.log("✌️link --->", link);
       attendanceList(link);
-      const group=localStorage.getItem("group")
-console.log('✌️group --->', group);
-setState({group:group})
+      const group = localStorage.getItem("group");
+      setState({ group: group });
     } catch (error) {
       setState({ error: error?.detail });
       console.log("error: ", error);
@@ -93,6 +91,15 @@ setState({group:group})
     const eventEnd = moment(`${end_date} ${end_time}`, "YYYY-MM-DD HH:mm:ss");
 
     return moment().isAfter(eventEnd);
+  };
+
+  const handleClickOrder = async () => {
+    const user = localStorage.getItem("group");
+    if (user == "Admin") {
+      router.push("/order-list");
+    } else {
+      router.push("/profile");
+    }
   };
 
   return (
@@ -221,25 +228,36 @@ setState({group:group})
                         <p className="mb-3 italic" style={{ fontSize: "16px" }}>
                           Click the below button to join the meeting
                         </p>
-                        {isExpired() ? (
-                          <span className="text-red-500 font-semibold">
-                            Session Expired
-                          </span>
-                        ) : state?.orderData?.event?.session_link ? (
-                          <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
-                            <Link
-                              href={state.orderData.event?.session_link}
-                              className="rounded-sm"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              Join Meeting
-                            </Link>
+                        <div className="flex justify-between">
+                          <div>
+                            {isExpired() ? (
+                              <span className="text-red-500 font-semibold">
+                                Session Expired
+                              </span>
+                            ) : state?.orderData?.event?.session_link ? (
+                              <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
+                                <Link
+                                  href={state.orderData.event?.session_link}
+                                  className="rounded-sm"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Join Meeting
+                                </Link>
+                              </Button>
+                            ) : (
+                              "No session link available"
+                            )}
+                          </div>
+                          <Button
+                            className="p-2 rounded bg-green-500 hover:themePurple text-white"
+                            onClick={() => handleClickOrder()}
+                          >
+                            <div className="rounded-sm">Booking List</div>
                           </Button>
-                        ) : (
-                          "No session link available"
-                        )}
+                        </div>
                       </h4>
+
                       {/* {state?.orderData?.event?.session_link && (
                                     <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
                                         <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />
@@ -248,13 +266,12 @@ setState({group:group})
                     </div>
                   </div>
                 </div>
-                {state.attendanceList?.length > 0 && state.group == "Admin" && (
+                {/* {state.attendanceList?.length > 0 && state.group == "Admin" && (
                   <div className="lg:w-[800px] mx-auto border rounded-xl p-4 gap-4 flex flex-col mt-3">
                     <div className="">
                       <h5 className="text-xl font-semibold text-gray-800 mb-3">
                         Participated List
                       </h5>
-                      {/* User list */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
                         {state.attendanceList?.map((user) => (
                           <Card
@@ -296,26 +313,8 @@ setState({group:group})
                         ))}
                       </div>
                     </div>
-
-                    {/* Pagination */}
-                    {/* <div className="flex justify-center gap-4 mt-4">
-              <Button
-                variant="outline"
-                disabled={!state?.prev || state.loading}
-                onClick={() => handlePageChange(data?.previous)}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                disabled={!state?.next || loading}
-                onClick={() => handlePageChange(data?.next)}
-              >
-                Next
-              </Button>
-            </div> */}
                   </div>
-                )}
+                )} */}
               </div>
             </>
           )}
