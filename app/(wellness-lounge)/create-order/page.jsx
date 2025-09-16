@@ -111,8 +111,44 @@ const CreateOrder = () => {
 
   const loadLoungeOptions = async (search, loadedOptions, { page }) => {
     try {
-      const res = await Models.session.dropdownLoungelistWithPage(page);
+      if (!state.session?.value) {
+        return {
+          options: [],
+          hasMore: false,
+          additional: {
+            page: page,
+          },
+        };
+      }
+      const body = {
+        lounge_type: state.session?.value,
+      };
+
+      const res = await Models.session.eventFilter(page, body);
+      console.log("✌️res --->", res);
       const Dropdowns = UserDropdown(res?.results, (item) => `${item.title} `);
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
+  const loadSessionOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.category.listWithPage(page);
+      const Dropdowns = Dropdown(res?.results, "name");
       return {
         options: Dropdowns,
         hasMore: !!res?.next,
@@ -146,8 +182,9 @@ const CreateOrder = () => {
         event: state?.eventId,
         slot: state.slots?.fullSlot?.id,
         lounge_type: state.lounge_type,
+        session:state.session?.value
+
       };
-      console.log("✌️valid --->", valid);
 
       if (state.lounge_type == AYURVEDIC_LOUNGE) {
         body.slot = state.slots?.fullSlot?.id;
@@ -208,8 +245,9 @@ const CreateOrder = () => {
     (item) => item?.id == state?.user?.value
   );
 
-  const handleLoungeChange = async (value) => {
+  const handleSessionChange = async (value) => {
     try {
+      setState({ session: value });
       if (value) {
         const res = await Models.session.details(value?.value);
         console.log("✌️res --->", res);
@@ -220,6 +258,27 @@ const CreateOrder = () => {
           end_date: res?.end_date,
           eventId: res?.id,
           event: value,
+          errors: { ...state.errors, event: "", lounge_type: "" },
+          price: formatNumber(res?.price),
+          sessionDetail: [res],
+        });
+      } else {
+        setState({ lounge_type: null, event: null });
+      }
+    } catch (error) {}
+  };
+
+  const handleLoungeChange = async (value) => {
+    try {
+      setState({ event: value });
+      if (value) {
+        const res = await Models.session.details(value?.value);
+        getEventSlot(res?.id);
+        setState({
+          lounge_type: res?.lounge_type?.id,
+          start_date: res?.start_date,
+          end_date: res?.end_date,
+          eventId: res?.id,
           errors: { ...state.errors, event: "", lounge_type: "" },
           price: formatNumber(res?.price),
           sessionDetail: [res],
@@ -376,6 +435,38 @@ const CreateOrder = () => {
 
           <div className="border rounded-xl p-4 gap-4 flex flex-col ">
             <LoadMoreDropdown
+              value={state.session}
+              onChange={(value) => {
+                if (value) {
+                  setState({
+                    session: value,
+                    event: null,
+                    lounge_type: null,
+                    sessionDetail: [],
+                    slots: [],
+                    errors: { ...state.errors, session: "" },
+                    price:0
+
+
+                  });
+                } else {
+                  setState({
+                    event: null,
+                    lounge_type: null,
+                    sessionDetail: [],
+                    slots: [],
+                    session: null,
+                    price:0
+                  });
+                }
+              }}
+              title="Select Session"
+              error={state.errors?.session}
+              required
+              placeholder="Select Session"
+              loadOptions={loadSessionOptions}
+            />
+            <LoadMoreDropdown
               value={state.event}
               onChange={(value) => {
                 handleLoungeChange(value);
@@ -385,6 +476,7 @@ const CreateOrder = () => {
               required
               placeholder="Select Lounge"
               loadOptions={loadLoungeOptions}
+              reRender={state.session}
             />
             {state.lounge_type ? (
               state.lounge_type == AYURVEDIC_LOUNGE ? (

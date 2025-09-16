@@ -20,6 +20,25 @@ const category = {
     return promise;
   },
 
+  listWithPage: (page = 1) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/categories/?page=${page}&is_active=true`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   activeList: () => {
     let promise = new Promise((resolve, reject) => {
       let url = "zen/categories/?is_active=true";

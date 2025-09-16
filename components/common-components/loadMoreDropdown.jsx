@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 const LoadMoreDropdown = (props) => {
@@ -15,7 +15,18 @@ const LoadMoreDropdown = (props) => {
     height,
     placeholderSize = "14px",
     disabled,
+    reRender,
   } = props;
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (reRender) {
+      setRefreshKey((prev) => prev + 1);
+
+      loadOptions("", [], { page: 1 });
+    }
+  }, [reRender]);
   return (
     <div className="w-full">
       {title && (
@@ -25,6 +36,7 @@ const LoadMoreDropdown = (props) => {
       )}
 
       <AsyncPaginate
+        key={refreshKey}
         value={value}
         loadOptions={loadOptions}
         onChange={onChange}

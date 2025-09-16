@@ -213,6 +213,28 @@ const session = {
     return promise;
   },
 
+  eventFilter: (page, body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/events/?page=${page}&is_active=true`;
+      if (body?.lounge_type) {
+        url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   registrationList: (page: any, body: any) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/event-registrations/?page=${page}`;
@@ -239,7 +261,7 @@ const session = {
       if (body?.lounge_status) {
         url += `&registration_status=${encodeURIComponent(body.lounge_status)}`;
       }
-      
+
       if (body?.exclude_category) {
         url += `&exclude_category=${encodeURIComponent(body.exclude_category)}`;
       }

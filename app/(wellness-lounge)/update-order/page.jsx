@@ -20,9 +20,10 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import { Card } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-label";
-import { orderStatusList } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import { TextInput } from "@/components/common-components/textInput";
 
 const UpdateOrder = () => {
   const router = useRouter();
@@ -60,6 +61,7 @@ const UpdateOrder = () => {
     errors: {},
     submitLoading: false,
     isBooked: false,
+    sessionDetail: [],
   });
 
   useEffect(() => {
@@ -73,12 +75,22 @@ const UpdateOrder = () => {
   const getDetails = async () => {
     try {
       const res = await Models.session.detailsRegistration(id);
+      console.log("✌️res --->", res);
       const data = {
         value: res?.user?.id,
         label: res?.user?.first_name + " " + res?.user?.last_name,
       };
       if (res?.slot?.booked) {
         setState({ isBooked: res?.slot?.booked });
+      }
+      if (res?.event?.lounge_type) {
+        setState({
+          session: {
+            label: res?.event?.lounge_type?.name,
+            value: res?.event?.lounge_type?.id,
+          },
+          sessionDetail: [res?.event],
+        });
       }
 
       setState({
@@ -127,13 +139,19 @@ const UpdateOrder = () => {
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
+      let valid = {
+        user: state?.user?.value,
+        registration_status: state?.registration_status?.value,
+        event: state?.event?.value,
+        session: state?.session?.value,
+      };
       let body = {
         user: state?.user?.value,
         registration_status: state?.registration_status?.value,
         event: state?.event?.value,
       };
 
-      await Validation.updateSessionOrder.validate(body, {
+      await Validation.updateSessionOrder.validate(valid, {
         abortEarly: false,
       });
       const res = await Models.session.updateRegistration(body, id);
@@ -253,6 +271,89 @@ const UpdateOrder = () => {
     }
   };
 
+  const loadSessionOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.category.listWithPage(page);
+      const Dropdowns = Dropdown(res?.results, "name");
+      const filter = Dropdowns?.filter(
+        (item) => item?.value != AYURVEDIC_LOUNGE
+      );
+      return {
+        options: filter,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
+  const loadLoungeOptions = async (search, loadedOptions, { page }) => {
+    try {
+      if (!state.session?.value) {
+        return {
+          options: [],
+          hasMore: false,
+          additional: {
+            page: page,
+          },
+        };
+      }
+      const body = {
+        lounge_type: state.session?.value,
+      };
+      console.log("✌️bodyss --->", body);
+
+      const res = await Models.session.eventFilter(page, body);
+      console.log("✌️res --->", res);
+      const Dropdowns = UserDropdown(res?.results, (item) => `${item.title} `);
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
+  const handleLoungeChange = async (value) => {
+    try {
+      setState({ event: value });
+      if (value) {
+        const res = await Models.session.details(value?.value);
+        // getEventSlot(res?.id);
+        setState({
+          lounge_type: res?.lounge_type?.id,
+          start_date: res?.start_date,
+          end_date: res?.end_date,
+          eventId: res?.id,
+          errors: { ...state.errors, event: "", lounge_type: "" },
+          price: formatNumber(res?.price),
+          sessionDetail: [res],
+        });
+      } else {
+        setState({ lounge_type: null, event: null });
+      }
+    } catch (error) {}
+  };
+
   return (
     <div className="container mx-auto">
       <h2 className="font-bold md:text-[20px] text-sm mb-3">Update Session</h2>
@@ -342,16 +443,50 @@ const UpdateOrder = () => {
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col md:col-span-2">
-          {/* <CustomMultiSelect
-                        options={state.loungeList}
-                        value={state.event || ""}
-                        onChange={(value: any) => setState({ event: value })}
-                        title="Select Lounge"
-                        error={state.errors?.event}
-                        required
-                        placeholder="Select Lounge"
-                    /> */}
-          <CustomSelect
+          <LoadMoreDropdown
+            value={state.session}
+            onChange={(value) => {
+              if (value) {
+                setState({
+                  session: value,
+                  event: null,
+                  lounge_type: null,
+                  sessionDetail: [],
+                  slots: [],
+                  errors: { ...state.errors, session: "" },
+                  price: 0,
+                });
+              } else {
+                setState({
+                  event: null,
+                  lounge_type: null,
+                  sessionDetail: [],
+                  slots: [],
+                  session: null,
+                  price: 0,
+                });
+              }
+            }}
+            title="Select Session"
+            error={state.errors?.session}
+            required
+            placeholder="Select Session"
+            loadOptions={loadSessionOptions}
+          />
+
+          <LoadMoreDropdown
+            value={state.event}
+            onChange={(value) => {
+              handleLoungeChange(value);
+            }}
+            title="Select Lounge"
+            error={state.errors?.event || state.errors?.lounge_type}
+            required
+            placeholder="Select Lounge"
+            loadOptions={loadLoungeOptions}
+            reRender={state.session}
+          />
+          {/* <CustomSelect
             options={state.loungeList}
             value={state.event?.value || ""}
             onChange={(value) =>
@@ -362,15 +497,28 @@ const UpdateOrder = () => {
             required
             placeholder="Select Lounge"
             disabled={state.isBooked}
-          />
-          {filteredLoungeData?.length > 0 && (
+          /> */}
+          {state.sessionDetail?.length > 0 && (
             <Card
               className=" mt-2 mb-4 p-2 order-table"
               style={{ overflowX: "scroll", scrollbarWidth: "thin" }}
             >
-              <DataTable columns={columns} data={filteredLoungeData} />
+              <DataTable columns={columns} data={state.sessionDetail} />
             </Card>
           )}
+
+          <TextInput
+            value={state.price}
+            onChange={(e) => {
+              setState({ price: e.target.value });
+            }}
+            placeholder={
+              state.lounge_type == AYURVEDIC_LOUNGE ? "Price" : "Credits"
+            }
+            title={state.lounge_type == AYURVEDIC_LOUNGE ? "Price" : "Credits"}
+            type="number"
+            disabled
+          />
 
           <CustomSelect
             options={orderStatusList}

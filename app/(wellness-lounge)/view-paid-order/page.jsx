@@ -305,11 +305,11 @@ const viewWellnessLounge = () => {
                   <p className="text-gray-600">
                     Order ID: {state?.orderData?.registration_id}
                   </p>
-                  {state?.orderData?.is_admin_registration && (
+                  {/* {state?.orderData?.is_admin_registration && (
                     <p className="text-green-600 pt-3">
                       Created By : {"Admin"}
                     </p>
-                  )}
+                  )} */}
                 </div>
                 <div className="text-right">
                   <p className="text-gray-600">
@@ -576,13 +576,12 @@ const viewWellnessLounge = () => {
               </div>
             )}
           </div>
-          {state.attendanceList?.length > 0 && state.user == "Admin" && (
+          {/* {state.attendanceList?.length > 0 && state.user == "Admin" && (
             <div className="max-w-4xl mx-auto space-y-4 mt-4">
               <div className="bg-white rounded-xl shadow-md p-6">
                 <h5 className="text-xl font-semibold text-gray-800 mb-3">
                   Participated List
                 </h5>
-                {/* User list */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
                   {state.attendanceList?.map((user) => (
                     <Card key={user?.user_id} className="shadow-md rounded-2xl">
@@ -622,25 +621,8 @@ const viewWellnessLounge = () => {
                 </div>
               </div>
 
-              {/* Pagination */}
-              {/* <div className="flex justify-center gap-4 mt-4">
-              <Button
-                variant="outline"
-                disabled={!state?.prev || state.loading}
-                onClick={() => handlePageChange(data?.previous)}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                disabled={!state?.next || loading}
-                onClick={() => handlePageChange(data?.next)}
-              >
-                Next
-              </Button>
-            </div> */}
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>

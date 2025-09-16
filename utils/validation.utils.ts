@@ -157,6 +157,7 @@ export const calenderCreateFreeSession = Yup.object().shape({
 
 export const createSessionOrder = Yup.object().shape({
   user: Yup.string().required("User is required"),
+  session: Yup.string().required("Session is required"),
   registration_status: Yup.string().test(
     "is-required",
     "Registration status is required",
@@ -183,6 +184,8 @@ export const updateSessionOrder = Yup.object().shape({
   user: Yup.string().required("User is required"),
   registration_status: Yup.string().required("Registration  is required"),
   event: Yup.string().required("Event is required"),
+  session: Yup.string().required("Session is required"),
+
 });
 export const createUser = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
