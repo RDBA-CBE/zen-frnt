@@ -14,7 +14,7 @@ import {
 import Models from "@/imports/models.import";
 import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
-import { mentorList } from "@/utils/constant.utils";
+import { CLIENT_ID, mentorList } from "@/utils/constant.utils";
 import TextArea from "../common-components/textArea";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -34,11 +34,17 @@ import PhoneInput, {
 import CustomMultiSelect from "../common-components/multi-select";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { getCountryCallingCode } from "libphonenumber-js";
-
+import { CheckboxDemo } from "../common-components/checkbox";
+import Checkboxs from "./singleCheckbox";
+import { useDispatch } from "react-redux";
+import { setAuthData } from "@/store/slice/AuthSlice";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
+  const dispatch = useDispatch();
+
+  const [googleAuthInitialized, setGoogleAuthInitialized] = useState(false);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -71,8 +77,8 @@ const AlumniRegistrationForm = () => {
     year_of_graduation: "",
     alumniPassword: "",
     btnLoading: false,
+    notify: false,
   });
-
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -82,6 +88,132 @@ const AlumniRegistrationForm = () => {
       getCountry();
     }
   }, []);
+
+  // useEffect(() => {
+  //   if (googleAuthInitialized) {
+  //     try {
+  //       window.google.accounts.id.renderButton(
+  //         document.getElementById("googleButtonContainer"),
+  //         {
+  //           type: "standard",
+  //           theme: "outline",
+  //           size: "large",
+  //           text: "signin_with",
+  //           shape: "rectangular",
+  //           logo_alignment: "left",
+  //           width: 300,
+  //         }
+  //       );
+  //     } catch (error) {
+  //       console.error("Error rendering Google button:", error);
+  //     }
+  //   }
+  // }, [googleAuthInitialized]);
+
+  // useEffect(() => {
+  //   // Load Google Sign-In script
+  //   const initializeGoogleSignIn = () => {
+  //     if (window.google) {
+  //       window.google.accounts.id.initialize({
+  //         client_id: CLIENT_ID,
+  //         callback: handleCredentialResponse,
+  //         auto_select: false,
+  //         ux_mode: "popup", // Use popup instead of redirect
+  //       });
+
+  //       setGoogleAuthInitialized(true);
+  //     }
+  //   };
+
+  //   // Check if Google script is already loaded
+  //   if (window.google) {
+  //     initializeGoogleSignIn();
+  //   } else {
+  //     // Load the Google script
+  //     const script = document.createElement("script");
+  //     script.src = "https://accounts.google.com/gsi/client";
+  //     script.async = true;
+  //     script.defer = true;
+  //     script.onload = () => {
+  //       // Add a small delay to ensure Google API is fully loaded
+  //       setTimeout(initializeGoogleSignIn, 100);
+  //     };
+  //     script.onerror = () => {
+  //       Failure("Failed to load Google Sign-In. Please check your connection.");
+  //     };
+  //     document.head.appendChild(script);
+  //   }
+
+  //   return () => {
+  //     // Clean up any existing Google auth state
+  //     if (window.google) {
+  //       window.google.accounts.id.cancel();
+  //     }
+  //   };
+  // }, []);
+
+  // const handleCredentialResponse = async (response) => {
+  //   setState({ googleLoading: true });
+
+  //   try {
+  //     const body = {
+  //       access_token: response.credential,
+  //     };
+  //     const res = await Models.auth.googleAuth(body);
+  //     console.log("handleCredentialResponse: ", res);
+  //     if (res.access) {
+  //       localStorage.setItem("zentoken", res.access);
+  //       localStorage.setItem("refreshToken", res.refresh);
+  //       localStorage.setItem("userId", res?.user_id || "");
+  //       localStorage.setItem("group", res.groups?.[0] || "");
+  //       localStorage.setItem("username", res?.username || "");
+
+  //       dispatch(
+  //         setAuthData({
+  //           tokens: res.access,
+  //           groups: res.groups?.[0] || "",
+  //           userId: res.user_id || "",
+  //           username: res?.username || "",
+  //         })
+  //       );
+  //       InfinitySuccess(
+  //         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+  //         () => {
+  //           updateUserGroup(res);
+  //         }
+  //       );
+  //     }
+     
+  //   } catch (error) {
+  //     console.error("Google login error:", error);
+  //     if (error.response?.status === 400) {
+  //       Failure("Invalid Google account. Please try a different account.");
+  //     } else {
+  //       Failure(
+  //         error.response?.data?.message ||
+  //           "Google login failed. Please try again."
+  //       );
+  //     }
+  //   } finally {
+  //     setState({ googleLoading: false });
+  //   }
+  // };
+
+  const updateUserGroup = async (res) => {
+    try {
+      let formData = new FormData();
+
+      formData.append("groups", [3]);
+
+      await Models.user.updateUser(formData, res?.user_id);
+
+      router.push(`/update-user-data?id=${res?.user_id}`);
+
+      console.log("res", res);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const getUniversity = async () => {
     try {
@@ -99,7 +231,6 @@ const AlumniRegistrationForm = () => {
       const res = await Models.auth.getIntrestedTopics();
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
-
 
       setState({ intrestedTopicsList: filter });
       console.log("res", res);
@@ -127,7 +258,6 @@ const AlumniRegistrationForm = () => {
   //   if (!selectedCountry || !currentPhone?.startsWith("+")) return true;
   //   console.log("selectedCountry",selectedCountry);
 
-
   //   try {
   //     const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., "91"
   //     console.log('selectedCallingCode: ', selectedCallingCode);
@@ -136,16 +266,10 @@ const AlumniRegistrationForm = () => {
   //     return selectedCallingCode !== inputCode;
   //     // false
 
-
   //   } catch {
   //     return true; // fallback to clear if any issue
   //   }
   // }
-
-
-
-
-
 
   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
     if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
@@ -162,12 +286,6 @@ const AlumniRegistrationForm = () => {
       return false;
     }
   }
-
-
-
-
-
-
 
   // 🚀 Prevent hydration errors by ensuring the component renders only after mount
   if (!isMounted) return null;
@@ -200,6 +318,7 @@ const AlumniRegistrationForm = () => {
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
         is_alumni: true,
         password: state.password,
+        notify: state.notify,
       };
 
       // First: Run Yup validation
@@ -302,6 +421,7 @@ const AlumniRegistrationForm = () => {
       is_open_to_be_mentor: false,
       password: "",
       errors: null,
+      notify: false,
     });
   };
 
@@ -407,7 +527,10 @@ const AlumniRegistrationForm = () => {
               options={state.countryList || []}
               value={state.country || ""}
               onChange={(value) => {
-                const shouldClear = shouldClearPhoneNumber(value, state.alumniPhone);
+                const shouldClear = shouldClearPhoneNumber(
+                  value,
+                  state.alumniPhone
+                );
 
                 setState({
                   country: value,
@@ -420,7 +543,6 @@ const AlumniRegistrationForm = () => {
               menuPortalTarget={document.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               isClearable
-
             />
             {state.errors?.country && (
               <p className="mt-2 text-sm text-red-600">
@@ -428,10 +550,6 @@ const AlumniRegistrationForm = () => {
               </p>
             )}
           </div>
-
-
-
-
         </div>
         {/* 
         <div className="space-y-1 z-0">
@@ -470,24 +588,26 @@ const AlumniRegistrationForm = () => {
           </div>
         </div>
 
-         <div className="space-y-1">
+        <div className="space-y-1">
           <label className="block text-sm font-bold text-gray-700 mb-2">
             {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
             options={state?.universityList || []}
             value={state.alumniUniversity || ""}
-            onChange={(value) => setState({ alumniUniversity: value ,
-               errors: { ...state.errors, university: "" },
-            })}
+            onChange={(value) =>
+              setState({
+                alumniUniversity: value,
+                errors: { ...state.errors, university: "" },
+              })
+            }
             placeholder="Select University"
             className=" text-sm"
             menuPortalTarget={document.body}
             // styles={{ menuPortal: (base) => ({ ...base,}) }}
             isClearable
-            
           />
-           {state.errors?.university && (
+          {state.errors?.university && (
             <p className="mt-2 text-sm text-red-600">
               {state.errors?.university}{" "}
               {/* Display the error message if it exists */}
@@ -502,9 +622,12 @@ const AlumniRegistrationForm = () => {
             placeholder="Enter Your Department Name"
             title="Department"
             value={state.alumniDepartment}
-            onChange={(e) => setState({ alumniDepartment: e.target.value ,
-              errors: { ...state.errors, department: "" },
-            })}
+            onChange={(e) =>
+              setState({
+                alumniDepartment: e.target.value,
+                errors: { ...state.errors, department: "" },
+              })
+            }
             required
             error={state?.errors?.department}
           />
@@ -600,7 +723,22 @@ const AlumniRegistrationForm = () => {
           />
         </div> */}
 
-       
+        <div className="space-y-1">
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            {"Interests in Topics"}
+          </label>
+          <Select
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            className=" text-sm"
+            name="topics"
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            menuPortalTarget={document.body}
+          />
+        </div>
 
         <div className="space-y-1">
           <TextArea
@@ -637,28 +775,9 @@ const AlumniRegistrationForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Interests in Topics"}
-          </label>
-          <Select
-            value={state.alumniIntrested_topics}
-            isMulti
-            options={state.intrestedTopicsList || []}
-            placeholder="Select Topics"
-            onChange={(value) => setState({ alumniIntrested_topics: value })}
-            className=" text-sm"
-            name="ejkfbkjew"
-            menuPortalTarget={document.body} // required when using menuPosition="fixed"
-          // styles={{ menuPortal: (base) => ({ ...base}) }}
-          />
-        </div>
-
         {/* {state.alumniIntrested_topics.includes("others") && ( */}
         {Array.isArray(state.alumniIntrested_topics) &&
-          state.alumniIntrested_topics.some(
-            (item) => item.value === 13
-          ) && (
+          state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
               <TextInput
                 id="alumniIntrested_topics1"
@@ -714,6 +833,13 @@ const AlumniRegistrationForm = () => {
           <p style={{ fontSize: "12px" }}>min 8 characters required</p>
         </div>
       </div>
+      <div className="pt-2 pb-2">
+        <Checkboxs
+          label={"Notify me on these topics"}
+          checked={state.notify}
+          onChange={(val) => setState({ notify: val })}
+        />
+      </div>
       <div className="flex justify-center gap-2">
         <Button
           // onClick={() => router?.back()}
@@ -730,6 +856,22 @@ const AlumniRegistrationForm = () => {
           {state.btnLoading ? <Loader /> : "Submit"}
         </Button>
       </div>
+
+      {/* <div className="relative  p-4">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 w-full">
+        <div id="googleButtonContainer" className="flex justify-center"></div>
+
+      </div> */}
     </>
   );
 };

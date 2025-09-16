@@ -1013,3 +1013,23 @@ h6 {
 }
 }
 
+/* custom-scroll.css */
+.custom-scroll::-webkit-scrollbar {
+  width: 5px;
+  position: relative;
+  z-index: 10; /* This won’t affect actual scrollbar stacking, but for pseudo effects */
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.6);
+  border-radius: 6px;
+  z-index: 10; /* Keeps thumb visually above track */
+}
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+  overflow-y: auto !important; /* 👈 enable scroll */
+  max-height: 800px; /* adjust as needed */
+}

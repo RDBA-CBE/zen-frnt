@@ -12,17 +12,6 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// interface TimePickerProps {
-//   placeholder?: string;
-//   name?: string;
-//   className?: string;
-//   required?: boolean;
-//   title?: string;
-//   error?: string;
-//   onChange: any;
-//   value: any;
-// }
-
 export default function TimePicker(props) {
   const {
     placeholder = "Select Time",
@@ -53,17 +42,32 @@ export default function TimePicker(props) {
             {value ? format(value, "HH:mm") : <span>{placeholder}</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 overflow-visible" align="start">
           <DatePicker
             selected={value}
             onChange={(date) => onChange(date)}
             showTimeSelect
             showTimeSelectOnly
-            timeIntervals={15} // Set time interval (e.g., every 15 minutes)
+            timeIntervals={15}
             timeCaption="Time"
-            // dateFormat="HH:mm"
-            timeFormat="HH:mm"
+            dateFormat="h:mm aa" // Changed to show only time
             className="w-full p-2 border rounded-md focus:outline-none"
+            // Custom header to hide date navigation
+            renderCustomHeader={({
+              monthDate,
+              decreaseMonth,
+              increaseMonth,
+              prevMonthButtonDisabled,
+              nextMonthButtonDisabled,
+            }) => (
+              <div className="flex items-center justify-between px-2 py-2">
+                <span className="text-lg font-bold">
+                  {format(monthDate, "h:mm aa")}
+                </span>
+              </div>
+            )}
+            // Hide the calendar and day navigation
+            calendarClassName="hidden"
           />
         </PopoverContent>
       </Popover>

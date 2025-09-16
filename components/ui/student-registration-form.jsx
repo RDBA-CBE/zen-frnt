@@ -3,43 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Dropdown, MultiDropdown, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import {
-  Failure,
-  InfinitySuccess,
-  Success,
-  ToastAndNavigate,
-  useToastAndNavigate,
-} from "../common-components/toast";
-import CustomSelect from "../common-components/dropdown";
+import { Failure, InfinitySuccess } from "../common-components/toast";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
-import MultiSelectDropdown from "../common-components/multiSelectDropdown";
 import { ChevronUp, Eye, EyeOff, Loader } from "lucide-react";
-import { CheckboxDemo } from "../common-components/checkbox";
-import SingleSelectDropdown from "../common-components/singleSelectDropdown";
 import "react-phone-number-input/style.css";
-import PhoneInput, {
-  isValidPhoneNumber,
-  getCountries,
-} from "react-phone-number-input";
-import TextArea from "../common-components/textArea";
-import { mentorList } from "@/utils/constant.utils";
+
 import Select from "react-select";
+import Checkboxs from "./singleCheckbox";
+import { CLIENT_ID } from "@/utils/constant.utils";
+import { useDispatch } from "react-redux";
+import { setAuthData } from "@/store/slice/AuthSlice";
 
 const StudentRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
-
+  const [googleAuthInitialized, setGoogleAuthInitialized] = useState(false);
+  const dispatch = useDispatch();
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -72,6 +56,7 @@ const StudentRegistrationForm = () => {
     btnLoading: false,
     showPassword: false,
     role: "student",
+    notify: false,
   });
 
   useEffect(() => {
@@ -80,6 +65,132 @@ const StudentRegistrationForm = () => {
     getIntrestedTopics();
     getCountry();
   }, []);
+
+  // useEffect(() => {
+  //   if (googleAuthInitialized) {
+  //     try {
+  //       window.google.accounts.id.renderButton(
+  //         document.getElementById("googleButtonContainer"),
+  //         {
+  //           type: "standard",
+  //           theme: "outline",
+  //           size: "large",
+  //           text: "signin_with",
+  //           shape: "rectangular",
+  //           logo_alignment: "left",
+  //           width: 300,
+  //         }
+  //       );
+  //     } catch (error) {
+  //       console.error("Error rendering Google button:", error);
+  //     }
+  //   }
+  // }, [googleAuthInitialized]);
+
+  // const handleCredentialResponse = async (response) => {
+  //   setState({ googleLoading: true });
+
+  //   try {
+  //     const body = {
+  //       access_token: response.credential,
+  //     };
+  //     const res = await Models.auth.googleAuth(body);
+  //     console.log("res: ", res);
+  //     if (res.access) {
+  //       localStorage.setItem("zentoken", res.access);
+  //       localStorage.setItem("refreshToken", res.refresh);
+  //       localStorage.setItem("userId", res?.user_id || "");
+  //       localStorage.setItem("group", res.groups?.[0] || "");
+  //       localStorage.setItem("username", res?.username || "");
+
+  //       dispatch(
+  //         setAuthData({
+  //           tokens: res.access,
+  //           groups: res.groups?.[0] || "",
+  //           userId: res.user_id || "",
+  //           username: res?.username || "",
+  //         })
+  //       );
+  //       InfinitySuccess(
+  //         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+  //         () => {
+  //           updateUserGroup(res);
+  //         }
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Google login error:", error);
+  //     if (error.response?.status === 400) {
+  //       Failure("Invalid Google account. Please try a different account.");
+  //     } else {
+  //       Failure(
+  //         error.response?.data?.message ||
+  //           "Google login failed. Please try again."
+  //       );
+  //     }
+  //   } finally {
+  //     setState({ googleLoading: false });
+  //   }
+  // };
+
+  const updateUserGroup = async (res) => {
+    try {
+      let formData = new FormData();
+
+      formData.append("groups", [1]);
+
+      await Models.user.updateUser(formData, res?.user_id);
+
+      router.push(`/update-user-data?id=${res?.user_id}`);
+
+
+      console.log("res", res);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   // Load Google Sign-In script
+  //   const initializeGoogleSignIn = () => {
+  //     if (window.google) {
+  //       window.google.accounts.id.initialize({
+  //         client_id: CLIENT_ID,
+  //         callback: handleCredentialResponse,
+  //         auto_select: false,
+  //         ux_mode: "popup", // Use popup instead of redirect
+  //       });
+
+  //       setGoogleAuthInitialized(true);
+  //     }
+  //   };
+
+  //   // Check if Google script is already loaded
+  //   if (window.google) {
+  //     initializeGoogleSignIn();
+  //   } else {
+  //     // Load the Google script
+  //     const script = document.createElement("script");
+  //     script.src = "https://accounts.google.com/gsi/client";
+  //     script.async = true;
+  //     script.defer = true;
+  //     script.onload = () => {
+  //       // Add a small delay to ensure Google API is fully loaded
+  //       setTimeout(initializeGoogleSignIn, 100);
+  //     };
+  //     script.onerror = () => {
+  //       Failure("Failed to load Google Sign-In. Please check your connection.");
+  //     };
+  //     document.head.appendChild(script);
+  //   }
+
+  //   return () => {
+  //     // Clean up any existing Google auth state
+  //     if (window.google) {
+  //       window.google.accounts.id.cancel();
+  //     }
+  //   };
+  // }, []);
 
   const getUniversity = async () => {
     try {
@@ -96,7 +207,7 @@ const StudentRegistrationForm = () => {
       const res = await Models.auth.getIntrestedTopics();
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
-     
+
       setState({ intrestedTopicsList: filter });
       console.log("res", res);
     } catch (error) {
@@ -136,8 +247,9 @@ const StudentRegistrationForm = () => {
         lable: state?.intrested_topics1 || "",
         university: state?.university?.value || "",
         is_alumni: false,
+        notify: state.notify,
       };
-      console.log('✌️body --->', body);
+      console.log("✌️body --->", body);
 
       await Validation.studentRegistration.validate(body, {
         abortEarly: false,
@@ -187,6 +299,7 @@ const StudentRegistrationForm = () => {
       university: null,
       errors: null,
       alumniIntrested_topics: [],
+      notify: false,
     });
   };
 
@@ -194,7 +307,6 @@ const StudentRegistrationForm = () => {
     const year = 1951 + i;
     return { value: year.toString(), label: year.toString() };
   });
-
 
   return (
     <>
@@ -253,8 +365,6 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
-       
-
         {/* <div className="space-y-1">
           <CustomSelect
             options={state?.universityList || []} // Safely pass empty array if universityList is null
@@ -273,9 +383,12 @@ const StudentRegistrationForm = () => {
           <Select
             options={state?.universityList || []}
             value={state.university || ""}
-            onChange={(value) => setState({ university: value ,
-               errors: { ...state.errors, university: "" },
-            })}
+            onChange={(value) =>
+              setState({
+                university: value,
+                errors: { ...state.errors, university: "" },
+              })
+            }
             placeholder="Select University"
             className="z-50 text-sm"
             menuPortalTarget={document.body}
@@ -290,7 +403,7 @@ const StudentRegistrationForm = () => {
           )}
         </div>
 
-         <div className="space-y-1">
+        <div className="space-y-1">
           <TextInput
             id="department"
             type="text"
@@ -298,11 +411,13 @@ const StudentRegistrationForm = () => {
             error={state.errors?.department}
             title="Department"
             value={state.department}
-            onChange={(e) => setState({ department: e.target.value,
-               errors: { ...state.errors, department: "" },
-             })}
+            onChange={(e) =>
+              setState({
+                department: e.target.value,
+                errors: { ...state.errors, department: "" },
+              })
+            }
             required
-            
           />
         </div>
 
@@ -320,12 +435,9 @@ const StudentRegistrationForm = () => {
             menuPortalTarget={document.body} // required when using menuPosition="fixed"
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
-          
         </div>
         {Array.isArray(state.alumniIntrested_topics) &&
-          state.alumniIntrested_topics.some(
-            (item) => item.value === 13
-          ) && (
+          state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
               <TextInput
                 id="intrested_topics1"
@@ -347,8 +459,12 @@ const StudentRegistrationForm = () => {
           <Select
             options={years || []}
             value={state.year_of_entry || ""}
-            onChange={(value) => setState({ year_of_entry: value , errors:{...state.errors, year_of_entry:""}})}
-
+            onChange={(value) =>
+              setState({
+                year_of_entry: value,
+                errors: { ...state.errors, year_of_entry: "" },
+              })
+            }
             placeholder="Year Of Entry"
             className="z-50 text-sm"
             menuPortalTarget={document.body}
@@ -372,7 +488,12 @@ const StudentRegistrationForm = () => {
               required
               title="Password"
               value={state.password}
-              onChange={(e) => setState({ password: e.target.value , errors:{...state.errors, password:""}})}
+              onChange={(e) =>
+                setState({
+                  password: e.target.value,
+                  errors: { ...state.errors, password: "" },
+                })
+              }
               error={state.errors?.password}
             />
             <button
@@ -389,7 +510,13 @@ const StudentRegistrationForm = () => {
           <p style={{ fontSize: "12px" }}>min 8 characters required</p>
         </div>
       </div>
-
+      <div className="pb-2">
+        <Checkboxs
+          label={"Notify me on these topics"}
+          checked={state.notify}
+          onChange={(val) => setState({ notify: val })}
+        />
+      </div>
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => resetForm()}
@@ -405,6 +532,20 @@ const StudentRegistrationForm = () => {
           {state.btnLoading ? <Loader /> : "Submit"}
         </Button>
       </div>
+      {/* <div className="relative  p-4">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 w-full">
+        <div id="googleButtonContainer" className="flex justify-center"></div>
+      </div> */}
     </>
   );
 };
