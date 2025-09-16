@@ -16,7 +16,7 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
-import { mentorList } from "@/utils/constant.utils";
+import { MENTOR, mentorList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
@@ -73,8 +73,9 @@ const CreateUser = () => {
       const res = await Models.Common.groups();
       console.log("res: ", res);
       const Dropdowns = Dropdown(res?.results, "name");
+      const filter=Dropdowns?.filter((item)=>item.value != MENTOR)
       console.log("Dropdowns: ", Dropdowns);
-      setState({ groupList: Dropdowns });
+      setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
     }
