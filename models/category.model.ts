@@ -3,7 +3,7 @@ import instance from "@/utils/axios.utils";
 const category = {
   list: () => {
     let promise = new Promise((resolve, reject) => {
-      let url = "zen/categories/";
+      let url = "zen/categories/?is_active=true";
       instance()
         .get(url)
         .then((res) => {
