@@ -209,11 +209,11 @@ const WellnessLoungeList = () => {
 
   const columns = [
     {
-      Header: "Order Id",
+      Header: "Booking Id",
       accessor: "registration_id",
     },
     {
-      Header: "Order Date",
+      Header: "Booking Date",
       accessor: "registration_date",
       Cell: (row) => (
         <Label>
@@ -222,7 +222,7 @@ const WellnessLoungeList = () => {
       ),
     },
     {
-      Header: "Order Status",
+      Header: "Booking Status",
       accessor: "registration_status",
     },
     {
@@ -282,7 +282,7 @@ const WellnessLoungeList = () => {
           <Card className="w-[100%] p-4">
             <div className="block justify-between items-center lg:flex">
               <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-                <h2 className="md:text-lg text-sm font-bold">Orders</h2>
+                <h2 className="md:text-lg text-sm font-bold">Bookings</h2>
               </div>
               <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
