@@ -128,6 +128,14 @@ export const createPaidSession = Yup.object().shape({
   }),
   moderator: Yup.string().required("Mentor is required"),
   timezone: Yup.string().required("Timezone is required"),
+  price: Yup.string()
+  .required("Price is required")
+  .test('is-valid-price', 'Price must be a valid number greater than 0', (value) => {
+    if (!value) return false;
+    const numericValue = parseFloat(value);
+    return !isNaN(numericValue) && numericValue > 0;
+  }),
+
   intrested_topics: Yup.array()
     .min(1, "Topics are required") // This ensures array is not empty
     .required("Topics are required"), // This ensures the field exists

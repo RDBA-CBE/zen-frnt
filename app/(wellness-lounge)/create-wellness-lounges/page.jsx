@@ -193,6 +193,7 @@ const CreateWellnessLounge = () => {
             ? state?.intrested_topics?.map((item) => item.value)
             : [],
         timezone: state?.timezone,
+        price: state.price,
       };
 
       if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
@@ -528,6 +529,7 @@ const CreateWellnessLounge = () => {
                   setState({
                     lounge_type: value,
                     errors: { ...state.errors, lounge_type: "" },
+                    price:0
                   })
                 }
                 title="Lounge Type"
@@ -653,7 +655,7 @@ const CreateWellnessLounge = () => {
                         console.log("✌️value --->", value);
                         setState({
                           start_time: value,
-                          errors: { ...state.errors, start_time: "" }
+                          errors: { ...state.errors, start_time: "" },
                         });
                       }}
                       required
@@ -666,7 +668,7 @@ const CreateWellnessLounge = () => {
                       onChange={(value) => {
                         setState({
                           end_time: value,
-                          errors: { ...state.errors, end_time: "" }
+                          errors: { ...state.errors, end_time: "" },
                         });
                       }}
                       error={state.errors?.end_time}
@@ -792,12 +794,14 @@ const CreateWellnessLounge = () => {
                 placeholder={"PassCode"}
                 title={"PassCode"}
                 type="text"
-                error={state.errors?.price}
               />
               <TextInput
                 value={state.price}
                 onChange={(e) => {
-                  setState({ price: e.target.value });
+                  setState({
+                    price: e.target.value,
+                    errors: { ...state.errors, price: "" },
+                  });
                 }}
                 placeholder={
                   state.lounge_type?.value == AYURVEDIC_LOUNGE
@@ -810,6 +814,7 @@ const CreateWellnessLounge = () => {
                     : "Credits"
                 }
                 type="number"
+                required={state.lounge_type?.value == AYURVEDIC_LOUNGE}
                 error={state.errors?.price}
               />
 
