@@ -3,7 +3,7 @@ export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
 export const AYURVEDIC_LOUNGE = 15;
 
 export const CLIENT_ID =
-  "652976835328-gr64duovnelh6j0tmts52huqa7aiodrc.apps.googleusercontent.com";
+  "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
 
 export const welness_data = [
   {
