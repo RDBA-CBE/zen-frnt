@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Eye } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
-import { orderStatusList } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
@@ -193,6 +193,20 @@ const WellnessLoungeList = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setState({ submitLoading: true });
+      const res = await Models.session.deleteRegistration(state.deleteId);
+      getOrdersList(state.currentPage);
+      setState({ isOpen: false, deleteId: null, submitLoading: false });
+      Success("Record deleted successfully");
+    } catch (error) {
+      setState({ submitLoading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
   const columns = [
     {
       Header: "Order Id",
@@ -223,12 +237,23 @@ const WellnessLoungeList = () => {
       Cell: (row) => (
         <div className="flex items-center gap-1">
           <Link
+            href={
+              row?.row?.event?.lounge_type?.id == AYURVEDIC_LOUNGE
+                ? `/view-paid-order?id=${row?.row?.id}`
+                : `/view-order?id=${row?.row?.id}`
+            }
+            className="pointer"
+            prefetch={true}
+          >
+            <Eye size={16} className="mr-2" />
+          </Link>
+          {/* <Link
             href={`/view-order/?id=${row?.row?.id}`}
             passHref
             prefetch={true}
           >
             <Eye size={16} className="mr-2" />
-          </Link>
+          </Link> */}
         </div>
       ),
     },
@@ -280,7 +305,6 @@ const WellnessLoungeList = () => {
                   />
                 </div>
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
-                 
                   <LoadMoreDropdown
                     value={state.event}
                     onChange={(value) => {

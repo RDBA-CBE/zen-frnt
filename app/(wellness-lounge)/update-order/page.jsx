@@ -1,14 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
-import { TextInput } from "@/components/common-components/textInput";
-import TextArea from "@/components/common-components/textArea";
-import { DatePicker } from "@/components/common-components/datePicker";
+import {
+  Dropdown,
+  UserDropdown,
+  formatNumber,
+  useSetState,
+} from "@/utils/function.utils";
+
 import CustomSelect from "@/components/common-components/dropdown";
-import TimePicker from "@/components/common-components/timePicker";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -19,10 +20,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import { Card } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-label";
-import { XIcon } from "lucide-react";
 import { orderStatusList } from "@/utils/constant.utils";
-import CustomSelectMulti from "@/components/common-components/multi-select";
-import CustomMultiSelect from "@/components/common-components/multi-select";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
 
@@ -33,7 +31,6 @@ const UpdateOrder = () => {
 
   const [id, setId] = useState(null);
   useEffect(() => {
-    // Ensure that searchParams are read only on the client side
     if (typeof window !== "undefined") {
       const idFromSearchParams = searchParams.get("id");
       if (idFromSearchParams) {
@@ -62,6 +59,7 @@ const UpdateOrder = () => {
     thumbnail_image: "",
     errors: {},
     submitLoading: false,
+    isBooked: false,
   });
 
   useEffect(() => {
@@ -79,6 +77,9 @@ const UpdateOrder = () => {
         value: res?.user?.id,
         label: res?.user?.first_name + " " + res?.user?.last_name,
       };
+      if (res?.slot?.booked) {
+        setState({ isBooked: res?.slot?.booked });
+      }
 
       setState({
         user: {
@@ -132,22 +133,6 @@ const UpdateOrder = () => {
         event: state?.event?.value,
       };
 
-      // let formData = new FormData();
-      // formData.append("description", body.description);
-      // formData.append("title", body.title);
-      // formData.append("start_date", body.start_date);
-      // formData.append("end_date", body.end_date);
-      // formData.append("event_type", body.lounge_type);
-      // formData.append("price", body.price);
-      // formData.append("start_time", body.start_time);
-      // formData.append("end_time", body.end_time);
-      // formData.append("session_link", body.session_link);
-      // formData.append("seat_count", body.seat_count);
-      // formData.append("lounge_type", body.lounge_type);
-
-      // if (body.thumbnail_image) {
-      //     formData.append("thumbnail", body.thumbnail_image);
-      // }
       await Validation.updateSessionOrder.validate(body, {
         abortEarly: false,
       });
@@ -228,6 +213,12 @@ const UpdateOrder = () => {
       accessor: "end_time",
       Cell: (row) => <Label>{row?.row?.end_time}</Label>,
     },
+    {
+      Header: "Price",
+      accessor: "price",
+      Cell: (row) => <Label>{formatNumber(row?.row?.price)}</Label>,
+    },
+
     // {
     //     Header: "Action",
     //     accessor: "action",
@@ -265,8 +256,8 @@ const UpdateOrder = () => {
   return (
     <div className="container mx-auto">
       <h2 className="font-bold md:text-[20px] text-sm mb-3">Update Session</h2>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-        <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div className="border rounded-xl p-4 gap-4 flex flex-col md:col-span-1">
           {/* <CustomSelect
             options={state.userList}
             value={state.user?.value || ""}
@@ -282,8 +273,6 @@ const UpdateOrder = () => {
           <LoadMoreDropdown
             value={state.user}
             onChange={(value) => {
-              console.log("✌️value --->", value);
-              console.log("✌️state.userData --->", state.userData);
               setState({
                 user: value,
                 errors: { ...state.errors, user: "" },
@@ -295,6 +284,7 @@ const UpdateOrder = () => {
             placeholder="Select User"
             loadOptions={loadUserOptions}
             height={"25px"}
+            disabled={state.isBooked}
           />
           <div>
             {SelectedUser?.length > 0 && (
@@ -351,7 +341,7 @@ const UpdateOrder = () => {
           </div>
         </div>
 
-        <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+        <div className="border rounded-xl p-4 gap-4 flex flex-col md:col-span-2">
           {/* <CustomMultiSelect
                         options={state.loungeList}
                         value={state.event || ""}
@@ -371,9 +361,13 @@ const UpdateOrder = () => {
             error={state.errors?.event}
             required
             placeholder="Select Lounge"
+            disabled={state.isBooked}
           />
           {filteredLoungeData?.length > 0 && (
-            <Card className=" mt-2 mb-4 p-2 order-table" style={{overflowX:"scroll", scrollbarWidth:"thin"}}>
+            <Card
+              className=" mt-2 mb-4 p-2 order-table"
+              style={{ overflowX: "scroll", scrollbarWidth: "thin" }}
+            >
               <DataTable columns={columns} data={filteredLoungeData} />
             </Card>
           )}
@@ -391,6 +385,7 @@ const UpdateOrder = () => {
             error={state.errors?.registration_status}
             required
             placeholder="Select Session Status"
+            disabled={state.isBooked}
           />
 
           <div className="flex justify-end gap-5 mt-10">

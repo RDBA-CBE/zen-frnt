@@ -28,6 +28,7 @@ import {
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { Loader } from "lucide-react";
+import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -69,6 +70,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (state?.id) {
       getDetails();
+      orderList(1);
     }
   }, [state?.id]); // Fetch details when the user ID is available
 
@@ -86,19 +88,27 @@ const ProfilePage = () => {
       console.log("Error fetching user details: ", error);
     }
   };
+  console.log("✌️state?.id --->", state?.id);
 
-  // Logout function to remove token and navigate to login page
-  // const handleLogout = () => {
-  //   localStorage.removeItem("zentoken");
-  //   localStorage.removeItem("group");
-  //   localStorage.removeItem("eventId");
-  //   localStorage.removeItem("username");
-  //   localStorage.removeItem("refreshToken");
-  //   localStorage.clear();
-  //   setDialogOpen(false);
-  //   router.push("/login");
-  //   dispatch(clearAuthData());
-  // };
+  const orderList = async (page) => {
+    try {
+      if (state?.id) {
+        const body = {
+          user: state?.id,
+        };
+        const res = await Models.session.registrationList(page, body);
+        console.log("orderList:", res);
+        setState({
+          orderList: res?.results,
+          next: res.next,
+          previous: res.previous,
+          currentPage: page,
+        });
+      }
+    } catch (error) {
+      console.log("Error fetching user details: ", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -135,24 +145,46 @@ const ProfilePage = () => {
     window?.location?.reload();
   };
 
+  const handleNextPage = () => {
+    if (state.next) {
+      const newPage = state.currentPage + 1;
+      orderList(newPage);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (state.previous) {
+      const newPage = state.currentPage - 1;
+      orderList(newPage);
+    }
+  };
+
   const columns = [
     {
       Header: "Order ID",
       accessor: "registration_id",
-      Cell: ({ row }) => (
-        <Link
-          href={`/view-order?id=${row?.id}`}
-          className="pointer"
-          prefetch={true}
-        >
-          {row?.registration_id}
-        </Link>
-      ),
+      Cell: ({ row }) => {
+        console.log("✌️row --->", row);
+
+        return (
+          <Link
+            href={
+              row?.event?.lounge_type?.id == AYURVEDIC_LOUNGE
+                ? `/view-paid-order?id=${row?.id}`
+                : `/view-order?id=${row?.id}`
+            }
+            className="pointer"
+            prefetch={true}
+          >
+            {row?.registration_id}
+          </Link>
+        );
+      },
     },
     {
       Header: "Lounge",
       accessor: "event_title",
-      Cell: (row) => <Label>{row?.row?.event_title}</Label>,
+      Cell: (row) => <Label>{row?.row?.event?.title}</Label>,
     },
     {
       Header: "Order Status",
@@ -312,7 +344,7 @@ const ProfilePage = () => {
                                   .join(", ")}
                               </li>
                             )} */}
-                            
+
                             {state?.userData?.university && (
                               <li>
                                 University: {state?.userData?.university.name}
@@ -373,12 +405,12 @@ const ProfilePage = () => {
                     </CardDescription> */}
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {(state?.userData?.event_registrations ?? []).length > 0 ? (
+                    {(state?.orderList ?? []).length > 0 ? (
                       <div>
                         <div className="rounded-lg border">
                           <DataTable
                             columns={columns}
-                            data={state?.userData?.event_registrations ?? []}
+                            data={state?.orderList ?? []}
                           />
                         </div>
                       </div>
@@ -386,9 +418,30 @@ const ProfilePage = () => {
                       "No Orders"
                     )}
                   </CardContent>
-                  {/* <CardFooter>
-                    <Button>Save password</Button>
-                  </CardFooter> */}
+                  <div className="mt-5 mb-5 flex justify-center gap-3">
+                    <Button
+                      disabled={!state.previous}
+                      onClick={handlePreviousPage}
+                      className={`btn ${
+                        !state.previous
+                          ? "btn-disabled bg-themeGreen"
+                          : "bg-themeGreen hover:bg-themeGreen"
+                      }`}
+                    >
+                      Prev
+                    </Button>
+                    <Button
+                      disabled={!state.next}
+                      onClick={handleNextPage}
+                      className={`btn ${
+                        !state.next
+                          ? "btn-disabled bg-themeGreen"
+                          : "bg-themeGreen hover:bg-themeGreen"
+                      }`}
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </Card>
               </TabsContent>
 
