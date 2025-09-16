@@ -96,8 +96,8 @@ const viewWellnessLounge = () => {
           res?.event?.interval
         );
 
-        const link = extractZoomMeetingId(res?.event?.session_link);
-        attendanceList(link);
+        // const link = extractZoomMeetingId(res?.event?.session_link);
+        // attendanceList(link);
 
         setState({ eventDate: `Date : ${response}` });
       }
@@ -120,23 +120,23 @@ const viewWellnessLounge = () => {
     }
   };
 
-  const attendanceList = async (meeting_id) => {
-    try {
-      setState({ loading: true });
+  // const attendanceList = async (meeting_id) => {
+  //   try {
+  //     setState({ loading: true });
 
-      const res = await Models.attendance.list(meeting_id);
-      console.log("attendanceList: ", res);
-      setState({
-        attendanceList: res?.results,
-        loading: false,
-        count: res.next,
-        prev: res.previous,
-      });
-    } catch (error) {
-      setState({ loading: false });
-      console.log("error: ", error);
-    }
-  };
+  //     const res = await Models.attendance.list(meeting_id);
+  //     console.log("attendanceList: ", res);
+  //     setState({
+  //       attendanceList: res?.results,
+  //       loading: false,
+  //       count: res.next,
+  //       prev: res.previous,
+  //     });
+  //   } catch (error) {
+  //     setState({ loading: false });
+  //     console.log("error: ", error);
+  //   }
+  // };
 
   const userDetail = async (id) => {
     setState({ loading: true }); // Start loading
