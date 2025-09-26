@@ -307,14 +307,28 @@ export const getTime = (startDate, startTime) => {
 
 export const extractTimeFromDateTime = (dateTimeString) => {
   if (!dateTimeString) return null;
-  
+
   const timeMatch = dateTimeString.match(/(\d{1,2}):(\d{2}):(\d{2})/);
   if (timeMatch) {
-    const [hours, minutes, seconds] = timeMatch[0].split(':').map(Number);
+    const [hours, minutes, seconds] = timeMatch[0].split(":").map(Number);
     const timeDate = new Date();
     timeDate.setHours(hours, minutes, seconds, 0);
     return timeDate;
   }
-  
+
   return null;
 };
+
+export const formatDuration = (seconds: number | null | undefined) => {
+  if (!seconds || seconds <= 0) return "";
+
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(seconds / 3600);
+
+  if (hours > 0) {
+    return `${hours} Hr${hours > 1 ? "s" : ""}`;
+  } else {
+    return `${minutes} Min${minutes > 1 ? "s" : ""}`;
+  }
+};
+
