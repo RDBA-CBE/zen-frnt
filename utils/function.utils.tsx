@@ -332,3 +332,42 @@ export const formatDuration = (seconds: number | null | undefined) => {
   }
 };
 
+export const addHoursToTimeOnly = (startTime, hoursToAdd) => {
+  console.log("✌️hoursToAdd --->", hoursToAdd);
+  console.log("✌️startTime --->", startTime);
+  const [hours, minutes, seconds] = startTime.split(":").map(Number);
+
+  // Calculate new hours with 24-hour wrap-around
+  const newHours = (hours + hoursToAdd) % 24;
+
+  // Format back to HH:mm:ss
+  const newTime = [
+    newHours.toString().padStart(2, "0"),
+    minutes.toString().padStart(2, "0"),
+    seconds.toString().padStart(2, "0"),
+  ].join(":");
+
+  return newTime;
+};
+
+export const getHourOption = (startTime, endTime) => {
+  const format = "HH:mm:ss";
+
+  const start = moment(startTime, format);
+  const end = moment(endTime, format);
+
+  let totalHours = end.diff(start, "hours");
+
+  if (totalHours <= 0) return null;
+
+  const label = totalHours === 1 ? "1 Hr" : `${totalHours} Hrs`;
+
+  return { value: totalHours, label };
+};
+
+export const isBeforeCurrentTimeBy30Min = (startDate, startTime) => {
+  const startDateTime = moment(`${startDate} ${startTime}`);
+  const now = moment();
+  const minutesUntilEvent = startDateTime.diff(now, "minutes");
+  return minutesUntilEvent <= 60 && minutesUntilEvent >= 0;
+};
