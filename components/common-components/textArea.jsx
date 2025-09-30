@@ -33,7 +33,7 @@ export default function TextArea(props) {
   return (
     <div className="grid">
       {title && (
-        <label className="block text-sm font-bold text-gray-700">
+        <label className="block text-sm font-bold text-gray-700 mb-1">
           {title} {required && <span className="text-red-500">*</span>}
         </label>
       )}

@@ -168,8 +168,8 @@ const CreateUser = () => {
         },
         dob: res.date_of_birth ? new Date(res.date_of_birth) : "",
         user_type: {
-          value: res?.group?.id,
-          label: res?.group?.name,
+          value: res?.groups?.[0]?.id,
+          label: res?.groups?.[0]?.name,
         },
       });
     } catch (error) {
