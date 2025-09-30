@@ -43,6 +43,7 @@ export default function MomentTimezoneSelect(props) {
         additional: { page: page + 1 },
       };
     } catch (error) {
+console.log('✌️error --->', error);
       return {
         options: [],
         hasMore: false,

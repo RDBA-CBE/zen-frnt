@@ -1,36 +1,24 @@
 "use client";
 import { useEffect } from "react";
-import dynamic from "next/dynamic";
-import {
-  Users,
-  ShoppingCart,
-  XCircle,
-  CreditCard,
-  FileText,
-  Ticket,
-  Layers,
-  Package,
-  Calendar,
-  TrendingUp,
-  DollarSign,
-} from "lucide-react";
+// import dynamic from "next/dynamic";
 
-import { useRouter } from "next/navigation";
+
+// import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
 import { useSetState } from "@/utils/function.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import DashboardCalender from "@/components/ui/dashboardCalender";
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+// const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+//   ssr: false,
+// });
 
 interface CountResponse {
   count?: number;
 }
 
 const Dashboard = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const [state, setState] = useSetState({
     counts: {},
     reportData: {},
@@ -124,29 +112,29 @@ const Dashboard = () => {
     }
   };
 
-  const handleClick = (type) => {
-    const routes = {
-      session: "/wellness-lounge-list",
-      category: "/categories-list",
-      booking: "/booking_list",
-      registerUser: "/order-list",
-      cancelUser: "/cancel-order",
-      user: "/user-list",
-      payment: "/payment-gateway-list",
-      report: "/reports",
-      coupon: "/coupon-list",
-    };
+  // const handleClick = (type) => {
+  //   const routes = {
+  //     session: "/wellness-lounge-list",
+  //     category: "/categories-list",
+  //     booking: "/booking_list",
+  //     registerUser: "/order-list",
+  //     cancelUser: "/cancel-order",
+  //     user: "/user-list",
+  //     payment: "/payment-gateway-list",
+  //     report: "/reports",
+  //     coupon: "/coupon-list",
+  //   };
 
-    router.push(routes[type] || "/"); // fallback to home if type not found
-  };
+  //   router.push(routes[type] || "/"); // fallback to home if type not found
+  // };
 
-  const formatCurrency = (amount) => {
-    if (amount === null || amount === undefined) return "₹0.00";
-    return `₹${amount.toLocaleString("en-IN", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-  };
+  // const formatCurrency = (amount) => {
+  //   if (amount === null || amount === undefined) return "₹0.00";
+  //   return `₹${amount.toLocaleString("en-IN", {
+  //     minimumFractionDigits: 2,
+  //     maximumFractionDigits: 2,
+  //   })}`;
+  // };
 
   return (
     <div className="">
