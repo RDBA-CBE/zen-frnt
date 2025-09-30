@@ -677,18 +677,14 @@ const viewWellnessLounge = () => {
                           width={18}
                           className="relative top-[3px]"
                         />{" "}
-                        Starts -
+                        Date -
                       </span>
                       <span className="font-bold" style={{ color: "#4a4a4a" }}>
                         {moment(state?.orderData?.start_date).format(
                           "DD MMM YYYY"
                         )}
-                        , {""}
-                        {moment(
-                          state?.orderData?.start_time,
-                          "HH:mm:ss"
-                        ).format("hh:mm A")}{" "}
-                        (IST)
+                      
+                        
                       </span>{" "}
                     </div>
 
@@ -699,16 +695,31 @@ const viewWellnessLounge = () => {
                           width={18}
                           className="relative top-[3px]"
                         />
-                        Ends -{" "}
+                        Start Time -{" "}
                       </span>
                       <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                        {moment(state?.orderData?.end_date).format(
-                          "DD MMM YYYY"
-                        )}
-                        , {""}{" "}
-                        {moment(state?.orderData?.end_time, "HH:mm:ss").format(
-                          "hh:mm A"
-                        )}{" "}
+                      {moment(
+                          state?.orderData?.start_time,
+                          "HH:mm:ss"
+                        ).format("hh:mm A")}{" "}
+                        (IST)
+                      </span>
+                    </div>
+
+                    <div className="flex gap-x-1  mb-4">
+                      <span className="flex gap-1">
+                        <CalendarClock
+                          height={16}
+                          width={18}
+                          className="relative top-[3px]"
+                        />
+                        End Time -{" "}
+                      </span>
+                      <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                      {moment(
+                          state?.orderData?.end_time,
+                          "HH:mm:ss"
+                        ).format("hh:mm A")}{" "}
                         (IST)
                       </span>
                     </div>

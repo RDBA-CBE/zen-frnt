@@ -412,18 +412,14 @@ const viewWellnessLounge = () => {
                     <CalendarClock className="w-5 h-5 text-fuchsia-700" />
                     <div>
                       <span className="font-semibold text-gray-700">
-                        Starts -{" "}
+                        Date -{" "}
                       </span>
                       <span className="text-gray-800">
                         {moment(state?.orderData?.event?.start_date).format(
                           "DD MMM YYYY"
                         )}
                         ,{" "}
-                        {moment(
-                          state?.orderData?.event?.start_time,
-                          "HH:mm:ss"
-                        ).format("hh:mm A")}{" "}
-                        (IST)
+                        
                       </span>
                     </div>
                   </div>
@@ -431,14 +427,26 @@ const viewWellnessLounge = () => {
                     <CalendarClock className="w-5 h-5 text-fuchsia-700" />
                     <div>
                       <span className="font-semibold text-gray-700">
-                        Ends -{" "}
+                        Start Time -{" "}
                       </span>
                       <span className="text-gray-800">
-                        {moment(state?.orderData?.event?.end_date).format(
-                          "DD MMM YYYY"
-                        )}
-                        ,{" "}
-                        {moment(
+                      {moment(
+                          state?.orderData?.event?.start_time,
+                          "HH:mm:ss"
+                        ).format("hh:mm A")}{" "}
+                        (IST)
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <CalendarClock className="w-5 h-5 text-fuchsia-700" />
+                    <div>
+                      <span className="font-semibold text-gray-700">
+                        End Time -{" "}
+                      </span>
+                      <span className="text-gray-800">
+                      {moment(
                           state?.orderData?.event?.end_time,
                           "HH:mm:ss"
                         ).format("hh:mm A")}{" "}

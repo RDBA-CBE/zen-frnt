@@ -259,7 +259,6 @@ const AdminCalendar = ({ registrations }) => {
     });
   };
 
-
   const handleOrderClick = (item) => {
     console.log("✌️item --->", item);
     if (item?.lounge_type?.id == AYURVEDIC_LOUNGE) {
@@ -343,7 +342,7 @@ const AdminCalendar = ({ registrations }) => {
                           </div>
                         )}
 
-                       {/* {state.role == "Admin" &&
+                        {/* {state.role == "Admin" &&
                           (() => {
                             if (!day) return null;
 
@@ -450,18 +449,12 @@ const AdminCalendar = ({ registrations }) => {
                                             width={14}
                                             className="relative top-[0px]"
                                           />{" "}
-                                          Starts -
+                                          Date -
                                         </span>
                                         <span className="font-bold">
                                           {moment(event.start_date).format(
                                             "DD MMM YYYY"
                                           )}
-                                          , {""}
-                                          {moment(
-                                            event.start_time,
-                                            "HH:mm:ss"
-                                          ).format("hh:mm A")}{" "}
-                                          (IST)
                                         </span>{" "}
                                       </div>
 
@@ -472,15 +465,29 @@ const AdminCalendar = ({ registrations }) => {
                                             width={14}
                                             className="relative top-[0px]"
                                           />
-                                          Ends -{" "}
+                                          Start Time -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                          {moment(event.end_date).format(
-                                            "DD MMM YYYY"
-                                          )}
-                                          , {""}
                                           {moment(
-                                            event?.end_time,
+                                            event.start_time,
+                                            "HH:mm:ss"
+                                          ).format("hh:mm A")}{" "}
+                                          (IST)
+                                        </span>
+                                      </div>
+
+                                      <div className="flex gap-x-1">
+                                        <span className="flex gap-1">
+                                          <CalendarClock
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />
+                                          End Time -{" "}
+                                        </span>
+                                        <span className="font-bold ">
+                                          {moment(
+                                            event.end_time,
                                             "HH:mm:ss"
                                           ).format("hh:mm A")}{" "}
                                           (IST)
@@ -594,15 +601,12 @@ const AdminCalendar = ({ registrations }) => {
                     width={14}
                     className="relative top-[7px]"
                   />{" "}
-                  Starts -
+                  Date -
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
                   {""}
-                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
-                    "hh:mm A"
-                  )}{" "}
-                  (IST)
+                  
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -612,11 +616,27 @@ const AdminCalendar = ({ registrations }) => {
                     width={14}
                     className="relative top-[7px]"
                   />
-                  Ends -{" "}
+                  Start Time -{" "}
                 </span>
                 <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
-                  {moment(selectedEvent?.end_time, "HH:mm:ss").format(
+                {moment(selectedEvent?.start_time, "HH:mm:ss").format(
+                    "hh:mm A"
+                  )}{" "}
+                  (IST)
+                </span>
+              </div>
+
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <CalendarClock
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  End Time -{" "}
+                </span>
+                <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                {moment(selectedEvent?.end_time, "HH:mm:ss").format(
                     "hh:mm A"
                   )}{" "}
                   (IST)

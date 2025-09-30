@@ -514,18 +514,13 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             width={14}
                                             className="relative top-[0px]"
                                           />{" "}
-                                          Starts -
+                                          Date -
                                         </span>
                                         <span className="font-bold">
                                           {moment(event.start_date).format(
                                             "DD MMM YYYY"
                                           )}
-                                          , {""}
-                                          {moment(
-                                            event.start_time,
-                                            "HH:mm:ss"
-                                          ).format("hh:mm A")}{" "}
-                                          (IST)
+                                         
                                         </span>{" "}
                                       </div>
 
@@ -536,13 +531,29 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             width={14}
                                             className="relative top-[0px]"
                                           />
-                                          Ends -{" "}
+                                          Start Time -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                          {moment(event.end_date).format(
-                                            "DD MMM YYYY"
-                                          )}
-                                          , {""}
+                                        
+                                          {moment(
+                                            event?.start_time,
+                                            "HH:mm:ss"
+                                          ).format("hh:mm A")}{" "}
+                                          (IST)
+                                        </span>
+                                      </div>
+
+                                      <div className="flex gap-x-1 mb-4">
+                                        <span className="flex gap-1">
+                                          <CalendarClock
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />
+                                          End Time -{" "}
+                                        </span>
+                                        <span className="font-bold ">
+                                        
                                           {moment(
                                             event?.end_time,
                                             "HH:mm:ss"
@@ -607,15 +618,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                     width={14}
                     className="relative top-[7px]"
                   />{" "}
-                  Starts -
+                  Date -
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
-                  {""}
-                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
-                    "hh:mm A"
-                  )}{" "}
-                  (IST)
+                
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -625,10 +632,26 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                     width={14}
                     className="relative top-[7px]"
                   />
-                  Ends -{" "}
+                  Start Time -{" "}
                 </span>
                 <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
+                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
+                    "hh:mm A"
+                  )}{" "}
+                  (IST)
+                </span>
+              </div>
+
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <CalendarClock
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  End Time -{" "}
+                </span>
+                <span className="font-bold " style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.end_time, "HH:mm:ss").format(
                     "hh:mm A"
                   )}{" "}

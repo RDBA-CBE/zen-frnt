@@ -67,7 +67,6 @@ const viewWellnessLounge = () => {
       );
       console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
 
-
       // const isEventBefore30Min=isBeforeCurrentTimeBy30Min("2025-09-27", "14:14:00")
 
       // const link = extractZoomMeetingId(res?.event?.session_link);
@@ -213,7 +212,7 @@ const viewWellnessLounge = () => {
                               width={18}
                               className="relative top-[3px]"
                             />{" "}
-                            Starts -
+                            Date -
                           </span>
                           <span
                             className="font-bold"
@@ -222,12 +221,6 @@ const viewWellnessLounge = () => {
                             {moment(state?.orderData?.event?.start_date).format(
                               "DD MMM YYYY"
                             )}
-                            , {""}
-                            {moment(
-                              state?.orderData?.event?.start_time,
-                              "HH:mm:ss"
-                            ).format("hh:mm A")}{" "}
-                            (IST)
                           </span>{" "}
                         </div>
                         <div className="flex gap-x-1 mb-4">
@@ -237,16 +230,33 @@ const viewWellnessLounge = () => {
                               width={18}
                               className="relative top-[3px]"
                             />
-                            Ends -{" "}
+                            Start Time -{" "}
                           </span>
                           <span
                             className="font-bold "
                             style={{ color: "#4a4a4a" }}
                           >
-                            {moment(state?.orderData?.event?.end_date).format(
-                              "DD MMM YYYY"
-                            )}
-                            , {""}
+                            {moment(
+                              state?.orderData?.event?.start_time,
+                              "HH:mm:ss"
+                            ).format("hh:mm A")}{" "}
+                            (IST)
+                          </span>
+                        </div>
+
+                        <div className="flex gap-x-1 mb-4">
+                          <span className="flex gap-1">
+                            <CalendarClock
+                              height={16}
+                              width={18}
+                              className="relative top-[3px]"
+                            />
+                            End Time -{" "}
+                          </span>
+                          <span
+                            className="font-bold "
+                            style={{ color: "#4a4a4a" }}
+                          >
                             {moment(
                               state?.orderData?.event?.end_time,
                               "HH:mm:ss"

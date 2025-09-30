@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, getTime, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { CalendarClock, Table, XIcon } from "lucide-react";
+import { CalendarClock, MapPin, Table, XIcon } from "lucide-react";
 import { Failure, Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 import Modal from "@/components/common-components/modal";
@@ -581,35 +581,43 @@ const DashboardCalender = ({ events, setEvents }) => {
                                             width={14}
                                             className="relative top-[0px]"
                                           />{" "}
-                                          Starts -
+                                          Date -
                                         </span>
                                         <span className="font-bold">
                                           {moment(event.start_date).format(
                                             "DD MMM YYYY"
                                           )}
-                                          , {""}
-                                          {moment(
-                                            event.start_time,
-                                            "HH:mm:ss"
-                                          ).format("hh:mm A")}{" "}
-                                          (IST)
                                         </span>{" "}
                                       </div>
 
-                                      <div className="flex gap-x-1">
+                                      <div className="flex gap-x-1 mb-4">
                                         <span className="flex gap-1">
                                           <CalendarClock
                                             height={14}
                                             width={14}
                                             className="relative top-[0px]"
                                           />
-                                          Ends -{" "}
+                                          Start Time -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                          {moment(event.end_date).format(
-                                            "DD MMM YYYY"
-                                          )}
-                                          , {""}
+                                          {moment(
+                                            event?.start_time,
+                                            "HH:mm:ss"
+                                          ).format("hh:mm A")}{" "}
+                                          (IST)
+                                        </span>
+                                      </div>
+
+                                      <div className="flex gap-x-1 mb-4">
+                                        <span className="flex gap-1">
+                                          <CalendarClock
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />
+                                          End Time -{" "}
+                                        </span>
+                                        <span className="font-bold ">
                                           {moment(
                                             event?.end_time,
                                             "HH:mm:ss"
@@ -617,6 +625,22 @@ const DashboardCalender = ({ events, setEvents }) => {
                                           (IST)
                                         </span>
                                       </div>
+
+                                      {event?.venue && (
+                                        <div className="flex gap-x-1">
+                                          <span className="flex gap-1">
+                                            <MapPin
+                                              height={16}
+                                              width={18}
+                                              className="relative top-[3px]"
+                                            />{" "}
+                                            Venue -
+                                          </span>
+                                          <span className="font-bold">
+                                            {`${event?.venue?.university_name} (${event?.venue?.name})`}
+                                          </span>{" "}
+                                        </div>
+                                      )}
                                     </blockquote>
                                   </TooltipContent>
                                 </Tooltip>
@@ -660,15 +684,11 @@ const DashboardCalender = ({ events, setEvents }) => {
                     width={14}
                     className="relative top-[7px]"
                   />{" "}
-                  Starts -
+                  Date -
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
                   {""}
-                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
-                    "hh:mm A"
-                  )}{" "}
-                  (IST)
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -678,14 +698,43 @@ const DashboardCalender = ({ events, setEvents }) => {
                     width={14}
                     className="relative top-[7px]"
                   />
-                  Ends -{" "}
+                  Start Time -{" "}
                 </span>
                 <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
+                  {moment(selectedEvent?.start_time, "HH:mm:ss").format(
+                    "hh:mm A"
+                  )}{" "}
+                  (IST)
+                </span>
+              </div>
+
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <CalendarClock
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  End Time -{" "}
+                </span>
+                <span className="font-bold " style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.end_time, "HH:mm:ss").format(
                     "hh:mm A"
                   )}{" "}
                   (IST)
+                </span>
+              </div>
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <MapPin
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  Venue -{" "}
+                </span>
+                <span className="font-bold">
+                  {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`}
                 </span>
               </div>
             </div>
