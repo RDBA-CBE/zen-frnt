@@ -299,8 +299,11 @@ const viewWellnessLounge = () => {
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
       // router.push(state.orderData.event?.session_link);
-      window.open(state.orderData.event?.session_link, "_blank", "noopener,noreferrer");
-
+      window.open(
+        state.orderData.event?.session_link,
+        "_blank",
+        "noopener,noreferrer"
+      );
     } else {
       const startDate = state.orderData?.event?.start_date;
       const startTime = state.orderData?.event?.start_time;
@@ -421,7 +424,6 @@ const viewWellnessLounge = () => {
                           "DD MMM YYYY"
                         )}
                         ,{" "}
-                        
                       </span>
                     </div>
                   </div>
@@ -432,7 +434,7 @@ const viewWellnessLounge = () => {
                         Start Time -{" "}
                       </span>
                       <span className="text-gray-800">
-                      {moment(
+                        {moment(
                           state?.orderData?.event?.start_time,
                           "HH:mm:ss"
                         ).format("hh:mm A")}{" "}
@@ -448,7 +450,7 @@ const viewWellnessLounge = () => {
                         End Time -{" "}
                       </span>
                       <span className="text-gray-800">
-                      {moment(
+                        {moment(
                           state?.orderData?.event?.end_time,
                           "HH:mm:ss"
                         ).format("hh:mm A")}{" "}
@@ -467,7 +469,9 @@ const viewWellnessLounge = () => {
                         Venue -
                       </span>
                       <span className="font-bold" style={{ color: "#4a4a4a" }}>
-                        {`${state?.orderData?.event?.venue?.university_name} (${state?.orderData?.event?.venue?.name})`}
+                        {`${state?.orderData?.event?.venue?.name}`}
+
+                        {/* {`${state?.orderData?.event?.venue?.university_name} (${state?.orderData?.event?.venue?.name})`} */}
                       </span>{" "}
                     </div>
                   )}

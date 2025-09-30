@@ -146,8 +146,11 @@ const viewWellnessLounge = () => {
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
       // router.push(state.orderData.session_link);
-      window.open(state.orderData.session_link, "_blank", "noopener,noreferrer");
-
+      window.open(
+        state.orderData.session_link,
+        "_blank",
+        "noopener,noreferrer"
+      );
     } else {
       const startDate = state.orderData?.start_date;
       const startTime = state.orderData?.start_time;
@@ -215,7 +218,6 @@ const viewWellnessLounge = () => {
                       {moment(state?.orderData?.start_date).format(
                         "DD MMM YYYY"
                       )}
-                     
                     </span>
                   </div>
 
@@ -229,13 +231,11 @@ const viewWellnessLounge = () => {
                       Start Time -{" "}
                     </span>
                     <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                   
                       {moment(state?.orderData?.start_time, "HH:mm:ss").format(
                         "hh:mm A"
                       )}{" "}
                       (IST)
                     </span>
-
                   </div>
 
                   <div className="flex gap-x-1 mb-4">
@@ -248,32 +248,29 @@ const viewWellnessLounge = () => {
                       End Time -{" "}
                     </span>
                     <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                   
                       {moment(state?.orderData?.end_time, "HH:mm:ss").format(
                         "hh:mm A"
                       )}{" "}
                       (IST)
                     </span>
-                    
                   </div>
                   {state?.orderData?.venue && (
-                      <div className="flex gap-1">
-                        <span className="flex gap-1 ">
-                          <MapPin
-                            height={16}
-                            width={18}
-                            className="relative top-[3px]"
-                          />{" "}
-                          Venue -
-                        </span>
-                        <span
-                          className="font-bold"
-                          style={{ color: "#4a4a4a" }}
-                        >
-                          {`${state?.orderData?.venue?.university_name} (${state?.orderData?.venue?.name})`}
-                        </span>{" "}
-                      </div>
-                    )}
+                    <div className="flex gap-1">
+                      <span className="flex gap-1 ">
+                        <MapPin
+                          height={16}
+                          width={18}
+                          className="relative top-[3px]"
+                        />{" "}
+                        Venue -
+                      </span>
+                      <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                        {`${state?.orderData?.venue?.name}`}
+
+                        {/* {`${state?.orderData?.venue?.university_name} (${state?.orderData?.venue?.name})`} */}
+                      </span>{" "}
+                    </div>
+                  )}
                 </blockquote>
 
                 <p

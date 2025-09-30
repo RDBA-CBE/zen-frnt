@@ -637,7 +637,9 @@ const DashboardCalender = ({ events, setEvents }) => {
                                             Venue -
                                           </span>
                                           <span className="font-bold">
-                                            {`${event?.venue?.university_name} (${event?.venue?.name})`}
+                                            {`${event?.venue?.name}`}
+
+                                            {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
                                           </span>{" "}
                                         </div>
                                       )}
@@ -734,7 +736,9 @@ const DashboardCalender = ({ events, setEvents }) => {
                   Venue -{" "}
                 </span>
                 <span className="font-bold">
-                  {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`}
+                  {`${selectedEvent?.venue?.name}`}
+
+                  {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
                 </span>
               </div>
             </div>

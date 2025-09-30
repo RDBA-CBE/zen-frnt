@@ -520,7 +520,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           {moment(event.start_date).format(
                                             "DD MMM YYYY"
                                           )}
-                                         
                                         </span>{" "}
                                       </div>
 
@@ -534,7 +533,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           Start Time -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                        
                                           {moment(
                                             event?.start_time,
                                             "HH:mm:ss"
@@ -553,7 +551,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           End Time -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                        
                                           {moment(
                                             event?.end_time,
                                             "HH:mm:ss"
@@ -571,10 +568,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           Venue -{" "}
                                         </span>
                                         <span className="font-bold ">
-                                          {`${event?.venue?.university_name} (${event?.venue?.name})`}
+                                          {`${event?.venue?.name}`}
+
+                                          {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
                                         </span>
                                       </div>
-                                     
                                     </blockquote>
                                   </TooltipContent>
                                 </Tooltip>
@@ -622,7 +620,6 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
-                
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -669,9 +666,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   Venue -{" "}
                 </span>
                 <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`}
+                  {`${selectedEvent?.venue?.name}`}
 
-                  
+                  {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
                 </span>
               </div>
             </div>
