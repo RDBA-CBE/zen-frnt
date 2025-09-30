@@ -84,7 +84,8 @@ export default function BookingConfirmationPage() {
 
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
-      router.push(state.event?.session_link);
+      // router.push(state.event?.session_link);
+      window.open(state.event.session_link, "_blank", "noopener,noreferrer");
     } else {
       const formattedDate = moment(
         state.orderDetail?.slot?.event_slot?.date

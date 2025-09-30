@@ -145,7 +145,9 @@ const viewWellnessLounge = () => {
 
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
-      router.push(state.orderData.session_link);
+      // router.push(state.orderData.session_link);
+      window.open(state.orderData.session_link, "_blank", "noopener,noreferrer");
+
     } else {
       const startDate = state.orderData?.start_date;
       const startTime = state.orderData?.start_time;

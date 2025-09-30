@@ -235,7 +235,9 @@ const viewWellnessLounge = () => {
 
   const joinSession = (data) => {
     if (data?.isEventBefore30Mins) {
-      router.push(data?.event?.session_link);
+      // router.push(data?.event?.session_link);
+      window.open(data?.event?.session_link, "_blank", "noopener,noreferrer");
+
     } else {
       const formattedDate = moment(data?.slot?.event_slot?.date).format(
         "DD-MM-YYYY"

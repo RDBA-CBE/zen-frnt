@@ -120,7 +120,9 @@ const viewWellnessLounge = () => {
 
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
-      router.push(state.orderData.event?.session_link);
+      // router.push(state.orderData.event?.session_link);
+      window.open(state.orderData.event?.session_link, "_blank", "noopener,noreferrer");
+
     } else {
       const startDate = state.orderData?.event?.start_date;
       const startTime = state.orderData?.event?.start_time;
