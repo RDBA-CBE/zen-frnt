@@ -176,14 +176,14 @@ const viewWellnessLounge = () => {
                             Order ID: {state?.orderData?.registration_id}
                           </p>
                         </div>
-                        <div className="mb-3">
+                        {/* <div className="mb-3">
                           <p className="text-sm">
-                            Registration Date:{" "}
+                            Session Date:{" "}
                             {moment(state?.orderData?.registration_date).format(
                               "DD-MMM-YYYY"
                             )}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
 
                       <div className="pt-3">

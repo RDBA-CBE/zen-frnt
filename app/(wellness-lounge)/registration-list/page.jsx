@@ -369,16 +369,16 @@ const RegistrationList = () => {
           <div>
             <div className="text-right">
               <p className="text-gray-600">
-                Registration Start Date:{" "}
+                Session Start Date:{" "}
                 {moment(state?.eventDetail?.start_date).format("DD-MMM-YYYY")}
               </p>
 
-              <p className="text-gray-600">
+              {/* <p className="text-gray-600">
                 Registration End Date:{" "}
                 {moment(state?.ordeeventDetailrData?.end_date).format(
                   "DD-MMM-YYYY"
                 )}
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
