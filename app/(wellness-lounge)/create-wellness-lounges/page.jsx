@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
 import {
+  addHoursToTimeOnly,
   buildFormData,
   Dropdown,
   extractTimeFromDateTime,
@@ -24,9 +25,13 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import { Loader } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import dynamic from "next/dynamic";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import BookingCalender from "@/components/common-components/bookingCalender";
-import { AYURVEDIC_LOUNGE, getTimeIntervals } from "@/utils/constant.utils";
+import {
+  AYURVEDIC_LOUNGE,
+  getTimeIntervals,
+  IIT_KANPUR,
+} from "@/utils/constant.utils";
 import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
 import { format } from "date-fns";
 // import DateTimeField from "@/components/common-components/DateTimeField"
@@ -153,16 +158,16 @@ const CreateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.end_date
-          ? moment(state.end_date).format("YYYY-MM-DD")
+        end_date: state.start_date
+          ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_time: state.end_time
-          ? moment(state.end_time).format("HH:mm:ss")
-          : null,
+        // end_time: state.end_time
+        //   ? moment(state.end_time).format("HH:mm:ss")
+        //   : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
-        timezone: state?.timezone,
+        timezone: state?.timezone?.value,
         moderator: state.moderator?.value,
         intrested_topics:
           state?.intrested_topics?.length > 0
@@ -170,7 +175,20 @@ const CreateWellnessLounge = () => {
             : [],
         session_link: state.session_link,
         thumbnail_image: state.thumbnail_images,
+        sessionInterval: state.sessionInterval?.value,
+        venue: state.venue?.value,
+
       };
+
+      if (state.sessionInterval) {
+        const daatta = addHoursToTimeOnly(
+          moment(state.start_time).format("HH:mm:ss"),
+          state.sessionInterval?.value
+        );
+
+        validForFree.end_time = daatta;
+        console.log("✌️daatta --->", daatta);
+      }
 
       let validForPaid = {
         title: state.title,
@@ -192,8 +210,10 @@ const CreateWellnessLounge = () => {
           state?.intrested_topics?.length > 0
             ? state?.intrested_topics?.map((item) => item.value)
             : [],
-        timezone: state?.timezone,
+        timezone: state?.timezone?.value,
         price: state.price,
+        venue: state.venue?.value,
+
       };
 
       if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
@@ -334,16 +354,16 @@ const CreateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.end_date
-          ? moment(state.end_date).format("YYYY-MM-DD")
+        end_date: state.start_date
+          ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_time: state.end_time
-          ? moment(state.end_time).format("HH:mm:ss")
-          : null,
+        // end_time: state.end_time
+        //   ? moment(state.end_time).format("HH:mm:ss")
+        //   : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
-        timezone: state?.timezones,
+        timezone: state?.timezone?.value,
         moderator: state.moderator?.value,
         intrested_topics:
           state?.intrested_topics?.length > 0
@@ -356,8 +376,19 @@ const CreateWellnessLounge = () => {
         event_credits: state.price ? state.price : 0,
         price: state.price ? state.price : 0,
         is_active: true,
+        venue: state.venue?.value,
+
       };
       console.log("✌️body --->", body);
+      if (state.sessionInterval) {
+        const daatta = addHoursToTimeOnly(
+          moment(state.start_time).format("HH:mm:ss"),
+          state.sessionInterval?.value
+        );
+
+        body.end_time = daatta;
+        console.log("✌️daatta --->", daatta);
+      }
 
       const formData = buildFormData(body);
       const res = await Models.session.create(formData);
@@ -388,7 +419,7 @@ const CreateWellnessLounge = () => {
           state.lounge_type?.value == AYURVEDIC_LOUNGE && state.interval
             ? state.interval?.value
             : null,
-        timezone: state?.timezones,
+        timezone: state?.timezone?.value,
         moderator: state.moderator?.value,
         intrested_topics:
           state?.intrested_topics?.length > 0
@@ -400,6 +431,8 @@ const CreateWellnessLounge = () => {
         seat_count: state.seat_count || 0,
         thumbnail: state.thumbnail_images,
         is_active: true,
+        venue: state.venue?.value,
+
       };
 
       if (state.slots?.length > 0) {
@@ -483,6 +516,29 @@ const CreateWellnessLounge = () => {
       };
     }
   };
+
+  const loadUserOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.auth.getUniversityDetail(IIT_KANPUR);
+      const Dropdowns = Dropdown(res?.venues, "name");
+
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
   console.log("✌️state.errors --->", state.errors);
 
   return state.loading ? (
@@ -529,7 +585,7 @@ const CreateWellnessLounge = () => {
                   setState({
                     lounge_type: value,
                     errors: { ...state.errors, lounge_type: "" },
-                    price:0
+                    price: 0,
                   })
                 }
                 title="Lounge Type"
@@ -586,11 +642,12 @@ const CreateWellnessLounge = () => {
                   <TimezoneSelector
                     title="Timezone"
                     required
+                    position="top"
                     error={state.errors?.timezone}
                     value={state.timezone}
                     onChange={(tz) => {
                       setState({
-                        timezone: tz?.value,
+                        timezone: tz,
                         timezones: tz?.label,
                         errors: { ...state.errors, timezone: "" },
                       });
@@ -612,6 +669,22 @@ const CreateWellnessLounge = () => {
                       setState({ slots: data });
                     }}
                   />
+                  <LoadMoreDropdown
+                    value={state.venue}
+                    onChange={(value) => {
+                      setState({
+                        venue: value,
+                        errors: { ...state.errors, venue: "" },
+                      });
+                    }}
+                    height={"35px"}
+                    title="Venue"
+                    position="top"
+                    error={state.errors?.venue}
+                    required
+                    placeholder="Select Venue"
+                    loadOptions={loadUserOptions}
+                  />
                 </>
               )}
               {state.lounge_type?.value != AYURVEDIC_LOUNGE && (
@@ -631,8 +704,20 @@ const CreateWellnessLounge = () => {
                         });
                       }}
                     />
-
-                    <DatePicker
+                    <TimePicker
+                      title="Start Time"
+                      onChange={(value) => {
+                        console.log("✌️value --->", value);
+                        setState({
+                          start_time: value,
+                          errors: { ...state.errors, start_time: "" },
+                        });
+                      }}
+                      required
+                      error={state.errors?.start_time}
+                      value={state.start_time}
+                    />
+                    {/* <DatePicker
                       placeholder="End Date"
                       title="End Date"
                       required
@@ -646,10 +731,54 @@ const CreateWellnessLounge = () => {
                         });
                       }}
                       fromDate={state.start_date}
-                    />
+                    /> */}
                   </div>
                   <div className="grid auto-rows-min gap-4 grid-cols-2">
-                    <TimePicker
+                    <LoadMoreDropdown
+                      value={state.sessionInterval}
+                      onChange={(value) => {
+                        setState({
+                          sessionInterval: value,
+                          errors: { ...state.errors, sessionInterval: "" },
+                        });
+                      }}
+                      height={"35px"}
+                      position="top"
+                      title="Session Interval"
+                      error={state.errors?.sessionInterval}
+                      required
+                      placeholder="Select Interval"
+                      loadOptions={() => {
+                        const data = {
+                          options: [
+                            { value: 1, label: "1 Hr" },
+                            { value: 2, label: "2 Hrs" },
+                            { value: 3, label: "3 Hrs" },
+                          ],
+                          hasMore: false,
+                          additional: {
+                            page: 1,
+                          },
+                        };
+                        return data;
+                      }}
+                      disabled={state.isAnyBooked}
+                    />
+                    <TimezoneSelector
+                      title="Timezone"
+                      required
+                      position="top"
+                      error={state.errors?.timezone}
+                      value={state.timezone}
+                      onChange={(tz) => {
+                        setState({
+                          timezone: tz,
+                          timezones: tz?.label,
+                          errors: { ...state.errors, timezone: "" },
+                        });
+                      }}
+                    />
+                    {/* <TimePicker
                       title="Start Time"
                       onChange={(value) => {
                         console.log("✌️value --->", value);
@@ -674,21 +803,23 @@ const CreateWellnessLounge = () => {
                       error={state.errors?.end_time}
                       required
                       value={state.end_time}
-                    />
+                    /> */}
                   </div>
-
-                  <TimezoneSelector
-                    title="Timezone"
-                    required
-                    error={state.errors?.timezone}
-                    value={state.timezone}
-                    onChange={(tz) => {
+                  <LoadMoreDropdown
+                    value={state.venue}
+                    onChange={(value) => {
                       setState({
-                        timezone: tz?.value,
-                        timezones: tz?.label,
-                        errors: { ...state.errors, timezone: "" },
+                        venue: value,
+                        errors: { ...state.errors, venue: "" },
                       });
                     }}
+                    height={"35px"}
+                    title="Venue"
+                    position="top"
+                    error={state.errors?.venue}
+                    required
+                    placeholder="Select Venue"
+                    loadOptions={loadUserOptions}
                   />
                 </>
               )}
@@ -845,7 +976,6 @@ const CreateWellnessLounge = () => {
                 }}
                 className="mt-2 w-full"
                 type="file"
-                required
                 error={state.errors?.thumbnail_image}
               />
 

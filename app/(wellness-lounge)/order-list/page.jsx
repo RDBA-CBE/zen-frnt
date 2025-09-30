@@ -38,7 +38,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 const WellnessLoungeList = () => {
   const router = useRouter();

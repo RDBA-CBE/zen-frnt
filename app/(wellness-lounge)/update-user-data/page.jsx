@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
+  DropdownCode,
   convertUrlToFile,
   getFileNameFromUrl,
   isValidImageUrl,
@@ -36,6 +37,7 @@ import MultiSelectDropdown from "@/components/common-components/multiSelectDropd
 import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -84,7 +86,7 @@ const CreateUser = () => {
     getGroupList();
     getIntrestedTopics();
     getUniversity();
-    getCountry();
+    // getCountry();
   }, [id]);
 
   useEffect(() => {
@@ -201,16 +203,6 @@ const CreateUser = () => {
     }
   };
 
-  // const getCountry = async () => {
-  //   try {
-  //     const res = await Models.auth.getCountries();
-  //     const Dropdowns = Dropdown(res?.results, "name");
-  //     setState({ countryList: Dropdowns });
-  //     console.log("res", res);
-  //   } catch (error) {
-  //     console.log("error");
-  //   }
-  // };
 
   const getCountry = async () => {
     try {
@@ -509,6 +501,33 @@ const CreateUser = () => {
     }
   };
 
+  const loadCountryOptions = async (search, loadedOptions, { page = 1 }) => {
+      try {
+        const body = {
+          pagination: true,
+          search,
+          page,
+        };
+        const res = await Models.auth.getCountries(body);
+        const Dropdowns = DropdownCode(res?.results, "name");
+        return {
+          options: Dropdowns,
+          hasMore: !!res?.next,
+          additional: {
+            page: page + 1,
+          },
+        };
+      } catch (error) {
+        return {
+          options: [],
+          hasMore: false,
+          additional: {
+            page: page,
+          },
+        };
+      }
+    };
+
   const handlePhoneChange = (value) => {
     const valid = value && isValidPhoneNumber(value);
     if (valid == false) {
@@ -694,7 +713,7 @@ const CreateUser = () => {
                   onChange={(e) => setState({ work: e.target.value })}
                 />
 
-                <div className="space-y-1">
+                {/* <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Country"} <span className="text-red-500">*</span>
                   </label>
@@ -727,7 +746,30 @@ const CreateUser = () => {
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
+                 <LoadMoreDropdown
+                  value={state.country}
+                  onChange={(value) => {
+                    const shouldClear = shouldClearPhoneNumber(
+                      value,
+                      state.alumniPhone
+                    );
+
+                    setState({
+                      country: value,
+                      phone_number: shouldClear ? "" : state.phone_number,
+                      errors: { ...state.errors, country: "" },
+                    });
+                  }}
+                  title="Country"
+                  error={state.errors?.country}
+                  required
+                  placeholder="Select Your Country"
+                  height={34}
+                  placeholderSize={"14px"}
+                  loadOptions={loadCountryOptions}
+                  position="top"
+                />
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">

@@ -93,7 +93,7 @@ const SingleAppointmentBooking = () => {
       const res = await Models.session.details(id);
       await slotList(id);
 
-      setState({ orderData: re}); // Set data and stop loading
+      setState({ orderData: res}); // Set data and stop loading
     } catch (error) {
       console.log("Error:", error);
 

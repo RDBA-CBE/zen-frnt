@@ -17,12 +17,14 @@ import {
   formatNumber,
   formatTime,
   formatTimeRange,
+  isBeforeCurrentTimeBy30Min,
   useSetState,
 } from "@/utils/function.utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Models from "@/imports/models.import";
 import moment from "moment";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { Failure } from "@/components/common-components/toast";
 
 export default function BookingConfirmationPage() {
   const searchParams = useSearchParams();
@@ -45,6 +47,11 @@ export default function BookingConfirmationPage() {
     try {
       const res = await Models.session.detailsRegistration(dateParam);
       console.log("✌️res --->", res);
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.slot?.event_slot?.date,
+        res?.slot?.start_time
+      );
+      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
 
       const response = formatTimeRange(
         res?.slot?.event_slot?.date,
@@ -52,7 +59,12 @@ export default function BookingConfirmationPage() {
         res?.event?.interval
       );
       console.log("✌️response --->", response);
-      setState({ orderDetail: res, event: res?.event, slotTime: response });
+      setState({
+        orderDetail: res,
+        event: res?.event,
+        slotTime: response,
+        isEventBefore30Mins,
+      });
     } catch (error) {
       console.log("✌️error --->", error);
     }
@@ -67,6 +79,23 @@ export default function BookingConfirmationPage() {
       }
     } else {
       router.push("/calendar");
+    }
+  };
+
+  const joinSession = () => {
+    if (state.isEventBefore30Mins) {
+      router.push(state.event?.session_link);
+    } else {
+      const formattedDate = moment(
+        state.orderDetail?.slot?.event_slot?.date
+      ).format("DD-MM-YYYY");
+      const formattedTime = moment(
+        state.orderDetail?.slot?.start_time,
+        "HH:mm:ss"
+      ).format("hh:mm A");
+      Failure(
+        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+      );
     }
   };
 
@@ -173,6 +202,17 @@ export default function BookingConfirmationPage() {
                   <p className="text-sm text-gray-600">{state.slotTime}</p>
                 </div>
               </div>
+              {state.event?.venue && (
+                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                  <MapPin className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Venue</p>
+                    <p className="text-sm text-gray-600">
+                      {`${state.event?.venue?.university_name} (${state.event?.venue?.name})`}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
@@ -202,16 +242,17 @@ export default function BookingConfirmationPage() {
                 </p>
               </div>
               {state.event?.session_link && (
-                <Button className="bg-themePurple hover:bg-themePurple/90 text-white px-6 py-3 rounded-lg">
-                  <Link
-                    href={state.event?.session_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <Video className="w-5 h-5" />
-                    Join Meeting
-                  </Link>
+                <Button
+                  onClick={() => joinSession()}
+                  className={`p-2 rounded rounded-sm transition-all duration-200
+${
+  state.isEventBefore30Mins
+    ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
+    : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
+}
+`}
+                >
+                  Join Meeting
                 </Button>
               )}
             </CardContent>

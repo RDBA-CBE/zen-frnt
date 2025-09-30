@@ -3,12 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
-import { extractZoomMeetingId, useSetState } from "@/utils/function.utils";
+import {
+  extractZoomMeetingId,
+  isBeforeCurrentTimeBy30Min,
+  useSetState,
+} from "@/utils/function.utils";
 
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { CalendarClock, Loader } from "lucide-react";
+import { CalendarClock, Loader, MapPin } from "lucide-react";
 
 import Link from "next/link";
 
@@ -17,6 +21,7 @@ import NoEventFound from "@/components/common-components/noEventFound";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { Failure } from "@/components/common-components/toast";
 
 const viewWellnessLounge = () => {
   const router = useRouter();
@@ -39,6 +44,7 @@ const viewWellnessLounge = () => {
     orderData: [],
     error: null,
     group: null,
+    isEventBefore30Mins: false,
   });
 
   useEffect(() => {
@@ -53,10 +59,21 @@ const viewWellnessLounge = () => {
       setState({
         orderData: res,
       });
-      const link = extractZoomMeetingId(res?.event?.session_link);
-      attendanceList(link);
+      console.log("✌️res --->", res);
+
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.event?.start_date,
+        res?.event?.start_time
+      );
+      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
+
+
+      // const isEventBefore30Min=isBeforeCurrentTimeBy30Min("2025-09-27", "14:14:00")
+
+      // const link = extractZoomMeetingId(res?.event?.session_link);
+      // attendanceList(link);
       const group = localStorage.getItem("group");
-      setState({ group: group });
+      setState({ group: group, isEventBefore30Mins });
     } catch (error) {
       setState({ error: error?.detail });
       console.log("error: ", error);
@@ -99,6 +116,25 @@ const viewWellnessLounge = () => {
       router.push("/order-list");
     } else {
       router.push("/student-order");
+    }
+  };
+
+  const joinSession = () => {
+    if (state.isEventBefore30Mins) {
+      router.push(state.orderData.event?.session_link);
+    } else {
+      const startDate = state.orderData?.event?.start_date;
+      const startTime = state.orderData?.event?.start_time;
+
+      if (!startDate || !startTime) {
+        return "The event start time is not available";
+      }
+
+      const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+      Failure(
+        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+      );
     }
   };
 
@@ -194,7 +230,7 @@ const viewWellnessLounge = () => {
                             (IST)
                           </span>{" "}
                         </div>
-                        <div className="flex gap-x-1">
+                        <div className="flex gap-x-1 mb-4">
                           <span className="flex gap-1">
                             <CalendarClock
                               height={16}
@@ -218,6 +254,24 @@ const viewWellnessLounge = () => {
                             (IST)
                           </span>
                         </div>
+                        {state?.orderData?.event?.venue && (
+                          <div className="flex gap-x-1">
+                            <span className="flex gap-1">
+                              <MapPin
+                                height={16}
+                                width={18}
+                                className="relative top-[3px]"
+                              />{" "}
+                              Venue -
+                            </span>
+                            <span
+                              className="font-bold"
+                              style={{ color: "#4a4a4a" }}
+                            >
+                              {`${state?.orderData?.event?.venue?.university_name} (${state?.orderData?.event?.venue?.name})`}
+                            </span>{" "}
+                          </div>
+                        )}
                       </blockquote>
                     </div>
 
@@ -231,19 +285,21 @@ const viewWellnessLounge = () => {
                         <div className="flex justify-between">
                           <div>
                             {isExpired() ? (
-                              <span className="text-red-500 font-semibold">
+                              <span className="text-red-500 text-[18px] font-semibold">
                                 Session Expired
                               </span>
                             ) : state?.orderData?.event?.session_link ? (
-                              <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white">
-                                <Link
-                                  href={state.orderData.event?.session_link}
-                                  className="rounded-sm"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  Join Meeting
-                                </Link>
+                              <Button
+                                onClick={() => joinSession()}
+                                className={`p-2 rounded rounded-sm transition-all duration-200
+    ${
+      state.isEventBefore30Mins
+        ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
+        : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
+    }
+  `}
+                              >
+                                Join Meeting
                               </Button>
                             ) : (
                               "No session link available"

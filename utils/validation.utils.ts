@@ -81,12 +81,14 @@ export const createFreeSession = Yup.object().shape({
     .required("Session link is required")
     .url("Invalid session link"),
   lounge_type: Yup.string().required("Lounge type is required"),
-  thumbnail_image: Yup.string().required("Session Image is required"),
+  // thumbnail_image: Yup.string().required("Session Image is required"),
   moderator: Yup.string().required("Mentor is required"),
   timezone: Yup.string().required("Timezone is required"),
   intrested_topics: Yup.array()
     .min(1, "Topics are required") // This ensures array is not empty
     .required("Topics are required"), // This ensures the field exists
+  sessionInterval: Yup.string().required("Session interval is required"),
+  venue: Yup.string().required("Venue is required"),
 });
 
 export const createPaidSession = Yup.object().shape({
@@ -94,7 +96,7 @@ export const createPaidSession = Yup.object().shape({
   start_date: Yup.date()
     .required("Start Date is required")
     .typeError("Invalid start date"),
-    end_date: Yup.date()
+  end_date: Yup.date()
     .required("End Date is required")
     .typeError("Invalid start date"),
 
@@ -102,7 +104,7 @@ export const createPaidSession = Yup.object().shape({
     .required("Session link is required")
     .url("Invalid session link"),
   lounge_type: Yup.string().required("Lounge type is required"),
-  thumbnail_image: Yup.string().required("Session Image is required"),
+  // thumbnail_image: Yup.string().required("Session Image is required"),
   slot: Yup.array()
     .of(
       Yup.object().shape({
@@ -129,12 +131,17 @@ export const createPaidSession = Yup.object().shape({
   moderator: Yup.string().required("Mentor is required"),
   timezone: Yup.string().required("Timezone is required"),
   price: Yup.string()
-  .required("Price is required")
-  .test('is-valid-price', 'Price must be a valid number greater than 0', (value) => {
-    if (!value) return false;
-    const numericValue = parseFloat(value);
-    return !isNaN(numericValue) && numericValue > 0;
-  }),
+    .required("Price is required")
+    .test(
+      "is-valid-price",
+      "Price must be a valid number greater than 0",
+      (value) => {
+        if (!value) return false;
+        const numericValue = parseFloat(value);
+        return !isNaN(numericValue) && numericValue > 0;
+      }
+    ),
+  venue: Yup.string().required("Venue is required"),
 
   intrested_topics: Yup.array()
     .min(1, "Topics are required") // This ensures array is not empty
@@ -155,12 +162,14 @@ export const calenderCreateFreeSession = Yup.object().shape({
     .required("Session link is required")
     .url("Invalid session link"),
   lounge_type: Yup.string().required("Lounge type is required"),
-  thumbnail_image: Yup.string().required("Session Image is required"),
+  // thumbnail_image: Yup.string().required("Session Image is required"),
   moderator: Yup.string().required("Mentor is required"),
   timezone: Yup.string().required("Timezone is required"),
   intrested_topics: Yup.array()
     .min(1, "Topics are required") // This ensures array is not empty
     .required("Topics are required"), // This ensures the field exists
+  sessionInterval: Yup.string().required("Session interval is required"),
+  venue: Yup.string().required("Venue is required"),
 });
 
 export const createSessionOrder = Yup.object().shape({
@@ -193,7 +202,6 @@ export const updateSessionOrder = Yup.object().shape({
   registration_status: Yup.string().required("Registration  is required"),
   event: Yup.string().required("Event is required"),
   session: Yup.string().required("Session is required"),
-
 });
 export const createUser = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),

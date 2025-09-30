@@ -13,7 +13,9 @@ import {
   getFileNameFromUrl,
   isValidImageUrl,
   useSetState,
+  isBeforeCurrentTimeBy30Min,
 } from "@/utils/function.utils";
+
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
 import { DatePicker } from "@/components/common-components/datePicker";
@@ -29,6 +31,7 @@ import {
   AlertCircle,
   CalendarClock,
   Loader,
+  MapPin,
   Trash2,
   Video,
   X,
@@ -71,6 +74,7 @@ const viewWellnessLounge = () => {
     prev: null,
     attendanceList: [],
     next: null,
+    isEventBefore30Mins: false,
   });
 
   // useEffect(() => {
@@ -89,6 +93,11 @@ const viewWellnessLounge = () => {
     try {
       const res = await Models.session.registrationDetails(id);
       console.log("res: ", res);
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.event?.start_date,
+        res?.event?.start_time
+      );
+      setState({ isEventBefore30Mins });
       if (res?.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
         const response = formatTimeRange(
           res?.slot?.event_slot?.date,
@@ -119,6 +128,7 @@ const viewWellnessLounge = () => {
       console.log("errorerror: ", error);
     }
   };
+  console.log("✌️venue --->", state.venue);
 
   // const attendanceList = async (meeting_id) => {
   //   try {
@@ -283,7 +293,25 @@ const viewWellnessLounge = () => {
       router.push("/booking_list");
     } else {
       router.push("/student-order");
+    }
+  };
 
+  const joinSession = () => {
+    if (state.isEventBefore30Mins) {
+      router.push(state.orderData.event?.session_link);
+    } else {
+      const startDate = state.orderData?.event?.start_date;
+      const startTime = state.orderData?.event?.start_time;
+
+      if (!startDate || !startTime) {
+        return "The event start time is not available";
+      }
+
+      const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+      Failure(
+        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+      );
     }
   };
 
@@ -368,9 +396,16 @@ const viewWellnessLounge = () => {
             {/* Date & Time Section */}
             <div className="bg-fuchsia-50 border-l-4 border-fuchsia-600 rounded-lg p-6 mb-6">
               {state.orderData?.event?.lounge_type?.id == AYURVEDIC_LOUNGE ? (
-                <div className="text-fuchsia-800 font-semibold">
-                  {state?.eventDate}
-                </div>
+                <>
+                  <div className="text-fuchsia-800 font-semibold">
+                    {state?.eventDate}
+                  </div>
+                  {state?.orderData?.event?.venue && (
+                    <div className="text-fuchsia-800 font-semibold">
+                      {`Venue : ${state?.orderData?.event?.venue?.university_name} (${state?.orderData?.event?.venue?.name})`}
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -411,6 +446,21 @@ const viewWellnessLounge = () => {
                       </span>
                     </div>
                   </div>
+                  {state?.orderData?.event?.venue && (
+                    <div className="flex gap-x-1">
+                      <span className="flex gap-1">
+                        <MapPin
+                          height={16}
+                          width={18}
+                          className="relative top-[3px]"
+                        />{" "}
+                        Venue -
+                      </span>
+                      <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                        {`${state?.orderData?.event?.venue?.university_name} (${state?.orderData?.event?.venue?.name})`}
+                      </span>{" "}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -516,16 +566,17 @@ const viewWellnessLounge = () => {
                       <p className="text-gray-600 italic">
                         Click the button below to join your yoga session meeting
                       </p>
-                      <Button className="bg-themePurple hover:bg-themePurple/90 text-white px-6 py-3 rounded-lg">
-                        <Link
-                          href={state.orderData.event.session_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Video className="w-5 h-5" />
-                          Join Meeting
-                        </Link>
+                      <Button
+                        onClick={() => joinSession()}
+                        className={`p-2 rounded rounded-sm transition-all duration-200
+    ${
+      state.isEventBefore30Mins
+        ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
+        : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
+    }
+  `}
+                      >
+                        Join Meeting
                       </Button>
 
                       {/* <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">

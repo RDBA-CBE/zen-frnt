@@ -13,7 +13,7 @@ export default function DateTimeField({
   fromDate,
   error,
   required = false,
-  disabled=false
+  disabled = false,
 }) {
   return (
     <div className="flex flex-col">
@@ -22,12 +22,16 @@ export default function DateTimeField({
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
+
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
           value={value ? dayjs(value) : null}
           onChange={(newValue) => onChange(newValue?.toDate() || null)}
           minDateTime={fromDate ? dayjs(fromDate) : undefined}
           ampm={false}
+          // 👇 Key part: allow separate hour & minute scrolling
+          views={["year", "month", "day", "hours", "minutes"]}
+          openTo="hours" // default opens in hours
           slotProps={{
             textField: {
               placeholder,
@@ -40,7 +44,6 @@ export default function DateTimeField({
         />
       </LocalizationProvider>
 
-      {/* Show error message below like a label */}
       {error && (
         <span className="text-red-500 text-sm font-medium mt-1">{error}</span>
       )}

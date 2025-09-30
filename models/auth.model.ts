@@ -200,6 +200,26 @@ const auth = {
     return promise;
   },
 
+  getUniversityDetail: (id) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `/auth/universities/${id}/`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          console.log("errorsss: ", error);
+          if (error.response) {
+            reject(error.response.data.error);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   getIntrestedTopics: () => {
     let promise = new Promise((resolve, reject) => {
       let url = `/auth/interested-topics/`;
@@ -220,9 +240,13 @@ const auth = {
     return promise;
   },
 
-  getCountries: () => {
+  getCountries: (body = null) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `/auth/countries/`;
+      let url = `/auth/countries/?page=${body?.page}`;
+      if (body?.search) {
+        url += `&search=${encodeURIComponent(body.search)}`;
+      }
+
       instance()
         .get(url)
         .then((res) => {

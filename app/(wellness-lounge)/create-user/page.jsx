@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, useSetState } from "@/utils/function.utils";
+import { Dropdown, DropdownCode, useSetState } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
 import { DatePicker } from "@/components/common-components/datePicker";
@@ -28,6 +28,7 @@ import "react-phone-number-input/style.css";
 import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -64,7 +65,7 @@ const CreateUser = () => {
       getGroupList();
       getIntrestedTopics();
       getUniversity();
-      getCountry();
+      // getCountry();
     }
   }, []);
 
@@ -72,7 +73,7 @@ const CreateUser = () => {
     try {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
-      const filter=Dropdowns?.filter((item)=>item.value != MENTOR)
+      const filter = Dropdowns?.filter((item) => item.value != MENTOR);
       setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
@@ -412,6 +413,33 @@ Login credentials have been generated, and the user can now access the platform 
     }
   };
 
+  const loadCountryOptions = async (search, loadedOptions, { page = 1 }) => {
+    try {
+      const body = {
+        pagination: true,
+        search,
+        page,
+      };
+      const res = await Models.auth.getCountries(body);
+      const Dropdowns = DropdownCode(res?.results, "name");
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
   return (
     <div className="container mx-auto">
       <h2 className="font-bold md:text-[20px] text-sm mb-3">Create User</h2>
@@ -579,7 +607,31 @@ Login credentials have been generated, and the user can now access the platform 
                   placeholder="Select Your Country"
                 /> */}
 
-                <div className="space-y-1">
+                <LoadMoreDropdown
+                  value={state.country}
+                  onChange={(value) => {
+                    const shouldClear = shouldClearPhoneNumber(
+                      value,
+                      state.alumniPhone
+                    );
+
+                    setState({
+                      country: value,
+                      phone_number: shouldClear ? "" : state.phone_number,
+                      errors: { ...state.errors, country: "" },
+                    });
+                  }}
+                  title="Country"
+                  error={state.errors?.country}
+                  required
+                  placeholder="Select Your Country"
+                  height={34}
+                  placeholderSize={"14px"}
+                  loadOptions={loadCountryOptions}
+                  position="top"
+                />
+
+                {/* <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Country"} {""}
                     <span className="text-red-500">*</span>
@@ -613,7 +665,7 @@ Login credentials have been generated, and the user can now access the platform 
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">

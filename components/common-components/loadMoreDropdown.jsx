@@ -16,6 +16,7 @@ const LoadMoreDropdown = (props) => {
     placeholderSize = "14px",
     disabled,
     reRender,
+    position
   } = props;
 
   const [refreshKey, setRefreshKey] = useState(0);
@@ -45,6 +46,7 @@ const LoadMoreDropdown = (props) => {
         isClearable
         isDisabled={disabled}
         debounceTimeout={300}
+        menuPlacement={position}    
         styles={{
           control: (base) => ({
             ...base,
@@ -73,6 +75,7 @@ const LoadMoreDropdown = (props) => {
             color: "#111827",
             borderRadius: "10px",
           }),
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }), 
         }}
       />
 

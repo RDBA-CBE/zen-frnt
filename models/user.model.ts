@@ -11,6 +11,16 @@ const user = {
       if (body?.group_name) {
         url += `&group_name=${encodeURIComponent(body?.group_name)}`;
       }
+
+      if (body?.available_from) {
+        url += `&available_from=${encodeURIComponent(body?.available_from)}`;
+      }
+
+      if (body?.available_to) {
+        url += `&available_to=${encodeURIComponent(body?.available_to)}`;
+      }
+
+      
       instance()
         .get(url)
         .then((res) => {

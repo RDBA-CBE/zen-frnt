@@ -29,7 +29,7 @@ import { TextInput } from "../common-components/textInput";
 
 const RegistrationForm = ({ className, ...props }) => {
     const router = useRouter();
-    const [isMounted, setIsMounted] = useState(false); // Track mounting state
+    const [isMounted, setIsMounted] = useState(false); 
 
     const [state, setState] = useSetState({
         username: "",
@@ -109,7 +109,6 @@ const RegistrationForm = ({ className, ...props }) => {
         }
     })
 
-    // 🚀 Prevent hydration errors by ensuring the component renders only after mount
     if (!isMounted) return null;
 
     const StudentRegistration = async () => {
@@ -122,7 +121,7 @@ const RegistrationForm = ({ className, ...props }) => {
                 year_of_entry: state?.year_of_entry,
                 password: state?.password,
                 intrested_topics: state?.intrested_topics?.label == "Others" ? state?.intrested_topics1 : state?.intrested_topics?.label, // Ensure this is an array or null
-                university: state?.university?.value || "", // Safely access university value
+                university: state?.university?.value || "",
                 is_alumni: false
             };
 
@@ -146,7 +145,6 @@ const RegistrationForm = ({ className, ...props }) => {
                     submitLoading: false
                 });
             } else {
-                // If it's neither a custom error nor a validation error, just stop loading
                 setState({ submitLoading: false });
             }
         }
@@ -167,7 +165,7 @@ const RegistrationForm = ({ className, ...props }) => {
                 year_of_graduation: state?.year_of_graduation,
                 password: state?.alumniPassword,
                 intrested_topics: state?.alumniIntrested_topics?.label == "Others" ? state?.alumniIntrested_topics1 : state?.alumniIntrested_topics?.label, // Ensure this is an array or null
-                alumniUniversity: state?.alumniUniversity?.value || "", // Safely access university value
+                alumniUniversity: state?.alumniUniversity?.value || "", 
                 is_open_to_be_mentor: state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
                 is_alumni: true
             };

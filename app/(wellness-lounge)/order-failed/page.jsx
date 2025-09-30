@@ -316,6 +316,17 @@ export default function BookingFailedPage() {
                     <p className="text-sm text-gray-600">{state.slotTime}</p>
                   </div>
                 </div>
+                {state.event?.venue && (
+                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                    <MapPin className="h-5 w-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">Venue</p>
+                      <p className="text-sm text-gray-600">
+                        {`${state.event?.venue?.university_name} (${state.event?.venue?.name})`}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
               <CardContent className="space-y-4">
                 <div>

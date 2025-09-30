@@ -148,6 +148,16 @@ const UserList = () => {
     },
 
     {
+      Header: "Credits",
+      accessor: "obtained_credits",
+      Cell: (row) => (
+        <Label>
+          {row?.row?.obtained_credits ? row?.row?.obtained_credits : 0}
+        </Label>
+      ),
+    },
+
+    {
       Header: "Action",
       accessor: "action",
       Cell: (row) => (

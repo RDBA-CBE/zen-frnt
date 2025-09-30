@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { CalendarClock, XIcon } from "lucide-react";
+import { CalendarClock, MapPin, XIcon } from "lucide-react";
 import { Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
@@ -529,7 +529,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                         </span>{" "}
                                       </div>
 
-                                      <div className="flex gap-x-1">
+                                      <div className="flex gap-x-1 mb-4">
                                         <span className="flex gap-1">
                                           <CalendarClock
                                             height={14}
@@ -550,6 +550,20 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                           (IST)
                                         </span>
                                       </div>
+                                      <div className="flex gap-x-1 mb-4">
+                                        <span className="flex gap-1">
+                                          <MapPin
+                                            height={14}
+                                            width={14}
+                                            className="relative top-[0px]"
+                                          />
+                                          Venue -{" "}
+                                        </span>
+                                        <span className="font-bold ">
+                                          {`${event?.venue?.university_name} (${event?.venue?.name})`}
+                                        </span>
+                                      </div>
+                                     
                                     </blockquote>
                                   </TooltipContent>
                                 </Tooltip>
@@ -619,6 +633,22 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                     "hh:mm A"
                   )}{" "}
                   (IST)
+                </span>
+              </div>
+
+              <div className="flex gap-x-1">
+                <span className="flex gap-1">
+                  <MapPin
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />
+                  Venue -{" "}
+                </span>
+                <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`}
+
+                  
                 </span>
               </div>
             </div>

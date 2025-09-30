@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
+  addHoursToTimeOnly,
   buildFormData,
   convertUrlToFile,
   getFileNameFromUrl,
+  getHourOption,
   getTimeZone,
   getUnmatchedSlots,
   isValidImageUrl,
@@ -30,9 +32,13 @@ import ProtectedRoute from "@/components/common-components/privateRouter";
 import SlideCalender from "@/components/common-components/slideCalender";
 import Select from "react-select";
 import dynamic from "next/dynamic";
-import { AYURVEDIC_LOUNGE, getTimeIntervals } from "@/utils/constant.utils";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import {
+  AYURVEDIC_LOUNGE,
+  getTimeIntervals,
+  IIT_KANPUR,
+} from "@/utils/constant.utils";
 import TimezoneSelector from "@/components/common-components/TimezoneSelect";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 // import DateTimeField from "@/components/common-components/DateTimeField"
 
@@ -102,16 +108,18 @@ const UpdateWellnessLounge = () => {
       if (res?.thumbnail) {
         const fileName = getFileNameFromUrl(res?.thumbnail);
         const thumbnail = await convertUrlToFile(res?.thumbnail, fileName);
-
         setState({
           thumbnail_images: thumbnail,
           thumbnail_image: res?.thumbnail,
         });
       }
-
+      if (res.start_time && res.end_time) {
+        const sessionInterval = getHourOption(res.start_time, res.end_time);
+        setState({ sessionInterval: sessionInterval });
+      }
       if (res?.timezone) {
         setState({
-          timezone: getTimeZone(res?.timezone),
+          timezone: { value: res?.timezone, label: res?.timezone },
           timezones: res?.timezone,
         });
       }
@@ -127,10 +135,13 @@ const UpdateWellnessLounge = () => {
           },
         });
       }
+      if (res?.venue) {
+        setState({ venue: { value: res?.venue?.id, label: res?.venue?.name } });
+      }
 
       setState({
         title: res.title,
-        interval: res.interval,
+        interval: res.interval ? res.interval : 60,
         description: res.description,
         start_date: new Date(res.start_date),
         end_date: new Date(res.end_date),
@@ -222,16 +233,16 @@ const UpdateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.end_date
-          ? moment(state.end_date).format("YYYY-MM-DD")
+        end_date: state.start_date
+          ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_time: state.end_time
-          ? moment(state.end_time).format("HH:mm:ss")
-          : null,
+        // end_time: state.end_time
+        //   ? moment(state.end_time).format("HH:mm:ss")
+        //   : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
-        timezone: state?.timezone,
+        timezone: state?.timezone?.value,
         moderator: state.moderator?.value,
         intrested_topics:
           state?.intrested_topics?.length > 0
@@ -239,7 +250,22 @@ const UpdateWellnessLounge = () => {
             : [],
         session_link: state.session_link,
         thumbnail_image: state.thumbnail_images,
+        sessionInterval: state.sessionInterval?.value,
+        venue: state.venue?.value,
       };
+      console.log(
+        "✌️state.start_time --->",
+        moment(state.start_time).format("HH:mm:ss")
+      );
+
+      if (state.sessionInterval) {
+        const nextHr = addHoursToTimeOnly(
+          moment(state.start_time).format("HH:mm:ss"),
+          state.sessionInterval?.value
+        );
+
+        validForFree.end_time = nextHr;
+      }
 
       let validForPaid = {
         title: state.title,
@@ -261,9 +287,11 @@ const UpdateWellnessLounge = () => {
           state?.intrested_topics?.length > 0
             ? state?.intrested_topics?.map((item) => item.value)
             : [],
-        timezone: state?.timezone,
-        price:state.price
+        timezone: state?.timezone?.value,
+        price: state.price,
+        venue: state.venue?.value,
       };
+      console.log("✌️validForPaid --->", validForPaid);
 
       if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
         await Validation.createPaidSession.validate(validForPaid, {
@@ -417,11 +445,11 @@ const UpdateWellnessLounge = () => {
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
         end_date: state.end_date
-          ? moment(state.end_date).format("YYYY-MM-DD")
+          ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_time: state.end_time
-          ? moment(state.end_time).format("HH:mm:ss")
-          : null,
+        // end_time: state.end_time
+        //   ? moment(state.end_time).format("HH:mm:ss")
+        //   : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
@@ -436,7 +464,18 @@ const UpdateWellnessLounge = () => {
         thumbnail: state.thumbnail_images,
         event_credits: state.price ? state.price : 0,
         price: state.price ? state.price : 0,
+        venue: state.venue?.value,
       };
+
+      if (state.sessionInterval) {
+        const daatta = addHoursToTimeOnly(
+          moment(state.start_time).format("HH:mm:ss"),
+          state.sessionInterval?.value
+        );
+
+        body.end_time = daatta;
+        console.log("✌️daatta --->", daatta);
+      }
 
       const formData = buildFormData(body);
 
@@ -479,6 +518,7 @@ const UpdateWellnessLounge = () => {
         price: state.price ? state.price : 0,
         seat_count: state.seat_count || 0,
         thumbnail: state.thumbnail_images,
+        venue: state.venue?.value,
       };
 
       if (state.slots?.length > 0) {
@@ -609,7 +649,29 @@ const UpdateWellnessLounge = () => {
       };
     }
   };
-  console.log("✌️state.timezone --->", state.timezone);
+
+  const loadUserOptions = async (search, loadedOptions, { page }) => {
+    try {
+      const res = await Models.auth.getUniversityDetail(IIT_KANPUR);
+      const Dropdowns = Dropdown(res?.venues, "name");
+
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
 
   return state.loading ? (
     <div className="container mx-auto flex justify-center items-center ">
@@ -693,19 +755,20 @@ const UpdateWellnessLounge = () => {
                   }}
                   fromDate={state.start_date}
                 />
-                 <TimezoneSelector
-                title="Timezone"
-                required
-                error={state.errors?.timezone}
-                value={state.timezone}
-                onChange={(tz) => {
-                  setState({
-                    timezone: tz?.value,
-                    timezones: tz?.label,
-                    errors: { ...state.errors, timezone: "" },
-                  });
-                }}
-              />
+                <TimezoneSelector
+                  title="Timezone"
+                  required
+                  position="top"
+                  error={state.errors?.timezone}
+                  value={state.timezone}
+                  onChange={(tz) => {
+                    setState({
+                      timezone: tz,
+                      timezones: tz?.label,
+                      errors: { ...state.errors, timezone: "" },
+                    });
+                  }}
+                />
               </div>
 
               <SlideCalender
@@ -718,11 +781,27 @@ const UpdateWellnessLounge = () => {
                 error={state.errors?.slot}
                 eventSlot={state.eventSlot}
               />
+              <LoadMoreDropdown
+                value={state.venue}
+                onChange={(value) => {
+                  setState({
+                    venue: value,
+                    errors: { ...state.errors, venue: "" },
+                  });
+                }}
+                height={"35px"}
+                title="Venue"
+                position="top"
+                error={state.errors?.venue}
+                required
+                placeholder="Select Venue"
+                loadOptions={loadUserOptions}
+              />
             </>
           )}
           {state.lounge_type?.value != AYURVEDIC_LOUNGE && (
             <>
-              <div className="grid auto-rows-min gap-4 grid-cols-2">
+              <div className="">
                 <DateTimeField
                   disabled={state.isAnyBooked}
                   label={`Start Date & Time (Choose both date & time)`}
@@ -747,7 +826,7 @@ const UpdateWellnessLounge = () => {
                   fromDate={new Date()}
                 />
 
-                <DateTimeField
+                {/* <DateTimeField
                   label="End Date & Time (Choose both date & time)"
                   placeholder="End Date & Time"
                   value={state.combinedEndDateTime}
@@ -765,20 +844,69 @@ const UpdateWellnessLounge = () => {
                   fromDate={
                     !state.isAnyBooked ? state.end_date : state.start_date
                   }
+                /> */}
+              </div>
+              <div className="grid auto-rows-min gap-4 grid-cols-2">
+                <LoadMoreDropdown
+                  value={state.sessionInterval}
+                  onChange={(value) => {
+                    setState({
+                      sessionInterval: value,
+                      errors: { ...state.errors, sessionInterval: "" },
+                    });
+                  }}
+                  height={"35px"}
+                  position="top"
+                  title="Session Interval"
+                  error={state.errors?.sessionInterval}
+                  required
+                  placeholder="Select Interval"
+                  loadOptions={() => {
+                    const data = {
+                      options: [
+                        { value: 1, label: "1 Hr" },
+                        { value: 2, label: "2 Hrs" },
+                        { value: 3, label: "3 Hrs" },
+                      ],
+                      hasMore: false,
+                      additional: {
+                        page: 1,
+                      },
+                    };
+                    return data;
+                  }}
+                  disabled={state.isAnyBooked}
+                />
+                <TimezoneSelector
+                  title="Timezone"
+                  required
+                  position="top"
+                  error={state.errors?.timezone}
+                  value={state.timezone}
+                  onChange={(tz) => {
+                    setState({
+                      timezone: tz,
+                      timezones: tz?.label,
+                      errors: { ...state.errors, timezone: "" },
+                    });
+                  }}
                 />
               </div>
-              <TimezoneSelector
-                title="Timezone"
-                required
-                error={state.errors?.timezone}
-                value={state.timezone}
-                onChange={(tz) => {
+              <LoadMoreDropdown
+                value={state.venue}
+                onChange={(value) => {
                   setState({
-                    timezone: tz?.value,
-                    timezones: tz?.label,
-                    errors: { ...state.errors, timezone: "" },
+                    venue: value,
+                    errors: { ...state.errors, venue: "" },
                   });
                 }}
+                height={"35px"}
+                title="Venue"
+                position="top"
+                error={state.errors?.venue}
+                required
+                placeholder="Select Venue"
+                loadOptions={loadUserOptions}
               />
             </>
           )}
@@ -891,9 +1019,10 @@ const UpdateWellnessLounge = () => {
           <TextInput
             value={state.price}
             onChange={(e) => {
-              setState({ price: e.target.value,
-                errors: { ...state.errors, price: "" }
-               });
+              setState({
+                price: e.target.value,
+                errors: { ...state.errors, price: "" },
+              });
             }}
             placeholder={
               state.lounge_type?.value == AYURVEDIC_LOUNGE ? "Price" : "Credits"
@@ -902,7 +1031,7 @@ const UpdateWellnessLounge = () => {
               state.lounge_type?.value == AYURVEDIC_LOUNGE ? "Price" : "Credits"
             }
             type="number"
-            required={state.lounge_type?.value == AYURVEDIC_LOUNGE }
+            required={state.lounge_type?.value == AYURVEDIC_LOUNGE}
             error={state.errors?.price}
             disabled={state.isAnyBooked}
           />
@@ -968,7 +1097,6 @@ const UpdateWellnessLounge = () => {
                   errors: { ...state.errors, thumbnail_image: "" },
                 });
               }}
-              required
               error={state.errors?.thumbnail_image}
             />
           )}

@@ -31,7 +31,7 @@ import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 const CancelOrderList = () => {

@@ -37,7 +37,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import AdminCalendar from "@/components/ui/adminCalender";
 import dayjs from "dayjs";
 
@@ -528,7 +528,7 @@ const BookingList = () => {
             )}
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 bg-white border rounded-md px-3 py-2 shadow-sm">
+            {/* <div className="flex items-center gap-3 bg-white border rounded-md px-3 py-2 shadow-sm">
               <button
                 onClick={() => setState({ viewMode: "table" })}
                 className={`p-2 rounded-md ${
@@ -552,7 +552,7 @@ const BookingList = () => {
               >
                 <Calendar size={18} />
               </button>
-            </div>
+            </div> */}
             <div
               className="md:w-1/5 w-full  md:text-end"
               onClick={() => exportToExcel()}

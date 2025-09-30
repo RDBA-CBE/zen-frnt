@@ -21,7 +21,7 @@ import Loading from "@/components/common-components/Loading";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -213,11 +213,20 @@ const WellnessLoungeList = () => {
       accessor: "registration_id",
     },
     {
-      Header: "Session Date",
+      Header: "Registration Date",
       accessor: "registration_date",
       Cell: (row) => (
         <Label>
           {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
+        </Label>
+      ),
+    },
+    {
+      Header: "Session Date",
+      accessor: "start_date",
+      Cell: (row) => (
+        <Label>
+          {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
         </Label>
       ),
     },

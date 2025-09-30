@@ -3,7 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
-import { useSetState } from "@/utils/function.utils";
+import {
+  isBeforeCurrentTimeBy30Min,
+  useSetState,
+} from "@/utils/function.utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -13,7 +16,21 @@ import {
   InfinitySuccess,
   Success,
 } from "@/components/common-components/toast";
-import { CalendarClock, Clock, Clock10Icon, Clock1Icon, ClockAlert, ClockIcon, Loader, Loader2Icon, LoaderIcon, Timer } from "lucide-react";
+import {
+  CalendarClock,
+  Clock,
+  Clock10Icon,
+  Clock1Icon,
+  ClockAlert,
+  ClockIcon,
+  Loader,
+  Loader2Icon,
+  LoaderIcon,
+  MapIcon,
+  MapPin,
+  Pin,
+  Timer,
+} from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { TimeClock } from "@mui/x-date-pickers/TimeClock";
 
@@ -62,7 +79,14 @@ const viewWellnessLounge = () => {
 
     try {
       const res = await Models.session.details(id);
-      setState({ orderData: res, loading: false }); // Set data and stop loading
+      console.log("✌️res --->", res);
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.start_date,
+        res?.start_time
+      );
+      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
+
+      setState({ orderData: res, loading: false, isEventBefore30Mins }); // Set data and stop loading
 
       const EventId = localStorage?.getItem("eventId");
       if (EventId) {
@@ -119,6 +143,25 @@ const viewWellnessLounge = () => {
     }
   };
 
+  const joinSession = () => {
+    if (state.isEventBefore30Mins) {
+      router.push(state.orderData.session_link);
+    } else {
+      const startDate = state.orderData?.start_date;
+      const startTime = state.orderData?.start_time;
+
+      if (!startDate || !startTime) {
+        return "The event start time is not available";
+      }
+
+      const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+      Failure(
+        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+      );
+    }
+  };
+
   return (
     <div className="container mx-auto">
       {state?.loading ? (
@@ -138,23 +181,18 @@ const viewWellnessLounge = () => {
                     style={{ height: "500px", objectFit: "cover" }}
                   />
                 ) : (
-                  <p
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    No image uploaded
-                  </p>
+                  <img
+                    src={"/assets/images/placeholder.jpg"}
+                    alt="thumbnail"
+                    className="w-100"
+                    style={{ height: "500px", objectFit: "cover" }}
+                  />
                 )}
               </div>
               <div className="border rounded-xl p-4 flex flex-col">
                 <div className="flex flex-col ">
                   <h2 className="mt-10 scroll-m-20 text-2xl font-[500] tracking-tight transition-colors first:mt-0 font-marce">
-                    {state?.orderData.title} {" "}
+                    {state?.orderData.title}{" "}
                   </h2>
                   <p className="" style={{ paddingTop: "7px" }}>
                     {state?.orderData?.lounge_type?.name}
@@ -163,30 +201,73 @@ const viewWellnessLounge = () => {
 
                 <blockquote className="mt-4 border-l-[5px] border-fuchsia-900 pl-6  bg-fuchsia-100 py-4">
                   <div className="flex gap-1 mb-4">
-                    <span className="flex gap-1 "><CalendarClock height={16} width={18} className="relative top-[3px]"/>  Starts -</span> 
-                  <span className="font-bold" style={{ color: "#4a4a4a" }}>
-                    {moment(state?.orderData?.start_date).format("DD MMM YYYY")}
-                    , {""}
-                    {moment(state?.orderData?.start_time, "HH:mm:ss").format(
-                      "hh:mm A"
-                    )} (IST)
-                  </span>{" "}
+                    <span className="flex gap-1 ">
+                      <CalendarClock
+                        height={16}
+                        width={18}
+                        className="relative top-[3px]"
+                      />{" "}
+                      Starts -
+                    </span>
+                    <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                      {moment(state?.orderData?.start_date).format(
+                        "DD MMM YYYY"
+                      )}
+                      , {""}
+                      {moment(state?.orderData?.start_time, "HH:mm:ss").format(
+                        "hh:mm A"
+                      )}{" "}
+                      (IST)
+                    </span>{" "}
                   </div>
-                 
-                  
-                  <div className="flex gap-x-1">
-                  <span className="flex gap-1"><CalendarClock height={16} width={18} className="relative top-[3px]"/>Ends -{" "}</span> 
-                  <span className="font-bold " style={{ color: "#4a4a4a" }}>
-                    {moment(state?.orderData?.end_date).format("DD MMM YYYY")},{" "}
-                    {""}{" "}
-                    {moment(state?.orderData?.end_time, "HH:mm:ss").format(
-                      "hh:mm A"
-                    )} (IST)
-                  </span>
+
+                  <div className="flex gap-x-1 mb-4">
+                    <span className="flex gap-1">
+                      <CalendarClock
+                        height={16}
+                        width={18}
+                        className="relative top-[3px]"
+                      />
+                      Ends -{" "}
+                    </span>
+                    <span className="font-bold " style={{ color: "#4a4a4a" }}>
+                      {moment(state?.orderData?.end_date).format("DD MMM YYYY")}
+                      , {""}{" "}
+                      {moment(state?.orderData?.end_time, "HH:mm:ss").format(
+                        "hh:mm A"
+                      )}{" "}
+                      (IST)
+                    </span>
                   </div>
+                  {state?.orderData?.venue && (
+                      <div className="flex gap-1">
+                        <span className="flex gap-1 ">
+                          <MapPin
+                            height={16}
+                            width={18}
+                            className="relative top-[3px]"
+                          />{" "}
+                          Venue -
+                        </span>
+                        <span
+                          className="font-bold"
+                          style={{ color: "#4a4a4a" }}
+                        >
+                          {`${state?.orderData?.venue?.university_name} (${state?.orderData?.venue?.name})`}
+                        </span>{" "}
+                      </div>
+                    )}
                 </blockquote>
 
-                <p className="leading-6 text-[15px] [&:not(:first-child)]:mt-4 line-height[20px]" dangerouslySetInnerHTML={{ __html: state?.orderData?.description.replace(/\n/g, "<br/>") }} >
+                <p
+                  className="leading-6 text-[15px] [&:not(:first-child)]:mt-4 line-height[20px]"
+                  dangerouslySetInnerHTML={{
+                    __html: state?.orderData?.description.replace(
+                      /\n/g,
+                      "<br/>"
+                    ),
+                  }}
+                >
                   {/* {state?.orderData?.description} */}
                 </p>
 
@@ -198,18 +279,30 @@ const viewWellnessLounge = () => {
                     </span>{" "}
                     <br />
                     {state?.orderData?.session_link ? (
-                      <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
-                        <Link
-                          prefetch={true}
-                          href={state?.orderData.session_link}
-                          className="text-fuchsia-900 text-white "
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Join Meeting
-                        </Link>
+                      <Button
+                        onClick={() => joinSession()}
+                        className={`p-2 rounded rounded-sm transition-all duration-200
+${
+  state.isEventBefore30Mins
+    ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
+    : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
+}
+`}
+                      >
+                        Join Meeting
                       </Button>
                     ) : (
+                      // <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
+                      //   <Link
+                      //     prefetch={true}
+                      //     href={state?.orderData.session_link}
+                      //     className="text-fuchsia-900 text-white "
+                      //     target="_blank"
+                      //     rel="noopener noreferrer"
+                      //   >
+                      //     Join Meeting
+                      //   </Link>
+                      // </Button>
                       " No session link available"
                     )}
                   </p>

@@ -3,14 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Dropdown, useSetState } from "@/utils/function.utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Dropdown, DropdownCode, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
@@ -20,24 +13,13 @@ import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
 import "react-phone-number-input/style.css";
-
-import MultiSelectDropdown from "../common-components/multiSelectDropdown";
-import InterestTopicsMultiSelect from "../common-components/interestTopicsMultiSelect";
 import Select from "react-select";
-
-import SingleSelectDropdown from "../common-components/singleSelectDropdown";
-
-import PhoneInput, {
-  isValidPhoneNumber,
-  getCountries,
-} from "react-phone-number-input";
-import CustomMultiSelect from "../common-components/multi-select";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { getCountryCallingCode } from "libphonenumber-js";
-import { CheckboxDemo } from "../common-components/checkbox";
 import Checkboxs from "./singleCheckbox";
 import { useDispatch } from "react-redux";
-import { setAuthData } from "@/store/slice/AuthSlice";
+import LoadMoreDropdown from "../common-components/LoadMoreDropdown";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
@@ -85,119 +67,9 @@ const AlumniRegistrationForm = () => {
       setIsMounted(true);
       getUniversity();
       getIntrestedTopics();
-      getCountry();
+      // getCountry();
     }
   }, []);
-
-  // useEffect(() => {
-  //   if (googleAuthInitialized) {
-  //     try {
-  //       window.google.accounts.id.renderButton(
-  //         document.getElementById("googleButtonContainer"),
-  //         {
-  //           type: "standard",
-  //           theme: "outline",
-  //           size: "large",
-  //           text: "signin_with",
-  //           shape: "rectangular",
-  //           logo_alignment: "left",
-  //           width: 300,
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.error("Error rendering Google button:", error);
-  //     }
-  //   }
-  // }, [googleAuthInitialized]);
-
-  // useEffect(() => {
-  //   // Load Google Sign-In script
-  //   const initializeGoogleSignIn = () => {
-  //     if (window.google) {
-  //       window.google.accounts.id.initialize({
-  //         client_id: CLIENT_ID,
-  //         callback: handleCredentialResponse,
-  //         auto_select: false,
-  //         ux_mode: "popup", // Use popup instead of redirect
-  //       });
-
-  //       setGoogleAuthInitialized(true);
-  //     }
-  //   };
-
-  //   // Check if Google script is already loaded
-  //   if (window.google) {
-  //     initializeGoogleSignIn();
-  //   } else {
-  //     // Load the Google script
-  //     const script = document.createElement("script");
-  //     script.src = "https://accounts.google.com/gsi/client";
-  //     script.async = true;
-  //     script.defer = true;
-  //     script.onload = () => {
-  //       // Add a small delay to ensure Google API is fully loaded
-  //       setTimeout(initializeGoogleSignIn, 100);
-  //     };
-  //     script.onerror = () => {
-  //       Failure("Failed to load Google Sign-In. Please check your connection.");
-  //     };
-  //     document.head.appendChild(script);
-  //   }
-
-  //   return () => {
-  //     // Clean up any existing Google auth state
-  //     if (window.google) {
-  //       window.google.accounts.id.cancel();
-  //     }
-  //   };
-  // }, []);
-
-  // const handleCredentialResponse = async (response) => {
-  //   setState({ googleLoading: true });
-
-  //   try {
-  //     const body = {
-  //       access_token: response.credential,
-  //     };
-  //     const res = await Models.auth.googleAuth(body);
-  //     console.log("handleCredentialResponse: ", res);
-  //     if (res.access) {
-  //       localStorage.setItem("zentoken", res.access);
-  //       localStorage.setItem("refreshToken", res.refresh);
-  //       localStorage.setItem("userId", res?.user_id || "");
-  //       localStorage.setItem("group", res.groups?.[0] || "");
-  //       localStorage.setItem("username", res?.username || "");
-
-  //       dispatch(
-  //         setAuthData({
-  //           tokens: res.access,
-  //           groups: res.groups?.[0] || "",
-  //           userId: res.user_id || "",
-  //           username: res?.username || "",
-  //         })
-  //       );
-  //       InfinitySuccess(
-  //         "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
-  //         () => {
-  //           updateUserGroup(res);
-  //         }
-  //       );
-  //     }
-     
-  //   } catch (error) {
-  //     console.error("Google login error:", error);
-  //     if (error.response?.status === 400) {
-  //       Failure("Invalid Google account. Please try a different account.");
-  //     } else {
-  //       Failure(
-  //         error.response?.data?.message ||
-  //           "Google login failed. Please try again."
-  //       );
-  //     }
-  //   } finally {
-  //     setState({ googleLoading: false });
-  //   }
-  // };
 
   const updateUserGroup = async (res) => {
     try {
@@ -241,45 +113,29 @@ const AlumniRegistrationForm = () => {
 
   const getCountry = async () => {
     try {
-      const res = await Models.auth.getCountries();
+      const body = {
+        pagination: false,
+      };
+      const res = await Models.auth.getCountries(body);
       const dropdowns = res?.map((item) => ({
         value: item?.id,
         label: item?.name,
         code: item?.code,
       }));
+      console.log("✌️dropdowns --->", dropdowns);
+
       setState({ countryList: dropdowns });
     } catch (error) {
       console.log("error");
     }
   };
 
-  //   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
-  //     console.log('selectedCountry, currentPhone: ', selectedCountry, currentPhone);
-  //   if (!selectedCountry || !currentPhone?.startsWith("+")) return true;
-  //   console.log("selectedCountry",selectedCountry);
-
-  //   try {
-  //     const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., "91"
-  //     console.log('selectedCallingCode: ', selectedCallingCode);
-  //     const inputCode = currentPhone.match(/^\+(\d+)/)?.[1]; // extracts "91" from "+91xxxxxxxx"
-
-  //     return selectedCallingCode !== inputCode;
-  //     // false
-
-  //   } catch {
-  //     return true; // fallback to clear if any issue
-  //   }
-  // }
-
   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
     if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
-
     try {
       const selectedCallingCode = getCountryCallingCode(selectedCountry.code); // e.g., '91'
       const expectedPrefix = `+${selectedCallingCode}`;
 
-      // ✅ If phone starts with +91 and selected country is also 91 → DON'T clear
-      // ❌ If phone starts with +91 and selected country is something else → CLEAR
       return !currentPhone.startsWith(expectedPrefix);
     } catch (err) {
       console.error("Phone check failed:", err);
@@ -287,7 +143,6 @@ const AlumniRegistrationForm = () => {
     }
   }
 
-  // 🚀 Prevent hydration errors by ensuring the component renders only after mount
   if (!isMounted) return null;
 
   const AlumniRegistration = async () => {
@@ -430,6 +285,33 @@ const AlumniRegistrationForm = () => {
     return { value: year.toString(), label: year.toString() };
   });
 
+  const loadCountryOptions = async (search, loadedOptions, { page = 1 }) => {
+    try {
+      const body = {
+        pagination: true,
+        search,
+        page,
+      };
+      const res = await Models.auth.getCountries(body);
+      const Dropdowns = DropdownCode(res?.results, "name");
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5">
@@ -487,19 +369,6 @@ const AlumniRegistrationForm = () => {
           />
         </div>
 
-        {/* <div className="space-y-1">
-              <MultiSelectDropdown
-                options={state?.countryList || []} // Safely pass empty array if universityList is null
-                value={state.country?.value || ""}
-                onChange={(value) =>
-                  setState({ country: value, alumniPhone: "" })
-                }
-                error={state.errors?.country}
-                title="Country"
-                placeholder="Select Your Country"
-              />
-            </div> */}
-
         <div className="space-y-1">
           <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Country"} <span className="text-red-500">*</span>
@@ -523,7 +392,50 @@ const AlumniRegistrationForm = () => {
             isClearable
           /> */}
           <div className="phone-input-wrapper ">
-            <Select
+            {/* <CustomSelect
+              options={state.countryList}
+              // value={state.registration_status?.value || ""}
+              value={state.country?.value || ""}
+              onChange={(value) => {
+                const shouldClear = shouldClearPhoneNumber(
+                  value,
+                  state.alumniPhone
+                );
+
+                setState({
+                  country: value,
+                  alumniPhone: shouldClear ? "" : state.alumniPhone,
+                  errors: { ...state.errors, country: "" },
+                });
+              }}
+              title="Country"
+              error={state.errors?.country}
+              required
+              placeholder="Select Country"
+            /> */}
+
+            <LoadMoreDropdown
+              value={state.country}
+              onChange={(value) => {
+                const shouldClear = shouldClearPhoneNumber(
+                  value,
+                  state.alumniPhone
+                );
+
+                setState({
+                  country: value,
+                  alumniPhone: shouldClear ? "" : state.alumniPhone,
+                  errors: { ...state.errors, country: "" },
+                });
+              }}
+              error={state.errors?.country}
+              required
+              placeholder="Select Your Country"
+              height={34}
+              placeholderSize={"14px"}
+              loadOptions={loadCountryOptions}
+            />
+            {/* <Select
               options={state.countryList || []}
               value={state.country || ""}
               onChange={(value) => {
@@ -543,7 +455,8 @@ const AlumniRegistrationForm = () => {
               menuPortalTarget={document.body}
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               isClearable
-            />
+              // filterOption={(data,option)=>filterOption(data,option)}
+            /> */}
             {state.errors?.country && (
               <p className="mt-2 text-sm text-red-600">
                 {state.errors?.country}

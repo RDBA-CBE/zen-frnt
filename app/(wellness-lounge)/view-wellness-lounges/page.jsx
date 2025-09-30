@@ -6,6 +6,7 @@ import Models from "@/imports/models.import";
 import {
   formatNumber,
   formatTimeRange,
+  isBeforeCurrentTimeBy30Min,
   useSetState,
 } from "@/utils/function.utils";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -31,6 +32,7 @@ import {
   Loader,
   Loader2Icon,
   LoaderIcon,
+  MapPin,
   Timer,
   Video,
 } from "lucide-react";
@@ -134,6 +136,10 @@ const viewWellnessLounge = () => {
             `${item.slot.event_slot.date} ${item.slot.start_time}`,
             "YYYY-MM-DD HH:mm:ss"
           ),
+          isEventBefore30Mins: isBeforeCurrentTimeBy30Min(
+            item?.slot?.event_slot?.date,
+            item?.slot?.start_time
+          ),
         };
       });
 
@@ -227,6 +233,22 @@ const viewWellnessLounge = () => {
     return lastPayment.status;
   };
 
+  const joinSession = (data) => {
+    if (data?.isEventBefore30Mins) {
+      router.push(data?.event?.session_link);
+    } else {
+      const formattedDate = moment(data?.slot?.event_slot?.date).format(
+        "DD-MM-YYYY"
+      );
+      const formattedTime = moment(data?.slot?.start_time, "HH:mm:ss").format(
+        "hh:mm A"
+      );
+      Failure(
+        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+      );
+    }
+  };
+
   const renderActionButton = (slot) => {
     console.log("✌️slot --->", slot);
     const slotStatus = getSlotStatus(slot);
@@ -241,17 +263,31 @@ const viewWellnessLounge = () => {
       //     now.isBefore(slotDateTime.clone().add(2, "hours")))
       // ) {
       return (
-        <Button className="bg-green-600 hover:bg-green-700 text-white">
-          <Link
-            prefetch={true}
-            href={state?.orderData.session_link}
-            className=" flex items-center"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Video className="w-4 h-4 mr-2" />
-            Join Meeting
-          </Link>
+        // <Button className="bg-green-600 hover:bg-green-700 text-white">
+
+        //   {/* <Link
+        //     prefetch={true}
+        //     href={state?.orderData.session_link}
+        //     className=" flex items-center"
+        //     target="_blank"
+        //     rel="noopener noreferrer"
+        //   >
+        //     <Video className="w-4 h-4 mr-2" /> */}
+        //     Join Meeting
+        //   {/* </Link> */}
+        // </Button>
+
+        <Button
+          onClick={() => joinSession(slot)}
+          className={`p-2 rounded rounded-sm transition-all duration-200
+        ${
+          slot?.isEventBefore30Mins
+            ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
+            : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
+        }
+        `}
+        >
+          Join Meeting
         </Button>
       );
       // }
@@ -400,17 +436,12 @@ const viewWellnessLounge = () => {
                     style={{ height: "500px", objectFit: "cover" }}
                   />
                 ) : (
-                  <p
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    No image uploaded
-                  </p>
+                  <img
+                    src={"/assets/images/placeholder.jpg"}
+                    alt="thumbnail"
+                    className="w-100"
+                    style={{ height: "500px", objectFit: "cover" }}
+                  />
                 )}
               </div>
               <div className="border rounded-xl p-4 flex flex-col">
@@ -661,7 +692,7 @@ const viewWellnessLounge = () => {
                       </span>{" "}
                     </div>
 
-                    <div className="flex gap-x-1">
+                    <div className="flex gap-x-1  mb-4">
                       <span className="flex gap-1">
                         <CalendarClock
                           height={16}
@@ -681,6 +712,24 @@ const viewWellnessLounge = () => {
                         (IST)
                       </span>
                     </div>
+                    {state?.orderData?.venue && (
+                      <div className="flex gap-1">
+                        <span className="flex gap-1 ">
+                          <MapPin
+                            height={16}
+                            width={18}
+                            className="relative top-[3px]"
+                          />{" "}
+                          Venue -
+                        </span>
+                        <span
+                          className="font-bold"
+                          style={{ color: "#4a4a4a" }}
+                        >
+                          {`${state?.orderData?.venue?.university_name} (${state?.orderData?.venue?.name})`}
+                        </span>{" "}
+                      </div>
+                    )}
                   </blockquote>
                 )}
                 {state?.group == "Admin" ? (

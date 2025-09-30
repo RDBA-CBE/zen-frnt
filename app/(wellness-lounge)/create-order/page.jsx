@@ -11,7 +11,7 @@ import {
 
 import CustomSelect from "@/components/common-components/dropdown";
 
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import { useRouter } from "next/navigation";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";

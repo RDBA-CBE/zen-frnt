@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
+  DropdownCode,
   convertUrlToFile,
   getFileNameFromUrl,
   isValidImageUrl,
@@ -25,8 +26,6 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
 import { MENTOR, mentorList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
-
 import PhoneInput, {
   isValidPhoneNumber,
   getCountries,
@@ -36,6 +35,7 @@ import MultiSelectDropdown from "@/components/common-components/multiSelectDropd
 import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -78,6 +78,8 @@ const CreateUser = () => {
     country: null,
     countryList: [],
     notify: false,
+    available_to: null,
+    available_from: null,
   });
 
   useEffect(() => {
@@ -85,15 +87,14 @@ const CreateUser = () => {
     getGroupList();
     getIntrestedTopics();
     getUniversity();
-    getCountry();
+    // getCountry();
   }, [id]);
 
   const getGroupList = async () => {
     try {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
-      const filter = Dropdowns?.filter((item) => item.value != MENTOR);
-      setState({ groupList: filter });
+      setState({ groupList: Dropdowns });
     } catch (error) {
       console.log("error: ", error);
     }
@@ -102,7 +103,6 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
-
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
         const thumbnail = await convertUrlToFile(
@@ -247,7 +247,10 @@ const CreateUser = () => {
       setState({ submitLoading: true });
       console.log("state?.intrested_topics: ", state?.intrested_topics);
 
-      if (state.user_type?.label === "Alumni") {
+      if (
+        state.user_type?.label === "Alumni" ||
+        state.user_type?.label === "Mentor"
+      ) {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
@@ -259,7 +262,8 @@ const CreateUser = () => {
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
           phone_number:
-            state?.user_type?.label === "Alumni"
+            state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor"
               ? state.phone_number
               : undefined,
           year_of_entry:
@@ -281,19 +285,27 @@ const CreateUser = () => {
               ? state?.intrested_topics?.map((item) => item.value)
               : [],
 
-          work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
+          work:
+            state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor"
+              ? state?.work
+              : undefined,
           year_of_graduation: state?.year_of_graduation?.value,
           is_open_to_be_mentor:
-            state?.user_type?.label === "Alumni"
+            state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor"
               ? state?.is_open_to_be_mentor?.value == "Yes"
                 ? true
                 : false
               : undefined,
           country:
-            state?.user_type?.label === "Alumni"
+            state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor"
               ? state?.country?.value
               : undefined,
           notify: state.notify,
+          available_from: state.available_from,
+          available_to: state.available_to,
         };
 
         console.log("body", body);
@@ -307,6 +319,23 @@ const CreateUser = () => {
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
         formData.append("notify", body.notify);
+        if(state.available_from){
+        formData.append(
+          "available_from",
+          state.available_from
+            ? moment(state.available_from).format("YYYY-MM-DD")
+            : null
+        );
+      }
+      if(state.available_to){
+
+        formData.append(
+          "available_to",
+          state.available_to
+            ? moment(state.available_to).format("YYYY-MM-DD")
+            : null
+        );
+      }
 
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
@@ -342,31 +371,49 @@ const CreateUser = () => {
         }
         // }
 
-        if (body.phone_number && state?.user_type?.label === "Alumni") {
+        if (
+          body.phone_number &&
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor")
+        ) {
           formData.append("phone_number", body.phone_number);
         }
-        if (body.work && state?.user_type?.label === "Alumni") {
+        if (
+          body.work &&
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor")
+        ) {
           formData.append("work", body.work);
         }
 
-        if (body.country && state?.user_type?.label === "Alumni") {
+        if (
+          body.country &&
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor")
+        ) {
           formData.append("country", body.country);
         }
 
-        if (body.address && state?.user_type?.label === "Alumni") {
+        if (
+          body.address &&
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor")
+        ) {
           formData.append("address", body.address);
         }
 
         if (
           body.year_of_graduation !== undefined &&
-          state?.user_type?.label === "Alumni"
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor")
         ) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
 
         if (
-          body.is_open_to_be_mentor !== undefined &&
-          state?.user_type?.label === "Alumni"
+          (body.is_open_to_be_mentor !== undefined &&
+            state?.user_type?.label === "Alumni") ||
+          state?.user_type?.label === "Mentor"
         ) {
           formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
         }
@@ -385,7 +432,10 @@ const CreateUser = () => {
           last_name: state.lastname,
           email: state.email.trim(),
           department:
-            state?.user_type?.label !== "Admin" ? state?.department : undefined,
+            state?.user_type?.label !== "Admin" ||
+            state?.user_type?.label === "Mentor"
+              ? state?.department
+              : undefined,
 
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
@@ -489,6 +539,33 @@ const CreateUser = () => {
         errors: { ...state.errors, phone_number: "" },
         phone_number: value,
       });
+    }
+  };
+
+  const loadCountryOptions = async (search, loadedOptions, { page = 1 }) => {
+    try {
+      const body = {
+        pagination: true,
+        search,
+        page,
+      };
+      const res = await Models.auth.getCountries(body);
+      const Dropdowns = DropdownCode(res?.results, "name");
+      return {
+        options: Dropdowns,
+        hasMore: !!res?.next,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+        additional: {
+          page: page,
+        },
+      };
     }
   };
 
@@ -618,7 +695,8 @@ const CreateUser = () => {
             required
           />
           {
-            state?.user_type?.label === "Alumni" ? (
+            state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === "Mentor" ? (
               // Add the component or content you want to render for "Alumni" here
               <>
                 <div className="space-y-1">
@@ -659,7 +737,31 @@ const CreateUser = () => {
                   onChange={(e) => setState({ work: e.target.value })}
                 />
 
-                <div className="space-y-1">
+                <LoadMoreDropdown
+                  value={state.country}
+                  onChange={(value) => {
+                    const shouldClear = shouldClearPhoneNumber(
+                      value,
+                      state.alumniPhone
+                    );
+
+                    setState({
+                      country: value,
+                      phone_number: shouldClear ? "" : state.phone_number,
+                      errors: { ...state.errors, country: "" },
+                    });
+                  }}
+                  title="Country"
+                  error={state.errors?.country}
+                  required
+                  placeholder="Select Your Country"
+                  height={34}
+                  placeholderSize={"14px"}
+                  loadOptions={loadCountryOptions}
+                  position="top"
+                />
+
+                {/* <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Country"} <span className="text-red-500">*</span>
                   </label>
@@ -692,7 +794,7 @@ const CreateUser = () => {
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">
@@ -820,6 +922,35 @@ const CreateUser = () => {
                       />
                     </div>
                   )}
+
+                <DatePicker
+                  placeholder="Available From"
+                  title="Available From"
+                  error={state.errors?.available_from}
+                  closeIcon={true}
+                  selectedDate={state.available_from}
+                  onChange={(date) => {
+                    setState({
+                      available_from: date,
+                      errors: { ...state.errors, available_from: "" },
+                    });
+                  }}
+                />
+
+                <DatePicker
+                  placeholder="Available To"
+                  title="Available To"
+                  fromDate={state.available_from}
+                  error={state.errors?.available_to}
+                  closeIcon={true}
+                  selectedDate={state.available_to}
+                  onChange={(date) => {
+                    setState({
+                      available_to: date,
+                      errors: { ...state.errors, available_to: "" },
+                    });
+                  }}
+                />
 
                 <div className="pt-2 pb-2">
                   <Checkboxs

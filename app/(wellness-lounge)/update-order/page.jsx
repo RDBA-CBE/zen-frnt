@@ -22,7 +22,7 @@ import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-label";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import LoadMoreDropdown from "@/components/common-components/loadMoreDropdown";
+import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import { TextInput } from "@/components/common-components/textInput";
 
 const UpdateOrder = () => {

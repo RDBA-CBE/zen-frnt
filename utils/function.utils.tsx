@@ -32,6 +32,14 @@ export const Dropdown = (arr: any, label: string) => {
   return array;
 };
 
+export const DropdownCode = (items, labelKey) => {
+  return items?.map((item) => ({
+    value: item?.id,         // or whatever you use as unique value
+    label: item?.[labelKey], // "name"
+    code: item?.code,        // <-- extra field
+  }));
+};
+
 export const MultiDropdown = (arr: any, label: string) => {
   const array = arr?.map((item: any) => ({
     value: item?.id,
@@ -366,8 +374,11 @@ export const getHourOption = (startTime, endTime) => {
 };
 
 export const isBeforeCurrentTimeBy30Min = (startDate, startTime) => {
-  const startDateTime = moment(`${startDate} ${startTime}`);
+  const startDateTime = moment(`${startDate} ${startTime}`, "YYYY-MM-DD HH:mm:ss");
   const now = moment();
-  const minutesUntilEvent = startDateTime.diff(now, "minutes");
-  return minutesUntilEvent <= 60 && minutesUntilEvent >= 0;
+
+  // Enable 1 hour before start, and keep it true after
+  const enableTime = startDateTime.clone().subtract(1, "hours");
+
+  return now.isSameOrAfter(enableTime);
 };
