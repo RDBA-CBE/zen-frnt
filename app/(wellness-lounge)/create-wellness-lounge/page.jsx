@@ -472,12 +472,12 @@ const CreateWellnessLounge = () => {
       const body = {
         group_name: "Mentor",
       };
-      if (state.start_date) {
-        body.available_from = moment(state.start_date).format("YYYY-MM-DD");
-      }
-      if (state.start_date) {
-        body.available_to = moment(state.start_date).format("YYYY-MM-DD");
-      }
+      // if (state.start_date) {
+      //   body.available_from = moment(state.start_date).format("YYYY-MM-DD");
+      // }
+      // if (state.start_date) {
+      //   body.available_to = moment(state.start_date).format("YYYY-MM-DD");
+      // }
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
@@ -818,7 +818,7 @@ const CreateWellnessLounge = () => {
                 required
                 placeholder="Select Mentor"
                 loadOptions={loadMendorList}
-                reRender={state.start_date || state.end_date}
+                // reRender={state.start_date || state.end_date}
               />
 
               <div className="space-y-1">

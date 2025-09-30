@@ -319,23 +319,22 @@ const CreateUser = () => {
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
         formData.append("notify", body.notify);
-        if(state.available_from){
-        formData.append(
-          "available_from",
-          state.available_from
-            ? moment(state.available_from).format("YYYY-MM-DD")
-            : null
-        );
-      }
-      if(state.available_to){
-
-        formData.append(
-          "available_to",
-          state.available_to
-            ? moment(state.available_to).format("YYYY-MM-DD")
-            : null
-        );
-      }
+        // if (state.available_from) {
+        //   formData.append(
+        //     "available_from",
+        //     state.available_from
+        //       ? moment(state.available_from).format("YYYY-MM-DD")
+        //       : null
+        //   );
+        // }
+        // if (state.available_to) {
+        //   formData.append(
+        //     "available_to",
+        //     state.available_to
+        //       ? moment(state.available_to).format("YYYY-MM-DD")
+        //       : null
+        //   );
+        // }
 
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
@@ -923,7 +922,7 @@ const CreateUser = () => {
                     </div>
                   )}
 
-                <DatePicker
+                {/* <DatePicker
                   placeholder="Available From"
                   title="Available From"
                   error={state.errors?.available_from}
@@ -950,7 +949,7 @@ const CreateUser = () => {
                       errors: { ...state.errors, available_to: "" },
                     });
                   }}
-                />
+                /> */}
 
                 <div className="pt-2 pb-2">
                   <Checkboxs
@@ -1053,6 +1052,7 @@ const CreateUser = () => {
                     onChange={(value) => setState({ intrested_topics: value })}
                     className="z-50 text-sm"
                     menuPortalTarget={document.body} // required when using menuPosition="fixed"
+                    position="top"
                     styles={{
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
