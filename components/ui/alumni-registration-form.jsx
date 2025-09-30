@@ -743,7 +743,7 @@ const AlumniRegistrationForm = () => {
               {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <p style={{ fontSize: "12px" }}>min 8 characters required</p>
+          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
         </div>
       </div>
       <div className="pt-2 pb-2">
