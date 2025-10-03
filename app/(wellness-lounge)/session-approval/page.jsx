@@ -36,7 +36,7 @@ import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { ROLES } from "@/utils/constant.utils";
 
-const WellnessLoungeList = () => {
+const SessionList = () => {
   const router = useRouter();
 
   const [state, setState] = useSetState({
@@ -100,9 +100,7 @@ const WellnessLoungeList = () => {
 
       const res = await Models.category.catDropDownList();
       const dropdowns = Dropdown(res?.results, "name");
-
-      const role = localStorage.getItem("group");
-      setState({ categoryList: dropdowns, loading: false, role: role });
+      setState({ categoryList: dropdowns, loading: false });
     } catch (error) {
       setState({ loading: false });
 
@@ -134,14 +132,7 @@ const WellnessLoungeList = () => {
       body.status = state.lounge_status?.value;
     }
 
-    if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
-      body.createdBy = userId;
-      body.moderator = userId;
-    } else {
-      body.is_approved = "Yes";
-    }
-
-    //
+    body.is_approved = "No";
 
     return body;
   };
@@ -181,6 +172,22 @@ const WellnessLoungeList = () => {
       getLoungeList(state.currentPage);
       setState({ statusLoading: false, isActiveOpen: false, activeData: null });
       Success("Session status updated successfully");
+    } catch (error) {
+      setState({ statusLoading: false });
+    }
+  };
+
+  const approve = async (item) => {
+    console.log("✌️item --->", item);
+    try {
+      // setState({ statusLoading: true });
+      const body = {
+        is_approved: true,
+      };
+      const res = await Models.session.update(body, item?.row?.id);
+      getLoungeList(state.currentPage);
+      // setState({ statusLoading: false, isActiveOpen: false, activeData: null });
+      // Success("Session status updated successfully");
     } catch (error) {
       setState({ statusLoading: false });
     }
@@ -254,26 +261,20 @@ const WellnessLoungeList = () => {
               >
                 <Trash size={18} className="mr-2" />
               </div>
-              {row?.row?.is_approved ? (
-                <div
-                  className="cursor-pointer"
-                  onClick={() =>
-                    setState({ isActiveOpen: true, activeData: row?.row })
-                  }
-                >
-                  <CircleX
-                    size={20}
-                    className="mr-2"
-                    color={row?.row?.is_active ? "#88c742" : "red"}
-                  />
-                </div>
+              {!row?.row?.is_approved ? (
+                <PrimaryButton
+                  variant={"outline"}
+                  name={"Approve"}
+                  className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
+                  onClick={() => approve(row)}
+                />
               ) : (
-                  <PrimaryButton
-                    variant={"outline"}
-                    name={"Waiting For Approval .."}
-                    className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
-                    disabled
-                  />
+                <PrimaryButton
+                  variant={"outline"}
+                  name={"Waiting For Approval .."}
+                  className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
+                  disabled
+                />
               )}
             </>
           )}
@@ -530,4 +531,4 @@ const WellnessLoungeList = () => {
   );
 };
 
-export default ProtectedRoute(WellnessLoungeList);
+export default ProtectedRoute(SessionList);

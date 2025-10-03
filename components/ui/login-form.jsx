@@ -21,7 +21,7 @@ import * as Yup from "yup";
 import { Loader, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { login } from "@/utils/validation.utils";
-import { CLIENT_ID } from "@/utils/constant.utils";
+import { CLIENT_ID, ROLES } from "@/utils/constant.utils";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 const LoginForm = (props) => {
@@ -139,21 +139,47 @@ const LoginForm = (props) => {
       });
 
       const res = await Models.auth.login(body);
+      console.log("✌️res --->", res);
 
       localStorage.setItem("zentoken", res.access);
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id);
-      localStorage.setItem("group", res.group[0]);
       localStorage.setItem("username", res?.username);
 
-      dispatch(
-        setAuthData({
-          tokens: res.access,
-          groups: res.group[0],
-          userId: res.user_id,
-          username: res?.username,
-        })
-      );
+      if (res?.group?.length > 0) {
+        if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == true) {
+          localStorage.setItem("group", ROLES.MENTOR);
+          dispatch(
+            setAuthData({
+              tokens: res.access,
+              groups: ROLES.MENTOR,
+              userId: res.user_id,
+              username: res?.username,
+            })
+          );
+        } else if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == false) {
+          localStorage.setItem("group", ROLES.ALUMNI);
+          dispatch(
+            setAuthData({
+              tokens: res.access,
+              groups: ROLES.ALUMNI,
+              userId: res.user_id,
+              username: res?.username,
+            })
+          );
+        } else {
+          localStorage.setItem("group", res.group[0]);
+
+          dispatch(
+            setAuthData({
+              tokens: res.access,
+              groups: res.group[0],
+              userId: res.user_id,
+              username: res?.username,
+            })
+          );
+        }
+      }
 
       Success("Login Successful");
       setState({ loading: false, username: "", password: "" });

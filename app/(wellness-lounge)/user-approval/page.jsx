@@ -7,6 +7,8 @@ import { Edit, Eye, PlusIcon, Trash } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
+import { ROLES } from "@/utils/constant.utils";
+
 import Models from "@/imports/models.import";
 import { useEffect } from "react";
 import Modal from "@/components/common-components/modal";
@@ -90,32 +92,36 @@ const UserList = () => {
   };
 
   const updateUserRole = async (type, item) => {
+    console.log("✌️item --->", item);
     try {
-      if (type == "approve") {
-        const body = {
-          user_id: item?.id,
-          group_id: 5,
-        };
+      if (item?.groups?.length > 0) {
+        if (item?.groups?.includes(ROLES.COUNSELOR)) {
+          const body = {
+            is_active: true,
+          };
 
-        const res = await Models.user.updateUserRole(body);
-        getUserList(state.currentPage);
-      } else if (type == "re-approve") {
-        const body = {
-          is_open_to_be_mentor: true,
-        };
-
-        const res = await Models.user.updateUser(body, item?.id);
-
-        getUserList(state.currentPage);
-      } else {
-        const body = {
-       
-          is_open_to_be_mentor: false,
-        };
-
-        const res = await Models.user.updateUser(body, item?.id);
-        getUserList(state.currentPage);
+          const res = await Models.user.updateUser(body,item?.id);
+          console.log("✌️res --->", res);
+          getUserList(state.currentPage);
+        }
       }
+      //   if (type == "approve") {
+      //     const body = {
+      //       user_id: item?.id,
+      //       group_id: 5,
+      //     };
+
+      //     const res = await Models.user.updateUserRole(body);
+      //     getUserList(state.currentPage);
+      //   } else {
+      //     const body = {
+      //       user_id: item?.id,
+      //       group_id: 5,
+      //     };
+
+      //     const res = await Models.user.romoveUserRole(body);
+      //     getUserList(state.currentPage);
+      //   }
     } catch (error) {
       setState({ loading: false });
       console.log("error: ", error);
@@ -139,9 +145,7 @@ const UserList = () => {
     {
       Header: "Role",
       accessor: "Role",
-      Cell: (row) => (
-        <Label>{row?.row?.groups?.map((item) => item).join(",")}</Label>
-      ),
+      Cell: (row) => <Label>{row?.row?.groups?.[0]}</Label>,
     },
     {
       Header: "Registration Date",
@@ -172,9 +176,9 @@ const UserList = () => {
       accessor: "action",
       Cell: (row) => (
         <div className="flex items-center gap-2">
-          <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
+          {/* <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
             <Edit size={18} className="mr-2" />
-          </div>
+          </div> */}
           <div className="cursor-pointer" onClick={() => handleView(row.row)}>
             <Eye size={20} className="mr-2" />
           </div>
@@ -187,49 +191,13 @@ const UserList = () => {
             <Trash size={18} className="mr-2" />
           </div>
 
-          {row?.row?.groups?.includes("Alumni") &&
-          !row?.row?.groups?.includes("Mentor") &&
-          row?.row?.is_open_to_be_mentor ? (
-            <>
-              <PrimaryButton
-                variant={"outline"}
-                name={"Mentor"}
-                // className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                onClick={() => updateUserRole("approve", row?.row)}
-              />
-            </>
-          ) : row?.row?.groups?.includes("Mentor") ? (
-            !row?.row?.is_open_to_be_mentor ? (
-              <PrimaryButton
-                variant={"outline"}
-                name={"Again Mentor"}
-                // className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                onClick={() => updateUserRole("re-approve", row?.row)}
-              />
-            ) : (
-              <>
-                <PrimaryButton
-                  variant={"outline"}
-                  name={"Reject"}
-                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                  onClick={() => updateUserRole("reject", row?.row)}
-                />
-              </>
-            )
-          ) : null}
-          {/* {(row?.row?.is_open_to_be_mentor &&
-            row?.row?.groups?.includes("Alumni")) ||
-            row?.row?.groups?.includes("Mentor") ||
-            (row?.row?.groups?.includes("Counselor") &&
-              row?.row?.groups?.length == 1 && (
-                <PrimaryButton
-                  variant={"outline"}
-                  className=" border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-                  name={"Approve"}
-                  onClick={() => updateUserRole("approve", row?.row)}
-                />
-              ))}
-          {row?.row?.groups?.includes("Mentor") && (
+          <PrimaryButton
+            variant={"outline"}
+            className=" border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+            name={"Approve"}
+            onClick={() => updateUserRole("approve", row?.row)}
+          />
+          {/* {row?.row?.groups?.includes("Mentor") && (
             <PrimaryButton
               variant={"outline"}
               name={"Reject"}
@@ -344,6 +312,7 @@ const UserList = () => {
     if (state.role) {
       body.group_name = state.role?.label;
     }
+    body.is_active = true;
 
     return body;
   };
@@ -367,36 +336,41 @@ const UserList = () => {
       <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
         <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
-            <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-              <h2 className="md:text-[20px] text-sm font-bold">Users</h2>
+            <div className="lg:w-1/4 w-full lg:mb-0 mb-2">
+              <h2 className="md:text-[20px] text-sm font-bold">
+                Waiting For Approval
+              </h2>
             </div>
-            <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
-              <div className="md:w-3/4 w-full  md:mb-0 mb-2">
-                <TextInput
-                  value={state.search}
-                  onChange={(e) => {
-                    setState({ search: e.target.value });
-                  }}
-                  placeholder="Search Name"
-                  required
-                  className="w-full"
-                />
+            <div className="flex justify-between items-center gap-3 lg:w-3/4 w-full">
+              <div className="flex gap-3 flex-1">
+                <div className="md:w-1/2 w-full">
+                  <TextInput
+                    value={state.search}
+                    onChange={(e) => {
+                      setState({ search: e.target.value });
+                    }}
+                    placeholder="Search Name"
+                    required
+                    className="w-full"
+                  />
+                </div>
+                <div className="md:w-1/2 w-full">
+                  <CustomSelect
+                    options={state?.roleList || []}
+                    value={state.role?.value || ""}
+                    onChange={(value) => setState({ role: value })}
+                    placeholder="Filter by role"
+                  />
+                </div>
               </div>
-              <CustomSelect
-                options={state?.roleList || []} // Safely pass empty array if universityList is null
-                value={state.role?.value || ""}
-                onChange={(value) => setState({ role: value })}
-                placeholder="Filter by role"
-              />
-
-              <div
-                className="md:w-1/4 w-full  md:text-end"
+              {/* <div
+                className="md:w-auto w-full md:text-end"
                 onClick={() => router.push("/create-user")}
               >
                 <Button className="bg-themeGreen hover:bg-themeGreen mt-2 md:mt-0">
                   <PlusIcon />
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </Card>

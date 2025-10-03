@@ -62,7 +62,6 @@ const App = () => {
     getLoungeList(state.currentPage);
   }, [debouncedSearch, state.lounge_type, state.start_date, state.end_date]);
 
-
   const getLoungeList = async (page) => {
     try {
       setState({ loading: true });
@@ -101,6 +100,7 @@ const App = () => {
     if (state.lounge_type) {
       body.lounge_type = state.lounge_type?.value;
     }
+    body.is_approved = "Yes";
     return body;
   };
 
@@ -116,14 +116,13 @@ const App = () => {
     }
   };
 
-
   return (
     <>
       <Script
         src="https://checkout.razorpay.com/v1/checkout.jsx"
         strategy="afterInteractive"
       />
-      
+
       {isLoading ? (
         // Show loading spinner or skeleton while checking auth
         <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center">

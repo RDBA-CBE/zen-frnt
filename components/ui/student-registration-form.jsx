@@ -248,6 +248,7 @@ const StudentRegistrationForm = () => {
         university: state?.university?.value || "",
         is_alumni: false,
         notify: state.notify,
+        role:"Student"
       };
       console.log("✌️body --->", body);
 

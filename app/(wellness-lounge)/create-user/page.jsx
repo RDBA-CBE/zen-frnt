@@ -16,7 +16,7 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
-import { MENTOR, mentorList } from "@/utils/constant.utils";
+import { MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
@@ -139,8 +139,10 @@ const CreateUser = () => {
     try {
       // Set loading state to true
       setState({ submitLoading: true });
-      if (state.user_type?.label === "Alumni") {
-        // Construct the body object with necessary fields, conditionally included
+      if (
+        state.user_type?.label === ROLES.ALUMNI ||
+        state.user_type?.label === ROLES.COUNSELOR
+      ) {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
@@ -152,7 +154,8 @@ const CreateUser = () => {
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "", // Default empty string if image doesn't exist
           phone_number:
-            state?.user_type?.label === "Alumni"
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR
               ? state.phone_number
               : undefined,
           year_of_entry:
@@ -170,19 +173,26 @@ const CreateUser = () => {
               : [],
           lable: state.intrested_topics1,
 
-          work: state?.user_type?.label === "Alumni" ? state?.work : undefined,
+          work:
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR
+              ? state?.work
+              : undefined,
           year_of_graduation:
-            state?.user_type?.label === "Alumni"
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR
               ? state?.year_of_graduation?.value
               : undefined,
           is_open_to_be_mentor:
-            state?.user_type?.label === "Alumni"
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR
               ? state?.is_open_to_be_mentor?.value == "Yes"
                 ? true
                 : false
               : undefined,
           country:
-            state?.user_type?.label === "Alumni"
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR
               ? state?.country?.value
               : undefined,
           notify: state.notify,
@@ -257,11 +267,19 @@ const CreateUser = () => {
           formData.append("address", body.address);
         }
 
-        if (body.year_of_graduation && state?.user_type?.label === "Alumni") {
+        if (
+          body.year_of_graduation &&
+          (state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR)
+        ) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
 
-        if (body.is_open_to_be_mentor && state?.user_type?.label === "Alumni") {
+        if (
+          body.is_open_to_be_mentor &&
+          (state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR)
+        ) {
           formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
         }
         console.log("formData", formData);
@@ -542,7 +560,8 @@ Login credentials have been generated, and the user can now access the platform 
             required
           />
           {
-            state?.user_type?.label === "Alumni" ? (
+            state.user_type?.label === ROLES.ALUMNI ||
+            state.user_type?.label === ROLES.COUNSELOR ? (
               // Add the component or content you want to render for "Alumni" here
               <>
                 {/* <CustomSelect
@@ -572,6 +591,7 @@ Login credentials have been generated, and the user can now access the platform 
                         errors: { ...state.errors, year_of_graduation: "" },
                       })
                     }
+                    required
                     menuPortalTarget={document.body}
                     error={state.errors?.year_of_graduation}
                   />
@@ -646,42 +666,6 @@ Login credentials have been generated, and the user can now access the platform 
                   position="top"
                 />
 
-                {/* <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"Country"} {""}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="phone-input-wrapper pt-1">
-                    <Select
-                      options={state.countryList || []}
-                      value={state.country || ""}
-                      onChange={(value) => {
-                        const shouldClear = shouldClearPhoneNumber(
-                          value,
-                          state.phone_number
-                        );
-                        setState({
-                          country: value,
-                          phone_number: shouldClear ? "" : state.phone_number,
-                        });
-                      }}
-                      placeholder="Select Your Country"
-                      className="text-sm"
-                      menuPortalTarget={document.body}
-                      styles={{
-                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                      }}
-                      isClearable
-                    />
-
-                    {state.errors?.country && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {state.errors?.country}
-                      </p>
-                    )}
-                  </div>
-                </div> */}
-
                 <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">
                     Phone Number <span className="text-red-500">*</span>
@@ -695,8 +679,6 @@ Login credentials have been generated, and the user can now access the platform 
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
-                      //          countryCallingCodeEditable={false} // 🔒 disables editing country code
-                      // countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

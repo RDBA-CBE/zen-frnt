@@ -20,6 +20,19 @@ const session = {
       if (body.status) {
         url += `&is_active=${encodeURIComponent(body.status)}`;
       }
+      if (body.createdBy) {
+        url += `&created_by=${encodeURIComponent(body.createdBy)}`;
+      }
+      if (body.moderator) {
+        url += `&moderator=${encodeURIComponent(body.moderator)}`;
+      }
+      if (body.is_approved == "Yes") {
+        url += `&is_approved=${encodeURIComponent(true)}`;
+      }
+
+      if (body.is_approved == "No") {
+        url += `&is_approved=${encodeURIComponent(false)}`;
+      }
 
       instance()
         .get(url)
@@ -50,6 +63,7 @@ const session = {
       if (body.start_date__gt) {
         url += `&start_date__gt=${encodeURIComponent(body.start_date__gt)}`;
       }
+
       instance()
         .get(url)
         .then((res) => {

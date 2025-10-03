@@ -29,6 +29,7 @@ import {
   AYURVEDIC_LOUNGE,
   getTimeIntervals,
   IIT_KANPUR,
+  ROLES,
 } from "@/utils/constant.utils";
 import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
@@ -79,6 +80,7 @@ const CreateWellnessLounge = () => {
       getCategoryList();
       getIntrestedTopics();
       universityList();
+      getRole();
     }
   }, []);
 
@@ -98,6 +100,29 @@ const CreateWellnessLounge = () => {
       const res = await Models.category.activeList();
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getRole = async () => {
+    try {
+      setState({ loading: true });
+      const res = localStorage.getItem("group");
+      const userId = localStorage.getItem("userId");
+      const username = localStorage.getItem("username");
+      // moderator
+      if (res == ROLES.MENTOR || res == ROLES.COUNSELOR) {
+        setState({ moderator: { value: userId, label: username } });
+        console.log("✌️{ value: userId, label: username } --->", {
+          value: userId,
+          label: username,
+        });
+      }
+
+      setState({ loading: false, role: res });
     } catch (error) {
       setState({ loading: false });
 
@@ -327,6 +352,8 @@ const CreateWellnessLounge = () => {
 
   const createFreeSession = async (res) => {
     try {
+      const group = localStorage.getItem("group");
+      const userId = localStorage.getItem("userId");
       let body = {
         title: state.title,
         description: state.description ? state.description : "",
@@ -359,6 +386,12 @@ const CreateWellnessLounge = () => {
         is_active: true,
         venue: state.venue?.value,
       };
+
+      if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
+        body.is_approved = "No";
+      } else {
+        body.is_approved = "Yes";
+      }
 
       if (state.sessionInterval) {
         const daatta = addHoursToTimeOnly(
@@ -819,6 +852,9 @@ const CreateWellnessLounge = () => {
                 required
                 placeholder="Select Mentor"
                 loadOptions={loadMendorList}
+                disabled={
+                  state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
+                }
                 // reRender={state.start_date || state.end_date}
               />
 

@@ -115,6 +115,10 @@ const CreateUser = () => {
         });
       }
 
+      const topic = Dropdown(res?.groups, "name");
+      console.log("✌️topic --->", topic);
+      setState({ user_types: topic });
+
       setState({
         firstname: res.first_name ? res.first_name : "",
         lastname: res.last_name ? res.last_name : "",
@@ -313,7 +317,7 @@ const CreateUser = () => {
           abortEarly: false,
         });
 
-        let groups = [state.user_type?.value];
+        // let groups = [state.user_types?.map((item) => item?.value)];
         let formData = new FormData();
         formData.append("first_name", body.first_name);
         formData.append("last_name", body.last_name);
@@ -341,9 +345,9 @@ const CreateUser = () => {
           formData.append("phone_number", body.phone_number);
         formData.append("date_of_birth", body.dob);
 
-        groups.forEach((group) => {
-          formData.append("groups", group?.toString());
-        });
+        // groups.map((group) => {
+        //   formData.append("groups", group);
+        // });
 
         if (body.thumbnail_image) {
           formData.append("profile_picture", body.thumbnail_image);
@@ -672,13 +676,13 @@ const CreateUser = () => {
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <CustomSelect
+          {/* <CustomSelect
             options={state.groupList}
-            value={state.user_type?.value || ""}
+            value={state.user_types}
             onChange={(value) =>
               setState({
-                user_type: value,
-                errors: { ...state.errors, user_type: "" },
+                user_types: value,
+                errors: { ...state.errors, user_types: "" },
 
                 // phone_number: "",
                 // year_of_graduation: "",
@@ -690,8 +694,27 @@ const CreateUser = () => {
               })
             }
             title="User Type"
+            // isMulti
             error={state.errors?.user_type}
             required
+            disabled
+          /> */}
+
+          <MultiSelectDropdown
+            label="User Type"
+            options={state.groupList}
+            placeholder="Select User Type"
+            value={state.user_types || ""}
+            onChange={(value) =>
+              setState({
+                user_types: value,
+                errors: { ...state.errors, user_types: "" },
+              })
+            }
+            isMulti
+            required
+            isDisabled
+            menuPortalTarget={document.body}
           />
           {
             state?.user_type?.label === "Alumni" ||
@@ -710,6 +733,7 @@ const CreateUser = () => {
                         errors: { ...state.errors, year_of_graduation: "" },
                       })
                     }
+                    required
                     menuPortalTarget={document.body}
                     error={state.errors?.year_of_graduation}
                   />
@@ -847,32 +871,6 @@ const CreateUser = () => {
                     menuPortalTarget={document.body}
                     error={state.errors?.university}
                   />
-                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"University"} {<span className="text-red-500">*</span>}
-                  </label>
-                  <Select
-                    options={state?.universityList || []}
-                    value={state.university || ""}
-                    onChange={(value) =>
-                      setState({
-                        university: value,
-                        errors: { ...state.errors, university: "" },
-                      })
-                    }
-                    placeholder="Select University"
-                    className="z-50 text-sm"
-                    menuPortalTarget={document.body}
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                    isClearable
-                    required
-                  />
-                  {state.errors?.university && (
-                    <p className="mt-2 text-sm text-red-600">
-                      {state.errors?.university}{" "}
-                    </p>
-                  )} */}
                 </div>
 
                 <div className="space-y-1">
@@ -925,21 +923,6 @@ const CreateUser = () => {
                     name="topics"
                     menuPortalTarget={document.body}
                   />
-                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {"Interests in Topics"}
-                  </label>
-                  <Select
-                    value={state.intrested_topics}
-                    isMulti
-                    options={state.intrestedTopicsList || []}
-                    placeholder="Select Topics"
-                    onChange={(value) => setState({ intrested_topics: value })}
-                    className="z-50 text-sm"
-                    menuPortalTarget={document.body} // required when using menuPosition="fixed"
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                  /> */}
                 </div>
 
                 {Array.isArray(state.intrested_topics) &&

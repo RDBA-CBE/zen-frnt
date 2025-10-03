@@ -251,6 +251,10 @@ export const ROLE = [
     name: "Alumni Registration",
     value: "alumni",
   },
+  {
+    name: "Counselor Registration",
+    value: "counselor",
+  },
 ];
 
 export const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -279,3 +283,11 @@ export const getTimeIntervals = [
   { label: "2.5 Hours", value: 150 },
   { label: "3 Hours", value: 180 },
 ];
+
+export const ROLES = {
+  STUDENT: "Student",
+  ALUMNI: "Alumni",
+  ADMIN: "Admin",
+  MENTOR: "Mentor",
+  COUNSELOR: "Counselor",
+};

@@ -19,8 +19,10 @@ const user = {
       if (body?.available_to) {
         url += `&available_to=${encodeURIComponent(body?.available_to)}`;
       }
+      if (body?.is_active) {
+        url += `&is_active=${encodeURIComponent(!body?.is_active)}`;
+      }
 
-      
       instance()
         .get(url)
         .then((res) => {

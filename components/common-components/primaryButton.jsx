@@ -17,7 +17,7 @@ const PrimaryButton = ({
   onClick,
   loading = false,
   disabled = false,
-  color = "sm:w-auto lg:w-[100px]",
+  color = "sm:w-auto lg:w-auto",
   className = "",
   variant
 }) => {

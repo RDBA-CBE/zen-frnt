@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/accordion";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
+import { ROLES } from "@/utils/constant.utils";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -65,12 +66,10 @@ const Header = () => {
     logoutLoading: false,
   });
 
-  // Set `isClient` to true after the component mounts (only runs on the client)
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Fetch token and group from localStorage only on the client-side
   useEffect(() => {
     if (isClient) {
       const storedToken = localStorage.getItem("zentoken");
@@ -87,9 +86,8 @@ const Header = () => {
         );
       }
     }
-  }, [isClient, dispatch]); // Only run when `isClient` is true
+  }, [isClient, dispatch]);
 
-  // Logout function to remove token and navigate to login page
   const handleLogout = async () => {
     try {
       setState({ logoutLoading: true });
@@ -121,12 +119,10 @@ const Header = () => {
     }
   };
 
-  // Cancel function to close the dialog without performing any action
   const handleCancel = () => {
     setDialogOpen(false);
   };
 
-  // Left side menus for Admin and Student
   const AdminLeftSideMenu = [
     {
       title: "Dashboard",
@@ -139,6 +135,7 @@ const Header = () => {
         { title: "Lounge Session List", url: "/wellness-lounge-list" },
         { title: "Create Lounge Session", url: "/create-wellness-lounge" },
         { title: "Categories", url: "/categories-list" },
+        { title: "Waiting For Approval", url: "/session-approval" },
       ],
     },
     {
@@ -158,6 +155,7 @@ const Header = () => {
       items: [
         { title: "User List", url: "/user-list" },
         { title: "Create User", url: "/create-user" },
+        { title: "Waiting For Approval", url: "/user-approval" },
       ],
     },
 
@@ -178,6 +176,36 @@ const Header = () => {
       title: "Reports",
       url: "/reports",
     },
+  ];
+
+  const MentorOrConLeftSideMenu = [
+    {
+      title: "Dashboard",
+      url: "/",
+    },
+    {
+      title: "Wellness Lounge",
+      url: "/wellness-lounge-list",
+      items: [
+        { title: "Lounge Session List", url: "/wellness-lounge-list" },
+        { title: "Create Lounge Session", url: "/create-wellness-lounge" },
+      ],
+    },
+    {
+      title: "Sessions",
+      url: "#",
+      items: [
+        { title: "Registered Users", url: "/order-list" },
+        { title: "Add User", url: "/create-order" },
+        { title: "Cancelled Users", url: "/cancel-order" },
+      ],
+    },
+    {
+      title: "Profile",
+      url: "/profile",
+    },
+
+   
   ];
 
   const StudentLeftSideMenu = [
@@ -267,8 +295,12 @@ const Header = () => {
               <nav className="hidden lg:flex space-x-6">
                 {tokens &&
                   groups &&
-                  (groups === "Admin"
+                  (groups === ROLES.ADMIN
                     ? AdminLeftSideMenu
+                    : groups == ROLES.MENTOR
+                    ? MentorOrConLeftSideMenu
+                    : groups == ROLES.COUNSELOR
+                    ? MentorOrConLeftSideMenu
                     : StudentLeftSideMenu
                   ).map((menu) => (
                     <div
@@ -415,8 +447,12 @@ const Header = () => {
                         <div className="mt-10">
                           {tokens &&
                             groups &&
-                            (groups === "Admin"
+                            (groups === ROLES.ADMIN
                               ? AdminLeftSideMenu
+                              : groups == ROLES.MENTOR
+                              ? MentorOrConLeftSideMenu
+                              : groups == ROLES.COUNSELOR
+                              ? MentorOrConLeftSideMenu
                               : StudentLeftSideMenu
                             ).map((menu, index) => {
                               return (

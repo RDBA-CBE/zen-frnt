@@ -10,6 +10,8 @@ import {
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import AlumniRegistrationForm from "@/components/ui/alumni-registration-form";
+import CounselorRegForm from "@/components/ui/counselor-reg-form";
+
 import { ROLE } from "@/utils/constant.utils";
 import { Loader, Loader2 } from "lucide-react";
 import { useEffect } from "react";
@@ -104,7 +106,7 @@ export default function studentRegistration() {
               <Loader />
               </div>
             ) :  */}
-            
+
             {state.role === "student" ? (
               <StudentRegistrationForm
                 intrestedTopicsList={state.intrestedTopicsList}
@@ -116,7 +118,13 @@ export default function studentRegistration() {
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
               />
-            ) : null}
+            ) : state.role === "counselor"?  (
+              <CounselorRegForm
+                countryList={state.countryList}
+                intrestedTopicsList={state.intrestedTopicsList}
+                universityList={state.universityList}
+              />
+            ):null}
           </CardHeader>
         </Card>
       </div>

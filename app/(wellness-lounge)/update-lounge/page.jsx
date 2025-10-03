@@ -36,6 +36,7 @@ import {
   AYURVEDIC_LOUNGE,
   getTimeIntervals,
   IIT_KANPUR,
+  ROLES,
 } from "@/utils/constant.utils";
 import TimezoneSelector from "@/components/common-components/TimezoneSelect";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
@@ -945,7 +946,9 @@ const UpdateWellnessLounge = () => {
             required
             placeholder="Select Mentor"
             loadOptions={loadMendorList}
-            disabled={state.isAnyBooked}
+            disabled={
+              state.isAnyBooked || ROLES.COUNSELOR || state.role == ROLES.MENTOR
+            }
           />
           <div className="space-y-1">
             <MultiSelectDropdown

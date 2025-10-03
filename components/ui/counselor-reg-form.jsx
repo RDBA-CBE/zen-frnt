@@ -5,29 +5,22 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Dropdown, DropdownCode, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, InfinitySuccess, Success } from "../common-components/toast";
-import CustomSelect from "../common-components/dropdown";
-import { CLIENT_ID, mentorList } from "@/utils/constant.utils";
+import { Failure, InfinitySuccess } from "../common-components/toast";
 import TextArea from "../common-components/textArea";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { TextInput } from "../common-components/textInput";
 import "react-phone-number-input/style.css";
-import Select from "react-select";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "./singleCheckbox";
-import { useDispatch } from "react-redux";
 import LoadMoreDropdown from "../common-components/LoadMoreDropdown";
 import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
 
-const AlumniRegistrationForm = () => {
+const CounselorRegForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
-  const dispatch = useDispatch();
-
-  const [googleAuthInitialized, setGoogleAuthInitialized] = useState(false);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -68,25 +61,8 @@ const AlumniRegistrationForm = () => {
       setIsMounted(true);
       getUniversity();
       getIntrestedTopics();
-      // getCountry();
     }
   }, []);
-
-  const updateUserGroup = async (res) => {
-    try {
-      let formData = new FormData();
-
-      formData.append("groups", [3]);
-
-      await Models.user.updateUser(formData, res?.user_id);
-
-      router.push(`/update-user-data?id=${res?.user_id}`);
-
-      console.log("res", res);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
 
   const getUniversity = async () => {
     try {
@@ -109,25 +85,6 @@ const AlumniRegistrationForm = () => {
       console.log("res", res);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const getCountry = async () => {
-    try {
-      const body = {
-        pagination: false,
-      };
-      const res = await Models.auth.getCountries(body);
-      const dropdowns = res?.map((item) => ({
-        value: item?.id,
-        label: item?.name,
-        code: item?.code,
-      }));
-      console.log("✌️dropdowns --->", dropdowns);
-
-      setState({ countryList: dropdowns });
-    } catch (error) {
-      console.log("error");
     }
   };
 
@@ -169,19 +126,17 @@ const AlumniRegistrationForm = () => {
             : [],
         lable: state?.alumniIntrested_topics1 || "",
 
-        university: state?.alumniUniversity?.value || "", // Safely access university value
+        university: state?.alumniUniversity?.value || "",
         is_open_to_be_mentor:
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
-        is_alumni: true,
+        is_alumni: false,
         password: state.password,
         notify: state.notify,
-        role:"Alumni"
+        role:"Counselor"
       };
 
-      // First: Run Yup validation
       await Validation.AlumniRegistration.validate(body, { abortEarly: false });
 
-      // Then: Run custom phone validation
       if (!isValidPhoneNumber(body.phone_number)) {
         setState({
           btnLoading: false,
@@ -192,13 +147,12 @@ const AlumniRegistrationForm = () => {
         return;
       }
 
-      // If all validations pass
       const res = await Models.auth.registration(body);
 
       setState({ btnLoading: false });
 
       InfinitySuccess(
-        "Thank you for registering as an alumnus. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+        "Thank you for registering as an counselor. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
         () => {
           router?.push("/login");
         }
@@ -215,7 +169,6 @@ const AlumniRegistrationForm = () => {
           validationErrors[err.path] = err.message;
         });
 
-        // ✅ Add custom phone validation too if needed
         if (!isValidPhoneNumber(state.alumniPhone)) {
           validationErrors.phone_number = "Please enter a valid phone number";
         }
@@ -372,47 +325,7 @@ const AlumniRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          {/* <Select
-            options={state.countryList || []}
-            value={state.country || ""}
-            onChange={(value) => {
-               const clearPhone = shouldClearPhoneNumber(value, state.alumniPhone);
-
-               console.log("clearPhone",clearPhone);
-               
-              setState({ country: value,
-                  alumniPhone: clearPhone ? "" : state.alumniPhone,
-                 });
-            }}
-            placeholder="Select Your Country"
-            className=" text-sm"
-            menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            isClearable
-          /> */}
           <div className="phone-input-wrapper ">
-            {/* <CustomSelect
-              options={state.countryList}
-              // value={state.registration_status?.value || ""}
-              value={state.country?.value || ""}
-              onChange={(value) => {
-                const shouldClear = shouldClearPhoneNumber(
-                  value,
-                  state.alumniPhone
-                );
-
-                setState({
-                  country: value,
-                  alumniPhone: shouldClear ? "" : state.alumniPhone,
-                  errors: { ...state.errors, country: "" },
-                });
-              }}
-              title="Country"
-              error={state.errors?.country}
-              required
-              placeholder="Select Country"
-            /> */}
-
             <LoadMoreDropdown
               title="Country"
               value={state.country}
@@ -435,43 +348,9 @@ const AlumniRegistrationForm = () => {
               placeholderSize={"14px"}
               loadOptions={loadCountryOptions}
             />
-            {/* <Select
-              options={state.countryList || []}
-              value={state.country || ""}
-              onChange={(value) => {
-                const shouldClear = shouldClearPhoneNumber(
-                  value,
-                  state.alumniPhone
-                );
-
-                setState({
-                  country: value,
-                  alumniPhone: shouldClear ? "" : state.alumniPhone,
-                  errors: { ...state.errors, country: "" },
-                });
-              }}
-              placeholder="Select Your Country"
-              className="text-sm"
-              menuPortalTarget={document.body}
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              isClearable
-              // filterOption={(data,option)=>filterOption(data,option)}
-            /> */}
           </div>
         </div>
-        {/* 
-        <div className="space-y-1 z-0">
-          <SingleSelectDropdown
-            options={state?.countryList || []} // Safely pass empty array if universityList is null
-            value={state.country || ""}
-            onChange={(value) => {
-              setState({ country: value, alumniPhone: "" });
-            }}
-            error={state.errors?.country}
-            title="Country"
-            placeholder="Select Your Country"
-          />
-        </div> */}
+
         <div className="space-y-1">
           <label className="block text-sm font-bold text-gray-700">
             Phone Number <span className="text-red-500">*</span>
@@ -484,8 +363,6 @@ const AlumniRegistrationForm = () => {
               value={state.alumniPhone}
               onChange={handlePhoneChange}
               international
-              // countryCallingCodeEditable={false} // 🔒 disables editing country code
-              // countrySelectComponent={() => null}
               className="custom-phone-input"
             />
             {state.errors?.phone_number && (
@@ -511,28 +388,6 @@ const AlumniRegistrationForm = () => {
             menuPortalTarget={document.body}
             error={state.errors?.university}
           />
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"University"} {<span className="text-red-500">*</span>}
-          </label>
-          <Select
-            options={state?.universityList || []}
-            value={state.alumniUniversity || ""}
-            onChange={(value) =>
-              setState({
-                alumniUniversity: value,
-                errors: { ...state.errors, university: "" },
-              })
-            }
-            placeholder="Select University"
-            className=" text-sm"
-            menuPortalTarget={document.body}
-            isClearable
-          />
-          {state.errors?.university && (
-            <p className="mt-2 text-sm text-red-600">
-              {state.errors?.university}{" "}
-            </p>
-          )} */}
         </div>
 
         <div className="space-y-1">
@@ -553,35 +408,6 @@ const AlumniRegistrationForm = () => {
           />
         </div>
 
-        {/* <div className="space-y-1"> */}
-        {/* <TextInput
-                id="year_of_graduation"
-                type="numeric"
-                placeholder="Enter Year of Graduated"
-                title="Year Graduated"
-                required
-                value={state.year_of_graduation}
-                error={state.errors?.year_of_graduation}
-                onChange={(e) =>
-                  setState({ year_of_graduation: e.target.value })
-                }
-              /> */}
-
-        {/* <CustomSelect
-            options={years || []} // Safely pass empty array if universityList is null
-            value={state.year_of_graduation?.value || ""}
-            onChange={(value) =>
-              setState({
-                year_of_graduation: value,
-                errors: { ...state.errors, year_of_graduation: "" },
-              })
-            }
-            error={state.errors?.year_of_graduation}
-            title="Year Graduated"
-            placeholder="Select Year of Graduated"
-            required
-          /> */}
-
         <div className="space-y-1">
           <MultiSelectDropdown
             label="Year Graduated"
@@ -595,46 +421,11 @@ const AlumniRegistrationForm = () => {
               })
             }
             required
+
             menuPortalTarget={document.body}
             error={state.errors?.year_of_graduation}
           />
-          {/* 
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Year Graduated"} {<span className="text-red-500">*</span>}
-          </label>
-          <Select
-            options={years || []}
-            value={state.year_of_graduation || ""}
-            onChange={(value) =>
-              setState({
-                year_of_graduation: value,
-                errors: { ...state.errors, year_of_graduation: "" },
-              })
-            }
-            placeholder="Select Year of Graduated"
-            className="z-0 text-sm"
-            menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            isClearable
-          />
-          {state.errors?.year_of_graduation && (
-            <p className="mt-2 text-sm text-red-600">
-              {state.errors?.year_of_graduation}{" "}
-            </p>
-          )} */}
         </div>
-
-        {/* <Select
-            value={state.year_of_graduation}
-            isMulti
-            options={state.intrestedTopicsList || []}
-            placeholder="Select Topics"
-            onChange={(value) => setState({ alumniIntrested_topics: value })}
-            className="z-50 text-sm"
-            menuPortalTarget={document.body} // required when using menuPosition="fixed"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          />
-        </div> */}
 
         <div className="space-y-1">
           <TextInput
@@ -647,17 +438,6 @@ const AlumniRegistrationForm = () => {
           />
         </div>
 
-        {/* <div className="space-y-1 z-0">
-          <CustomSelect
-            options={state?.universityList || []} // Safely pass empty array if universityList is null
-            value={state.alumniUniversity?.value || ""}
-            onChange={(value) => setState({ alumniUniversity: value })}
-            error={state.errors?.alumniUniversity}
-            placeholder="Select University"
-            title="University"
-          />
-        </div> */}
-
         <div className="space-y-1">
           <MultiSelectDropdown
             label="Interests in Topics"
@@ -669,7 +449,6 @@ const AlumniRegistrationForm = () => {
             name="topics"
             menuPortalTarget={document.body}
           />
-         
         </div>
 
         <div className="space-y-1">
@@ -681,33 +460,6 @@ const AlumniRegistrationForm = () => {
           />
         </div>
 
-        {/* <div className="space-y-1">
-          <MultiSelectDropdown
-            options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
-            value={state.alumniIntrested_topics || ""}
-            onChange={(value) => {
-              console.log("✌️value --->", value);
-              if (value.length > 0) {
-                if (value?.some((item) => item.value === "others")) {
-                  setState({
-                    alumniIntrested_topics: [
-                      { value: "others", label: "Others" },
-                    ],
-                  });
-                } else {
-                  setState({ alumniIntrested_topics: value });
-                }
-              } else {
-                setState({ alumniIntrested_topics: value });
-              }
-            }}
-            error={state.errors?.alumniIntrested_topics}
-            placeholder="Select Topics"
-            title="Interests in Topics"
-          />
-        </div> */}
-
-        {/* {state.alumniIntrested_topics.includes("others") && ( */}
         {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
@@ -724,16 +476,6 @@ const AlumniRegistrationForm = () => {
             </div>
           )}
 
-        <div className="space-y-1 ">
-          <CustomSelect
-            options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
-            value={state.is_open_to_be_mentor?.value || ""}
-            onChange={(value) => setState({ is_open_to_be_mentor: value })}
-            error={state.errors?.is_open_to_be_mentor}
-            title="Are you open to being a mentor?"
-            placeholder="Select"
-          />
-        </div>
         <div className="space-y-1">
           <div className="relative">
             <TextInput
@@ -774,7 +516,6 @@ const AlumniRegistrationForm = () => {
       </div>
       <div className="flex justify-center gap-2">
         <Button
-          // onClick={() => router?.back()}
           onClick={() => resetForm()}
           variant="outline"
           className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
@@ -788,24 +529,8 @@ const AlumniRegistrationForm = () => {
           {state.btnLoading ? <Loader /> : "Submit"}
         </Button>
       </div>
-
-      {/* <div className="relative  p-4">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3 w-full">
-        <div id="googleButtonContainer" className="flex justify-center"></div>
-
-      </div> */}
     </>
   );
 };
 
-export default AlumniRegistrationForm;
+export default CounselorRegForm;

@@ -31,6 +31,7 @@ import {
   AYURVEDIC_LOUNGE,
   getTimeIntervals,
   IIT_KANPUR,
+  ROLES,
 } from "@/utils/constant.utils";
 import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
 import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
@@ -79,6 +80,7 @@ const CreateWellnessLounge = () => {
     if (typeof window !== "undefined") {
       getCategoryList();
       getIntrestedTopics();
+      getRole();
     }
   }, []);
 
@@ -131,6 +133,29 @@ const CreateWellnessLounge = () => {
       const res = await Models.category.activeList();
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getRole = async () => {
+    try {
+      setState({ loading: true });
+      const res = localStorage.getItem("group");
+      const userId = localStorage.getItem("userId");
+      const username = localStorage.getItem("username");
+      // moderator
+      if (res == ROLES.MENTOR || res == ROLES.COUNSELOR) {
+        setState({ moderator: { value: userId, label: username } });
+        console.log("✌️{ value: userId, label: username } --->", {
+          value: userId,
+          label: username,
+        });
+      }
+
+      setState({ loading: false, role: res });
     } catch (error) {
       setState({ loading: false });
 
@@ -379,6 +404,12 @@ const CreateWellnessLounge = () => {
         venue: state.venue?.value,
       };
       console.log("✌️body --->", body);
+      if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
+        body.is_approved = "No";
+      } else {
+        body.is_approved = "Yes";
+      }
+
       if (state.sessionInterval) {
         const daatta = addHoursToTimeOnly(
           moment(state.start_time).format("HH:mm:ss"),
@@ -851,6 +882,9 @@ const CreateWellnessLounge = () => {
                 required
                 placeholder="Select Mentor"
                 loadOptions={loadMendorList}
+                disabled={
+                  state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
+                }
               />
 
               <div className="space-y-1">
