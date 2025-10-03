@@ -31,7 +31,7 @@ import PhoneInput, {
   getCountries,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
+import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
 import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
@@ -699,7 +699,21 @@ const CreateUser = () => {
               // Add the component or content you want to render for "Alumni" here
               <>
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Year Graduated"
+                    options={years || []}
+                    placeholder="Select Year of Graduated"
+                    value={state.year_of_graduation || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_graduation: value,
+                        errors: { ...state.errors, year_of_graduation: "" },
+                      })
+                    }
+                    menuPortalTarget={document.body}
+                    error={state.errors?.year_of_graduation}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year Graduated"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -722,9 +736,8 @@ const CreateUser = () => {
                   {state.errors?.year_of_graduation && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_graduation}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 <TextInput
@@ -820,7 +833,21 @@ const CreateUser = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="University"
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) =>
+                      setState({
+                        university: value,
+                        errors: { ...state.errors, university: "" },
+                      })
+                    }
+                    placeholder="Select University"
+                    menuPortalTarget={document.body}
+                    error={state.errors?.university}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"University"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -844,9 +871,8 @@ const CreateUser = () => {
                   {state.errors?.university && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.university}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="space-y-1">
@@ -889,7 +915,17 @@ const CreateUser = () => {
                 />
 
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Interests in Topics"
+                    value={state.intrested_topics}
+                    isMulti
+                    options={state.intrestedTopicsList || []}
+                    placeholder="Select Topics"
+                    onChange={(value) => setState({ intrested_topics: value })}
+                    name="topics"
+                    menuPortalTarget={document.body}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Interests in Topics"}
                   </label>
                   <Select
@@ -903,7 +939,7 @@ const CreateUser = () => {
                     styles={{
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
-                  />
+                  /> */}
                 </div>
 
                 {Array.isArray(state.intrested_topics) &&
@@ -965,7 +1001,22 @@ const CreateUser = () => {
             ) : state?.user_type?.label === "Student" ? (
               <>
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Year of Entry"
+                    options={years || []}
+                    placeholder="Year Of Entry"
+                    value={state.year_of_entry || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_entry: value,
+                        errors: { ...state.errors, year_of_entry: "" },
+                      })
+                    }
+                    menuPortalTarget={document.body}
+                    error={state.errors?.year_of_entry}
+                  />
+
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year of Entry"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -988,12 +1039,25 @@ const CreateUser = () => {
                   {state.errors?.year_of_entry && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_entry}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="University"
+                    options={state?.universityList || []}
+                    value={state.university || ""}
+                    onChange={(value) =>
+                      setState({
+                        university: value,
+                        errors: { ...state.errors, university: "" },
+                      })
+                    }
+                    placeholder="Select University"
+                    menuPortalTarget={document.body}
+                    error={state.errors?.university}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"University"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -1017,9 +1081,8 @@ const CreateUser = () => {
                   {state.errors?.university && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.university}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="space-y-1">
@@ -1041,7 +1104,17 @@ const CreateUser = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Interests in Topics"
+                    value={state.intrested_topics}
+                    isMulti
+                    options={state.intrestedTopicsList || []}
+                    placeholder="Select Topics"
+                    onChange={(value) => setState({ intrested_topics: value })}
+                    name="topics"
+                    menuPortalTarget={document.body}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Interests in Topics"}
                   </label>
                   <Select
@@ -1056,7 +1129,7 @@ const CreateUser = () => {
                     styles={{
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
-                  />
+                  /> */}
                 </div>
 
                 {Array.isArray(state.intrested_topics) &&

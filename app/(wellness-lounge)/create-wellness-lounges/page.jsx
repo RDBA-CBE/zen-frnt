@@ -33,6 +33,8 @@ import {
   IIT_KANPUR,
 } from "@/utils/constant.utils";
 import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
+import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
+
 import { format } from "date-fns";
 // import DateTimeField from "@/components/common-components/DateTimeField"
 
@@ -177,7 +179,6 @@ const CreateWellnessLounge = () => {
         thumbnail_image: state.thumbnail_images,
         sessionInterval: state.sessionInterval?.value,
         venue: state.venue?.value,
-
       };
 
       if (state.sessionInterval) {
@@ -213,7 +214,6 @@ const CreateWellnessLounge = () => {
         timezone: state?.timezone?.value,
         price: state.price,
         venue: state.venue?.value,
-
       };
 
       if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
@@ -377,7 +377,6 @@ const CreateWellnessLounge = () => {
         price: state.price ? state.price : 0,
         is_active: true,
         venue: state.venue?.value,
-
       };
       console.log("✌️body --->", body);
       if (state.sessionInterval) {
@@ -432,7 +431,6 @@ const CreateWellnessLounge = () => {
         thumbnail: state.thumbnail_images,
         is_active: true,
         venue: state.venue?.value,
-
       };
 
       if (state.slots?.length > 0) {
@@ -856,7 +854,24 @@ const CreateWellnessLounge = () => {
               />
 
               <div className="space-y-1">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <MultiSelectDropdown
+                  value={state.intrested_topics}
+                  isMulti
+                  options={state.intrestedTopicsList || []}
+                  placeholder="Select Topics"
+                  onChange={(value) =>
+                    setState({
+                      intrested_topics: value,
+                      errors: { ...state.errors, intrested_topics: "" },
+                    })
+                  }
+                  label="Topics"
+                  required
+                  name="topics"
+                  menuPortalTarget={document.body}
+                  error={state.errors?.intrested_topics}
+                />
+                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Topics"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -879,7 +894,7 @@ const CreateWellnessLounge = () => {
                   <p className=" text-sm text-red-600">
                     {state.errors?.intrested_topics}
                   </p>
-                )}
+                )} */}
               </div>
 
               {/* {state.intrested_topics?.length > 0 &&

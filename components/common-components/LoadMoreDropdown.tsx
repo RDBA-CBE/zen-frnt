@@ -24,10 +24,10 @@ const LoadMoreDropdown = (props) => {
   useEffect(() => {
     if (reRender) {
       setRefreshKey((prev) => prev + 1);
-
       loadOptions("", [], { page: 1 });
     }
   }, [reRender]);
+  
   return (
     <div className="w-full">
       {title && (
@@ -58,14 +58,12 @@ const LoadMoreDropdown = (props) => {
           }),
           placeholder: (base) => ({
             ...base,
-            color: "black",
-
+            color: "#9C9C9C",
             fontSize: placeholderSize ? placeholderSize : "16px",
           }),
           singleValue: (base) => ({
             ...base,
             color: "black",
-
             fontSize: "16px",
             borderRadius: "10px",
           }),
@@ -75,10 +73,45 @@ const LoadMoreDropdown = (props) => {
             color: "#111827",
             borderRadius: "10px",
           }),
-          menuPortal: (base) => ({ ...base, zIndex: 9999 }), 
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          menuList: (base) => ({
+            ...base,
+            maxHeight: "160px",
+            marginTop: 10,
+            paddingBottom: 0,
+          }),
+          option: (base, { isFocused }) => ({
+            ...base,
+            fontSize: "16px",
+            padding: "6px 10px", // tighter padding
+            minHeight: "28px",
+            cursor: "pointer",
+          }),
+          // Add this to ensure the dropdown container respects the height
+          menu: (base) => ({
+            ...base,
+            marginTop: "2px",
+            marginBottom: 0,
+          }),
+          // Add this to handle loading and no options states
+          loadingMessage: (base) => ({
+            ...base,
+            fontSize: "14px",
+            padding: "2px 8px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+          }),
+          noOptionsMessage: (base) => ({
+            ...base,
+            fontSize: "14px",
+            padding: "2px 8px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+          }),
         }}
       />
-
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>

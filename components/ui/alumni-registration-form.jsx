@@ -20,6 +20,7 @@ import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "./singleCheckbox";
 import { useDispatch } from "react-redux";
 import LoadMoreDropdown from "../common-components/LoadMoreDropdown";
+import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
 
 const AlumniRegistrationForm = () => {
   const router = useRouter();
@@ -370,9 +371,6 @@ const AlumniRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Country"} <span className="text-red-500">*</span>
-          </label>
           {/* <Select
             options={state.countryList || []}
             value={state.country || ""}
@@ -415,6 +413,7 @@ const AlumniRegistrationForm = () => {
             /> */}
 
             <LoadMoreDropdown
+              title="Country"
               value={state.country}
               onChange={(value) => {
                 const shouldClear = shouldClearPhoneNumber(
@@ -457,11 +456,6 @@ const AlumniRegistrationForm = () => {
               isClearable
               // filterOption={(data,option)=>filterOption(data,option)}
             /> */}
-            {state.errors?.country && (
-              <p className="mt-2 text-sm text-red-600">
-                {state.errors?.country}
-              </p>
-            )}
           </div>
         </div>
         {/* 
@@ -502,7 +496,21 @@ const AlumniRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <MultiSelectDropdown
+            label="University"
+            options={state?.universityList || []}
+            value={state.alumniUniversity || ""}
+            onChange={(value) =>
+              setState({
+                alumniUniversity: value,
+                errors: { ...state.errors, university: "" },
+              })
+            }
+            placeholder="Select University"
+            menuPortalTarget={document.body}
+            error={state.errors?.university}
+          />
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
@@ -517,15 +525,13 @@ const AlumniRegistrationForm = () => {
             placeholder="Select University"
             className=" text-sm"
             menuPortalTarget={document.body}
-            // styles={{ menuPortal: (base) => ({ ...base,}) }}
             isClearable
           />
           {state.errors?.university && (
             <p className="mt-2 text-sm text-red-600">
               {state.errors?.university}{" "}
-              {/* Display the error message if it exists */}
             </p>
-          )}
+          )} */}
         </div>
 
         <div className="space-y-1">
@@ -576,6 +582,21 @@ const AlumniRegistrationForm = () => {
           /> */}
 
         <div className="space-y-1">
+          <MultiSelectDropdown
+            label="Year Graduated"
+            options={years || []}
+            placeholder="Select Year of Graduated"
+            value={state.year_of_graduation || ""}
+            onChange={(value) =>
+              setState({
+                year_of_graduation: value,
+                errors: { ...state.errors, year_of_graduation: "" },
+              })
+            }
+            menuPortalTarget={document.body}
+            error={state.errors?.year_of_graduation}
+          />
+          {/* 
           <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Year Graduated"} {<span className="text-red-500">*</span>}
           </label>
@@ -597,9 +618,8 @@ const AlumniRegistrationForm = () => {
           {state.errors?.year_of_graduation && (
             <p className="mt-2 text-sm text-red-600">
               {state.errors?.year_of_graduation}{" "}
-              {/* Display the error message if it exists */}
             </p>
-          )}
+          )} */}
         </div>
 
         {/* <Select
@@ -637,20 +657,46 @@ const AlumniRegistrationForm = () => {
         </div> */}
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Interests in Topics"}
-          </label>
-          <Select
+          <MultiSelectDropdown
+            label="Interests in Topics"
             value={state.alumniIntrested_topics}
             isMulti
             options={state.intrestedTopicsList || []}
             placeholder="Select Topics"
             onChange={(value) => setState({ alumniIntrested_topics: value })}
-            className=" text-sm"
             name="topics"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             menuPortalTarget={document.body}
           />
+          {/* <Select
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            className="text-sm"
+            name="topics"
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+
+              // 👇 reduce total dropdown height
+              menuList: (base) => ({
+                ...base,
+                maxHeight: 160, // total height for dropdown
+                paddingTop: 0,
+                paddingBottom: 0,
+              }),
+
+              // 👇 reduce option row height
+              option: (base, { isFocused }) => ({
+                ...base,
+                fontSize: "16px",
+                padding: "6px 10px", // tighter padding
+                minHeight: "28px",
+                cursor: "pointer",
+              }),
+            }}
+            menuPortalTarget={document.body}
+          /> */}
         </div>
 
         <div className="space-y-1">

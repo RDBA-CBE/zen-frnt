@@ -18,6 +18,7 @@ import Checkboxs from "./singleCheckbox";
 import { CLIENT_ID } from "@/utils/constant.utils";
 import { useDispatch } from "react-redux";
 import { setAuthData } from "@/store/slice/AuthSlice";
+import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
 
 const StudentRegistrationForm = () => {
   const router = useRouter();
@@ -142,7 +143,6 @@ const StudentRegistrationForm = () => {
       await Models.user.updateUser(formData, res?.user_id);
 
       router.push(`/update-user-data?id=${res?.user_id}`);
-
 
       console.log("res", res);
     } catch (error) {
@@ -377,7 +377,22 @@ const StudentRegistrationForm = () => {
         </div> */}
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <MultiSelectDropdown
+            label="University"
+            options={state?.universityList || []}
+            value={state.university || ""}
+            onChange={(value) =>
+              setState({
+                university: value,
+                errors: { ...state.errors, university: "" },
+              })
+            }
+            placeholder="Select University"
+            menuPortalTarget={document.body}
+            error={state.errors?.university}
+          />
+
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
@@ -395,12 +410,13 @@ const StudentRegistrationForm = () => {
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             isClearable
           />
+
+          
           {state.errors?.university && (
             <p className="mt-2 text-sm text-red-600">
               {state.errors?.university}{" "}
-              {/* Display the error message if it exists */}
             </p>
-          )}
+          )} */}
         </div>
 
         <div className="space-y-1">
@@ -422,7 +438,17 @@ const StudentRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <MultiSelectDropdown
+            label="Interests in Topics"
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            name="topics"
+            menuPortalTarget={document.body}
+          />
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Interests in Topics"}
           </label>
           <Select
@@ -434,7 +460,7 @@ const StudentRegistrationForm = () => {
             className="z-50 text-sm"
             menuPortalTarget={document.body} // required when using menuPosition="fixed"
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          />
+          /> */}
         </div>
         {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
@@ -453,7 +479,22 @@ const StudentRegistrationForm = () => {
           )}
 
         <div className="space-y-1">
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <MultiSelectDropdown
+            label="Year of Entry"
+            options={years || []}
+            placeholder="Year Of Entry"
+            value={state.year_of_entry || ""}
+            onChange={(value) =>
+              setState({
+                year_of_entry: value,
+                errors: { ...state.errors, year_of_entry: "" },
+              })
+            }
+            menuPortalTarget={document.body}
+            error={state.errors?.year_of_entry}
+          />
+
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Year of Entry"} {<span className="text-red-500">*</span>}
           </label>
           <Select
@@ -474,9 +515,8 @@ const StudentRegistrationForm = () => {
           {state.errors?.year_of_entry && (
             <p className="mt-2 text-sm text-red-600">
               {state.errors?.year_of_entry}{" "}
-              {/* Display the error message if it exists */}
             </p>
-          )}
+          )} */}
         </div>
 
         <div className="space-y-1">

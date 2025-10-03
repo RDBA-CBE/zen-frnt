@@ -18,7 +18,7 @@ import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { MENTOR, mentorList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import MultiSelectDropdown from "@/components/common-components/multiSelectDropdown";
+import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
 import PhoneInput, {
   isValidPhoneNumber,
@@ -159,10 +159,11 @@ const CreateUser = () => {
             state?.user_type?.label === "Student"
               ? state?.year_of_entry?.value
               : undefined,
-          university:
-            state?.user_type?.label !== "Alumni"
-              ? state?.university?.value
-              : undefined,
+          university: state?.user_type?.label,
+          // university:
+          // state?.user_type?.label !== "Alumni"
+          //   ? state?.university?.value
+          //   : undefined,
           intrested_topics:
             state?.intrested_topics?.length > 0
               ? state?.intrested_topics?.map((item) => item.value)
@@ -186,6 +187,7 @@ const CreateUser = () => {
               : undefined,
           notify: state.notify,
         };
+        console.log("✌️body --->", body);
 
         await Validation.createUser.validate(body, {
           abortEarly: false,
@@ -559,7 +561,21 @@ Login credentials have been generated, and the user can now access the platform 
                 /> */}
 
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Year Graduated"
+                    options={years || []}
+                    placeholder="Select Year of Graduated"
+                    value={state.year_of_graduation || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_graduation: value,
+                        errors: { ...state.errors, year_of_graduation: "" },
+                      })
+                    }
+                    menuPortalTarget={document.body}
+                    error={state.errors?.year_of_graduation}
+                  />
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year Graduated"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -582,9 +598,8 @@ Login credentials have been generated, and the user can now access the platform 
                   {state.errors?.year_of_graduation && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_graduation}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 <TextInput
@@ -694,7 +709,22 @@ Login credentials have been generated, and the user can now access the platform 
             ) : state?.user_type?.label === "Student" ? (
               <>
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <MultiSelectDropdown
+                    label="Year of Entry"
+                    options={years || []}
+                    placeholder="Year Of Entry"
+                    value={state.year_of_entry || ""}
+                    onChange={(value) =>
+                      setState({
+                        year_of_entry: value,
+                        errors: { ...state.errors, year_of_entry: "" },
+                      })
+                    }
+                    menuPortalTarget={document.body}
+                    error={state.errors?.year_of_entry}
+                  />
+
+                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year of Entry"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -717,9 +747,8 @@ Login credentials have been generated, and the user can now access the platform 
                   {state.errors?.year_of_entry && (
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_entry}{" "}
-                      {/* Display the error message if it exists */}
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 {/* <CustomSelect
@@ -743,7 +772,22 @@ Login credentials have been generated, and the user can now access the platform 
           {state?.user_type?.label !== "Admin" && (
             <>
               <div className="space-y-1">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <MultiSelectDropdown
+                  label="University"
+                  options={state?.universityList || []}
+                  value={state.university || ""}
+                  onChange={(value) =>
+                    setState({
+                      university: value,
+                      errors: { ...state.errors, university: "" },
+                    })
+                  }
+                  placeholder="Select University"
+                  menuPortalTarget={document.body}
+                  error={state.errors?.university}
+                />
+
+                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"University"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -766,7 +810,7 @@ Login credentials have been generated, and the user can now access the platform 
                   <p className="mt-2 text-sm text-red-600">
                     {state.errors?.university}
                   </p>
-                )}
+                )} */}
               </div>
               <div className="space-y-1">
                 <TextInput
@@ -838,7 +882,17 @@ Login credentials have been generated, and the user can now access the platform 
               )}
 
               <div className="space-y-1">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <MultiSelectDropdown
+                  label="Interests Topics"
+                  value={state.intrested_topics}
+                  isMulti
+                  options={state.intrestedTopicsList || []}
+                  placeholder="Select Topics"
+                  onChange={(value) => setState({ intrested_topics: value })}
+                  name="topics"
+                  menuPortalTarget={document.body}
+                />
+                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Interests in Topics"}
                 </label>
                 <Select
@@ -850,7 +904,7 @@ Login credentials have been generated, and the user can now access the platform 
                   className="z-50 text-sm"
                   menuPortalTarget={document.body} // required when using menuPosition="fixed"
                   styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                />
+                /> */}
               </div>
               {Array.isArray(state.intrested_topics) &&
                 state.intrested_topics.some((item) => item.value === 13) && (

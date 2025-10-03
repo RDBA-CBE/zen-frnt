@@ -33,6 +33,7 @@ import {
 import TimezoneSelector from "../../../components/common-components/TimezoneSelect";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import moments from "moment-timezone";
+import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
 
 // import DateTimeField from "@/components/common-components/DateTimeField"
 
@@ -822,7 +823,25 @@ const CreateWellnessLounge = () => {
               />
 
               <div className="space-y-1">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <MultiSelectDropdown
+                  label="Topics"
+                  value={state.intrested_topics}
+                  options={state.intrestedTopicsList || []}
+                  placeholder="Select Topics"
+                  onChange={(value) =>
+                    setState({
+                      intrested_topics: value,
+                      errors: { ...state.errors, intrested_topics: "" },
+                    })
+                  }
+                  required
+                  name="topics"
+                  isMulti
+                  menuPortalTarget={document.body}
+                  error={state.errors?.intrested_topics}
+                />
+
+                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Topics"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -845,7 +864,7 @@ const CreateWellnessLounge = () => {
                   <p className=" text-sm text-red-600">
                     {state.errors?.intrested_topics}
                   </p>
-                )}
+                )} */}
               </div>
 
               {/* {state.intrested_topics?.length > 0 &&
