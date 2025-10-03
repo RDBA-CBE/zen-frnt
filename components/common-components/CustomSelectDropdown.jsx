@@ -66,7 +66,7 @@ const CustomSelectDropdown = (props) => {
           }),
 
           // 👇 reduce option row height
-          option: (base, { isFocused }) => ({
+          option: (base) => ({
             ...base,
             fontSize: "16px",
             padding: "6px 10px", // tighter padding
