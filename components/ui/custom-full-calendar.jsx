@@ -361,7 +361,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse table-auto">
+        <table className="min-w-full border-collapse table-auto rounded-lg">
           <thead>
             <tr>
               {daysOfWeek.map((day, index) => (
@@ -381,11 +381,11 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   return (
                     <td
                       key={dayIndex}
-                      className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
+                      className={`p-1 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
                     >
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start h-full">
                         <div className="text-end">{day}</div>
                         {state.role == "Admin" &&
                           (() => {
@@ -414,9 +414,9 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                               </button>
                             );
                           })()}
-                      </div>
-                      {day && (
-                        <div className="events-container overflow-y-auto">
+
+                           {day && (
+                        <div className="events-container overflow-y-auto  w-full h-full flex justify-center items-center">
                           <TooltipProvider>
                             {getEventsForDate(day).map((event) => {
                               return (
@@ -581,6 +581,8 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                           </TooltipProvider>
                         </div>
                       )}
+                      </div>
+                     
                     </td>
                   );
                 })}
@@ -676,14 +678,14 @@ const CustomFullCalendar = ({ events, setEvents }) => {
           <div className="flex gap-4 mt-4 w-full">
             <Button
               onClick={handleEnroll}
-              className="flex-1 p-2 rounded bg-themePurple hover:bg-themePurple text-white"
+              className="flex-1 p-2 rounded bg-themePurple hover:bg-[#b382c7] text-white"
             >
               Read More
             </Button>
             {selectedEvent?.eventDate > now && state.role == "Admin" && (
               <Button
                 onClick={handleEditEvent}
-                className="flex-1 p-2 rounded bg-themeGreen hover:bg-themeGreen text-white"
+                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#b382c7] text-white"
               >
                 Edit Session
               </Button>

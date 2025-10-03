@@ -468,6 +468,47 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
+         <div className="space-y-1">
+          <MultiSelectDropdown
+            label="Year of Entry"
+            options={years || []}
+            placeholder="Year Of Entry"
+            value={state.year_of_entry || ""}
+            onChange={(value) =>
+              setState({
+                year_of_entry: value,
+                errors: { ...state.errors, year_of_entry: "" },
+              })
+            }
+            menuPortalTarget={document.body}
+            error={state.errors?.year_of_entry}
+          />
+
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+            {"Year of Entry"} {<span className="text-red-500">*</span>}
+          </label>
+          <Select
+            options={years || []}
+            value={state.year_of_entry || ""}
+            onChange={(value) =>
+              setState({
+                year_of_entry: value,
+                errors: { ...state.errors, year_of_entry: "" },
+              })
+            }
+            placeholder="Year Of Entry"
+            className="z-50 text-sm"
+            menuPortalTarget={document.body}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            isClearable
+          />
+          {state.errors?.year_of_entry && (
+            <p className="mt-2 text-sm text-red-600">
+              {state.errors?.year_of_entry}{" "}
+            </p>
+          )} */}
+        </div>
+
         <div className="space-y-1">
           <MultiSelectDropdown
             label="Interests in Topics"
@@ -510,7 +551,7 @@ const StudentRegistrationForm = () => {
             </div>
           )}
 
-          <div className="pb-2 pt-8">
+          <div className="pb-2 pt-4">
         <Checkboxs
           label={"Notify me on these topics"}
           checked={state.notify}
@@ -518,46 +559,7 @@ const StudentRegistrationForm = () => {
         />
       </div>
 
-        <div className="space-y-1">
-          <MultiSelectDropdown
-            label="Year of Entry"
-            options={years || []}
-            placeholder="Year Of Entry"
-            value={state.year_of_entry || ""}
-            onChange={(value) =>
-              setState({
-                year_of_entry: value,
-                errors: { ...state.errors, year_of_entry: "" },
-              })
-            }
-            menuPortalTarget={document.body}
-            error={state.errors?.year_of_entry}
-          />
-
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Year of Entry"} {<span className="text-red-500">*</span>}
-          </label>
-          <Select
-            options={years || []}
-            value={state.year_of_entry || ""}
-            onChange={(value) =>
-              setState({
-                year_of_entry: value,
-                errors: { ...state.errors, year_of_entry: "" },
-              })
-            }
-            placeholder="Year Of Entry"
-            className="z-50 text-sm"
-            menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            isClearable
-          />
-          {state.errors?.year_of_entry && (
-            <p className="mt-2 text-sm text-red-600">
-              {state.errors?.year_of_entry}{" "}
-            </p>
-          )} */}
-        </div>
+       
 
         
       </div>

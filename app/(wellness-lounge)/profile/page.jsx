@@ -385,7 +385,7 @@ const ProfilePage = () => {
                   <CardFooter>
                     <div>
                       <Button
-                        className="bg-themeGreen hover:bg-themeGreen"
+                        className="bg-themeGreen hover:bg-[#a9e06b]"
                         onClick={() =>
                           router.push(`/update-user/?id=${state?.userData.id}`)
                         }

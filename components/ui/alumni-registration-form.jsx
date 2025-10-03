@@ -687,7 +687,7 @@ const AlumniRegistrationForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <MultiSelectDropdown
             label="Interests in Topics"
             value={state.alumniIntrested_topics}
@@ -697,7 +697,7 @@ const AlumniRegistrationForm = () => {
             onChange={(value) => setState({ alumniIntrested_topics: value })}
             name="topics"
             menuPortalTarget={document.body}
-          />
+          /> */}
           {/* <Select
             value={state.alumniIntrested_topics}
             isMulti
@@ -728,7 +728,7 @@ const AlumniRegistrationForm = () => {
             }}
             menuPortalTarget={document.body}
           /> */}
-        </div>
+        {/* </div> */}
 
         {/* <div className="space-y-1">
           <MultiSelectDropdown
@@ -757,7 +757,7 @@ const AlumniRegistrationForm = () => {
         </div> */}
 
         {/* {state.alumniIntrested_topics.includes("others") && ( */}
-        {Array.isArray(state.alumniIntrested_topics) &&
+        {/* {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
               <TextInput
@@ -771,15 +771,15 @@ const AlumniRegistrationForm = () => {
                 }
               />
             </div>
-          )}
+          )} */}
 
-        <div className="pt-8 pb-2">
+        {/* <div className="pt-8 pb-2">
           <Checkboxs
             label={"Notify me on these topics"}
             checked={state.notify}
             onChange={(val) => setState({ notify: val })}
           />
-        </div>
+        </div> */}
 
         <div className="space-y-1 ">
           <CustomSelect
