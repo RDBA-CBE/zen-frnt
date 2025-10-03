@@ -316,7 +316,7 @@ const AlumniRegistrationForm = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-2">
         <div className="space-y-1">
           <TextInput
             id="alumnifirstname"
@@ -369,6 +369,37 @@ const AlumniRegistrationForm = () => {
             }
             error={state?.errors?.email}
           />
+        </div>
+
+        <div className="space-y-1">
+          <div className="relative">
+            <TextInput
+              id="password"
+              type={state.showPassword ? "text" : "password"}
+              placeholder="Enter Your password"
+              required
+              title="Password"
+              value={state.password}
+              onChange={(e) =>
+                setState({
+                  password: e.target.value,
+                  errors: { ...state.errors, password: "" },
+                })
+              }
+              error={state.errors?.password}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setState({ showPassword: !state.showPassword });
+              }}
+              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+            >
+              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
         </div>
 
         <div className="space-y-1">
@@ -658,7 +689,7 @@ const AlumniRegistrationForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <MultiSelectDropdown
             label="Interests in Topics"
             value={state.alumniIntrested_topics}
@@ -668,18 +699,38 @@ const AlumniRegistrationForm = () => {
             onChange={(value) => setState({ alumniIntrested_topics: value })}
             name="topics"
             menuPortalTarget={document.body}
-          />
-         
-        </div>
+          /> */}
+          {/* <Select
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            className="text-sm"
+            name="topics"
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 
-        <div className="space-y-1">
-          <TextArea
-            placeholder="Enter Your address"
-            title="Address"
-            value={state.address}
-            onChange={(e) => setState({ address: e.target.value })}
-          />
-        </div>
+              // 👇 reduce total dropdown height
+              menuList: (base) => ({
+                ...base,
+                maxHeight: 160, // total height for dropdown
+                paddingTop: 0,
+                paddingBottom: 0,
+              }),
+
+              // 👇 reduce option row height
+              option: (base, { isFocused }) => ({
+                ...base,
+                fontSize: "16px",
+                padding: "6px 10px", // tighter padding
+                minHeight: "28px",
+                cursor: "pointer",
+              }),
+            }}
+            menuPortalTarget={document.body}
+          /> */}
+        {/* </div> */}
 
         {/* <div className="space-y-1">
           <MultiSelectDropdown
@@ -708,7 +759,7 @@ const AlumniRegistrationForm = () => {
         </div> */}
 
         {/* {state.alumniIntrested_topics.includes("others") && ( */}
-        {Array.isArray(state.alumniIntrested_topics) &&
+        {/* {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
               <TextInput
@@ -722,7 +773,15 @@ const AlumniRegistrationForm = () => {
                 }
               />
             </div>
-          )}
+          )} */}
+
+        {/* <div className="pt-8 pb-2">
+          <Checkboxs
+            label={"Notify me on these topics"}
+            checked={state.notify}
+            onChange={(val) => setState({ notify: val })}
+          />
+        </div> */}
 
         <div className="space-y-1 ">
           <CustomSelect
@@ -734,45 +793,20 @@ const AlumniRegistrationForm = () => {
             placeholder="Select"
           />
         </div>
-        <div className="space-y-1">
-          <div className="relative">
-            <TextInput
-              id="password"
-              type={state.showPassword ? "text" : "password"}
-              placeholder="Enter Your password"
-              required
-              title="Password"
-              value={state.password}
-              onChange={(e) =>
-                setState({
-                  password: e.target.value,
-                  errors: { ...state.errors, password: "" },
-                })
-              }
-              error={state.errors?.password}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setState({ showPassword: !state.showPassword });
-              }}
-              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
-            >
-              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
-        </div>
+
+        
       </div>
-      <div className="pt-2 pb-2">
-        <Checkboxs
-          label={"Notify me on these topics"}
-          checked={state.notify}
-          onChange={(val) => setState({ notify: val })}
+
+      <div className="space-y-1 pb-5">
+        <TextArea
+          placeholder="Enter Your address"
+          title="Address"
+          value={state.address}
+          onChange={(e) => setState({ address: e.target.value })}
         />
       </div>
-      <div className="flex justify-center gap-2">
+
+      <div className="flex justify-center gap-2 ">
         <Button
           // onClick={() => router?.back()}
           onClick={() => resetForm()}

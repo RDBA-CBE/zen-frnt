@@ -194,7 +194,7 @@ const viewWellnessLounge = () => {
                   />
                 )}
               </div>
-              <div className="border rounded-xl p-4 flex flex-col">
+              <div className="border rounded-xl p-[25px] flex flex-col">
                 <div className="flex flex-col ">
                   <h2 className="mt-10 scroll-m-20 text-2xl font-[500] tracking-tight transition-colors first:mt-0 font-marce">
                     {state?.orderData.title}{" "}
@@ -326,10 +326,10 @@ ${
                 state?.orderData?.is_registered == false ? (
                   <div>
                     <Button
-                      className={`mt-3 ${
+                      className={`mt-3 newclass ${
                         state?.orderData?.is_registered
                           ? "bg-themeGreen hover:bg-themeGreen"
-                          : "bg-themePurple hover:bg-themePurple"
+                          : "bg-themePurple hover:bg-[#b382c7]"
                       }`}
                       onClick={() => setState({ isOpen: true })}
                     >

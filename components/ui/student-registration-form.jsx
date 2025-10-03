@@ -311,7 +311,7 @@ const StudentRegistrationForm = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-5">
         <div className="space-y-1">
           <TextInput
             id="firstname"
@@ -364,6 +364,37 @@ const StudentRegistrationForm = () => {
             error={state.errors?.email}
             title="E-Mail"
           />
+        </div>
+
+        <div className="space-y-1">
+          <div className="relative">
+            <TextInput
+              id="password"
+              type={state.showPassword ? "text" : "password"}
+              placeholder="Enter Your password"
+              required
+              title="Password"
+              value={state.password}
+              onChange={(e) =>
+                setState({
+                  password: e.target.value,
+                  errors: { ...state.errors, password: "" },
+                })
+              }
+              error={state.errors?.password}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setState({ showPassword: !state.showPassword });
+              }}
+              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+            >
+              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
         </div>
 
         {/* <div className="space-y-1">
@@ -438,48 +469,7 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
-        <div className="space-y-1">
-          <MultiSelectDropdown
-            label="Interests in Topics"
-            value={state.alumniIntrested_topics}
-            isMulti
-            options={state.intrestedTopicsList || []}
-            placeholder="Select Topics"
-            onChange={(value) => setState({ alumniIntrested_topics: value })}
-            name="topics"
-            menuPortalTarget={document.body}
-          />
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-            {"Interests in Topics"}
-          </label>
-          <Select
-            value={state.alumniIntrested_topics}
-            isMulti
-            options={state.intrestedTopicsList || []}
-            placeholder="Select Topics"
-            onChange={(value) => setState({ alumniIntrested_topics: value })}
-            className="z-50 text-sm"
-            menuPortalTarget={document.body} // required when using menuPosition="fixed"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          /> */}
-        </div>
-        {Array.isArray(state.alumniIntrested_topics) &&
-          state.alumniIntrested_topics.some((item) => item.value === 13) && (
-            <div className="space-y-1">
-              <TextInput
-                id="intrested_topics1"
-                type="text"
-                placeholder="Enter New Topics"
-                title="New Topics"
-                value={state.intrested_topics1}
-                onChange={(e) =>
-                  setState({ intrested_topics1: e.target.value })
-                }
-              />
-            </div>
-          )}
-
-        <div className="space-y-1">
+         <div className="space-y-1">
           <MultiSelectDropdown
             label="Year of Entry"
             options={years || []}
@@ -521,43 +511,60 @@ const StudentRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          <div className="relative">
-            <TextInput
-              id="password"
-              type={state.showPassword ? "text" : "password"}
-              placeholder="Enter Your password"
-              required
-              title="Password"
-              value={state.password}
-              onChange={(e) =>
-                setState({
-                  password: e.target.value,
-                  errors: { ...state.errors, password: "" },
-                })
-              }
-              error={state.errors?.password}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setState({ showPassword: !state.showPassword });
-              }}
-              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
-            >
-              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
+          <MultiSelectDropdown
+            label="Interests in Topics"
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            name="topics"
+            menuPortalTarget={document.body}
+            
+          />
+          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+            {"Interests in Topics"}
+          </label>
+          <Select
+            value={state.alumniIntrested_topics}
+            isMulti
+            options={state.intrestedTopicsList || []}
+            placeholder="Select Topics"
+            onChange={(value) => setState({ alumniIntrested_topics: value })}
+            className="z-50 text-sm"
+            menuPortalTarget={document.body} // required when using menuPosition="fixed"
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          /> */}
         </div>
-      </div>
-      <div className="pb-2">
+        {Array.isArray(state.alumniIntrested_topics) &&
+          state.alumniIntrested_topics.some((item) => item.value === 13) && (
+            <div className="space-y-1">
+              <TextInput
+                id="intrested_topics1"
+                type="text"
+                placeholder="Enter New Topics"
+                title="New Topics"
+                value={state.intrested_topics1}
+                onChange={(e) =>
+                  setState({ intrested_topics1: e.target.value })
+                }
+              />
+            </div>
+          )}
+
+          <div className="pb-2 pt-4">
         <Checkboxs
           label={"Notify me on these topics"}
           checked={state.notify}
           onChange={(val) => setState({ notify: val })}
         />
       </div>
+
+       
+
+        
+      </div>
+      
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => resetForm()}

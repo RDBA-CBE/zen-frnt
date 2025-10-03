@@ -316,7 +316,7 @@ const Header = () => {
                         href={menu.url}
                         className="hover:text-themePurple text-[14px] font-[600] uppercase "
                       >
-                        {menu.title}
+                        <h4>{menu.title}</h4>
                       </Link>
 
                       {/* Submenu */}
