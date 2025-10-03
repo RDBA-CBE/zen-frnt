@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { CalendarClock, MapPin, XIcon } from "lucide-react";
+import { Calendar1, CalendarClock, Clock, Clock10, MapPin, XIcon } from "lucide-react";
 import { Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
@@ -613,7 +613,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             <div className="font-[400]" style={{ fontSize: "15px" }}>
               <div className="flex gap-x-1">
                 <span className="flex gap-1 ">
-                  <CalendarClock
+                  <Calendar1
                     height={14}
                     width={14}
                     className="relative top-[7px]"
@@ -626,7 +626,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
               </div>
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
-                  <CalendarClock
+                  <Clock
                     height={14}
                     width={14}
                     className="relative top-[7px]"
@@ -643,7 +643,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
-                  <CalendarClock
+                  <Clock10
                     height={14}
                     width={14}
                     className="relative top-[7px]"
