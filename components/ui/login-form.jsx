@@ -54,7 +54,6 @@ const LoginForm = (props) => {
       };
       const res = await Models.auth.googleAuth(body);
       console.log("Google auth response: ", res);
-
       if (res.access) {
         localStorage.setItem("zentoken", res.access);
         localStorage.setItem("refreshToken", res.refresh);
@@ -62,19 +61,55 @@ const LoginForm = (props) => {
         localStorage.setItem("username", res?.username || res?.email || "");
 
         if (res.groups?.length > 0) {
-          localStorage.setItem("group", res.groups[0]);
-          setAuthData({
-            tokens: res.access,
-            groups: res.groups[0],
-            userId: res.user_id,
-            username: res?.username || "",
-          });
+          if (res?.groups?.includes(ROLES.MENTOR) && res?.mentor == true) {
+            localStorage.setItem("group", ROLES.MENTOR);
+            dispatch(
+              setAuthData({
+                tokens: res.access,
+                groups: ROLES.MENTOR,
+                userId: res.user_id,
+                username: res?.username,
+              })
+            );
+          } else if (
+            res?.groups?.includes(ROLES.MENTOR) &&
+            res?.mentor == false
+          ) {
+            localStorage.setItem("group", ROLES.ALUMNI);
+            dispatch(
+              setAuthData({
+                tokens: res.access,
+                groups: ROLES.ALUMNI,
+                userId: res.user_id,
+                username: res?.username,
+              })
+            );
+          } else {
+            localStorage.setItem("group", res.groups[0]);
+
+            dispatch(
+              setAuthData({
+                tokens: res.access,
+                groups: res.group[0],
+                userId: res.user_id,
+                username: res?.username,
+              })
+            );
+          }
+          window.location.href = "/";
+          // localStorage.setItem("group", res.groups[0]);
+          // setAuthData({
+          //   tokens: res.access,
+          //   groups: res.groups[0],
+          //   userId: res.user_id,
+          //   username: res?.username || "",
+          // });
           setState({ googleLoading: false });
 
-          router.push("/");
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
+          // router.push("/");
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 100);
         } else {
           await updateUserGroup(res);
         }
@@ -103,7 +138,7 @@ const LoginForm = (props) => {
       let formData = new FormData();
       formData.append("groups", "1");
       await Models.user.updateUser(formData, res?.user_id);
-      localStorage.setItem("group", "1");
+      localStorage.setItem("group", ROLES.STUDENT);
       dispatch(
         setAuthData({
           tokens: res.access,
@@ -112,7 +147,7 @@ const LoginForm = (props) => {
           username: res?.username || "",
         })
       );
-      router.replace(`/update-user-data?id=${res?.user_id}`);
+      router.push(`/update-user-data/?id=${res?.user_id}`);
       setState({ googleLoading: false });
     } catch (error) {
       console.error("Error updating user group:", error);
