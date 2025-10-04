@@ -9,6 +9,7 @@ import {
   Dropdown,
   extractTimeFromDateTime,
   useSetState,
+  getDisplayRole
 } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
@@ -369,69 +370,136 @@ const CreateWellnessLounge = () => {
     }
   };
 
-  const createFreeSession = async (res) => {
-    try {
-      let body = {
-        title: state.title,
-        description: state.description ? state.description : "",
-        lounge_type: state.lounge_type ? state.lounge_type?.value : null,
+  // const createFreeSession = async (res) => {
+  //   try {
+  //     let body = {
+  //       title: state.title,
+  //       description: state.description ? state.description : "",
+  //       lounge_type: state.lounge_type ? state.lounge_type?.value : null,
 
-        start_date: state.start_date
-          ? moment(state.start_date).format("YYYY-MM-DD")
-          : null,
-        end_date: state.start_date
-          ? moment(state.start_date).format("YYYY-MM-DD")
-          : null,
-        // end_time: state.end_time
-        //   ? moment(state.end_time).format("HH:mm:ss")
-        //   : null,
-        start_time: state.start_time
-          ? moment(state.start_time).format("HH:mm:ss")
-          : null,
-        timezone: state?.timezone?.value,
-        moderator: state.moderator?.value,
-        intrested_topics:
-          state?.intrested_topics?.length > 0
-            ? state?.intrested_topics?.map((item) => item.value)
-            : [],
-        session_link: state.session_link,
-        passcode: state?.passcode,
-        event_credits: state.price ? state.price : 0,
-        thumbnail: state.thumbnail_images,
-        event_credits: state.price ? state.price : 0,
-        price: state.price ? state.price : 0,
-        is_active: true,
-        venue: state.venue?.value,
-      };
-      console.log("✌️body --->", body);
-      if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
-        body.is_approved = "No";
-      } else {
-        body.is_approved = "Yes";
+  //       start_date: state.start_date
+  //         ? moment(state.start_date).format("YYYY-MM-DD")
+  //         : null,
+  //       end_date: state.start_date
+  //         ? moment(state.start_date).format("YYYY-MM-DD")
+  //         : null,
+  //       // end_time: state.end_time
+  //       //   ? moment(state.end_time).format("HH:mm:ss")
+  //       //   : null,
+  //       start_time: state.start_time
+  //         ? moment(state.start_time).format("HH:mm:ss")
+  //         : null,
+  //       timezone: state?.timezone?.value,
+  //       moderator: state.moderator?.value,
+  //       intrested_topics:
+  //         state?.intrested_topics?.length > 0
+  //           ? state?.intrested_topics?.map((item) => item.value)
+  //           : [],
+  //       session_link: state.session_link,
+  //       passcode: state?.passcode,
+  //       event_credits: state.price ? state.price : 0,
+  //       thumbnail: state.thumbnail_images,
+  //       event_credits: state.price ? state.price : 0,
+  //       price: state.price ? state.price : 0,
+  //       is_active: true,
+  //       venue: state.venue?.value,
+  //     };
+  //     console.log("✌️body --->", body);
+  //     if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
+  //       body.is_approved = "No";
+  //     } else {
+  //       body.is_approved = "Yes";
+  //     }
+
+  //     if (state.sessionInterval) {
+  //       const daatta = addHoursToTimeOnly(
+  //         moment(state.start_time).format("HH:mm:ss"),
+  //         state.sessionInterval?.value
+  //       );
+
+  //       body.end_time = daatta;
+  //       console.log("✌️daatta --->", daatta);
+  //     }
+
+  //     const formData = buildFormData(body);
+  //     const res = await Models.session.create(formData);
+  //     setState({ submitLoading: false });
+
+  //     router.push("/");
+  //     Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
+  //     `);
+  //   } catch (error) {
+  //     setState({ submitLoading: false });
+  //     console.log("error: ", error);
+  //   }
+  // };
+
+   const createFreeSession = async (res) => {
+      try {
+        const group = localStorage.getItem("group");
+        const userId = localStorage.getItem("userId");
+        let body = {
+          title: state.title,
+          description: state.description ? state.description : "",
+          lounge_type: state.lounge_type ? state.lounge_type?.value : null,
+  
+          start_date: state.start_date
+            ? moment(state.start_date).format("YYYY-MM-DD")
+            : null,
+          end_date: state.start_date
+            ? moment(state.start_date).format("YYYY-MM-DD")
+            : null,
+          // end_time: state.end_time
+          //   ? moment(state.end_time).format("HH:mm:ss")
+          //   : null,
+          start_time: state.start_time
+            ? moment(state.start_time).format("HH:mm:ss")
+            : null,
+          timezone: state?.timezones,
+          moderator: state.moderator?.value,
+          intrested_topics:
+            state?.intrested_topics?.length > 0
+              ? state?.intrested_topics?.map((item) => item.value)
+              : [],
+          session_link: state.session_link,
+          passcode: state?.passcode,
+          event_credits: state.price ? state.price : 0,
+          thumbnail: state.thumbnail_images,
+          event_credits: state.price ? state.price : 0,
+          price: state.price ? state.price : 0,
+          is_active: true,
+          venue: state.venue?.value,
+        };
+  
+        if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
+          body.is_approved = "No";
+        } else {
+          body.is_approved = "Yes";
+        }
+  
+        if (state.sessionInterval) {
+          const daatta = addHoursToTimeOnly(
+            moment(state.start_time).format("HH:mm:ss"),
+            state.sessionInterval?.value
+          );
+  
+          body.end_time = daatta;
+          console.log("✌️daatta --->", daatta);
+        }
+        console.log("✌️body --->", body);
+  
+        const formData = buildFormData(body);
+        const res = await Models.session.create(formData);
+        setState({ submitLoading: false });
+  
+        router.push("/wellness-lounge-list");
+        Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
+        // `);
+      } catch (error) {
+        setState({ submitLoading: false });
+        console.log("error: ", error);
       }
-
-      if (state.sessionInterval) {
-        const daatta = addHoursToTimeOnly(
-          moment(state.start_time).format("HH:mm:ss"),
-          state.sessionInterval?.value
-        );
-
-        body.end_time = daatta;
-        console.log("✌️daatta --->", daatta);
-      }
-
-      const formData = buildFormData(body);
-      const res = await Models.session.create(formData);
-      setState({ submitLoading: false });
-
-      router.push("/");
-      Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
-      `);
-    } catch (error) {
-      setState({ submitLoading: false });
-      console.log("error: ", error);
-    }
-  };
+    };
 
   const createPaidSession = async (res) => {
     try {
@@ -520,14 +588,15 @@ const CreateWellnessLounge = () => {
   const loadMendorList = async (search, loadedOptions, { page }) => {
     try {
       const body = {
-        group_name: "Mentor",
+        group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
+        is_open_to_be_mentor:"Yes",
+        is_activity:"true"
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name}`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(item?.groups)})`,
       }));
-
       return {
         options: dropdownsa,
         hasMore: !!res?.next,
@@ -877,7 +946,7 @@ const CreateWellnessLounge = () => {
                   });
                 }}
                 height={"35px"}
-                title="Select Mentor"
+                title="Select Mentor Or Counselor"
                 error={state.errors?.moderator}
                 required
                 placeholder="Select Mentor"
