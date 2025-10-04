@@ -124,8 +124,7 @@ const CounselorRegForm = () => {
         lable: state?.alumniIntrested_topics1 || "",
 
         university: state?.alumniUniversity?.value || "",
-        is_open_to_be_mentor:
-          state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
+        is_open_to_be_mentor: true,
         is_alumni: false,
         password: state.password,
         notify: false,

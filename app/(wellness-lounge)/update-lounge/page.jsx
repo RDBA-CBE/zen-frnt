@@ -654,6 +654,8 @@ const UpdateWellnessLounge = () => {
     try {
       const body = {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
+        is_open_to_be_mentor:"Yes",
+        is_activity:"true"
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
@@ -970,7 +972,7 @@ const UpdateWellnessLounge = () => {
               });
             }}
             height={"35px"}
-            title="Select Mentor"
+            title="Select Mentor Or Counselor"
             error={state.errors?.moderator}
             required
             placeholder="Select Mentor"

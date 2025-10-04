@@ -102,6 +102,8 @@ const UserList = () => {
 
           const res = await Models.user.updateUser(body, item?.id);
           console.log("✌️res --->", res);
+          Success(`${item?.first_name} ${item?.last_name} assigned as Counselor role`)
+
           getUserList(state.currentPage);
         } else {
           const body = {

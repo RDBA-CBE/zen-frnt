@@ -56,6 +56,16 @@ const CustomSelectDropdown = (props) => {
         menuPlacement="bottom"
         menuPosition="fixed"
         styles={{
+          control: (base, state) => ({
+            ...base,
+            borderColor: error ? '#dc2626' : state.isFocused ? '#3b82f6' : '#d1d5db',
+            borderWidth: '1px',
+            borderRadius: '6px',
+            boxShadow: error ? '0 0 0 1pxrgb(236, 20, 20)' : state.isFocused ? '0 0 0 1px #3b82f6' : 'none',
+            '&:hover': {
+              borderColor: error ? '#dc2626' : '#9ca3af'
+            }
+          }),
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 
           // 👇 reduce total dropdown height
