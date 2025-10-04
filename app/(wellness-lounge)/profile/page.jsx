@@ -65,7 +65,7 @@ const ProfilePage = () => {
       const Group = localStorage.getItem("group");
       setState({ id: ID, group: Group });
     }
-  }, []);
+  }, []);   
 
   useEffect(() => {
     if (state?.id) {
