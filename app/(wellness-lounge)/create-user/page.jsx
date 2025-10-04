@@ -184,8 +184,9 @@ const CreateUser = () => {
               ? state?.year_of_graduation?.value
               : undefined,
           is_open_to_be_mentor:
-            state.user_type?.label === ROLES.ALUMNI ||
             state.user_type?.label === ROLES.COUNSELOR
+              ? true
+              : state.user_type?.label === ROLES.ALUMNI
               ? state?.is_open_to_be_mentor?.value == "Yes"
                 ? true
                 : false
@@ -462,7 +463,9 @@ Login credentials have been generated, and the user can now access the platform 
 
   return (
     <div className="container mx-auto pt-3">
-      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">Create User</h2>
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">
+        Create User
+      </h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2 pt-4">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
@@ -764,6 +767,7 @@ Login credentials have been generated, and the user can now access the platform 
                       errors: { ...state.errors, university: "" },
                     })
                   }
+                  required
                   placeholder="Select University"
                   menuPortalTarget={document.body}
                   error={state.errors?.university}
@@ -862,6 +866,8 @@ Login credentials have been generated, and the user can now access the platform 
                   />
                 </>
               )}
+              {state?.user_type?.label === "Student" && (
+                <>
 
               <div className="space-y-1">
                 <MultiSelectDropdown
@@ -874,19 +880,7 @@ Login credentials have been generated, and the user can now access the platform 
                   name="topics"
                   menuPortalTarget={document.body}
                 />
-                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
-                  {"Interests in Topics"}
-                </label>
-                <Select
-                  value={state.intrested_topics}
-                  isMulti
-                  options={state.intrestedTopicsList || []}
-                  placeholder="Select Topics"
-                  onChange={(value) => setState({ intrested_topics: value })}
-                  className="z-50 text-sm"
-                  menuPortalTarget={document.body} // required when using menuPosition="fixed"
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-                /> */}
+               
               </div>
               {Array.isArray(state.intrested_topics) &&
                 state.intrested_topics.some((item) => item.value === 13) && (
@@ -924,6 +918,8 @@ Login credentials have been generated, and the user can now access the platform 
                   }}
                 />
               </div>
+              </>
+              )}
             </>
           )}
 

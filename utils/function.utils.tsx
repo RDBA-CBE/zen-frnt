@@ -393,6 +393,12 @@ export const isRole = (role) => {
   return hasMatch;
 };
 
+export const onlyCon = (role) => {
+  const targetLabels = [ROLES.COUNSELOR];
+  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+  return hasMatch;
+};
+
 export const isMenOrAlumni = (role) => {
   const targetLabels = [ROLES.MENTOR, ROLES.ALUMNI];
   const hasMatch = role.some((item) => targetLabels.includes(item.label));

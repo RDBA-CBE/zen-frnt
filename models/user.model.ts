@@ -30,6 +30,10 @@ const user = {
       if (body?.group_name_exact) {
         url += `&group_name_exact=${encodeURIComponent(body.group_name_exact)}`;
       }
+      if(body.is_activity == "true"){
+        url += `&is_active=${encodeURIComponent(true)}`;
+
+      }
 
 
       instance()

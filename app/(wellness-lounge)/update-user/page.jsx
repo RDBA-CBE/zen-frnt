@@ -12,6 +12,7 @@ import {
   isOnlyAlumniRole,
   isRole,
   isValidImageUrl,
+  onlyCon,
   useSetState,
 } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
@@ -251,6 +252,7 @@ const CreateUser = () => {
       return false;
     }
   }
+  console.log('✌️state.user_types --->', state.user_types);
 
   const onSubmit = async () => {
     try {
@@ -292,7 +294,9 @@ const CreateUser = () => {
 
           work: isRole(state.user_types) ? state?.work : undefined,
           year_of_graduation: state?.year_of_graduation?.value,
-          is_open_to_be_mentor: isRole(state.user_types)
+          is_open_to_be_mentor: onlyCon(state.user_types)
+            ? true
+            : isRole(state.user_types)
             ? state?.is_open_to_be_mentor?.value == "Yes"
               ? true
               : false
@@ -383,14 +387,18 @@ const CreateUser = () => {
         if (body.year_of_graduation !== undefined && isRole(state.user_types)) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
-
-        if (
-          (body.is_open_to_be_mentor !== undefined &&
-            state?.user_type?.label === "Alumni") ||
-          state?.user_type?.label === "Mentor"
-        ) {
+        // if(body.is_open_to_be_mentor){
           formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
-        }
+
+        // }
+
+        // if (
+        //   (body.is_open_to_be_mentor !== undefined &&
+        //     state?.user_type?.label === "Alumni") ||
+        //   state?.user_type?.label === "Mentor"
+        // ) {
+        //   formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
+        // }
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
@@ -550,7 +558,9 @@ const CreateUser = () => {
 
   return (
     <div className="container mx-auto updateUser pt-3 pb-3">
-      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">Update User</h2>
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">
+        Update User
+      </h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2 py-4">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput

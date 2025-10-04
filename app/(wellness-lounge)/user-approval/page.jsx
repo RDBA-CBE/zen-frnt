@@ -92,7 +92,6 @@ const UserList = () => {
   };
 
   const updateUserRole = async (type, item) => {
-    console.log("✌️item --->", item);
     try {
       if (item?.groups?.length > 0) {
         if (item?.groups?.includes(ROLES.COUNSELOR)) {
@@ -109,6 +108,7 @@ const UserList = () => {
           };
 
           const res = await Models.user.updateUserRole(body);
+          Success(`${item?.first_name} ${item?.last_name} changed from Alumni to Mentor role successfully`);
           getUserList(state.currentPage);
         }
       }

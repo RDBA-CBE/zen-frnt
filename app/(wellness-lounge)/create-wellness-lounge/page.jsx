@@ -506,6 +506,9 @@ const CreateWellnessLounge = () => {
     try {
       const body = {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
+        // group_name_exact:ROLES.MENTOR
+        is_open_to_be_mentor:"Yes",
+        is_activity:"true"
       };
       // if (state.start_date) {
       //   body.available_from = moment(state.start_date).format("YYYY-MM-DD");
@@ -851,7 +854,7 @@ const CreateWellnessLounge = () => {
                   });
                 }}
                 height={"35px"}
-                title="Select Mentor"
+                title="Select Mentor Or Counselor"
                 error={state.errors?.moderator}
                 required
                 placeholder="Select Mentor"
