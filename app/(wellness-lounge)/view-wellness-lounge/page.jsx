@@ -17,8 +17,10 @@ import {
   Success,
 } from "@/components/common-components/toast";
 import {
+  Calendar1,
   CalendarClock,
   Clock,
+  Clock10,
   Clock10Icon,
   Clock1Icon,
   ClockAlert,
@@ -208,7 +210,7 @@ const viewWellnessLounge = () => {
                 <blockquote className="mt-4 border-l-[5px] border-fuchsia-900 pl-6  bg-fuchsia-100 py-4">
                   <div className="flex gap-1 mb-4">
                     <span className="flex gap-1 ">
-                      <CalendarClock
+                      <Calendar1
                         height={16}
                         width={18}
                         className="relative top-[3px]"
@@ -224,7 +226,7 @@ const viewWellnessLounge = () => {
 
                   <div className="flex gap-x-1 mb-4">
                     <span className="flex gap-1">
-                      <CalendarClock
+                      <Clock
                         height={16}
                         width={18}
                         className="relative top-[3px]"
@@ -241,7 +243,7 @@ const viewWellnessLounge = () => {
 
                   <div className="flex gap-x-1 mb-4">
                     <span className="flex gap-1">
-                      <CalendarClock
+                      <Clock10
                         height={16}
                         width={18}
                         className="relative top-[3px]"

@@ -135,8 +135,8 @@ const WellnessLoungeList = () => {
     }
 
     if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
-      body.createdBy = userId;
-      body.moderator = userId;
+      // body.createdBy = userId;
+      // body.moderator = userId;
     } else {
       body.is_approved = "Yes";
     }

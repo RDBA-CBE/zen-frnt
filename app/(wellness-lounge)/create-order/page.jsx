@@ -420,12 +420,12 @@ const CreateOrder = () => {
                         </span>{" "}
                         {SelectedUser[0]?.phone_number || "N/A"}
                       </li>
-                      <li className="pb-3">
+                      {/* <li className="pb-3">
                         <span className="font-bold text-gray-700">
                           Date of Birth:
                         </span>{" "}
                         {SelectedUser[0]?.date_of_birth || "N/A"}
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 </>

@@ -8,8 +8,10 @@ import {
   addHoursToTimeOnly,
   buildFormData,
   convertUrlToFile,
+  getDisplayRole,
   getFileNameFromUrl,
   getHourOption,
+  getRoles,
   getTimeZone,
   getUnmatchedSlots,
   isValidImageUrl,
@@ -133,7 +135,7 @@ const UpdateWellnessLounge = () => {
         setState({
           moderator: {
             value: res?.moderator?.id,
-            label: `${res?.moderator?.first_name} ${res?.moderator?.last_name}`,
+            label: `${res?.moderator?.first_name} ${res?.moderator?.last_name} (${getRoles(res?.moderator?.groups)})`,
           },
         });
       }
@@ -626,12 +628,14 @@ const UpdateWellnessLounge = () => {
   const loadMendorList = async (search, loadedOptions, { page }) => {
     try {
       const body = {
-        group_name: "Mentor",
+        group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name}`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(
+          item?.groups
+        )})`,
       }));
 
       return {
@@ -947,7 +951,7 @@ const UpdateWellnessLounge = () => {
             placeholder="Select Mentor"
             loadOptions={loadMendorList}
             disabled={
-              state.isAnyBooked || ROLES.COUNSELOR || state.role == ROLES.MENTOR
+              state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
             }
           />
           <div className="space-y-1">

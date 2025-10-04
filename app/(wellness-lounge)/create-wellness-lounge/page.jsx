@@ -7,6 +7,7 @@ import {
   addHoursToTimeOnly,
   buildFormData,
   Dropdown,
+  getDisplayRole,
   useSetState,
 } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
@@ -504,18 +505,21 @@ const CreateWellnessLounge = () => {
   const loadMendorList = async (search, loadedOptions, { page }) => {
     try {
       const body = {
-        group_name: "Mentor",
+        group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
       };
       // if (state.start_date) {
       //   body.available_from = moment(state.start_date).format("YYYY-MM-DD");
-      // }
-      // if (state.start_date) {
       //   body.available_to = moment(state.start_date).format("YYYY-MM-DD");
       // }
       const res = await Models.user.userList(page, body);
+      // const dropdownsa = res?.results?.map((item) => ({
+      //   value: item?.id,
+      //   label: `${item?.first_name} ${item.last_name}`,
+      // }));
+
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name}`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(item?.groups)})`,
       }));
 
       return {
@@ -855,7 +859,7 @@ const CreateWellnessLounge = () => {
                 disabled={
                   state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
                 }
-                // reRender={state.start_date || state.end_date}
+                // reRender={state.start_date}
               />
 
               <div className="space-y-1">

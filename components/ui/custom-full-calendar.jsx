@@ -491,7 +491,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                       <blockquote className="mb-2 border-l-2 pl-6 ">
                                         <div className="flex gap-1 mb-4">
                                           <span className="flex gap-1 ">
-                                            <CalendarClock
+                                            <Calendar1
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -507,7 +507,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
                                         <div className="flex gap-x-1 mb-4">
                                           <span className="flex gap-1">
-                                            <CalendarClock
+                                            <Clock
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -525,7 +525,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
 
                                         <div className="flex gap-x-1 mb-4">
                                           <span className="flex gap-1">
-                                            <CalendarClock
+                                            <Clock10
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -693,7 +693,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
             {selectedEvent?.eventDate > now && state.role == "Admin" && (
               <Button
                 onClick={handleEditEvent}
-                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#b382c7] text-white"
+                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
               >
                 Edit Session
               </Button>
