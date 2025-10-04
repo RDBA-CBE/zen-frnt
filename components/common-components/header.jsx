@@ -240,7 +240,7 @@ const Header = () => {
                       href="/registration"
                       className="hover:underline md:text-[16px] text-[10px] "
                     >
-                      SIGN UP
+                     <h4>SIGN UP</h4> 
                     </Link>
                   </div>
                   {/* )} */}
@@ -252,7 +252,7 @@ const Header = () => {
                       href="/"
                       className="hover:underline  md:text-[16px] text-[10px]"
                     >
-                      LOGIN
+                      <h4>LOGIN</h4>
                     </Link>
                   </div>
                   {/* )} */}

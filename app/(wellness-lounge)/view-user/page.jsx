@@ -101,7 +101,7 @@ const viewWellnessLounge = () => {
     <div className="container mx-auto flex items-center">
       <div className="w-full">
         <div className="flex justify-between items-center">
-          <h2 className="font-bold md:text-[20px] text-sm mb-3">
+          <h2 className="font-semibold md:text-[20px] text-sm mb-3">
             User Details
           </h2>
         </div>

@@ -67,9 +67,9 @@ const CreateWellnessLounge = () => {
   ];
 
   return (
-    <div className="container lg:w-[800px] w-[100%] mx-auto">
-      <div className="font-bold text-lg mb-3">Create Coupon</div>
-      <div className="border rounded-lg p-4 grid auto-rows-min gap-4 md:grid-cols-1">
+    <div className="container lg:w-[800px] w-[100%] mx-auto py-3">
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5 pb-4">Create Coupon</h2>
+      <div className="border rounded-lg p-4 grid auto-rows-min gap-4 md:grid-cols-1 ">
         <TextInput
           value={state.code}
           onChange={(e) => {

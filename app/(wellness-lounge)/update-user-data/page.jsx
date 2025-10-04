@@ -554,7 +554,7 @@ const CreateUser = () => {
 
   return (
     <div className="container mx-auto updateUser">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">Update User</h2>
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3">Update User</h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-2">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput

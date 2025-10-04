@@ -247,12 +247,12 @@ const CategoriesList = () => {
 
   return (
     <div className="container mx-auto ">
-      <div className="flex justify-center  w-full">
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex justify-center  w-full pt-4">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-5">
           <Card className="w-[100%] p-4">
             <div className="grid auto-rows-min items-center gap-4 grid-cols-2">
               <div>
-                <h2 className="md:text-[20px] text-sm font-bold">
+                <h2 className="md:text-[20px] text-sm font-semibold">
                   Category List
                 </h2>
               </div>
