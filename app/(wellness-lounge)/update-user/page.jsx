@@ -106,6 +106,9 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
+
+      const group = localStorage.getItem("group");
+      setState({ group });
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
         const thumbnail = await convertUrlToFile(
@@ -546,9 +549,9 @@ const CreateUser = () => {
   });
 
   return (
-    <div className="container mx-auto updateUser">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">Update User</h2>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+    <div className="container mx-auto updateUser pt-3 pb-3">
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">Update User</h2>
+      <div className="grid auto-rows-min gap-4 md:grid-cols-2 py-4">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
             value={state.firstname}
@@ -917,34 +920,38 @@ const CreateUser = () => {
                   </>
                 )}
 
-                {/* <DatePicker
-                  placeholder="Available From"
-                  title="Available From"
-                  error={state.errors?.available_from}
-                  closeIcon={true}
-                  selectedDate={state.available_from}
-                  onChange={(date) => {
-                    setState({
-                      available_from: date,
-                      errors: { ...state.errors, available_from: "" },
-                    });
-                  }}
-                />
+                {/* {rolesExceptAluAndStudent(state.user_types) && (
+                  <>
+                    <DatePicker
+                      placeholder="Available From"
+                      title="Available From"
+                      error={state.errors?.available_from}
+                      closeIcon={true}
+                      selectedDate={state.available_from}
+                      onChange={(date) => {
+                        setState({
+                          available_from: date,
+                          errors: { ...state.errors, available_from: "" },
+                        });
+                      }}
+                    />
 
-                <DatePicker
-                  placeholder="Available To"
-                  title="Available To"
-                  fromDate={state.available_from}
-                  error={state.errors?.available_to}
-                  closeIcon={true}
-                  selectedDate={state.available_to}
-                  onChange={(date) => {
-                    setState({
-                      available_to: date,
-                      errors: { ...state.errors, available_to: "" },
-                    });
-                  }}
-                /> */}
+                    <DatePicker
+                      placeholder="Available To"
+                      title="Available To"
+                      fromDate={state.available_from}
+                      error={state.errors?.available_to}
+                      closeIcon={true}
+                      selectedDate={state.available_to}
+                      onChange={(date) => {
+                        setState({
+                          available_to: date,
+                          errors: { ...state.errors, available_to: "" },
+                        });
+                      }}
+                    />
+                  </>
+                )} */}
 
                 {!isRole(state?.user_types) && (
                   <div className="pt-2 pb-2">

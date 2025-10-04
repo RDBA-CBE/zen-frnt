@@ -448,12 +448,185 @@ const DashboardCalender = ({ events, setEvents }) => {
                   return (
                     <td
                       key={dayIndex}
-                      className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
+                      className={`p-1 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
                         day ? "hover:bg-fuchsia-100" : "bg-gray-100"
                       }`}
                     >
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start h-full">
                         <div className="text-end">{day}</div>
+                        {day && (
+                          <div className="events-container overflow-y-auto w-full h-full max-h-[100px] flex justify-center items-center flex-wrap  scrollbar-thin">
+                            <TooltipProvider>
+                              {getEventsForDate(day).map((event) => {
+                                return (
+                                  <Tooltip key={event.id}>
+                                    <TooltipTrigger>
+                                      <div
+                                        onClick={() => {
+                                          if (day && isFutureEvent(event)) {
+                                            handleDayClick(day, event);
+                                          } else if (isOngoingEvent(event)) {
+                                            Info(
+                                              <>
+                                                <h2 className="text-black font-bold text-[15px] mb-3">
+                                                  Session is currently in
+                                                  progress
+                                                </h2>
+                                                The selected session is{" "}
+                                                <strong
+                                                  style={{ color: "green" }}
+                                                >
+                                                  currently in progress{" "}
+                                                </strong>{" "}
+                                                and can no longer be accessed.
+                                                Please select a session
+                                                scheduled for a future date. For
+                                                more information or assistance,
+                                                feel free to contact the admin
+                                                at
+                                                viji.zenwellnesslounge@gmail.com.
+                                              </>
+                                            );
+                                          } else if (isPastEvent(event)) {
+                                            Info(
+                                              <>
+                                                <h2 className="font-bold text-[15px] text-black mb-3">
+                                                  Session has already concluded
+                                                </h2>
+                                                The selected session has already{" "}
+                                                <strong
+                                                  style={{ color: "green" }}
+                                                >
+                                                  concluded
+                                                </strong>{" "}
+                                                and is no longer accessible.
+                                                Please select a session
+                                                scheduled for a future date. For
+                                                more information or assistance,
+                                                feel free to contact the admin
+                                                at
+                                                viji.zenwellnesslounge@gmail.com.
+                                              </>
+                                            );
+                                          }
+                                        }}
+                                        className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
+                                        style={{
+                                          backgroundColor: isPastEvent(event)
+                                            ? "#8f87871f"
+                                            : isOngoingEvent(event)
+                                            ? "#48badb"
+                                            : event.lounge_type?.id === 15
+                                            ? "#e25197"
+                                            : event.lounge_type?.id === 14
+                                            ? "#7f4099"
+                                            : event.lounge_type?.id === 6
+                                            ? "#88c742"
+                                            : event.lounge_type?.id === 7
+                                            ? "#834ae9"
+                                            : "#023e98",
+                                        }}
+                                      >
+                                        <h4
+                                          className={`text-xs ${
+                                            isPastEvent(event)
+                                              ? "text-black"
+                                              : "text-white"
+                                          } py-1 px-2 truncate max-w-[15ch]`}
+                                        >
+                                          {event.title}
+                                        </h4>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="w-[300px]">
+                                      <div className="flex flex-col flex-wrap mb-3 gap-x-2">
+                                        <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
+                                          {event.title}
+                                        </h4>
+                                        <p className="text-[15px] mt-1">
+                                          {event.lounge_type?.name}
+                                        </p>
+                                      </div>
+
+                                      <blockquote className="mb-2 border-l-2 pl-6 ">
+                                        <div className="flex gap-1 mb-4">
+                                          <span className="flex gap-1 ">
+                                            <CalendarClock
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />{" "}
+                                            Date -
+                                          </span>
+                                          <span className="font-bold">
+                                            {moment(event.start_date).format(
+                                              "DD MMM YYYY"
+                                            )}
+                                          </span>{" "}
+                                        </div>
+
+                                        <div className="flex gap-x-1 mb-4">
+                                          <span className="flex gap-1">
+                                            <CalendarClock
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />
+                                            Start Time -{" "}
+                                          </span>
+                                          <span className="font-bold ">
+                                            {moment(
+                                              event?.start_time,
+                                              "HH:mm:ss"
+                                            ).format("hh:mm A")}{" "}
+                                            (IST)
+                                          </span>
+                                        </div>
+
+                                        <div className="flex gap-x-1 mb-4">
+                                          <span className="flex gap-1">
+                                            <CalendarClock
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />
+                                            End Time -{" "}
+                                          </span>
+                                          <span className="font-bold ">
+                                            {moment(
+                                              event?.end_time,
+                                              "HH:mm:ss"
+                                            ).format("hh:mm A")}{" "}
+                                            (IST)
+                                          </span>
+                                        </div>
+
+                                        {event?.venue && (
+                                          <div className="flex gap-x-1">
+                                            <span className="flex gap-1">
+                                              <MapPin
+                                                height={16}
+                                                width={18}
+                                                className="relative top-[3px]"
+                                              />{" "}
+                                              Venue -
+                                            </span>
+                                            <span className="font-bold">
+                                              {`${event?.venue?.name}`}
+
+                                              {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
+                                            </span>{" "}
+                                          </div>
+                                        )}
+                                      </blockquote>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                );
+                              })}
+                            </TooltipProvider>
+                          </div>
+                        )}
+
                         {(state.role == ROLES.ADMIN ||
                           state.role == ROLES.MENTOR ||
                           state.role == ROLES.COUNSELOR) &&
@@ -484,175 +657,6 @@ const DashboardCalender = ({ events, setEvents }) => {
                             );
                           })()}
                       </div>
-                      {day && (
-                        <div className="events-container overflow-y-auto">
-                          <TooltipProvider>
-                            {getEventsForDate(day).map((event) => {
-                              return (
-                                <Tooltip key={event.id}>
-                                  <TooltipTrigger>
-                                    <div
-                                      onClick={() => {
-                                        if (day && isFutureEvent(event)) {
-                                          handleDayClick(day, event);
-                                        } else if (isOngoingEvent(event)) {
-                                          Info(
-                                            <>
-                                              <h2 className="text-black font-bold text-[15px] mb-3">
-                                                Session is currently in progress
-                                              </h2>
-                                              The selected session is{" "}
-                                              <strong
-                                                style={{ color: "green" }}
-                                              >
-                                                currently in progress{" "}
-                                              </strong>{" "}
-                                              and can no longer be accessed.
-                                              Please select a session scheduled
-                                              for a future date. For more
-                                              information or assistance, feel
-                                              free to contact the admin at
-                                              viji.zenwellnesslounge@gmail.com.
-                                            </>
-                                          );
-                                        } else if (isPastEvent(event)) {
-                                          Info(
-                                            <>
-                                              <h2 className="font-bold text-[15px] text-black mb-3">
-                                                Session has already concluded
-                                              </h2>
-                                              The selected session has already{" "}
-                                              <strong
-                                                style={{ color: "green" }}
-                                              >
-                                                concluded
-                                              </strong>{" "}
-                                              and is no longer accessible.
-                                              Please select a session scheduled
-                                              for a future date. For more
-                                              information or assistance, feel
-                                              free to contact the admin at
-                                              viji.zenwellnesslounge@gmail.com.
-                                            </>
-                                          );
-                                        }
-                                      }}
-                                      className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
-                                      style={{
-                                        backgroundColor: isPastEvent(event)
-                                          ? "#8f87871f"
-                                          : isOngoingEvent(event)
-                                          ? "#48badb"
-                                          : event.lounge_type?.id === 15
-                                          ? "#e25197"
-                                          : event.lounge_type?.id === 14
-                                          ? "#7f4099"
-                                          : event.lounge_type?.id === 6
-                                          ? "#88c742"
-                                          : event.lounge_type?.id === 7
-                                          ? "#834ae9"
-                                          : "#023e98",
-                                      }}
-                                    >
-                                      <h4
-                                        className={`text-xs ${
-                                          isPastEvent(event)
-                                            ? "text-black"
-                                            : "text-white"
-                                        } py-1 px-2 truncate max-w-[15ch]`}
-                                      >
-                                        {event.title}
-                                      </h4>
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="w-[300px]">
-                                    <div className="flex flex-col flex-wrap mb-3 gap-x-2">
-                                      <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
-                                        {event.title}
-                                      </h4>
-                                      <p className="text-[15px] mt-1">
-                                        {event.lounge_type?.name}
-                                      </p>
-                                    </div>
-
-                                    <blockquote className="mb-2 border-l-2 pl-6 ">
-                                      <div className="flex gap-1 mb-4">
-                                        <span className="flex gap-1 ">
-                                          <CalendarClock
-                                            height={14}
-                                            width={14}
-                                            className="relative top-[0px]"
-                                          />{" "}
-                                          Date -
-                                        </span>
-                                        <span className="font-bold">
-                                          {moment(event.start_date).format(
-                                            "DD MMM YYYY"
-                                          )}
-                                        </span>{" "}
-                                      </div>
-
-                                      <div className="flex gap-x-1 mb-4">
-                                        <span className="flex gap-1">
-                                          <CalendarClock
-                                            height={14}
-                                            width={14}
-                                            className="relative top-[0px]"
-                                          />
-                                          Start Time -{" "}
-                                        </span>
-                                        <span className="font-bold ">
-                                          {moment(
-                                            event?.start_time,
-                                            "HH:mm:ss"
-                                          ).format("hh:mm A")}{" "}
-                                          (IST)
-                                        </span>
-                                      </div>
-
-                                      <div className="flex gap-x-1 mb-4">
-                                        <span className="flex gap-1">
-                                          <CalendarClock
-                                            height={14}
-                                            width={14}
-                                            className="relative top-[0px]"
-                                          />
-                                          End Time -{" "}
-                                        </span>
-                                        <span className="font-bold ">
-                                          {moment(
-                                            event?.end_time,
-                                            "HH:mm:ss"
-                                          ).format("hh:mm A")}{" "}
-                                          (IST)
-                                        </span>
-                                      </div>
-
-                                      {event?.venue && (
-                                        <div className="flex gap-x-1">
-                                          <span className="flex gap-1">
-                                            <MapPin
-                                              height={16}
-                                              width={18}
-                                              className="relative top-[3px]"
-                                            />{" "}
-                                            Venue -
-                                          </span>
-                                          <span className="font-bold">
-                                            {`${event?.venue?.name}`}
-
-                                            {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
-                                          </span>{" "}
-                                        </div>
-                                      )}
-                                    </blockquote>
-                                  </TooltipContent>
-                                </Tooltip>
-                              );
-                            })}
-                          </TooltipProvider>
-                        </div>
-                      )}
                     </td>
                   );
                 })}

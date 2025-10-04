@@ -169,15 +169,15 @@ const viewWellnessLounge = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pt-4">
       {state?.loading ? (
-        <div className="w-full h-[80vh] flex justify-center items-center">
+        <div className="w-full h-[80vh] flex justify-center items-center ">
           <LoaderIcon className="w-[30px] h-[30px]" />
         </div>
       ) : (
         state?.orderData && (
           <>
-            <div className="grid auto-rows-min gap-4 lg:grid-cols-2">
+            <div className="grid auto-rows-min gap-4 lg:grid-cols-2 pt-5">
               <div className="border rounded-xl p-4 gap-4 flex flex-col">
                 {state?.orderData?.thumbnail ? (
                   <img

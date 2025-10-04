@@ -399,6 +399,13 @@ export const isMenOrAlumni = (role) => {
   return hasMatch;
 };
 
+export const rolesExceptAluAndStudent = (role) => {
+  const targetLabels = [ROLES.COUNSELOR, ROLES.MENTOR, ROLES.ADMIN];
+  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+
+  return hasMatch;
+};
+
 export const isOnlyAlumniRole = (roles) => {
   const targetLabels = [ROLES.ALUMNI];
 
@@ -408,4 +415,25 @@ export const isOnlyAlumniRole = (roles) => {
     roles.length ===
       roles.filter((item) => targetLabels.includes(item.label)).length
   );
+};
+
+export const getDisplayRole = (groups) => {
+  if (!groups || groups.length === 0) return 'No Role';
+  const lowerGroups = groups.map(group => group.toLowerCase());
+  if (lowerGroups.includes('counselor')) return 'Counselor';
+  if (lowerGroups.includes('mentor')) return 'Mentor';
+  if (lowerGroups.includes('alumni')) return 'Alumni';
+  
+  return groups[0]; 
+};
+
+
+export const getRoles = (groups) => {
+  if (!groups || groups.length === 0) return 'No Role';
+  const roleNames = groups.map(group => group?.name?.toLowerCase());
+  if (roleNames.includes('counselor')) return 'Counselor';
+  if (roleNames.includes('mentor')) return 'Mentor';
+  if (roleNames.includes('alumni')) return 'Alumni';
+  
+  return groups[0]?.name || 'No Role';
 };

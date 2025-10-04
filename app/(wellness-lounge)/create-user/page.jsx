@@ -461,9 +461,9 @@ Login credentials have been generated, and the user can now access the platform 
   };
 
   return (
-    <div className="container mx-auto">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">Create User</h2>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+    <div className="container mx-auto pt-3">
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">Create User</h2>
+      <div className="grid auto-rows-min gap-4 md:grid-cols-2 pt-4">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
             value={state.firstname}

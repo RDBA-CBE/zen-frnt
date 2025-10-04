@@ -75,7 +75,10 @@ export default function studentRegistration() {
       <div className="flex items-center justify-center w-full">
         <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
           <CardHeader>
-            <CardTitle>REGISTRATION </CardTitle>
+            <CardTitle className="text-xl">
+              {" "}
+              <h2 className="font-semibold">Registration</h2>{" "}
+            </CardTitle>
             <CardDescription>
               Update your account information here. Be sure to save your changes
               once you&lsquo;re finished.
@@ -118,13 +121,13 @@ export default function studentRegistration() {
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
               />
-            ) : state.role === "counselor"?  (
+            ) : state.role === "counselor" ? (
               <CounselorRegForm
                 countryList={state.countryList}
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
               />
-            ):null}
+            ) : null}
           </CardHeader>
         </Card>
       </div>

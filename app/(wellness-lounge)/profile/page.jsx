@@ -201,8 +201,8 @@ const ProfilePage = () => {
   ];
 
   return (
-    <div className="container mx-auto flex items-center">
-      <div className="w-full">
+    <div className="container mx-auto flex items-center pt-4">
+      <div className="w-full pt-5">
         {/* <div className="flex justify-between items-center">
           <div className="font-bold text-lg mb-3">Profile</div>
         </div> */}
@@ -244,7 +244,7 @@ const ProfilePage = () => {
               <TabsContent value="profile">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Profile</CardTitle>
+                    <CardTitle><h2 className="md:text-[20px] text-sm font-semibold">Profile</h2></CardTitle>
                     {/* <CardDescription>
                       Make changes to your account here. Click save when you're done.
                     </CardDescription> */}
@@ -275,7 +275,7 @@ const ProfilePage = () => {
                                 {state?.userData.last_name}
                               </h2>
                               <blockquote className="italic">
-                                {state?.userData?.group?.name}
+                                {state?.userData?.groups?.map((e)=>e.name).join(', ')}
                               </blockquote>
                             </div>
                           </div>
@@ -290,11 +290,11 @@ const ProfilePage = () => {
                                 Phone Number: {state?.userData?.phone_number}
                               </li>
                             )}
-                            {state?.userData?.date_of_birth && (
+                            {/* {state?.userData?.date_of_birth && (
                               <li>
                                 Date of Birth: {state?.userData?.date_of_birth}
                               </li>
-                            )}
+                            )} */}
                             {state?.userData?.address && (
                               <li>
                                 Address: {state?.userData?.address},

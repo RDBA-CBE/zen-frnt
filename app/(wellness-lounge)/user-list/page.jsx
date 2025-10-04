@@ -376,12 +376,12 @@ const UserList = () => {
   };
 
   return (
-    <div className="container mx-auto ">
-      <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
+    <div className="container mx-auto pt-4 pb-2">
+      <div className="flex flex-1 flex-col gap-2 p-4 pt-5">
         <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-              <h2 className="md:text-[20px] text-sm font-bold">Users</h2>
+              <h2 className="md:text-[20px] text-sm font-semibold">Users</h2>
             </div>
             <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
               <div className="md:w-3/4 w-full  md:mb-0 mb-2">

@@ -283,12 +283,12 @@ const WellnessLoungeList = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pt-4">
       <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
         {state.loading ? (
           <Loading />
         ) : state.loungeList?.length > 0 ? (
-          <Card className="w-[100%] p-4">
+          <Card className="w-[100%] p-4 pt-5">
             <div className="block justify-between items-center lg:flex">
               <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
                 <h2 className="md:text-lg text-sm font-bold">Bookings</h2>

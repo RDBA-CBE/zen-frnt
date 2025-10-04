@@ -8,8 +8,10 @@ import {
   addHoursToTimeOnly,
   buildFormData,
   convertUrlToFile,
+  getDisplayRole,
   getFileNameFromUrl,
   getHourOption,
+  getRoles,
   getTimeZone,
   getUnmatchedSlots,
   isValidImageUrl,
@@ -133,7 +135,7 @@ const UpdateWellnessLounge = () => {
         setState({
           moderator: {
             value: res?.moderator?.id,
-            label: `${res?.moderator?.first_name} ${res?.moderator?.last_name}`,
+            label: `${res?.moderator?.first_name} ${res?.moderator?.last_name} (${getRoles(res?.moderator?.groups)})`,
           },
         });
       }
@@ -626,12 +628,14 @@ const UpdateWellnessLounge = () => {
   const loadMendorList = async (search, loadedOptions, { page }) => {
     try {
       const body = {
-        group_name: "Mentor",
+        group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name}`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(
+          item?.groups
+        )})`,
       }));
 
       return {
@@ -680,11 +684,11 @@ const UpdateWellnessLounge = () => {
       <Loader />
     </div>
   ) : (
-    <div className="container mx-auto">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">
+    <div className="container mx-auto pt-3">
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">
         Update Lounge Session
       </h2>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-2 pt-4">
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
           <TextInput
             value={state.title}
@@ -947,7 +951,7 @@ const UpdateWellnessLounge = () => {
             placeholder="Select Mentor"
             loadOptions={loadMendorList}
             disabled={
-              state.isAnyBooked || ROLES.COUNSELOR || state.role == ROLES.MENTOR
+              state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
             }
           />
           <div className="space-y-1">

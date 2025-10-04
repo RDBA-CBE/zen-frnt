@@ -72,7 +72,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
+    <div className="container mt-0 mx-auto calendar-wrapper md:p-4 ">
       <RevenueDashboard reportData={state.reportData} />
 
 </div>

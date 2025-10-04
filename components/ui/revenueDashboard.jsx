@@ -182,7 +182,7 @@ const RevenueDashboard = (props) => {
   }
 
   return (
-    <div className="">
+    <div className="py-4">
       <div className="">
         {/* Summary Cards */}
 

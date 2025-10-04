@@ -356,7 +356,7 @@ const UpdateOrder = () => {
 
   return (
     <div className="container mx-auto">
-      <h2 className="font-bold md:text-[20px] text-sm mb-3">Update Session</h2>
+      <h2 className="font-semibold md:text-[20px] text-sm mb-3">Update Session</h2>
       <div className="grid auto-rows-min gap-4 md:grid-cols-3">
         <div className="border rounded-xl p-4 gap-4 flex flex-col md:col-span-1">
           {/* <CustomSelect
@@ -429,12 +429,12 @@ const UpdateOrder = () => {
                       </span>{" "}
                       {SelectedUser[0]?.phone_number || "N/A"}
                     </li>
-                    <li className="pb-3">
+                    {/* <li className="pb-3">
                       <span className="font-bold text-gray-700">
                         Date of Birth:
                       </span>{" "}
                       {SelectedUser[0]?.date_of_birth || "N/A"}
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </>

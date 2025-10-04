@@ -381,6 +381,7 @@ const CounselorRegForm = () => {
                 errors: { ...state.errors, university: "" },
               })
             }
+            required
             placeholder="Select University"
             menuPortalTarget={document.body}
             error={state.errors?.university}

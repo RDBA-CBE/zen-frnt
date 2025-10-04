@@ -7,6 +7,7 @@ import {
   addHoursToTimeOnly,
   buildFormData,
   Dropdown,
+  getDisplayRole,
   useSetState,
 } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
@@ -504,18 +505,21 @@ const CreateWellnessLounge = () => {
   const loadMendorList = async (search, loadedOptions, { page }) => {
     try {
       const body = {
-        group_name: "Mentor",
+        group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
       };
       // if (state.start_date) {
       //   body.available_from = moment(state.start_date).format("YYYY-MM-DD");
-      // }
-      // if (state.start_date) {
       //   body.available_to = moment(state.start_date).format("YYYY-MM-DD");
       // }
       const res = await Models.user.userList(page, body);
+      // const dropdownsa = res?.results?.map((item) => ({
+      //   value: item?.id,
+      //   label: `${item?.first_name} ${item.last_name}`,
+      // }));
+
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name}`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(item?.groups)})`,
       }));
 
       return {
@@ -564,13 +568,13 @@ const CreateWellnessLounge = () => {
       <Loader />
     </div>
   ) : (
-    <div className="container mx-auto">
-      <div className="flex justify-center   ">
+    <div className="container mx-auto pt-3" >
+      <div className="flex justify-center   pt-5">
         <div className="w-full">
-          <h2 className="md:text-[20px] text-sm  font-bold mb-3">
+          <h2 className="md:text-[20px] text-sm  font-semibold mb-3">
             Create Lounge Session
           </h2>
-          <div className="grid auto-rows-min gap-4 md:grid-cols-2">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-2 pt-4">
             <div className="border rounded-xl p-4 gap-4 flex flex-col ">
               <TextInput
                 value={state.title}
@@ -855,7 +859,7 @@ const CreateWellnessLounge = () => {
                 disabled={
                   state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
                 }
-                // reRender={state.start_date || state.end_date}
+                // reRender={state.start_date}
               />
 
               <div className="space-y-1">
