@@ -58,12 +58,13 @@ const StudentRegistrationForm = () => {
     showPassword: false,
     role: "student",
     notify: false,
+    currentInterestPage: 1,
   });
 
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
     getUniversity();
-    getIntrestedTopics();
+    getIntrestedTopics(1);
     getCountry();
   }, []);
 
@@ -202,18 +203,52 @@ const StudentRegistrationForm = () => {
     }
   };
 
-  const getIntrestedTopics = async () => {
+  console.log("state.currentInterestPage", state.currentInterestPage);
+  
+
+  const getIntrestedTopics = async (page=1) => {
     try {
-      const res = await Models.auth.getIntrestedTopics();
+      const res = await Models.auth.getIntrestedTopics(page);
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: filter });
+      setState({ intrestedTopicsList: filter,
+        hasMoreInterest:res?.next
+       });
       console.log("res", res);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const interestedListLoadMore = async () => {
+    console.log("hello");
+    
+    try {
+      if (state.hasMoreInterest) {
+        console.log("hasMoreInterest");
+        const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+        setState({
+          intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+          hasMoreInterest: res?.next,
+          currentInterestPage: state.currentInterestPage + 1,
+        });
+      } else {
+        setState({ intrestedTopicsList: state.intrestedTopicsList });
+      }
+    } catch (error) {
+            console.log('error: ', error);
+    }
+  };
+
+ 
+
+  console.log("intrestedTopicsList", state.intrestedTopicsList);
+
+ 
 
   const getCountry = async () => {
     try {
@@ -248,7 +283,7 @@ const StudentRegistrationForm = () => {
         university: state?.university?.value || "",
         is_alumni: false,
         notify: state.notify,
-        role:"Student"
+        role: "Student",
       };
       console.log("✌️body --->", body);
 
@@ -470,7 +505,7 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
-         <div className="space-y-1">
+        <div className="space-y-1">
           <MultiSelectDropdown
             label="Year of Entry"
             options={years || []}
@@ -521,7 +556,7 @@ const StudentRegistrationForm = () => {
             onChange={(value) => setState({ alumniIntrested_topics: value })}
             name="topics"
             menuPortalTarget={document.body}
-            
+            loadMore={interestedListLoadMore}
           />
           {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Interests in Topics"}
@@ -553,19 +588,15 @@ const StudentRegistrationForm = () => {
             </div>
           )}
 
-          <div className="pb-2 pt-4">
-        <Checkboxs
-          label={"Notify me on these topics"}
-          checked={state.notify}
-          onChange={(val) => setState({ notify: val })}
-        />
+        <div className="pb-2 pt-4">
+          <Checkboxs
+            label={"Notify me on these topics"}
+            checked={state.notify}
+            onChange={(val) => setState({ notify: val })}
+          />
+        </div>
       </div>
 
-       
-
-        
-      </div>
-      
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => resetForm()}

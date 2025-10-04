@@ -24,11 +24,12 @@ export default function studentRegistration() {
     universityList: [],
     intrestedTopicsList: [],
     loading: false,
+    currentInterestPage: 1,
   });
 
   useEffect(() => {
     getUniversity();
-    getIntrestedTopics();
+    getIntrestedTopics(1);
     getCountry();
   }, []);
 
@@ -43,20 +44,45 @@ export default function studentRegistration() {
     }
   };
 
-  const getIntrestedTopics = async () => {
-    try {
-      setState({ loading: true });
-
-      const res = await Models.auth.getIntrestedTopics();
-      const Dropdownss = Dropdown(res?.results, "topic");
-      const filter = Dropdownss?.filter((item) => item?.label !== "");
-
-      setState({ intrestedTopicsList: filter, loading: false });
-      console.log("res", res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const getIntrestedTopics = async (page=1) => {
+      try {
+        const res = await Models.auth.getIntrestedTopics(page);
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+        setState({ intrestedTopicsList: filter,
+          hasMoreInterest:res?.next
+         });
+        console.log("res", res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    
+  
+    const interestedListLoadMore = async () => {
+      console.log("hello");
+      
+      try {
+        if (state.hasMoreInterest) {
+          console.log("hasMoreInterest");
+          const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+          const Dropdownss = Dropdown(res?.results, "topic");
+          const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+          setState({
+            intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+            hasMoreInterest: res?.next,
+            currentInterestPage: state.currentInterestPage + 1,
+          });
+        } else {
+          setState({ intrestedTopicsList: state.intrestedTopicsList });
+        }
+      } catch (error) {
+              console.log('error: ', error);
+      }
+    };
 
   const getCountry = async () => {
     try {

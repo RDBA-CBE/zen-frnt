@@ -220,9 +220,9 @@ const auth = {
     return promise;
   },
 
-  getIntrestedTopics: () => {
+  getIntrestedTopics: (page) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `/auth/interested-topics/`;
+      let url = `/auth/interested-topics/?page=${page}`;
       instance()
         .get(url)
         .then((res) => {
