@@ -79,12 +79,13 @@ const CreateUser = () => {
     country: null,
     countryList: [],
     notify: false,
+    currentInterestPage: 1,
   });
 
   useEffect(() => {
     getDetails();
     getGroupList();
-    getIntrestedTopics();
+    getIntrestedTopics(1);
     getUniversity();
     // getCountry();
   }, [id]);
@@ -218,15 +219,41 @@ const CreateUser = () => {
     }
   };
 
-  const getIntrestedTopics = async () => {
+  const getIntrestedTopics = async (page=1) => {
     try {
-      const res = await Models.auth.getIntrestedTopics();
-      const Dropdowns = Dropdown(res?.results, "topic");
+      const res = await Models.auth.getIntrestedTopics(page);
+      const Dropdownss = Dropdown(res?.results, "topic");
+      const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: Dropdowns });
+      setState({ intrestedTopicsList: filter,
+        hasMoreInterest:res?.next
+       });
       console.log("res", res);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const interestedListLoadMore = async () => {
+    console.log("hello");
+    
+    try {
+      if (state.hasMoreInterest) {
+        console.log("hasMoreInterest");
+        const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+        setState({
+          intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+          hasMoreInterest: res?.next,
+          currentInterestPage: state.currentInterestPage + 1,
+        });
+      } else {
+        setState({ intrestedTopicsList: state.intrestedTopicsList });
+      }
+    } catch (error) {
+            console.log('error: ', error);
     }
   };
 
@@ -900,6 +927,7 @@ const CreateUser = () => {
                     onChange={(value) => setState({ intrested_topics: value })}
                     name="topics"
                     menuPortalTarget={document.body}
+                     loadMore={interestedListLoadMore}
                   />
 
                   {/* <label className="block text-sm font-bold text-gray-700 mb-2">

@@ -16,6 +16,7 @@ const CustomSelectDropdown = (props) => {
     isClearable = true,
     isSearchable = true,
     isDisabled = false,
+    loadMore,
 
     // Label and error handling
     label,
@@ -75,6 +76,11 @@ const CustomSelectDropdown = (props) => {
           }),
         }}
         menuPortalTarget={menuPortalTarget}
+        // onMenuScrollToBottom={loadMore}
+        onMenuScrollToBottom={() => {
+          console.log("Scrolled to bottom");
+          loadMore?.();
+        }}
         {...selectProps}
       />
 

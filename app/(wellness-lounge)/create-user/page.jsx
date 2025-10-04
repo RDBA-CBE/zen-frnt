@@ -58,12 +58,13 @@ const CreateUser = () => {
     country: null,
     countryList: [],
     notify: false,
+    currentInterestPage: 1,
   });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       getGroupList();
-      getIntrestedTopics();
+      getIntrestedTopics(1);
       getUniversity();
       // getCountry();
     }
@@ -106,18 +107,43 @@ const CreateUser = () => {
     }
   };
 
-  const getIntrestedTopics = async () => {
-    try {
-      const res = await Models.auth.getIntrestedTopics();
-      const Dropdowns = Dropdown(res?.results, "topic");
-      console.log("✌️Dropdowns --->", Dropdowns);
+  const getIntrestedTopics = async (page=1) => {
+      try {
+        const res = await Models.auth.getIntrestedTopics(page);
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+        setState({ intrestedTopicsList: filter,
+          hasMoreInterest:res?.next
+         });
+        console.log("res", res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-      setState({ intrestedTopicsList: Dropdowns });
-      console.log("res", res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const interestedListLoadMore = async () => {
+      console.log("hello");
+      
+      try {
+        if (state.hasMoreInterest) {
+          console.log("hasMoreInterest");
+          const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+          const Dropdownss = Dropdown(res?.results, "topic");
+          const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+          setState({
+            intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+            hasMoreInterest: res?.next,
+            currentInterestPage: state.currentInterestPage + 1,
+          });
+        } else {
+          setState({ intrestedTopicsList: state.intrestedTopicsList });
+        }
+      } catch (error) {
+              console.log('error: ', error);
+      }
+    };
 
   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
     if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
@@ -873,6 +899,7 @@ Login credentials have been generated, and the user can now access the platform 
                   onChange={(value) => setState({ intrested_topics: value })}
                   name="topics"
                   menuPortalTarget={document.body}
+                  loadMore={interestedListLoadMore}
                 />
                 {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Interests in Topics"}

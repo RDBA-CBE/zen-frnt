@@ -93,11 +93,12 @@ const UpdateWellnessLounge = () => {
     intrested_topics: [],
     passcode: "",
     timezone: "",
+    currentInterestPage: 1,
   });
 
   useEffect(() => {
     getCategoryList();
-    getIntrestedTopics();
+    getIntrestedTopics(1);
   }, []);
 
   useEffect(() => {
@@ -213,19 +214,43 @@ const UpdateWellnessLounge = () => {
     }
   };
 
-  const getIntrestedTopics = async () => {
-    try {
-      const res = await Models.auth.getIntrestedTopics();
-      const filters = res?.results?.filter((item) => item?.id != 13);
-
-      const Dropdownss = Dropdown(filters, "topic");
-      const filter = Dropdownss?.filter((item) => item?.label !== "");
-
-      setState({ intrestedTopicsList: filter });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const getIntrestedTopics = async (page=1) => {
+      try {
+        const res = await Models.auth.getIntrestedTopics(page);
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+        setState({ intrestedTopicsList: filter,
+          hasMoreInterest:res?.next
+         });
+        console.log("res", res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    const interestedListLoadMore = async () => {
+      console.log("hello");
+      
+      try {
+        if (state.hasMoreInterest) {
+          console.log("hasMoreInterest");
+          const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+          const Dropdownss = Dropdown(res?.results, "topic");
+          const filter = Dropdownss?.filter((item) => item?.label !== "");
+  
+          setState({
+            intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+            hasMoreInterest: res?.next,
+            currentInterestPage: state.currentInterestPage + 1,
+          });
+        } else {
+          setState({ intrestedTopicsList: state.intrestedTopicsList });
+        }
+      } catch (error) {
+              console.log('error: ', error);
+      }
+    };
 
   const onSubmit = async () => {
     try {
@@ -970,6 +995,7 @@ const UpdateWellnessLounge = () => {
               required
               name="topics"
               menuPortalTarget={document.body}
+              loadMore={interestedListLoadMore}
               error={state.errors?.intrested_topics}
             />
 
