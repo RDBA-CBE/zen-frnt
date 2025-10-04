@@ -157,7 +157,6 @@ const Header = () => {
         { title: "Create User", url: "/create-user" },
         { title: "Counselor Approval", url: "/counselor-approval" },
         { title: "Mentor Approval", url: "/user-approval" },
-
       ],
     },
 
@@ -206,8 +205,6 @@ const Header = () => {
       title: "Profile",
       url: "/profile",
     },
-
-   
   ];
 
   const StudentLeftSideMenu = [
@@ -242,7 +239,7 @@ const Header = () => {
                       href="/registration"
                       className="hover:underline md:text-[16px] text-[10px] "
                     >
-                     <h4>SIGN UP</h4> 
+                      <h4>SIGN UP</h4>
                     </Link>
                   </div>
                   {/* )} */}
@@ -336,7 +333,7 @@ const Header = () => {
                                 href={item.url}
                                 className="text-xs text-black font-[600] uppercase hover:text-themePurple"
                               >
-                                {item.title}
+                                <h4 className="text-[14px]">{item.title}</h4>
                               </Link>
                             </div>
                           ))}
