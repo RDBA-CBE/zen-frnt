@@ -162,11 +162,9 @@ const CreateUser = () => {
             state?.user_type?.label === "Student"
               ? state?.year_of_entry?.value
               : undefined,
-          university: state?.user_type?.label,
-          // university:
-          // state?.user_type?.label !== "Alumni"
-          //   ? state?.university?.value
-          //   : undefined,
+          // university: state?.user_type?.label,
+          university: state?.university?.value,
+
           intrested_topics:
             state?.intrested_topics?.length > 0
               ? state?.intrested_topics?.map((item) => item.value)
@@ -204,7 +202,10 @@ const CreateUser = () => {
           abortEarly: false,
         });
 
-        if (state?.user_type?.label === "Alumni") {
+        if (
+          state?.user_type?.label === ROLES.ALUMNI ||
+          state?.user_type?.label === ROLES.COUNSELOR
+        ) {
           if (!isValidPhoneNumber(body.phone_number)) {
             setState({
               submitLoading: false,
@@ -841,64 +842,65 @@ Login credentials have been generated, and the user can now access the platform 
                 />
               </div> */}
 
+              {/* <> */}
+              <TextArea
+                name="Address"
+                value={state.address}
+                onChange={(e) => {
+                  setState({ address: e.target.value });
+                }}
+                className="mt-2 w-full"
+                placeholder="Address"
+                title="Address"
+              />
               {state?.user_type?.label === "Alumni" && (
-                <>
-                  <TextArea
-                    name="Address"
-                    value={state.address}
-                    onChange={(e) => {
-                      setState({ address: e.target.value });
-                    }}
-                    className="mt-2 w-full"
-                    placeholder="Address"
-                    title="Address"
-                  />
-
-                  <CustomSelect
-                    options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
-                    value={state.is_open_to_be_mentor?.value || ""}
-                    onChange={(value) =>
-                      setState({ is_open_to_be_mentor: value })
-                    }
-                    error={state.errors?.is_open_to_be_mentor}
-                    title="Are you open to being a mentor?"
-                    placeholder="Select"
-                  />
-                </>
+                <CustomSelect
+                  options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
+                  value={state.is_open_to_be_mentor?.value || ""}
+                  onChange={(value) =>
+                    setState({ is_open_to_be_mentor: value })
+                  }
+                  error={state.errors?.is_open_to_be_mentor}
+                  title="Are you open to being a mentor?"
+                  placeholder="Select"
+                />
+                // </>
               )}
               {state?.user_type?.label === "Student" && (
                 <>
-
-              <div className="space-y-1">
-                <MultiSelectDropdown
-                  label="Interests Topics"
-                  value={state.intrested_topics}
-                  isMulti
-                  options={state.intrestedTopicsList || []}
-                  placeholder="Select Topics"
-                  onChange={(value) => setState({ intrested_topics: value })}
-                  name="topics"
-                  menuPortalTarget={document.body}
-                />
-               
-              </div>
-              {Array.isArray(state.intrested_topics) &&
-                state.intrested_topics.some((item) => item.value === 13) && (
                   <div className="space-y-1">
-                    <TextInput
-                      id="intrested_topics1"
-                      type="text"
-                      placeholder="Enter Your Intrested Topics"
-                      title="New Topics"
-                      value={state.intrested_topics1}
-                      onChange={(e) =>
-                        setState({ intrested_topics1: e.target.value })
+                    <MultiSelectDropdown
+                      label="Interests Topics"
+                      value={state.intrested_topics}
+                      isMulti
+                      options={state.intrestedTopicsList || []}
+                      placeholder="Select Topics"
+                      onChange={(value) =>
+                        setState({ intrested_topics: value })
                       }
+                      name="topics"
+                      menuPortalTarget={document.body}
                     />
                   </div>
-                )}
+                  {Array.isArray(state.intrested_topics) &&
+                    state.intrested_topics.some(
+                      (item) => item.value === 13
+                    ) && (
+                      <div className="space-y-1">
+                        <TextInput
+                          id="intrested_topics1"
+                          type="text"
+                          placeholder="Enter Your Intrested Topics"
+                          title="New Topics"
+                          value={state.intrested_topics1}
+                          onChange={(e) =>
+                            setState({ intrested_topics1: e.target.value })
+                          }
+                        />
+                      </div>
+                    )}
 
-              {/* <div className="space-y-1">
+                  {/* <div className="space-y-1">
                 <CustomSelect
                   options={state?.universityList || []} // Safely pass empty array if universityList is null
                   value={state.university?.value || ""}
@@ -908,17 +910,17 @@ Login credentials have been generated, and the user can now access the platform 
                   placeholder="Select University"
                 />
               </div> */}
-              <div className="pt-2 pb-2">
-                <Checkboxs
-                  label={"Notify me on these topics"}
-                  checked={state.notify}
-                  onChange={(val) => {
-                    console.log("✌️val --->", val);
-                    setState({ notify: val });
-                  }}
-                />
-              </div>
-              </>
+                  <div className="pt-2 pb-2">
+                    <Checkboxs
+                      label={"Notify me on these topics"}
+                      checked={state.notify}
+                      onChange={(val) => {
+                        console.log("✌️val --->", val);
+                        setState({ notify: val });
+                      }}
+                    />
+                  </div>
+                </>
               )}
             </>
           )}
