@@ -13,11 +13,11 @@ const user = {
       }
 
       if (body?.available_from) {
-        url += `&available_from=${encodeURIComponent(body?.available_from)}`;
+        url += `&available_from__gte=${encodeURIComponent(body?.available_from)}`;
       }
 
       if (body?.available_to) {
-        url += `&available_to=${encodeURIComponent(body?.available_to)}`;
+        url += `&available_to__lte=${encodeURIComponent(body?.available_to)}`;
       }
       if (body?.is_active) {
         url += `&is_active=${encodeURIComponent(!body?.is_active)}`;
@@ -31,8 +31,6 @@ const user = {
         url += `&group_name_exact=${encodeURIComponent(body.group_name_exact)}`;
       }
 
-      
-      
 
       instance()
         .get(url)

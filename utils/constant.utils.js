@@ -291,3 +291,5 @@ export const ROLES = {
   MENTOR: "Mentor",
   COUNSELOR: "Counselor",
 };
+
+export const ROLE_ARRAY=["Student","Alumni","Mentor","Counselor"]

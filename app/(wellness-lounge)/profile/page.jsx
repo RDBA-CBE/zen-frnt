@@ -290,11 +290,11 @@ const ProfilePage = () => {
                                 Phone Number: {state?.userData?.phone_number}
                               </li>
                             )}
-                            {state?.userData?.date_of_birth && (
+                            {/* {state?.userData?.date_of_birth && (
                               <li>
                                 Date of Birth: {state?.userData?.date_of_birth}
                               </li>
-                            )}
+                            )} */}
                             {state?.userData?.address && (
                               <li>
                                 Address: {state?.userData?.address},
