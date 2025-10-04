@@ -23,6 +23,17 @@ const user = {
         url += `&is_active=${encodeURIComponent(!body?.is_active)}`;
       }
 
+      if (body?.is_open_to_be_mentor) {
+        url += `&is_open_to_be_mentor=${encodeURIComponent(body.is_open_to_be_mentor == "Yes"?true:false)}`;
+      }
+
+      if (body?.group_name_exact) {
+        url += `&group_name_exact=${encodeURIComponent(body.group_name_exact)}`;
+      }
+
+      
+      
+
       instance()
         .get(url)
         .then((res) => {

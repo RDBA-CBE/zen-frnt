@@ -155,7 +155,9 @@ const Header = () => {
       items: [
         { title: "User List", url: "/user-list" },
         { title: "Create User", url: "/create-user" },
-        { title: "Waiting For Approval", url: "/user-approval" },
+        { title: "Counselor Approval", url: "/counselor-approval" },
+        { title: "Mentor Approval", url: "/user-approval" },
+
       ],
     },
 

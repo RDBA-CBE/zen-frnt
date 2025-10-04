@@ -100,8 +100,15 @@ const UserList = () => {
             is_active: true,
           };
 
-          const res = await Models.user.updateUser(body,item?.id);
-          console.log("✌️res --->", res);
+          const res = await Models.user.updateUser(body, item?.id);
+          getUserList(state.currentPage);
+        } else {
+          const body = {
+            user_id: item?.id,
+            group_id: 5,
+          };
+
+          const res = await Models.user.updateUserRole(body);
           getUserList(state.currentPage);
         }
       }
@@ -179,7 +186,7 @@ const UserList = () => {
           {/* <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
             <Edit size={18} className="mr-2" />
           </div> */}
-          <div className="cursor-pointer" onClick={() => handleView(row.row)}>
+          {/* <div className="cursor-pointer" onClick={() => handleView(row.row)}>
             <Eye size={20} className="mr-2" />
           </div>
           <div
@@ -189,7 +196,7 @@ const UserList = () => {
             }
           >
             <Trash size={18} className="mr-2" />
-          </div>
+          </div> */}
 
           <PrimaryButton
             variant={"outline"}
@@ -312,7 +319,8 @@ const UserList = () => {
     if (state.role) {
       body.group_name = state.role?.label;
     }
-    body.is_active = true;
+    body.is_open_to_be_mentor = "Yes";
+    body.group_name_exact = ROLES.ALUMNI;
 
     return body;
   };
@@ -338,7 +346,7 @@ const UserList = () => {
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-1/4 w-full lg:mb-0 mb-2">
               <h2 className="md:text-[20px] text-sm font-bold">
-                Waiting For Approval
+                Mentor Approval
               </h2>
             </div>
             <div className="flex justify-between items-center gap-3 lg:w-3/4 w-full">
@@ -354,14 +362,14 @@ const UserList = () => {
                     className="w-full"
                   />
                 </div>
-                <div className="md:w-1/2 w-full">
+                {/* <div className="md:w-1/2 w-full">
                   <CustomSelect
                     options={state?.roleList || []}
                     value={state.role?.value || ""}
                     onChange={(value) => setState({ role: value })}
                     placeholder="Filter by role"
                   />
-                </div>
+                </div> */}
               </div>
               {/* <div
                 className="md:w-auto w-full md:text-end"
