@@ -270,7 +270,7 @@ const ProfilePage = () => {
                               )}
                             </div> */}
                             <div>
-                              <h2 className="mt-2 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0">
+                              <h2 className="mt-2 scroll-m-20 text-lg font-[500] tracking-tight transition-colors first:mt-0">
                                 {state?.userData.first_name}{" "}
                                 {state?.userData.last_name}
                               </h2>
@@ -310,7 +310,7 @@ const ProfilePage = () => {
                               </li>
                             )}
                             {state?.userData?.intrested_topics?.length > 0 && (
-                              <li>
+                              <li className="flex gap-1 flex-wrap">
                                 <div>Interested in Topics:</div>{" "}
                                 {state.userData.intrested_topics.map(
                                   (item, index) => {

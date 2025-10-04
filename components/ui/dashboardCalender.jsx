@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, getTime, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { CalendarClock, MapPin, Table, XIcon } from "lucide-react";
+import { Calendar1, CalendarClock, Clock, Clock10, MapPin, Table, XIcon } from "lucide-react";
 import { Failure, Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE, ROLE, ROLES } from "@/utils/constant.utils";
 import Modal from "@/components/common-components/modal";
@@ -551,7 +551,7 @@ const DashboardCalender = ({ events, setEvents }) => {
                                       <blockquote className="mb-2 border-l-2 pl-6 ">
                                         <div className="flex gap-1 mb-4">
                                           <span className="flex gap-1 ">
-                                            <CalendarClock
+                                            <Calendar1
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -567,7 +567,7 @@ const DashboardCalender = ({ events, setEvents }) => {
 
                                         <div className="flex gap-x-1 mb-4">
                                           <span className="flex gap-1">
-                                            <CalendarClock
+                                            <Clock
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -585,7 +585,7 @@ const DashboardCalender = ({ events, setEvents }) => {
 
                                         <div className="flex gap-x-1 mb-4">
                                           <span className="flex gap-1">
-                                            <CalendarClock
+                                            <Clock10
                                               height={14}
                                               width={14}
                                               className="relative top-[0px]"
@@ -607,7 +607,7 @@ const DashboardCalender = ({ events, setEvents }) => {
                                               <MapPin
                                                 height={16}
                                                 width={18}
-                                                className="relative top-[3px]"
+                                                className="relative "
                                               />{" "}
                                               Venue -
                                             </span>
@@ -687,7 +687,7 @@ const DashboardCalender = ({ events, setEvents }) => {
             <div className="font-[400]" style={{ fontSize: "15px" }}>
               <div className="flex gap-x-1">
                 <span className="flex gap-1 ">
-                  <CalendarClock
+                  <Calendar1
                     height={14}
                     width={14}
                     className="relative top-[7px]"
@@ -701,7 +701,7 @@ const DashboardCalender = ({ events, setEvents }) => {
               </div>
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
-                  <CalendarClock
+                  <Clock
                     height={14}
                     width={14}
                     className="relative top-[7px]"
@@ -718,7 +718,7 @@ const DashboardCalender = ({ events, setEvents }) => {
 
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
-                  <CalendarClock
+                  <Clock10
                     height={14}
                     width={14}
                     className="relative top-[7px]"
@@ -741,7 +741,7 @@ const DashboardCalender = ({ events, setEvents }) => {
                   />
                   Venue -{" "}
                 </span>
-                <span className="font-bold">
+                <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {`${selectedEvent?.venue?.name}`}
 
                   {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
@@ -752,14 +752,14 @@ const DashboardCalender = ({ events, setEvents }) => {
           <div className="flex gap-4 mt-4 w-full">
             <Button
               onClick={handleEnroll}
-              className="flex-1 p-2 rounded bg-themePurple hover:bg-themePurple text-white"
+              className="flex-1 p-2 rounded bg-themePurple hover:bg-[#b382c7] text-white"
             >
               Read More
             </Button>
             {selectedEvent?.eventDate > now && state.role == "Admin" && (
               <Button
                 onClick={handleEditEvent}
-                className="flex-1 p-2 rounded bg-themeGreen hover:bg-themeGreen text-white"
+                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
               >
                 Edit Session
               </Button>

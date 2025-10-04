@@ -29,7 +29,10 @@ import * as Validation from "../../../utils/validation.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import {
   AlertCircle,
+  Calendar1,
   CalendarClock,
+  Clock,
+  Clock10,
   Loader,
   MapPin,
   Trash2,
@@ -414,7 +417,7 @@ const viewWellnessLounge = () => {
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <CalendarClock className="w-5 h-5 text-fuchsia-700" />
+                    <Calendar1 className="w-5 h-5 text-fuchsia-700" />
                     <div>
                       <span className="font-semibold text-gray-700">
                         Date -{" "}
@@ -428,7 +431,7 @@ const viewWellnessLounge = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <CalendarClock className="w-5 h-5 text-fuchsia-700" />
+                    <Clock className="w-5 h-5 text-fuchsia-700" />
                     <div>
                       <span className="font-semibold text-gray-700">
                         Start Time -{" "}
@@ -444,7 +447,7 @@ const viewWellnessLounge = () => {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <CalendarClock className="w-5 h-5 text-fuchsia-700" />
+                    <Clock10 className="w-5 h-5 text-fuchsia-700" />
                     <div>
                       <span className="font-semibold text-gray-700">
                         End Time -{" "}

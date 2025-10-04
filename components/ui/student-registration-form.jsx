@@ -58,12 +58,14 @@ const StudentRegistrationForm = () => {
     showPassword: false,
     role: "student",
     notify: false,
+    hasMore: true,
+    loading: false,
   });
 
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
     getUniversity();
-    getIntrestedTopics();
+    getIntrestedTopics(1, false);
     getCountry();
   }, []);
 
@@ -202,18 +204,58 @@ const StudentRegistrationForm = () => {
     }
   };
 
-  const getIntrestedTopics = async () => {
+  // const getIntrestedTopics = async () => {
+  //   try {
+  //     const res = await Models.auth.getIntrestedTopics();
+  //     const Dropdownss = Dropdown(res?.results, "topic");
+  //     const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+  //     setState({ intrestedTopicsList: filter });
+  //     console.log("res", res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const getIntrestedTopics = async (page = 1, append = false) => {
     try {
-      const res = await Models.auth.getIntrestedTopics();
+      setState((prev) => ({ ...prev, loading: true }));
+
+      const res = await Models.auth.getIntrestedTopics({ page });
+
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: filter });
-      console.log("res", res);
+      console.log("append", append);
+
+      setState({
+        intrestedTopicsList: append
+          ? [...state.intrestedTopicsList, ...filter]
+          : filter,
+        page,
+        hasMore: !!res?.next, // backend must indicate next page
+        loading: false,
+      });
     } catch (error) {
       console.log(error);
+      setState((prev) => ({ ...prev, loading: false }));
     }
   };
+
+  console.log("intrestedTopicsList", state.intrestedTopicsList);
+
+
+  const loadMoreTopics = () => {
+    console.log("loadMoreTopics");
+  setState(prev => {
+    // Prevent calling API if already loading or no more pages
+    if (prev.loading || !prev.hasMore) return prev;
+     
+    // Call getIntrestedTopics with append = true
+    getIntrestedTopics(prev.page + 1, true);
+    return prev;
+  });
+};
 
   const getCountry = async () => {
     try {
@@ -248,7 +290,7 @@ const StudentRegistrationForm = () => {
         university: state?.university?.value || "",
         is_alumni: false,
         notify: state.notify,
-        role:"Student"
+        role: "Student",
       };
       console.log("✌️body --->", body);
 
@@ -469,7 +511,7 @@ const StudentRegistrationForm = () => {
           />
         </div>
 
-         <div className="space-y-1">
+        <div className="space-y-1">
           <MultiSelectDropdown
             label="Year of Entry"
             options={years || []}
@@ -520,7 +562,9 @@ const StudentRegistrationForm = () => {
             onChange={(value) => setState({ alumniIntrested_topics: value })}
             name="topics"
             menuPortalTarget={document.body}
-            
+            hasMore={state.hasMore}
+            loading={state.loading} // pass loading to dropdown
+            onLoadMore={loadMoreTopics}
           />
           {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Interests in Topics"}
@@ -552,19 +596,15 @@ const StudentRegistrationForm = () => {
             </div>
           )}
 
-          <div className="pb-2 pt-4">
-        <Checkboxs
-          label={"Notify me on these topics"}
-          checked={state.notify}
-          onChange={(val) => setState({ notify: val })}
-        />
+        <div className="pb-2 pt-4">
+          <Checkboxs
+            label={"Notify me on these topics"}
+            checked={state.notify}
+            onChange={(val) => setState({ notify: val })}
+          />
+        </div>
       </div>
 
-       
-
-        
-      </div>
-      
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => resetForm()}

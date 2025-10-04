@@ -1,34 +1,56 @@
 "use client";
 
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
+
+// Custom MenuList to detect scroll to bottom
+const CustomMenuList = (props) => {
+  const { children, selectProps } = props;
+
+  const handleScroll = (e) => {
+    const target = e.target;
+    // Check if scrolled to bottom
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 5) {
+      if (selectProps.hasMore && !selectProps.loading) {
+        selectProps.onLoadMore?.();
+      }
+    }
+  };
+
+  return (
+    <components.MenuList {...props} onScroll={handleScroll}>
+      {children}
+      {/* Optional loading indicator */}
+      {selectProps.loading && (
+        <div className="text-center py-2 text-gray-500">Loading...</div>
+      )}
+    </components.MenuList>
+  );
+};
 
 const CustomSelectDropdown = (props) => {
   const {
-    // Required props
     value,
     onChange,
     options = [],
-
-    // Optional props with defaults
     placeholder = "Select options",
     isMulti = false,
     isClearable = true,
     isSearchable = true,
     isDisabled = false,
+    onLoadMore = () => {},
+    hasMore = false,
+    loading = false, // pass loading state for scroll fetch
 
-    // Label and error handling
     label,
     required = false,
     error,
     errorMessage,
 
-    // Styling
     className = "",
     menuPortalTarget = typeof document !== "undefined" ? document.body : null,
     menuHeight = "40px",
 
-    // Additional Select props
     ...selectProps
   } = props;
 
@@ -41,7 +63,6 @@ const CustomSelectDropdown = (props) => {
         </label>
       )}
 
-      {/* Select Component */}
       <Select
         value={value}
         isMulti={isMulti}
@@ -56,24 +77,24 @@ const CustomSelectDropdown = (props) => {
         menuPosition="fixed"
         styles={{
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-
-          // 👇 reduce total dropdown height
           menuList: (base) => ({
             ...base,
-            maxHeight: 160, // total height for dropdown
+            maxHeight: 160,
             paddingTop: 0,
             paddingBottom: 0,
           }),
-
-          // 👇 reduce option row height
           option: (base) => ({
             ...base,
             fontSize: "16px",
-            padding: "6px 10px", // tighter padding
+            padding: "6px 10px",
             minHeight: "28px",
             cursor: "pointer",
           }),
         }}
+        components={{ MenuList: CustomMenuList }}
+        hasMore={hasMore}
+        onLoadMore={onLoadMore}
+        loading={loading}
         menuPortalTarget={menuPortalTarget}
         {...selectProps}
       />
