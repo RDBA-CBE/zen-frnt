@@ -325,7 +325,7 @@ const Header = () => {
                       {(activeMenu === menu.title ||
                         clickedMenu === menu.title) && (
                         <div
-                          className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
+                          className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg border-b-2 border-themePurple"
                           onMouseEnter={() => setActiveMenu(menu.title)}
                           onMouseLeave={() => setActiveMenu(null)}
                         >

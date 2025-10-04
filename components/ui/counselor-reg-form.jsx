@@ -320,6 +320,37 @@ const CounselorRegForm = () => {
           />
         </div>
 
+         <div className="space-y-1">
+          <div className="relative">
+            <TextInput
+              id="password"
+              type={state.showPassword ? "text" : "password"}
+              placeholder="Enter Your password"
+              required
+              title="Password"
+              value={state.password}
+              onChange={(e) =>
+                setState({
+                  password: e.target.value,
+                  errors: { ...state.errors, password: "" },
+                })
+              }
+              error={state.errors?.password}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setState({ showPassword: !state.showPassword });
+              }}
+              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+            >
+              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
+        </div>
+
         <div className="space-y-1">
           <div className="phone-input-wrapper ">
             <LoadMoreDropdown
@@ -447,16 +478,8 @@ const CounselorRegForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
-          <TextArea
-            placeholder="Enter Your address"
-            title="Address"
-            value={state.address}
-            onChange={(e) => setState({ address: e.target.value })}
-          />
-        </div>
-
-        {Array.isArray(state.alumniIntrested_topics) &&
+      
+        {/* {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
               <TextInput
@@ -470,39 +493,20 @@ const CounselorRegForm = () => {
                 }
               />
             </div>
-          )}
+          )} */}
 
-        <div className="space-y-1">
-          <div className="relative">
-            <TextInput
-              id="password"
-              type={state.showPassword ? "text" : "password"}
-              placeholder="Enter Your password"
-              required
-              title="Password"
-              value={state.password}
-              onChange={(e) =>
-                setState({
-                  password: e.target.value,
-                  errors: { ...state.errors, password: "" },
-                })
-              }
-              error={state.errors?.password}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setState({ showPassword: !state.showPassword });
-              }}
-              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
-            >
-              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
-        </div>
+       
       </div>
+
+       <div className="space-y-1 pb-5">
+          <TextArea
+            placeholder="Enter Your address"
+            title="Address"
+            value={state.address}
+            onChange={(e) => setState({ address: e.target.value })}
+          />
+        </div>
+
       {/* <div className="pt-2 pb-2">
         <Checkboxs
           label={"Notify me on these topics"}

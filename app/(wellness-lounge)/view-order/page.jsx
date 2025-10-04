@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { CalendarClock, Loader, MapPin } from "lucide-react";
+import { Calendar1, CalendarClock, Clock, Clock10, Loader, MapPin } from "lucide-react";
 
 import Link from "next/link";
 
@@ -212,7 +212,7 @@ const viewWellnessLounge = () => {
                       <blockquote className="mt-6 border-l-2 pl-6   bg-fuchsia-100 py-4  border-l-[5px] border-fuchsia-900 ">
                         <div className="flex gap-1 mb-4">
                           <span className="flex gap-1 ">
-                            <CalendarClock
+                            <Calendar1
                               height={16}
                               width={18}
                               className="relative top-[3px]"
@@ -230,7 +230,7 @@ const viewWellnessLounge = () => {
                         </div>
                         <div className="flex gap-x-1 mb-4">
                           <span className="flex gap-1">
-                            <CalendarClock
+                            <Clock
                               height={16}
                               width={18}
                               className="relative top-[3px]"
@@ -251,7 +251,7 @@ const viewWellnessLounge = () => {
 
                         <div className="flex gap-x-1 mb-4">
                           <span className="flex gap-1">
-                            <CalendarClock
+                            <Clock10
                               height={16}
                               width={18}
                               className="relative top-[3px]"
