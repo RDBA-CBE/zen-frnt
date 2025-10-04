@@ -383,6 +383,14 @@ const LoginForm = (props) => {
                         size="large"
                         text="signin_with"
                         logo_alignment="left"
+                        containerProps={{
+                          style: { 
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems:"center"
+                          }
+                        }}
                         // width="300"
                       />
                     </div>
