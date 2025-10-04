@@ -11,7 +11,7 @@ import { Dropdown, getTime, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
 import { CalendarClock, MapPin, Table, XIcon } from "lucide-react";
 import { Failure, Info } from "../common-components/toast";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, ROLE, ROLES } from "@/utils/constant.utils";
 import Modal from "@/components/common-components/modal";
 import PrimaryButton from "../common-components/primaryButton";
 import TimePicker from "../common-components/timePicker";
@@ -454,7 +454,9 @@ const DashboardCalender = ({ events, setEvents }) => {
                     >
                       <div className="flex justify-between items-start">
                         <div className="text-end">{day}</div>
-                        {state.role == "Admin" &&
+                        {(state.role == ROLES.ADMIN ||
+                          state.role == ROLES.MENTOR ||
+                          state.role == ROLES.COUNSELOR) &&
                           (() => {
                             if (!day) return null;
 

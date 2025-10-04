@@ -18,6 +18,7 @@ import Calendar from "./(wellness-lounge)/calendar/page";
 import Dashboard from "./(wellness-lounge)/dashboard/page";
 import Script from "next/script";
 import LoginForm from "@/components/ui/login-form";
+import { ROLES } from "@/utils/constant.utils";
 
 const App = () => {
   const router = useRouter();
@@ -37,6 +38,7 @@ const App = () => {
   });
 
   const [group, setGroup] = useState(null);
+  console.log("✌️group --->", group == ROLES.MENTOR);
 
   const debouncedSearch = useDebounce(state.search, 500);
 
@@ -129,7 +131,9 @@ const App = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
         </div>
       ) : state.token ? (
-        group == "Admin" ? (
+        group == ROLES.ADMIN ||
+        group == ROLES.COUNSELOR ||
+        group == ROLES.MENTOR ? (
           <Dashboard />
         ) : (
           <Calendar />
