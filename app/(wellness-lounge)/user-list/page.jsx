@@ -21,6 +21,8 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import useDebounce from "@/components/common-components/useDebounce";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import Checkboxs from "@/components/ui/singleCheckbox";
+import { ROLE_ARRAY } from "@/utils/constant.utils";
 
 const UserList = () => {
   const router = useRouter();
@@ -38,6 +40,7 @@ const UserList = () => {
     loading: false,
     roleList: [],
     deleteLoading: false,
+    filterByRole: [],
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -48,7 +51,7 @@ const UserList = () => {
   }, []);
   useEffect(() => {
     getUserList(state.currentPage);
-  }, [debouncedSearch, state.role]);
+  }, [debouncedSearch, state.filterByRole]);
 
   const getGroups = async () => {
     try {
@@ -109,7 +112,6 @@ const UserList = () => {
         getUserList(state.currentPage);
       } else {
         const body = {
-          
           is_open_to_be_mentor: false,
         };
 
@@ -341,8 +343,8 @@ const UserList = () => {
     if (state.search) {
       body.search = state.search;
     }
-    if (state.role) {
-      body.group_name = state.role?.label;
+    if (state.filterByRole?.length > 0) {
+      body.group_name = state.filterByRole;
     }
 
     return body;
@@ -359,6 +361,17 @@ const UserList = () => {
     if (state.previous) {
       const newPage = state.currentPage - 1;
       getUserList(newPage);
+    }
+  };
+
+  const handleCheckboxChange = (item, isChecked) => {
+    if (isChecked) {
+      setState({ filterByRole: [...state.filterByRole, item] });
+    } else {
+      const filter = state.filterByRole?.filter(
+        (checkedItem) => checkedItem !== item
+      );
+      setState({ filterByRole: filter });
     }
   };
 
@@ -382,12 +395,24 @@ const UserList = () => {
                   className="w-full"
                 />
               </div>
-              <CustomSelect
+              {/* <CustomSelect
                 options={state?.roleList || []} // Safely pass empty array if universityList is null
                 value={state.role?.value || ""}
                 onChange={(value) => setState({ role: value })}
                 placeholder="Filter by role"
-              />
+              /> */}
+              {ROLE_ARRAY?.map((item) => (
+                <div className="pt-2 pb-2" key={item}>
+                  <Checkboxs
+                    label={item}
+                    checked={state.filterByRole?.includes(item)}
+                    onChange={(isChecked) => {
+                      console.log("✌️val --->", isChecked, item);
+                      handleCheckboxChange(item, isChecked);
+                    }}
+                  />
+                </div>
+              ))}
 
               <div
                 className="md:w-1/4 w-full  md:text-end"
