@@ -135,7 +135,7 @@ const Header = () => {
         { title: "Lounge Session List", url: "/wellness-lounge-list" },
         { title: "Create Lounge Session", url: "/create-wellness-lounge" },
         { title: "Categories", url: "/categories-list" },
-        { title: "Waiting For Approval", url: "/session-approval" },
+        { title: "Session Approval", url: "/session-approval" },
       ],
     },
     {
