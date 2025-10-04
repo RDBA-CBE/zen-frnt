@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { TimeClock } from "@mui/x-date-pickers/TimeClock";
+import { ROLES } from "@/utils/constant.utils";
 
 const viewWellnessLounge = () => {
   const router = useRouter();
@@ -322,7 +323,8 @@ ${
                   </p>
                 )}
 
-                {state?.group !== "Admin" &&
+                {(state?.group == ROLES.STUDENT ||
+                  state?.group == ROLES.ALUMNI) &&
                 state?.orderData?.is_registered == false ? (
                   <div>
                     <Button
@@ -336,7 +338,8 @@ ${
                       Enroll
                     </Button>
                   </div>
-                ) : state?.group !== "Admin" ? (
+                ) :(state?.group == ROLES.STUDENT ||
+                  state?.group == ROLES.ALUMNI) ? (
                   <div>
                     <Button
                       style={{ cursor: "not-allowed" }}
@@ -355,7 +358,8 @@ ${
                     </Button>
                   </div>
                 ) : (
-                  state?.group == "Admin" && (
+                  (state?.group !== ROLES.STUDENT ||
+                    state?.group !== ROLES.ALUMNI) && (
                     <div>
                       <Button
                         className={`mt-3 ${

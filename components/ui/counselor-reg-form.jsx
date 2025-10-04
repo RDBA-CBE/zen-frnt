@@ -120,10 +120,7 @@ const CounselorRegForm = () => {
           ? state?.year_of_graduation?.value
           : "",
 
-        intrested_topics:
-          state?.alumniIntrested_topics?.length > 0
-            ? state?.alumniIntrested_topics?.map((item) => item.value)
-            : [],
+        intrested_topics: [],
         lable: state?.alumniIntrested_topics1 || "",
 
         university: state?.alumniUniversity?.value || "",
@@ -131,8 +128,8 @@ const CounselorRegForm = () => {
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
         is_alumni: false,
         password: state.password,
-        notify: state.notify,
-        role:"Counselor"
+        notify: false,
+        role: "Counselor",
       };
 
       await Validation.AlumniRegistration.validate(body, { abortEarly: false });
@@ -421,7 +418,6 @@ const CounselorRegForm = () => {
               })
             }
             required
-
             menuPortalTarget={document.body}
             error={state.errors?.year_of_graduation}
           />
@@ -438,7 +434,7 @@ const CounselorRegForm = () => {
           />
         </div>
 
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <MultiSelectDropdown
             label="Interests in Topics"
             value={state.alumniIntrested_topics}
@@ -449,7 +445,7 @@ const CounselorRegForm = () => {
             name="topics"
             menuPortalTarget={document.body}
           />
-        </div>
+        </div> */}
 
         <div className="space-y-1">
           <TextArea
@@ -507,13 +503,13 @@ const CounselorRegForm = () => {
           <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
         </div>
       </div>
-      <div className="pt-2 pb-2">
+      {/* <div className="pt-2 pb-2">
         <Checkboxs
           label={"Notify me on these topics"}
           checked={state.notify}
           onChange={(val) => setState({ notify: val })}
         />
-      </div>
+      </div> */}
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => resetForm()}

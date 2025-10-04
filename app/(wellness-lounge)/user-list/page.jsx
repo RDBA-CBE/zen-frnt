@@ -109,7 +109,7 @@ const UserList = () => {
         getUserList(state.currentPage);
       } else {
         const body = {
-       
+          
           is_open_to_be_mentor: false,
         };
 

@@ -8,6 +8,9 @@ import {
   DropdownCode,
   convertUrlToFile,
   getFileNameFromUrl,
+  isMenOrAlumni,
+  isOnlyAlumniRole,
+  isRole,
   isValidImageUrl,
   useSetState,
 } from "@/utils/function.utils";
@@ -24,7 +27,7 @@ import { Failure, Success } from "@/components/common-components/toast";
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
-import { MENTOR, mentorList } from "@/utils/constant.utils";
+import { MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import PhoneInput, {
   isValidPhoneNumber,
@@ -251,10 +254,7 @@ const CreateUser = () => {
       setState({ submitLoading: true });
       console.log("state?.intrested_topics: ", state?.intrested_topics);
 
-      if (
-        state.user_type?.label === "Alumni" ||
-        state.user_type?.label === "Mentor"
-      ) {
+      if (isRole(state.user_types)) {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
@@ -265,11 +265,9 @@ const CreateUser = () => {
           dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
-          phone_number:
-            state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor"
-              ? state.phone_number
-              : undefined,
+          phone_number: isRole(state.user_types)
+            ? state.phone_number
+            : undefined,
           year_of_entry:
             state?.user_type?.label === "Student"
               ? state.year_of_entry?.value
@@ -289,24 +287,14 @@ const CreateUser = () => {
               ? state?.intrested_topics?.map((item) => item.value)
               : [],
 
-          work:
-            state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor"
-              ? state?.work
-              : undefined,
+          work: isRole(state.user_types) ? state?.work : undefined,
           year_of_graduation: state?.year_of_graduation?.value,
-          is_open_to_be_mentor:
-            state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor"
-              ? state?.is_open_to_be_mentor?.value == "Yes"
-                ? true
-                : false
-              : undefined,
-          country:
-            state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor"
-              ? state?.country?.value
-              : undefined,
+          is_open_to_be_mentor: isRole(state.user_types)
+            ? state?.is_open_to_be_mentor?.value == "Yes"
+              ? true
+              : false
+            : undefined,
+          country: isRole(state.user_types) ? state?.country?.value : undefined,
           notify: state.notify,
           available_from: state.available_from,
           available_to: state.available_to,
@@ -374,42 +362,22 @@ const CreateUser = () => {
         }
         // }
 
-        if (
-          body.phone_number &&
-          (state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor")
-        ) {
+        if (body.phone_number && isRole(state.user_types)) {
           formData.append("phone_number", body.phone_number);
         }
-        if (
-          body.work &&
-          (state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor")
-        ) {
+        if (body.work && isRole(state.user_types)) {
           formData.append("work", body.work);
         }
 
-        if (
-          body.country &&
-          (state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor")
-        ) {
+        if (body.country && isRole(state.user_types)) {
           formData.append("country", body.country);
         }
 
-        if (
-          body.address &&
-          (state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor")
-        ) {
+        if (body.address && isRole(state.user_types)) {
           formData.append("address", body.address);
         }
 
-        if (
-          body.year_of_graduation !== undefined &&
-          (state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor")
-        ) {
+        if (body.year_of_graduation !== undefined && isRole(state.user_types)) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
 
@@ -577,8 +545,6 @@ const CreateUser = () => {
     return { value: year.toString(), label: year.toString() };
   });
 
-  console.log("✌️notify --->", state.notify);
-
   return (
     <div className="container mx-auto updateUser pt-3 pb-3">
       <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">Update User</h2>
@@ -718,7 +684,8 @@ const CreateUser = () => {
           />
           {
             state?.user_type?.label === "Alumni" ||
-            state?.user_type?.label === "Mentor" ? (
+            state?.user_type?.label === "Mentor" ||
+            state?.user_type?.label === ROLES.COUNSELOR ? (
               // Add the component or content you want to render for "Alumni" here
               <>
                 <div className="space-y-1">
@@ -901,45 +868,54 @@ const CreateUser = () => {
                   placeholder="Address"
                   title="Address"
                 />
-                <CustomSelect
-                  options={mentorList || []}
-                  value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) =>
-                    setState({ is_open_to_be_mentor: value })
-                  }
-                  error={state.errors?.is_open_to_be_mentor}
-                  title="Are you open to being a mentor?"
-                  placeholder="Select"
-                />
-
-                <div className="space-y-1">
-                  <MultiSelectDropdown
-                    label="Interests in Topics"
-                    value={state.intrested_topics}
-                    isMulti
-                    options={state.intrestedTopicsList || []}
-                    placeholder="Select Topics"
-                    onChange={(value) => setState({ intrested_topics: value })}
-                    name="topics"
-                    menuPortalTarget={document.body}
+                {isOnlyAlumniRole(state?.user_types) && (
+                  <CustomSelect
+                    options={mentorList || []}
+                    value={state.is_open_to_be_mentor?.value || ""}
+                    onChange={(value) =>
+                      setState({ is_open_to_be_mentor: value })
+                    }
+                    error={state.errors?.is_open_to_be_mentor}
+                    title="Are you open to being a mentor?"
+                    placeholder="Select"
                   />
-                </div>
-
-                {Array.isArray(state.intrested_topics) &&
-                  state.intrested_topics.some((item) => item.value == 13) && (
+                )}
+                {!isRole(state?.user_types) && (
+                  <>
                     <div className="space-y-1">
-                      <TextInput
-                        id="intrested_topics1"
-                        type="text"
-                        placeholder="Enter Your Intrested Topics"
-                        title="New Topics"
-                        value={state.intrested_topics1}
-                        onChange={(e) =>
-                          setState({ intrested_topics1: e.target.value })
+                      <MultiSelectDropdown
+                        label="Interests in Topics"
+                        value={state.intrested_topics}
+                        isMulti
+                        options={state.intrestedTopicsList || []}
+                        placeholder="Select Topics"
+                        onChange={(value) =>
+                          setState({ intrested_topics: value })
                         }
+                        name="topics"
+                        menuPortalTarget={document.body}
                       />
                     </div>
-                  )}
+
+                    {Array.isArray(state.intrested_topics) &&
+                      state.intrested_topics.some(
+                        (item) => item.value == 13
+                      ) && (
+                        <div className="space-y-1">
+                          <TextInput
+                            id="intrested_topics1"
+                            type="text"
+                            placeholder="Enter Your Intrested Topics"
+                            title="New Topics"
+                            value={state.intrested_topics1}
+                            onChange={(e) =>
+                              setState({ intrested_topics1: e.target.value })
+                            }
+                          />
+                        </div>
+                      )}
+                  </>
+                )}
 
                 {/* <DatePicker
                   placeholder="Available From"
@@ -970,16 +946,18 @@ const CreateUser = () => {
                   }}
                 /> */}
 
-                <div className="pt-2 pb-2">
-                  <Checkboxs
-                    label={"Notify me on these topics"}
-                    checked={state.notify}
-                    onChange={(val) => {
-                      console.log("✌️val --->", val);
-                      setState({ notify: val });
-                    }}
-                  />
-                </div>
+                {!isRole(state?.user_types) && (
+                  <div className="pt-2 pb-2">
+                    <Checkboxs
+                      label={"Notify me on these topics"}
+                      checked={state.notify}
+                      onChange={(val) => {
+                        console.log("✌️val --->", val);
+                        setState({ notify: val });
+                      }}
+                    />
+                  </div>
+                )}
               </>
             ) : state?.user_type?.label === "Student" ? (
               <>

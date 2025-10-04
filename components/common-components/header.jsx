@@ -135,7 +135,7 @@ const Header = () => {
         { title: "Lounge Session List", url: "/wellness-lounge-list" },
         { title: "Create Lounge Session", url: "/create-wellness-lounge" },
         { title: "Categories", url: "/categories-list" },
-        { title: "Waiting For Approval", url: "/session-approval" },
+        { title: "Session Approval", url: "/session-approval" },
       ],
     },
     {
@@ -155,7 +155,9 @@ const Header = () => {
       items: [
         { title: "User List", url: "/user-list" },
         { title: "Create User", url: "/create-user" },
-        { title: "Waiting For Approval", url: "/user-approval" },
+        { title: "Counselor Approval", url: "/counselor-approval" },
+        { title: "Mentor Approval", url: "/user-approval" },
+
       ],
     },
 

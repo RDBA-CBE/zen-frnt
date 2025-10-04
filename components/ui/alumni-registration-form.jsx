@@ -174,8 +174,8 @@ const AlumniRegistrationForm = () => {
           state?.is_open_to_be_mentor?.value == "Yes" ? true : false,
         is_alumni: true,
         password: state.password,
-        notify: state.notify,
-        role:"Alumni"
+        notify: false,
+        role: "Alumni",
       };
 
       // First: Run Yup validation
@@ -700,7 +700,7 @@ const AlumniRegistrationForm = () => {
             name="topics"
             menuPortalTarget={document.body}
           /> */}
-          {/* <Select
+        {/* <Select
             value={state.alumniIntrested_topics}
             isMulti
             options={state.intrestedTopicsList || []}
@@ -793,8 +793,6 @@ const AlumniRegistrationForm = () => {
             placeholder="Select"
           />
         </div>
-
-        
       </div>
 
       <div className="space-y-1 pb-5">
