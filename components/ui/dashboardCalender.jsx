@@ -792,14 +792,17 @@ const DashboardCalender = ({ events, setEvents }) => {
             >
               Read More
             </Button>
-            {selectedEvent?.eventDate > now && state.role == "Admin" && (
-              <Button
-                onClick={handleEditEvent}
-                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
-              >
-                Edit Session
-              </Button>
-            )}
+            {selectedEvent?.eventDate > now &&
+              (state.role == ROLES.ADMIN ||
+                state.role == ROLES.COUNSELOR ||
+                state.role == ROLES.MENTOR) && (
+                <Button
+                  onClick={handleEditEvent}
+                  className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
+                >
+                  Edit Session
+                </Button>
+              )}
           </div>
         </DialogContent>
       </Dialog>
