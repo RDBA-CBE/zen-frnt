@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import Models from "@/imports/models.import";
 import {
   Dropdown,
+  isBeforeCurrentTimeBy30Min,
   objIsEmpty,
   UserDropdown,
   useSetState,
@@ -33,7 +34,7 @@ import { TextInput } from "@/components/common-components/textInput";
 import useDebounce from "@/components/common-components/useDebounce";
 import { DatePicker } from "@/components/common-components/datePicker";
 import Modal from "@/components/common-components/modal";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
@@ -71,11 +72,33 @@ const WellnessLoungeList = () => {
   const sessionId = (row) => {
     console.log(row);
 
-    setState({
-      isOpen: true,
-      deleteId: row?.row?.id,
-      sessionID: row?.row?.registration_id,
-    });
+    const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+      row?.row?.event?.start_date,
+      row?.row?.event?.start_time
+    );
+    setState({ isEventBefore30Mins });
+
+    const startDate = row?.row?.event?.start_date;
+    const startTime = row?.row?.event?.start_time;
+
+    if (!startDate || !startTime) {
+      return "The event start time is not available";
+    }
+
+    const formattedDate = moment(startDate).format("DD-MM-YYYY");
+    const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+
+    if (isEventBefore30Mins) {
+      Failure(
+        `Booking delete can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+      );
+    } else {
+      setState({
+        isOpen: true,
+        deleteId: row?.row?.id,
+        sessionID: row?.row?.registration_id,
+      });
+    }
   };
 
   const getOrdersList = async (page) => {
@@ -133,8 +156,7 @@ const WellnessLoungeList = () => {
 
   const bodyData = () => {
     let body = {
-      exclude_category:AYURVEDIC_LOUNGE
-
+      exclude_category: AYURVEDIC_LOUNGE,
     };
     if (state.search) {
       body.search = state.search;
@@ -154,8 +176,30 @@ const WellnessLoungeList = () => {
 
   // Example handlers for actions
   const handleEdit = (item) => {
-    console.log("Editing:", item);
-    router.push(`/update-order/?id=${item?.id}`);
+    const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+      item?.event?.start_date,
+      item?.event?.start_time
+    );
+    setState({ isEventBefore30Mins });
+
+    const startDate = item?.event?.start_date;
+    const startTime = item?.event?.start_time;
+
+    if (!startDate || !startTime) {
+      return "The event start time is not available";
+    }
+
+    const formattedDate = moment(startDate).format("DD-MM-YYYY");
+    const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+
+    if (isEventBefore30Mins) {
+      Failure(
+        `Booking update can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+      );
+    } else {
+      console.log("Editing:", item);
+      router.push(`/update-order/?id=${item?.id}`);
+    }
   };
 
   const handleView = (item) => {
@@ -208,13 +252,34 @@ const WellnessLoungeList = () => {
       accessor: "registration_id",
     },
     {
-      Header: "Session Date",
+      Header: "Registration Date",
       accessor: "registration_date",
       Cell: (row) => (
         <Label>
           {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
         </Label>
       ),
+    },
+
+    {
+      Header: "Session Date",
+      accessor: "session_date",
+      Cell: (row) => (
+        <Label>
+          {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
+        </Label>
+      ),
+    },
+
+    {
+      Header: "Start Time",
+      accessor: "start_time",
+      Cell: (row) => <Label>{row?.row?.event?.start_time}</Label>,
+    },
+    {
+      Header: "End Time",
+      accessor: "end_time",
+      Cell: (row) => <Label>{row?.row?.event?.end_time}</Label>,
     },
     {
       Header: "Booking Status",
