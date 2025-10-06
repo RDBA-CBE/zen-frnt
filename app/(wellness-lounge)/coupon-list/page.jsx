@@ -229,8 +229,8 @@ const WellnessLoungeList = () => {
         isOpen={state.isActiveOpen}
         setIsOpen={() => setState({ isActiveOpen: false, activeData: null })}
         title={`Are you sure to ${
-          state.activeData?.is_active ? "In active" : "Active"
-        } record`}
+          state.activeData?.is_active ? "Inactive" : "Active"
+        } this record`}
         renderComponent={() => (
           <>
             <div className="flex justify-end gap-5">

@@ -437,8 +437,7 @@ const CreateWellnessLounge = () => {
       setState({ submitLoading: false });
 
       router.push("/wellness-lounge-list");
-      Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
-      // `);
+      Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.`);
     } catch (error) {
       setState({ submitLoading: false });
       console.log("error: ", error);
