@@ -217,7 +217,7 @@ const WellnessLoungeList = () => {
       ),
     },
     {
-      Header: "Session Status",
+      Header: "Booking Status",
       accessor: "registration_status",
     },
     {

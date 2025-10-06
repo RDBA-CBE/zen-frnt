@@ -530,10 +530,10 @@ const UpdateOrder = () => {
                 errors: { ...state.errors, registration_status: "" },
               })
             }
-            title="Select Session Status"
+            title="Select Booking Status"
             error={state.errors?.registration_status}
             required
-            placeholder="Select Session Status"
+            placeholder="Select Booking Status"
             disabled={state.isBooked}
           />
 

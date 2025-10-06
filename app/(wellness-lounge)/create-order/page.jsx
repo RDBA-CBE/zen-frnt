@@ -525,10 +525,10 @@ const CreateOrder = () => {
                   errors: { ...state.errors, registration_status: "" },
                 })
               }
-              title="Select Session Status"
+              title="Select Booking Status"
               error={state.errors?.registration_status}
               required
-              placeholder="Select Session Status"
+              placeholder="Select Booking Status"
             />
             <div className="flex justify-end gap-5 mt-10">
               <PrimaryButton
