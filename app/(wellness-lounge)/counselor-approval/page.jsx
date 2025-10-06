@@ -23,9 +23,13 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import useDebounce from "@/components/common-components/useDebounce";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
+import { useDispatch } from "react-redux";
+import { conCount } from "@/store/slice/AuthSlice";
 
 const UserList = () => {
   const router = useRouter();
+
+  const dispatch = useDispatch();
 
   const [state, setState] = useSetState({
     name: "",
@@ -85,6 +89,8 @@ const UserList = () => {
         currentPage: page,
         loading: false,
       });
+      localStorage.setItem("conCount",res?.count)
+
     } catch (error) {
       setState({ loading: false });
       console.log("error: ", error);
@@ -102,7 +108,9 @@ const UserList = () => {
 
           const res = await Models.user.updateUser(body, item?.id);
           console.log("✌️res --->", res);
-          Success(`${item?.first_name} ${item?.last_name} assigned as Counselor role`)
+          Success(
+            `${item?.first_name} ${item?.last_name} assigned as Counselor role`
+          );
 
           getUserList(state.currentPage);
         } else {
