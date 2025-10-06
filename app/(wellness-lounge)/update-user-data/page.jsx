@@ -17,14 +17,14 @@ import { DatePicker } from "@/components/common-components/datePicker";
 import CustomSelect from "@/components/common-components/dropdown";
 import TimePicker from "@/components/common-components/timePicker";
 import moment from "moment";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Failure, Success } from "@/components/common-components/toast";
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
-import { useSelector } from "react-redux";
-import { mentorList } from "@/utils/constant.utils";
+import { useDispatch, useSelector } from "react-redux";
+import { mentorList, ROLE, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
 
@@ -38,18 +38,28 @@ import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
+import { setAuthData } from "@/store/slice/AuthSlice";
 
 const CreateUser = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const params = useParams();
+  console.log("✌️params --->", params);
+
+  const dispatch = useDispatch();
+
   const [id, setId] = useState(null);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const idFromSearchParams = searchParams.get("id");
+      const localId = localStorage.getItem("userId");
       console.log("idFromSearchParams: ", idFromSearchParams);
+
       if (idFromSearchParams) {
         setId(idFromSearchParams);
+      } else {
+        setId(localId);
       }
     }
   }, [searchParams]);
@@ -109,7 +119,7 @@ const CreateUser = () => {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
       const filter = Dropdowns.filter((item) => item?.value != 5);
-      setState({ groupList: Dropdowns });
+      setState({ groupList: filter });
     } catch (error) {
       console.log("error: ", error);
     }
@@ -118,6 +128,7 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
+      console.log("getDetails --->", res);
 
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
@@ -131,6 +142,14 @@ const CreateUser = () => {
         });
       }
 
+      if (res?.groups?.length > 0) {
+        setState({
+          user_type: {
+            value: res?.groups[0]?.id,
+            label: res?.groups[0]?.name,
+          },
+        });
+      }
       setState({
         firstname: res.first_name ? res.first_name : "",
         lastname: res.last_name ? res.last_name : "",
@@ -183,10 +202,6 @@ const CreateUser = () => {
           label: res?.is_open_to_be_mentor == true ? "Yes" : "No",
         },
         dob: res.date_of_birth ? new Date(res.date_of_birth) : "",
-        user_type: {
-          value: res?.group?.id,
-          label: res?.group?.name,
-        },
       });
     } catch (error) {
       console.log("error: ", error);
@@ -278,7 +293,10 @@ const CreateUser = () => {
       setState({ submitLoading: true });
       console.log("state?.intrested_topics: ", state?.intrested_topics);
 
-      if (state.user_type?.label === "Alumni" || state?.user_type?.label === "Mentor" ) {
+      if (
+        state.user_type?.label === ROLES.ALUMNI ||
+        state?.user_type?.label === ROLES.COUNSELOR
+      ) {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
@@ -290,7 +308,7 @@ const CreateUser = () => {
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
           phone_number:
-            state?.user_type?.label === "Alumni"
+          state?.user_type?.label === ROLES.ALUMNI|| state?.user_type?.label === ROLES.COUNSELOR
               ? state.phone_number
               : undefined,
           year_of_entry:
@@ -321,7 +339,7 @@ const CreateUser = () => {
                 : false
               : undefined,
           country:
-            state?.user_type?.label === "Alumni"
+            state?.user_type?.label === ROLES.ALUMNI|| state?.user_type?.label === ROLES.COUNSELOR
               ? state?.country?.value
               : undefined,
           notify: state.notify,
@@ -354,7 +372,6 @@ const CreateUser = () => {
           formData.append("profile_picture", "");
         }
 
-        // if (state?.user_type?.label !== "Admin") {
         if (body.university) {
           formData.append("university", body.university);
         } else {
@@ -373,24 +390,23 @@ const CreateUser = () => {
         }
         // }
 
-        if (body.phone_number && state?.user_type?.label === "Alumni") {
+        // if (body.phone_number && state?.user_type?.label === "Alumni") {
           formData.append("phone_number", body.phone_number);
-        }
+        // }
         if (body.work && state?.user_type?.label === "Alumni") {
           formData.append("work", body.work);
         }
 
-        if (body.country && state?.user_type?.label === "Alumni") {
+        // if (body.country && state?.user_type?.label === "Alumni") {
           formData.append("country", body.country);
-        }
+        // }
 
-        if (body.address && state?.user_type?.label === "Alumni") {
+        // if (body.address && state?.user_type?.label === "Alumni") {
           formData.append("address", body.address);
-        }
+        // }
 
         if (
-          body.year_of_graduation !== undefined &&
-          state?.user_type?.label === "Alumni"
+          body.year_of_graduation !== undefined 
         ) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
@@ -410,12 +426,17 @@ const CreateUser = () => {
           "username",
           `${res?.first_name || ""} ${res?.last_name || ""}`
         );
-        localStorage.setItem("group", res.groups?.[0] || "");
+
+        dispatch(
+          setAuthData({
+            groups: state.user_type?.label,
+            userId: res.user_id,
+            username: `${res?.first_name} ${res?.last_name}`,
+          })
+        );
+        localStorage.setItem("group", state.user_type?.label || "");
         setState({ submitLoading: false });
-        router.push("/");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 100);
+        window.location.href = "/";
 
         Success(
           `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
@@ -494,10 +515,7 @@ const CreateUser = () => {
         localStorage.setItem("group", res.groups?.[0] || "");
 
         setState({ submitLoading: false });
-        router.push("/");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 100);
+        window.location.href = "/";
 
         Success(
           `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
@@ -698,7 +716,8 @@ const CreateUser = () => {
             required
           />
           {
-            state?.user_type?.label === "Alumni"  || state?.user_type?.label === "Mentor" ? (
+            state?.user_type?.label === ROLES.ALUMNI ||
+            state?.user_type?.label === ROLES.COUNSELOR ? (
               // Add the component or content you want to render for "Alumni" here
               <>
                 <div className="space-y-1">
@@ -713,8 +732,9 @@ const CreateUser = () => {
                         errors: { ...state.errors, year_of_graduation: "" },
                       })
                     }
+                    required
                     menuPortalTarget={document.body}
-                    error={state.errors?.year_of_entry}
+                    error={state.errors?.year_of_graduation}
                   />
                   {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year Graduated"} {<span className="text-red-500">*</span>}
@@ -845,6 +865,7 @@ const CreateUser = () => {
                         errors: { ...state.errors, university: "" },
                       })
                     }
+                    required
                     placeholder="Select University"
                     menuPortalTarget={document.body}
                     error={state.errors?.university}
@@ -906,31 +927,34 @@ const CreateUser = () => {
                   placeholder="Address"
                   title="Address"
                 />
-                <CustomSelect
-                  options={mentorList || []}
-                  value={state.is_open_to_be_mentor?.value || ""}
-                  onChange={(value) =>
-                    setState({ is_open_to_be_mentor: value })
-                  }
-                  error={state.errors?.is_open_to_be_mentor}
-                  title="Are you open to being a mentor?"
-                  placeholder="Select"
-                />
-
-                <div className="space-y-1">
-                  <MultiSelectDropdown
-                    label="Interests in Topics"
-                    value={state.intrested_topics}
-                    isMulti
-                    options={state.intrestedTopicsList || []}
-                    placeholder="Select Topics"
-                    onChange={(value) => setState({ intrested_topics: value })}
-                    name="topics"
-                    menuPortalTarget={document.body}
-                     loadMore={interestedListLoadMore}
+                {state.user_type?.label == ROLES.ALUMNI && (
+                  <CustomSelect
+                    options={mentorList || []}
+                    value={state.is_open_to_be_mentor?.value || ""}
+                    onChange={(value) =>
+                      setState({ is_open_to_be_mentor: value })
+                    }
+                    error={state.errors?.is_open_to_be_mentor}
+                    title="Are you open to being a mentor?"
+                    placeholder="Select"
                   />
+                )}
+                {state.user_type?.label == ROLES.STUDENT && (
+                  <div className="space-y-1">
+                    <MultiSelectDropdown
+                      label="Interests in Topics"
+                      value={state.intrested_topics}
+                      isMulti
+                      options={state.intrestedTopicsList || []}
+                      placeholder="Select Topics"
+                      onChange={(value) =>
+                        setState({ intrested_topics: value })
+                      }
+                      name="topics"
+                      menuPortalTarget={document.body}
+                    />
 
-                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+                    {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Interests in Topics"}
                   </label>
                   <Select
@@ -945,7 +969,8 @@ const CreateUser = () => {
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
                   /> */}
-                </div>
+                  </div>
+                )}
 
                 {Array.isArray(state.intrested_topics) &&
                   state.intrested_topics.some((item) => item.value == 13) && (
@@ -962,17 +987,18 @@ const CreateUser = () => {
                       />
                     </div>
                   )}
-
-                <div className="pt-2 pb-2">
-                  <Checkboxs
-                    label={"Notify me on these topics"}
-                    checked={state.notify}
-                    onChange={(val) => {
-                      console.log("✌️val --->", val);
-                      setState({ notify: val });
-                    }}
-                  />
-                </div>
+                {state.user_type?.label == ROLES.STUDENT && (
+                  <div className="pt-2 pb-2">
+                    <Checkboxs
+                      label={"Notify me on these topics"}
+                      checked={state.notify}
+                      onChange={(val) => {
+                        console.log("✌️val --->", val);
+                        setState({ notify: val });
+                      }}
+                    />
+                  </div>
+                )}
               </>
             ) : state?.user_type?.label === "Student" ? (
               <>
@@ -988,6 +1014,7 @@ const CreateUser = () => {
                         errors: { ...state.errors, year_of_entry: "" },
                       })
                     }
+                    required
                     menuPortalTarget={document.body}
                     error={state.errors?.year_of_entry}
                   />
@@ -1028,6 +1055,7 @@ const CreateUser = () => {
                         errors: { ...state.errors, university: "" },
                       })
                     }
+                    required
                     placeholder="Select University"
                     menuPortalTarget={document.body}
                     error={state.errors?.university}
