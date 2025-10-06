@@ -9,7 +9,15 @@ import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Dropdown, getTime, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
-import { Calendar1, CalendarClock, Clock, Clock10, MapPin, Table, XIcon } from "lucide-react";
+import {
+  Calendar1,
+  CalendarClock,
+  Clock,
+  Clock10,
+  MapPin,
+  Table,
+  XIcon,
+} from "lucide-react";
 import { Failure, Info } from "../common-components/toast";
 import { AYURVEDIC_LOUNGE, ROLE, ROLES } from "@/utils/constant.utils";
 import Modal from "@/components/common-components/modal";
@@ -756,14 +764,17 @@ const DashboardCalender = ({ events, setEvents }) => {
             >
               Read More
             </Button>
-            {selectedEvent?.eventDate > now && state.role == "Admin" && (
-              <Button
-                onClick={handleEditEvent}
-                className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
-              >
-                Edit Session
-              </Button>
-            )}
+            {selectedEvent?.eventDate > now &&
+              (state.role == ROLES.ADMIN ||
+                state.role == ROLES.COUNSELOR ||
+                state.role == ROLES.MENTOR) && (
+                <Button
+                  onClick={handleEditEvent}
+                  className="flex-1 p-2 rounded bg-themeGreen hover:bg-[#a9e06b] text-white"
+                >
+                  Edit Session
+                </Button>
+              )}
           </div>
         </DialogContent>
       </Dialog>
