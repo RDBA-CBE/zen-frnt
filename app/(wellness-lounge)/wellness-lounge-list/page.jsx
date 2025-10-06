@@ -22,7 +22,12 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
+import {
+  Dropdown,
+  isBeforeCurrentTimeBy30Min,
+  objIsEmpty,
+  useSetState,
+} from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -30,7 +35,7 @@ import { TextInput } from "@/components/common-components/textInput";
 import useDebounce from "@/components/common-components/useDebounce";
 import { DatePicker } from "@/components/common-components/datePicker";
 import Modal from "@/components/common-components/modal";
-import { Success } from "@/components/common-components/toast";
+import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
@@ -49,6 +54,7 @@ const WellnessLoungeList = () => {
     deleteId: null,
     submitLoading: false,
     loading: false,
+    isEventBefore30Mins: false,
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -147,9 +153,73 @@ const WellnessLoungeList = () => {
   };
 
   // Example handlers for actions
-  const handleEdit = (item) => {
-    console.log("Editing:", item);
-    router.push(`/update-lounge/?id=${item?.id}`);
+  const handleEdit = async (item) => {
+    try {
+      const res = await Models.session.details(item?.id);
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.start_date,
+        res?.start_time
+      );
+      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
+      setState({ isEventBefore30Mins });
+
+      const startDate = res?.start_date;
+      const startTime = res?.start_time;
+
+      if (!startDate || !startTime) {
+        return "The event start time is not available";
+      }
+
+      const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+
+      if (isEventBefore30Mins) {
+        Failure(
+          `Session update can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+        );
+      } else {
+        console.log("Editing:", item);
+        router.push(`/update-lounge/?id=${item?.id}`);
+      }
+    } catch (error) {
+      setState({ error: error?.detail });
+      console.log("error: ", error);
+    }
+  };
+
+  const handleDetele = async (id) => {
+    try {
+      const res = await Models.session.details(id);
+      const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+        res?.start_date,
+        res?.start_time
+      );
+      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
+      setState({ isEventBefore30Mins });
+
+      const startDate = res?.start_date;
+      const startTime = res?.start_time;
+
+      if (!startDate || !startTime) {
+        return "The event start time is not available";
+      }
+
+      const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+
+      if (isEventBefore30Mins) {
+        console.log("true");
+        
+        Failure(
+          `Session delete can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+        );
+      } else {
+        setState({ isOpen: true, deleteId: id });
+      }
+    } catch (error) {
+      setState({ error: error?.detail });
+      console.log("error: ", error);
+    }
   };
 
   const handleView = (item) => {
@@ -249,7 +319,8 @@ const WellnessLoungeList = () => {
               <div
                 className="cursor-pointer"
                 onClick={() =>
-                  setState({ isOpen: true, deleteId: row?.row?.id })
+                  // setState({ isOpen: true, deleteId: row?.row?.id })
+                  handleDetele(row?.row?.id)
                 }
               >
                 <Trash size={18} className="mr-2" />
@@ -268,12 +339,12 @@ const WellnessLoungeList = () => {
                   />
                 </div>
               ) : (
-                  <PrimaryButton
-                    variant={"outline"}
-                    name={"Waiting For Approval .."}
-                    className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
-                    disabled
-                  />
+                <PrimaryButton
+                  variant={"outline"}
+                  name={"Waiting For Approval .."}
+                  className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
+                  disabled
+                />
               )}
             </>
           )}
