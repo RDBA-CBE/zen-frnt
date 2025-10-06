@@ -99,6 +99,7 @@ const UpdateWellnessLounge = () => {
   useEffect(() => {
     getCategoryList();
     getIntrestedTopics(1);
+    getRole()
   }, []);
 
   useEffect(() => {
@@ -207,6 +208,29 @@ const UpdateWellnessLounge = () => {
       const res = await Models.category.activeList();
       const Dropdowns = Dropdown(res?.results, "name");
       setState({ categoryList: Dropdowns, loading: false });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getRole = async () => {
+    try {
+      setState({ loading: true });
+      const res = localStorage.getItem("group");
+      const userId = localStorage.getItem("userId");
+      const username = localStorage.getItem("username");
+      // moderator
+      if (res == ROLES.MENTOR || res == ROLES.COUNSELOR) {
+        setState({ moderator: { value: userId, label: username } });
+        console.log("✌️{ value: userId, label: username } --->", {
+          value: userId,
+          label: username,
+        });
+      }
+
+      setState({ loading: false, role: res });
     } catch (error) {
       setState({ loading: false });
 
@@ -705,6 +729,9 @@ const UpdateWellnessLounge = () => {
       };
     }
   };
+
+  console.log("state.role",state.role);
+  
 
   return state.loading ? (
     <div className="container mx-auto flex justify-center items-center ">
