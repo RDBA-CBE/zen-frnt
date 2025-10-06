@@ -15,6 +15,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
+  Bell,
   InstagramIcon,
   LinkedinIcon,
   Loader,
@@ -380,7 +381,7 @@ const Header = () => {
                       <DropdownMenuTrigger asChild>
                         <Avatar className="h-10 w-10 rounded cursor-pointer">
                           <AvatarFallback>
-                            <NotepadText />
+                            <Bell />
                           </AvatarFallback>
                         </Avatar>
                       </DropdownMenuTrigger>
