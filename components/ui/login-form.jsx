@@ -231,12 +231,12 @@ const LoginForm = (props) => {
             })
           );
         } else {
-          localStorage.setItem("group", res.groups?.[0]);
+          localStorage.setItem("group", res.group?.[0]);
 
           dispatch(
             setAuthData({
               tokens: res.access,
-              groups: res.groups?.[0],
+              groups: res.group?.[0],
               userId: res.user_id,
               username: res?.username,
             })
@@ -248,7 +248,7 @@ const LoginForm = (props) => {
       setState({ loading: false, username: "", password: "" });
 
       setTimeout(() => {
-        if (res?.groups?.[0] === "Student") {
+        if (res?.group?.[0] === "Student") {
           if (state?.eventid) {
             router.push(`/view-wellness-lounge?id=${state?.eventid}`);
           } else {
