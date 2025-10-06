@@ -7,7 +7,7 @@ import moment from "moment";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Dropdown, useSetState } from "@/utils/function.utils";
+import { Dropdown, isBeforeCurrentTimeBy30Min, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
 import {
   Calendar1,
@@ -185,18 +185,41 @@ const CustomFullCalendar = ({ events, setEvents }) => {
   };
 
   const handleEditEvent = () => {
-    if (token) {
-      if (selectedEvent) {
-        router.push(`/update-lounge?id=${selectedEvent.id}`);
-      } else {
-        console.log("No event selected.");
-      }
-    } else {
-      localStorage?.setItem("eventId", selectedEvent.id);
-      router.push("/login");
-    }
-    setModalIsOpen(false);
-  };
+     if (token) {
+       const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
+         selectedEvent?.start_date,
+         selectedEvent?.start_time
+       );
+ 
+       const startDate = selectedEvent?.start_date;
+       const startTime = selectedEvent?.start_time;
+ 
+       if (!startDate || !startTime) {
+         return "The event start time is not available";
+       }
+ 
+       const formattedDate = moment(startDate).format("DD-MM-YYYY");
+       const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+ 
+       if (isEventBefore30Mins) {
+         Failure(
+           `Session update can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+         );
+       } else {
+         console.log("selectedEvent", selectedEvent);
+ 
+         if (selectedEvent) {
+           router.push(`/update-lounge?id=${selectedEvent.id}`);
+         } else {
+           console.log("No event selected.");
+         }
+       }
+     } else {
+       localStorage?.setItem("eventId", selectedEvent.id);
+       router.push("/login");
+     }
+     setModalIsOpen(false);
+   };
 
   // Get the first day of the month and the number of days in the month
   const firstDayOfMonth = getFirstDayOfMonth(
