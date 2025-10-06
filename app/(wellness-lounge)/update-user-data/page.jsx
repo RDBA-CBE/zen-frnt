@@ -20,7 +20,11 @@ import moment from "moment";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
-import { Failure, Success } from "@/components/common-components/toast";
+import {
+  Failure,
+  InfinitySuccess,
+  Success,
+} from "@/components/common-components/toast";
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -234,15 +238,13 @@ const CreateUser = () => {
     }
   };
 
-  const getIntrestedTopics = async (page=1) => {
+  const getIntrestedTopics = async (page = 1) => {
     try {
       const res = await Models.auth.getIntrestedTopics(page);
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: filter,
-        hasMoreInterest:res?.next
-       });
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
       console.log("res", res);
     } catch (error) {
       console.log(error);
@@ -251,11 +253,13 @@ const CreateUser = () => {
 
   const interestedListLoadMore = async () => {
     console.log("hello");
-    
+
     try {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
-        const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1
+        );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
 
@@ -268,7 +272,7 @@ const CreateUser = () => {
         setState({ intrestedTopicsList: state.intrestedTopicsList });
       }
     } catch (error) {
-            console.log('error: ', error);
+      console.log("error: ", error);
     }
   };
 
@@ -308,7 +312,8 @@ const CreateUser = () => {
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
           phone_number:
-          state?.user_type?.label === ROLES.ALUMNI|| state?.user_type?.label === ROLES.COUNSELOR
+            state?.user_type?.label === ROLES.ALUMNI ||
+            state?.user_type?.label === ROLES.COUNSELOR
               ? state.phone_number
               : undefined,
           year_of_entry:
@@ -339,7 +344,8 @@ const CreateUser = () => {
                 : false
               : undefined,
           country:
-            state?.user_type?.label === ROLES.ALUMNI|| state?.user_type?.label === ROLES.COUNSELOR
+            state?.user_type?.label === ROLES.ALUMNI ||
+            state?.user_type?.label === ROLES.COUNSELOR
               ? state?.country?.value
               : undefined,
           notify: state.notify,
@@ -391,23 +397,21 @@ const CreateUser = () => {
         // }
 
         // if (body.phone_number && state?.user_type?.label === "Alumni") {
-          formData.append("phone_number", body.phone_number);
+        formData.append("phone_number", body.phone_number);
         // }
         if (body.work && state?.user_type?.label === "Alumni") {
           formData.append("work", body.work);
         }
 
         // if (body.country && state?.user_type?.label === "Alumni") {
-          formData.append("country", body.country);
+        formData.append("country", body.country);
         // }
 
         // if (body.address && state?.user_type?.label === "Alumni") {
-          formData.append("address", body.address);
+        formData.append("address", body.address);
         // }
 
-        if (
-          body.year_of_graduation !== undefined 
-        ) {
+        if (body.year_of_graduation !== undefined) {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
 
@@ -420,27 +424,43 @@ const CreateUser = () => {
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
+
+        if (state?.user_type?.label === ROLES.COUNSELOR) {
+          formData.append("is_active", false);
+        }
+
         const res = await Models.user.updateUser(formData, id);
         console.log("updated --->", res);
-        localStorage.setItem(
-          "username",
-          `${res?.first_name || ""} ${res?.last_name || ""}`
-        );
+        if (state?.user_type?.label === ROLES.COUNSELOR) {
+          InfinitySuccess(
+            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform. Waiting for approval`,
+            () => {
+              window.location.href = "/";
+            }
+          );
+          localStorage.clear();
 
-        dispatch(
-          setAuthData({
-            groups: state.user_type?.label,
-            userId: res.user_id,
-            username: `${res?.first_name} ${res?.last_name}`,
-          })
-        );
-        localStorage.setItem("group", state.user_type?.label || "");
-        setState({ submitLoading: false });
-        window.location.href = "/";
+        } else {
+          localStorage.setItem(
+            "username",
+            `${res?.first_name || ""} ${res?.last_name || ""}`
+          );
 
-        Success(
-          `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
-        );
+          dispatch(
+            setAuthData({
+              groups: state.user_type?.label,
+              userId: res.user_id,
+              username: `${res?.first_name} ${res?.last_name}`,
+            })
+          );
+          localStorage.setItem("group", state.user_type?.label || "");
+          setState({ submitLoading: false });
+          window.location.href = "/";
+
+          Success(
+            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
+          );
+        }
       } else {
         let body = {
           first_name: state.firstname,
