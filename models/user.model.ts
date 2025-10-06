@@ -13,28 +13,32 @@ const user = {
       }
 
       if (body?.available_from) {
-        url += `&available_from__gte=${encodeURIComponent(body?.available_from)}`;
+        url += `&available_from__gte=${encodeURIComponent(
+          body?.available_from
+        )}`;
       }
 
       if (body?.available_to) {
         url += `&available_to__lte=${encodeURIComponent(body?.available_to)}`;
       }
-      if (body?.is_active) {
-        url += `&is_active=${encodeURIComponent(!body?.is_active)}`;
+      if (body?.is_active == "No") {
+        url += `&is_active=${encodeURIComponent(false)}`;
+      } else {
+        url += `&is_active=${encodeURIComponent(true)}`;
       }
 
       if (body?.is_open_to_be_mentor) {
-        url += `&is_open_to_be_mentor=${encodeURIComponent(body.is_open_to_be_mentor == "Yes"?true:false)}`;
+        url += `&is_open_to_be_mentor=${encodeURIComponent(
+          body.is_open_to_be_mentor == "Yes" ? true : false
+        )}`;
       }
 
       if (body?.group_name_exact) {
         url += `&group_name_exact=${encodeURIComponent(body.group_name_exact)}`;
       }
-      if(body.is_activity == "true"){
+      if (body.is_activity == "true") {
         url += `&is_active=${encodeURIComponent(true)}`;
-
       }
-
 
       instance()
         .get(url)

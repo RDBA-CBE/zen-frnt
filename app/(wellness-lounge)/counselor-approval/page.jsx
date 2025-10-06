@@ -322,7 +322,7 @@ const UserList = () => {
     if (state.role) {
       body.group_name = state.role?.label;
     }
-    body.is_active = true;
+    body.is_active = "No";
 
     return body;
   };

@@ -346,7 +346,7 @@ const UserList = () => {
     if (state.filterByRole?.length > 0) {
       body.group_name = state.filterByRole;
     }
-
+    body.is_active="Yes"
     return body;
   };
 

@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { Failure, Success } from "../common-components/toast";
+import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import * as Yup from "yup";
 import { Loader, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -71,6 +71,9 @@ const LoginForm = (props) => {
                 username: res?.username,
               })
             );
+            window.location.href = "/";
+            Success("Google login successful!");
+
           } else if (
             res?.groups?.includes(ROLES.MENTOR) &&
             res?.mentor == false
@@ -84,6 +87,31 @@ const LoginForm = (props) => {
                 username: res?.username,
               })
             );
+            window.location.href = "/";
+            Success("Google login successful!");
+
+          } else if (res?.groups?.includes(ROLES.COUNSELOR)) {
+            console.log("✌️res?.groups --->", res?.groups);
+            if (res?.is_active) {
+              localStorage.setItem("group", res.groups[0]);
+
+              dispatch(
+                setAuthData({
+                  tokens: res.access,
+                  groups: res.group[0],
+                  userId: res.user_id,
+                  username: res?.username,
+                })
+              );
+              Success("Google login successful!");
+            window.location.href = "/";
+
+            } else {
+              localStorage.clear();
+              InfinitySuccess("Your account is waiting for approval.", () => {
+                localStorage.clear();
+              });
+            }
           } else {
             localStorage.setItem("group", res.groups[0]);
 
@@ -95,8 +123,9 @@ const LoginForm = (props) => {
                 username: res?.username,
               })
             );
+            window.location.href = "/";
           }
-          window.location.href = "/";
+          //
           // localStorage.setItem("group", res.groups[0]);
           // setAuthData({
           //   tokens: res.access,
@@ -112,9 +141,8 @@ const LoginForm = (props) => {
           // }, 100);
         } else {
           await updateUserGroup(res);
+          Success("Google login successful!");
         }
-
-        Success("Google login successful!");
       } else {
         Failure("Google login failed: No access token received");
       }
@@ -384,12 +412,12 @@ const LoginForm = (props) => {
                         text="signin_with"
                         logo_alignment="left"
                         containerProps={{
-                          style: { 
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems:"center"
-                          }
+                          style: {
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          },
                         }}
                         // width="300"
                       />
