@@ -245,15 +245,15 @@ const SessionList = () => {
       accessor: "action",
       Cell: (row) => (
         <div className="flex items-center gap-2">
-          <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
+          {/* <div className="cursor-pointer" onClick={() => handleEdit(row?.row)}>
             <Edit size={18} className="mr-2" />
-          </div>
+          </div>*/}
           <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
             <Eye size={20} className="mr-2" />
-          </div>
-          {!row?.row?.is_booked && (
-            <>
-              <div
+          </div> 
+          {/* {!row?.row?.is_booked && (
+            <> */}
+              {/* <div
                 className="cursor-pointer"
                 onClick={() =>
                   setState({ isOpen: true, deleteId: row?.row?.id })
@@ -268,16 +268,22 @@ const SessionList = () => {
                   className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
                   onClick={() => approve(row)}
                 />
-              ) : (
-                <PrimaryButton
+              ) : ( */}
+               <PrimaryButton
+                  variant={"outline"}
+                  name={"Approve"}
+                  className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
+                  onClick={() => approve(row)}
+                />
+                {/* <PrimaryButton
                   variant={"outline"}
                   name={"Waiting For Approval .."}
                   className="border-green-800 text-green-800 hover:bg-green-800 hover:text-white"
                   disabled
-                />
-              )}
-            </>
-          )}
+                /> */}
+              {/* )} */}
+            {/* </>
+          )} */}
         </div>
       ),
     },
