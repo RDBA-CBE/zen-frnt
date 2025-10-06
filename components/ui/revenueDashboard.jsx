@@ -333,16 +333,16 @@ const RevenueDashboard = (props) => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Customer
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Reservations
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Revenue
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Discount
                       </th>
                     </tr>
@@ -379,16 +379,16 @@ const RevenueDashboard = (props) => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Mentor
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Reservations
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Revenue
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Discount
                       </th>
                     </tr>
@@ -425,16 +425,16 @@ const RevenueDashboard = (props) => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Category
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Reservations
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Revenue
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Discount
                       </th>
                     </tr>
@@ -471,13 +471,13 @@ const RevenueDashboard = (props) => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Total Reservations
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Total Revenue
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Total Discount
                         </th>
                       </tr>
