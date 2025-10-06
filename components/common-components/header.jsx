@@ -424,7 +424,7 @@ const Header = () => {
                       </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                      className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                      className="bg-fuchsia-100 w-[300px] p-4 rounded-lg"
                       side="bottom"
                       align="end"
                       sideOffset={4}
