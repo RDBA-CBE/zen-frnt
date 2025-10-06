@@ -212,28 +212,40 @@ const WellnessLoungeList = () => {
       Header: "Session Id",
       accessor: "registration_id",
     },
-    {
-      Header: "Registration Date",
-      accessor: "registration_date",
-      Cell: (row) => (
-        <Label>
-          {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
-    },
-    {
-      Header: "Session Date",
-      accessor: "start_date",
-      Cell: (row) => (
-        <Label>
-          {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
-    },
-    {
-      Header: "Session Status",
-      accessor: "registration_status",
-    },
+   {
+         Header: "Registration Date",
+         accessor: "registration_date",
+         Cell: (row) => (
+           <Label>
+             {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
+           </Label>
+         ),
+       },
+   
+       {
+         Header: "Session Date",
+         accessor: "session_date",
+         Cell: (row) => (
+           <Label>
+             {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
+           </Label>
+         ),
+       },
+   
+       {
+         Header: "Start Time",
+         accessor: "start_time",
+         Cell: (row) => <Label>{row?.row?.event?.start_time}</Label>,
+       },
+       {
+         Header: "End Time",
+         accessor: "end_time",
+         Cell: (row) => <Label>{row?.row?.event?.end_time}</Label>,
+       },
+       {
+         Header: "Booking Status",
+         accessor: "registration_status",
+       },
     {
       Header: "Lounge",
       accessor: "event",
