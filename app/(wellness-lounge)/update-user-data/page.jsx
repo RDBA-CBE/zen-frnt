@@ -48,25 +48,13 @@ const CreateUser = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+
   const params = useParams();
   console.log("✌️params --->", params);
 
   const dispatch = useDispatch();
 
   const [id, setId] = useState(null);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const idFromSearchParams = searchParams.get("id");
-      const localId = localStorage.getItem("userId");
-      console.log("idFromSearchParams: ", idFromSearchParams);
-
-      if (idFromSearchParams) {
-        setId(idFromSearchParams);
-      } else {
-        setId(localId);
-      }
-    }
-  }, [searchParams]);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -104,19 +92,40 @@ const CreateUser = () => {
     // getCountry();
   }, [id]);
 
+  // useEffect(() => {
+  //   const preventBackNavigation = (e) => {
+  //     e.preventDefault();
+  //     e.returnValue = "";
+  //   };
+
+  //   window.history.pushState(null, null, window.location.pathname);
+  //   window.addEventListener("popstate", preventBackNavigation);
+
+  //   return () => {
+  //     window.removeEventListener("popstate", preventBackNavigation);
+  //   };
+  // }, []);
+  console.log("✌️firstname --->", state.firstname);
+
   useEffect(() => {
-    const preventBackNavigation = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-    };
+    if (typeof window !== "undefined") {
+      const StoredUsername = localStorage.getItem("username");
 
-    window.history.pushState(null, null, window.location.pathname);
-    window.addEventListener("popstate", preventBackNavigation);
+      console.log("✌️StoredUsername --->", StoredUsername);
+      if (StoredUsername) {
+        setState({ firstname: StoredUsername });
+      }
+      const idFromSearchParams = searchParams.get("id");
+      const localId = localStorage.getItem("userId");
+      console.log("idFromSearchParams: ", idFromSearchParams);
 
-    return () => {
-      window.removeEventListener("popstate", preventBackNavigation);
-    };
-  }, []);
+      if (idFromSearchParams) {
+        setId(idFromSearchParams);
+      } else {
+        setId(localId);
+      }
+    }
+  }, [searchParams]);
 
   const getGroupList = async () => {
     try {
@@ -132,7 +141,6 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
-      console.log("getDetails --->", res);
 
       if (res?.profile_picture) {
         const fileName = getFileNameFromUrl(res?.profile_picture);
@@ -155,7 +163,7 @@ const CreateUser = () => {
         });
       }
       setState({
-        firstname: res.first_name ? res.first_name : "",
+        // firstname: res.first_name ? res.first_name : "",
         lastname: res.last_name ? res.last_name : "",
         email: res.email ? res.email : "",
         intrested_topics1: res?.lable,
@@ -439,7 +447,6 @@ const CreateUser = () => {
             }
           );
           localStorage.clear();
-
         } else {
           localStorage.setItem(
             "username",
@@ -455,11 +462,14 @@ const CreateUser = () => {
           );
           localStorage.setItem("group", state.user_type?.label || "");
           setState({ submitLoading: false });
-          window.location.href = "/";
+          InfinitySuccess(
+            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`,
 
-          Success(
-            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
+            () => {
+              window.location.href = "/";
+            }
           );
+        
         }
       } else {
         let body = {

@@ -21,6 +21,7 @@ import {
   LogIn,
   LogOut,
   MenuIcon,
+  NotepadText,
   User2Icon,
   UserIcon,
 } from "lucide-react";
@@ -64,6 +65,8 @@ const Header = () => {
     group: null,
     username: null,
     logoutLoading: false,
+    mentorCount: 0,
+    conCount: 0,
   });
 
   useEffect(() => {
@@ -75,6 +78,9 @@ const Header = () => {
       const storedToken = localStorage.getItem("zentoken");
       const storedGroup = localStorage.getItem("group");
       const StoredUsername = localStorage.getItem("username");
+      const conCount = localStorage.getItem("conCount");
+      setState({ conCount });
+
       setToken(storedToken);
       if (storedToken && storedGroup && StoredUsername) {
         dispatch(
@@ -86,7 +92,30 @@ const Header = () => {
         );
       }
     }
+    getApprovalCount();
   }, [isClient, dispatch]);
+
+  const getApprovalCount = async () => {
+    try {
+      const mentorApproval = {
+        is_open_to_be_mentor: "Yes",
+        group_name_exact: ROLES.ALUMNI,
+      };
+      const res = await Models.user.userList(1, mentorApproval);
+      console.log("getApprovalCount --->", res);
+
+      const conApproval = {
+        is_active: "No",
+      };
+      const conApprovals = await Models.user.userList(1, conApproval);
+      console.log("✌️conApprovals --->", conApprovals);
+      localStorage.setItem("conCount", conApprovals?.count);
+
+      setState({ mentorCount: res?.count, conCount: conApprovals?.count });
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -345,6 +374,46 @@ const Header = () => {
 
               {/* User Avatar Dropdown */}
               <div className="flex items-center gap-3">
+                {tokens && groups === ROLES.ADMIN && (
+                  <div className="flex items-center">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Avatar className="h-10 w-10 rounded cursor-pointer">
+                          <AvatarFallback>
+                            <NotepadText />
+                          </AvatarFallback>
+                        </Avatar>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                        side="bottom"
+                        align="end"
+                        sideOffset={4}
+                      >
+                        <DropdownMenuLabel className="p-0 pb-2">
+                          <div className="flex items-center gap-2 text-sm">
+                            <div>
+                              <span className="font-semibold">
+                                {"Notifications"}
+                              </span>
+                            </div>
+                          </div>
+                        </DropdownMenuLabel>
+
+                        <DropdownMenuItem
+                          onClick={() => router.push("/user-approval")}
+                        >
+                          <User2Icon /> Menter Approval ({state.mentorCount})
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push("/counselor-approval")}
+                        >
+                          <User2Icon /> Counselor Approval ({state.conCount})
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
                 <div className="flex items-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
