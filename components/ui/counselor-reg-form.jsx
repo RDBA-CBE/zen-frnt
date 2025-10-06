@@ -148,7 +148,7 @@ const CounselorRegForm = () => {
       setState({ btnLoading: false });
 
       InfinitySuccess(
-        "Thank you for registering as an counselor. Kindly visit our Programs page and email us your areas of expertise, orientation, and willingness to conduct sessions.",
+        "Thank you for registering as a counselor. Please wait for admin approval to proceed with the next steps. Once your account is approved, you can log in to the portal to view our programs.",
         () => {
           router?.push("/login");
         }
