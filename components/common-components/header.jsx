@@ -331,9 +331,9 @@ const Header = () => {
                               <Link
                                 prefetch={true}
                                 href={item.url}
-                                className="text-xs text-black font-[600] uppercase hover:text-themePurple"
+                                className=" text-black font-[600] uppercase hover:text-themePurple text-[14px]"
                               >
-                                <h4 className="text-[14px]">{item.title}</h4>
+                                <h4>{item.title}</h4>
                               </Link>
                             </div>
                           ))}
