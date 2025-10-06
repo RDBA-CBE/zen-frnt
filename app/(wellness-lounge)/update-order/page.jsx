@@ -106,6 +106,7 @@ const UpdateOrder = () => {
           value: res?.event?.id,
           label: res?.event?.title,
         },
+        price:res?.event?.event_credits
       });
     } catch (error) {
       console.log("error: ", error);
@@ -231,11 +232,11 @@ const UpdateOrder = () => {
       accessor: "end_time",
       Cell: (row) => <Label>{row?.row?.end_time}</Label>,
     },
-    {
-      Header: "Price",
-      accessor: "price",
-      Cell: (row) => <Label>{formatNumber(row?.row?.price)}</Label>,
-    },
+    // {
+    //   Header: "Credits",
+    //   accessor: "price",
+    //   Cell: (row) => <Label>{formatNumber(row?.row?.price)}</Label>,
+    // },
 
     // {
     //     Header: "Action",
