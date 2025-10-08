@@ -66,6 +66,7 @@ const Header = () => {
     mentorCount: 0,
     conCount: 0,
     sessionCount: 0,
+    ifNotify: false,
   });
 
   useEffect(() => setIsClient(true), []);
@@ -95,7 +96,6 @@ const Header = () => {
   }, [router]);
 
   const getApprovalCount = async () => {
-console.log('✌️getApprovalCount --->', );
     try {
       const mentorApproval = {
         is_open_to_be_mentor: "Yes",
@@ -111,11 +111,14 @@ console.log('✌️getApprovalCount --->', );
         is_approved: "No",
       };
       const sessionApp = await Models.session.list(1, session);
+      const ifNotify =
+        conApprovals?.count > 0 || sessionApp?.count > 0 || res?.count > 0;
 
       setState({
         mentorCount: res?.count,
         conCount: conApprovals?.count,
         sessionCount: sessionApp?.count,
+        ifNotify,
       });
     } catch (error) {
       console.log("Error in getApprovalCount --->", error);
@@ -324,39 +327,48 @@ console.log('✌️getApprovalCount --->', );
               {/* --- User Avatar & Notifications --- */}
               <div className="flex items-center gap-3">
                 {tokens && groups === ROLES.ADMIN && (
-                  <DropdownMenu onOpenChange={(isOpen) => isOpen && getApprovalCount()}>
-                  <DropdownMenuTrigger asChild>
-                    <Avatar className="h-10 w-10 rounded cursor-pointer">
-                      <AvatarFallback>
-                        <Bell />
-                      </AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                
-                  <DropdownMenuContent
-                    className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
-                    side="bottom"
-                    align="end"
-                    sideOffset={4}
+                  <DropdownMenu
+                    onOpenChange={(isOpen) => isOpen && getApprovalCount()}
                   >
-                    <DropdownMenuLabel className="p-0 pb-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold">Notifications</span>
-                      </div>
-                    </DropdownMenuLabel>
-                
-                    <DropdownMenuItem onClick={() => router.push("/user-approval")}>
-                      Mentor Approval ({state.mentorCount})
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/counselor-approval")}>
-                      Counselor Approval ({state.conCount})
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/session-approval")}>
-                      Session Approval ({state.sessionCount})
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="h-10 w-10 rounded cursor-pointer">
+                        <AvatarFallback>
+                          <Bell />
+                          {/* {state.ifNotify ? <Home /> : <Bell className="text-red-500"/>} */}
+
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                      className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                      side="bottom"
+                      align="end"
+                      sideOffset={4}
+                    >
+                      <DropdownMenuLabel className="p-0 pb-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-semibold">Notifications</span>
+                        </div>
+                      </DropdownMenuLabel>
+
+                      <DropdownMenuItem
+                        onClick={() => router.push("/user-approval")}
+                      >
+                        Mentor Approval ({state.mentorCount})
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/counselor-approval")}
+                      >
+                        Counselor Approval ({state.conCount})
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/session-approval")}
+                      >
+                        Session Approval ({state.sessionCount})
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
 
                 <DropdownMenu>
