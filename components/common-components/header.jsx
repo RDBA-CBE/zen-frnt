@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Bell,
   InstagramIcon,
@@ -22,7 +22,6 @@ import {
   LogIn,
   LogOut,
   MenuIcon,
-  NotepadText,
   User2Icon,
   UserIcon,
 } from "lucide-react";
@@ -52,14 +51,12 @@ const Header = () => {
   const groups = useSelector((state) => state.auth.groups);
   const username = useSelector((state) => state.auth.username);
 
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [clickedMenu, setClickedMenu] = useState(null); // Track the clicked menu
+  const [activeMenu, setActiveMenu] = useState(null); // Desktop hover menu
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [group, setGroup] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+  const [open, setOpen] = useState(false); // Mobile sidebar
   const router = useRouter();
   const pathname = usePathname();
-  const [token, setToken] = useState(null);
-  const [isClient, setIsClient] = useState(false); // Track if we're in the client
 
   const [state, setState] = useSetState({
     token: null,
@@ -70,51 +67,45 @@ const Header = () => {
     conCount: 0,
   });
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => setIsClient(true), []);
 
   useEffect(() => {
     if (isClient) {
       const storedToken = localStorage.getItem("zentoken");
       const storedGroup = localStorage.getItem("group");
-      const StoredUsername = localStorage.getItem("username");
+      const storedUsername = localStorage.getItem("username");
       const conCount = localStorage.getItem("conCount");
       setState({ conCount });
 
-      setToken(storedToken);
-      if (storedToken && storedGroup && StoredUsername) {
+      if (storedToken && storedGroup && storedUsername) {
         dispatch(
           setAuthData({
             tokens: storedToken,
             groups: storedGroup,
-            username: StoredUsername,
+            username: storedUsername,
           })
         );
       }
     }
-    getApprovalCount();
   }, [isClient, dispatch]);
+
+  useEffect(()=>{
+    getApprovalCount();
+
+  },[router])
 
   const getApprovalCount = async () => {
     try {
-      const mentorApproval = {
-        is_open_to_be_mentor: "Yes",
-        group_name_exact: ROLES.ALUMNI,
-      };
+      const mentorApproval = { is_open_to_be_mentor: "Yes", group_name_exact: ROLES.ALUMNI };
       const res = await Models.user.userList(1, mentorApproval);
-      console.log("getApprovalCount --->", res);
 
-      const conApproval = {
-        is_active: "No",
-      };
+      const conApproval = { is_active: "No" };
       const conApprovals = await Models.user.userList(1, conApproval);
-      console.log("✌️conApprovals --->", conApprovals);
       localStorage.setItem("conCount", conApprovals?.count);
 
       setState({ mentorCount: res?.count, conCount: conApprovals?.count });
     } catch (error) {
-      console.log("✌️error --->", error);
+      console.log("Error in getApprovalCount --->", error);
     }
   };
 
@@ -122,42 +113,26 @@ const Header = () => {
     try {
       setState({ logoutLoading: true });
       const refresh = localStorage.getItem("refreshToken");
-
-      const body = {
-        refresh,
-      };
-      const res = await Models.auth.logOut(body);
+      await Models.auth.logOut({ refresh });
       setState({ logoutLoading: false });
-
-      localStorage.removeItem("zentoken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("group");
-      localStorage.removeItem("eventId");
-      localStorage.removeItem("username");
       localStorage.clear();
-      document.cookie = "";
       setDialogOpen(false);
+      dispatch(clearAuthData());
       router.push("/login");
       window.location.reload();
-      dispatch(clearAuthData());
     } catch (error) {
       dispatch(clearAuthData());
-      window.location.reload();
       localStorage.clear();
       setState({ logoutLoading: false });
-      console.log("✌️error --->", error);
+      console.log("Logout error --->", error);
     }
   };
 
-  const handleCancel = () => {
-    setDialogOpen(false);
-  };
+  const handleCancel = () => setDialogOpen(false);
 
+  // --- Menu definitions ---
   const AdminLeftSideMenu = [
-    {
-      title: "Dashboard",
-      url: "/",
-    },
+    { title: "Dashboard", url: "/" },
     {
       title: "Wellness Lounge",
       url: "/wellness-lounge-list",
@@ -178,7 +153,6 @@ const Header = () => {
         { title: "Booking List", url: "/booking_list" },
       ],
     },
-
     {
       title: "Users",
       url: "#",
@@ -189,407 +163,195 @@ const Header = () => {
         { title: "Mentor Approval", url: "/user-approval" },
       ],
     },
-
-    {
-      title: "Payment Gateways",
-      url: "#",
-      items: [{ title: "Payment Gateway List", url: "/payment-gateway-list" }],
-    },
-    {
-      title: "Coupons",
-      url: "#",
-      items: [
-        { title: "Coupon List", url: "/coupon-list" },
-        { title: "Create Coupon", url: "/create-coupon" },
-      ],
-    },
-    {
-      title: "Reports",
-      url: "/reports",
-    },
+    { title: "Payment Gateways", url:"/payment-gateway-list"},
+    { title: "Coupons", url: "#", items: [{ title: "Coupon List", url: "/coupon-list" }, { title: "Create Coupon", url: "/create-coupon" }] },
+    { title: "Reports", url: "/reports" },
   ];
 
   const MentorOrConLeftSideMenu = [
-    {
-      title: "Dashboard",
-      url: "/",
-    },
-    {
-      title: "Wellness Lounge",
-      url: "/wellness-lounge-list",
-      items: [
-        { title: "Lounge Session List", url: "/wellness-lounge-list" },
-        { title: "Create Lounge Session", url: "/create-wellness-lounge" },
-      ],
-    },
-    {
-      title: "Sessions",
-      url: "#",
-      items: [
-        { title: "Registered Users", url: "/order-list" },
-        { title: "Add User", url: "/create-order" },
-        { title: "Cancelled Users", url: "/cancel-order" },
-      ],
-    },
-    {
-      title: "Profile",
-      url: "/profile",
-    },
+    { title: "Dashboard", url: "/" },
+    { title: "Wellness Lounge", url: "/wellness-lounge-list", items: [{ title: "Lounge Session List", url: "/wellness-lounge-list" }, { title: "Create Lounge Session", url: "/create-wellness-lounge" }] },
+    { title: "Sessions", url: "#", items: [{ title: "Registered Users", url: "/order-list" }, { title: "Add User", url: "/create-order" }, { title: "Cancelled Users", url: "/cancel-order" }] },
+    { title: "Profile", url: "/profile" },
   ];
 
   const StudentLeftSideMenu = [
-    {
-      title: "The Program",
-      url: "/calendar",
-    },
-    {
-      title: "Session",
-      url: "/student-order",
-    },
-    {
-      title: "Profile",
-      url: "/profile",
-    },
+    { title: "The Program", url: "/calendar" },
+    { title: "Session", url: "/student-order" },
+    { title: "Profile", url: "/profile" },
   ];
+
+  const currentMenu = groups === ROLES.ADMIN ? AdminLeftSideMenu : groups === ROLES.MENTOR || groups === ROLES.COUNSELOR ? MentorOrConLeftSideMenu : StudentLeftSideMenu;
 
   return (
     <>
-      {isClient && ( // Ensure that the header only renders after the client-side component mounts
+      {isClient && (
         <header className="bg-white shadow-md sticky top-0 z-[10]">
-          {/* Top Header */}
+          {/* --- Top Header --- */}
           {!tokens && (
             <div className="backcolor-purpole text-white py-2">
-              <div className="container mx-auto flex  items-center justify-between px-5">
+              <div className="container mx-auto flex items-center justify-between px-5">
                 <div className="flex items-center gap-2 md:gap-4">
-                  {/* {pathname !== "/registration" && ( */}
                   <div className="flex items-center gap-1 md:pr-4 pr-2">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link
-                      prefetch={true}
-                      href="/registration"
-                      className="hover:underline md:text-[16px] text-[10px] "
-                    >
-                      <h4>SIGN UP</h4>
-                    </Link>
+                    <Link href="/registration" className="hover:underline md:text-[16px] text-[10px]">SIGN UP</Link>
                   </div>
-                  {/* )} */}
-                  {/* {pathname !== "/" && ( */}
                   <div className="flex items-center gap-1">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link
-                      prefetch={true}
-                      href="/"
-                      className="hover:underline  md:text-[16px] text-[10px]"
-                    >
-                      <h4>LOGIN</h4>
-                    </Link>
+                    <Link href="/" className="hover:underline md:text-[16px] text-[10px]">LOGIN</Link>
                   </div>
-                  {/* )} */}
                 </div>
-                <div className="flex gap-2  ">
-                  <Link
-                    href="https://www.instagram.com/accounts/login/?next=%2Fzen_wellness_lounge%2F&source=omni_redirect"
-                    target="_blank"
-                    aria-label="Instagram"
-                  >
-                    <InstagramIcon className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
-                    target="_blank"
-                    aria-label="LinkedIn"
-                  >
-                    <LinkedinIcon className="w-4 h-4" />
-                  </Link>
+                <div className="flex gap-2">
+                  <Link href="https://www.instagram.com/zen_wellness_lounge/" target="_blank"><InstagramIcon className="w-4 h-4" /></Link>
+                  <Link href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/" target="_blank"><LinkedinIcon className="w-4 h-4" /></Link>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Main Header */}
+          {/* --- Main Header --- */}
           <div className="py-4 border-b border-gray-200">
             <div className="container mx-auto flex items-center justify-between gap-20 px-5">
+              {/* Logo */}
               <div className="flex justify-center">
                 <Link href="https://zenwellnesslounge.com/" target="_blank">
-                  <Image
-                    src="/assets/images/logo.png"
-                    alt="logo"
-                    width={200}
-                    height={80}
-                  />
+                  <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
                 </Link>
               </div>
 
-              {/* Left Menu (Admin/Student) */}
+              {/* --- Desktop Menu --- */}
               <nav className="hidden lg:flex space-x-6">
-                {tokens &&
-                  groups &&
-                  (groups === ROLES.ADMIN
-                    ? AdminLeftSideMenu
-                    : groups == ROLES.MENTOR
-                    ? MentorOrConLeftSideMenu
-                    : groups == ROLES.COUNSELOR
-                    ? MentorOrConLeftSideMenu
-                    : StudentLeftSideMenu
-                  ).map((menu) => (
-                    <div
-                      key={menu.title}
-                      className="relative"
-                      onMouseEnter={() =>
-                        menu.items && setActiveMenu(menu.title)
-                      }
-                      onMouseLeave={() => menu.items && setActiveMenu(null)}
-                    >
-                      <Link
-                        prefetch={true}
-                        href={menu.url}
-                        className="hover:text-themePurple text-[14px] font-[600] uppercase "
-                      >
-                        <h4>{menu.title}</h4>
-                      </Link>
+                {tokens && currentMenu.map((menu) => (
+                  <div
+                    key={menu.title}
+                    className="relative"
+                    onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
+                    onMouseLeave={() => setActiveMenu(null)}
+                  >
+                    <Link href={menu.url} className="hover:text-themePurple text-[14px] font-[600] uppercase">
+                      {menu.title}
+                    </Link>
 
-                      {/* Submenu */}
-                      {(activeMenu === menu.title ||
-                        clickedMenu === menu.title) && (
-                        <div
-                          className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg border-b-2 border-themePurple"
-                          onMouseEnter={() => setActiveMenu(menu.title)}
-                          onMouseLeave={() => setActiveMenu(null)}
-                        >
-                          {menu.items?.map((item) => (
-                            <div key={item.title} className="mb-2">
-                              <Link
-                                prefetch={true}
-                                href={item.url}
-                                className=" text-black font-[600] uppercase hover:text-themePurple text-[14px]"
-                              >
-                                <h4>{item.title}</h4>
-                              </Link>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    {menu.items && (activeMenu === menu.title) && (
+                      <div className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg border-b-2 border-themePurple">
+                        {menu.items.map((item) => (
+                          <div key={item.title} className="mb-2">
+                            <Link href={item.url} className="text-black font-[600] uppercase hover:text-themePurple text-[14px]">
+                              {item.title}
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </nav>
 
-              {/* User Avatar Dropdown */}
+              {/* --- User Avatar & Notifications --- */}
               <div className="flex items-center gap-3">
                 {tokens && groups === ROLES.ADMIN && (
-                  <div className="flex items-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Avatar className="h-10 w-10 rounded cursor-pointer">
-                          <AvatarFallback>
-                            <Bell />
-                          </AvatarFallback>
-                        </Avatar>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
-                        side="bottom"
-                        align="end"
-                        sideOffset={4}
-                      >
-                        <DropdownMenuLabel className="p-0 pb-2">
-                          <div className="flex items-center gap-2 text-sm">
-                            <div>
-                              <span className="font-semibold">
-                                {"Notifications"}
-                              </span>
-                            </div>
-                          </div>
-                        </DropdownMenuLabel>
-
-                        <DropdownMenuItem
-                          onClick={() => router.push("/user-approval")}
-                        >
-                          <User2Icon /> Menter Approval ({state.mentorCount})
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => router.push("/counselor-approval")}
-                        >
-                          <User2Icon /> Counselor Approval ({state.conCount})
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
-                <div className="flex items-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Avatar className="h-10 w-10 rounded cursor-pointer">
-                        <AvatarFallback>
-                          <User2Icon />
-                        </AvatarFallback>
+                        <AvatarFallback><Bell /></AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
-                      side="bottom"
-                      align="end"
-                      sideOffset={4}
-                    >
+                    <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
                       <DropdownMenuLabel className="p-0 pb-2">
-                        {username && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Avatar className="h-8 w-8 rounded">
-                              <AvatarFallback>
-                                <User2Icon />
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <span className="font-semibold">{username}</span>
-                              {/* <span className="text-xs">zenlounge@gmail.com</span> */}
-                            </div>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 text-sm"><span className="font-semibold">Notifications</span></div>
                       </DropdownMenuLabel>
-                      {username && <DropdownMenuSeparator />}
-
-                      {tokens && (
-                        <>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router?.push("/change-password-confirm")
-                            }
-                          >
-                            Change Password
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
-
-                      {/* <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                          <SparklesIcon /> Upgrade to Pro
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                          <BadgeCheck /> Account
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <CreditCard /> Billing
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Bell /> Notifications
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                      <DropdownMenuSeparator /> */}
-                      {tokens ? (
-                        <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-                          <LogOut /> Logout
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem onClick={() => router.push("/login")}>
-                          <LogIn /> Login
-                        </DropdownMenuItem>
-                      )}
+                      <DropdownMenuItem onClick={() => router.push("/user-approval")}>Menter Approval ({state.mentorCount})</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/counselor-approval")}>Counselor Approval ({state.conCount})</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
+                )}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="h-10 w-10 rounded cursor-pointer">
+                      <AvatarFallback><User2Icon /></AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                    {username && (
+                      <DropdownMenuLabel className="p-0 pb-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Avatar className="h-8 w-8 rounded"><AvatarFallback><User2Icon /></AvatarFallback></Avatar>
+                          <span className="font-semibold">{username}</span>
+                        </div>
+                      </DropdownMenuLabel>
+                    )}
+                    {username && <DropdownMenuSeparator />}
+                    {tokens && (
+                      <>
+                        <DropdownMenuItem onClick={() => router.push("/change-password-confirm")}>Change Password</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    {tokens ? <DropdownMenuItem onClick={() => setDialogOpen(true)}><LogOut /> Logout</DropdownMenuItem>
+                      : <DropdownMenuItem onClick={() => router.push("/login")}><LogIn /> Login</DropdownMenuItem>}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* --- Mobile Menu --- */}
                 {tokens && groups && (
                   <div className="block lg:hidden">
-                    <Sheet>
-                      <SheetTrigger asChild>
-                        <MenuIcon />
-                      </SheetTrigger>
+                    <Sheet open={open} onOpenChange={setOpen}>
+                      <SheetTrigger asChild><MenuIcon className="cursor-pointer" /></SheetTrigger>
                       <SheetContent>
-                        <SheetHeader>
-                          <SheetTitle></SheetTitle>
-                        </SheetHeader>
+                        <SheetHeader><SheetTitle></SheetTitle></SheetHeader>
                         <div className="flex justify-center">
-                          <Link
-                            href="https://zenwellnesslounge.com/"
-                            target="_blank"
-                          >
-                            <Image
-                              src="/assets/images/logo.png"
-                              alt="logo"
-                              width={200}
-                              height={80}
-                            />
+                          <Link href="https://zenwellnesslounge.com/" target="_blank">
+                            <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
                           </Link>
                         </div>
+
                         <div className="mt-10">
-                          {tokens &&
-                            groups &&
-                            (groups === ROLES.ADMIN
-                              ? AdminLeftSideMenu
-                              : groups == ROLES.MENTOR
-                              ? MentorOrConLeftSideMenu
-                              : groups == ROLES.COUNSELOR
-                              ? MentorOrConLeftSideMenu
-                              : StudentLeftSideMenu
-                            ).map((menu, index) => {
-                              return (
-                                <Accordion
-                                  type="single"
-                                  collapsible
-                                  className="w-full"
-                                  key={index}
+                          {currentMenu?.map((menu, index) => (
+                            <Accordion key={index} type="single" collapsible className="w-full">
+                              <AccordionItem value={`item-${index + 1}`}>
+                                <AccordionTrigger
+                                  className={`no-underline hover:no-underline uppercase text-sm ${menu.items?.length > 0 ? "" : "[&>svg]:hidden"}`}
+                                  onClick={() => {
+                                    if (!menu.items?.length) {
+                                      router.push(menu.url);
+                                      setOpen(false);
+                                    }
+                                  }}
                                 >
-                                  <AccordionItem value={`item-${index + 1}`}>
-                                    <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
-                                      {menu.title}
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                      {menu.items ? (
-                                        <ul className="pl-5 uppercase">
-                                          {menu.items.map((item, itemIndex) => (
-                                            <li
-                                              key={itemIndex}
-                                              className="pb-2 text-sm"
-                                            >
-                                              <a href={item.url}>
-                                                {item.title}
-                                              </a>
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      ) : (
-                                        <p className="uppercase">
-                                          <a href={menu.url}>{menu.title}</a>
-                                        </p>
-                                      )}
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                </Accordion>
-                              );
-                            })}
+                                  {menu.title}
+                                </AccordionTrigger>
+                                {menu.items?.length > 0 && (
+                                  <AccordionContent>
+                                    <ul className="pl-5 uppercase">
+                                      {menu.items.map((item, idx) => (
+                                        <li key={idx} className="pb-2 text-sm">
+                                          <Link href={item.url} onClick={() => setOpen(false)}>
+                                            {item.title}
+                                          </Link>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </AccordionContent>
+                                )}
+                              </AccordionItem>
+                            </Accordion>
+                          ))}
                         </div>
-                        {/* <div className="mt-10 flex justify-center items-center gap-4">
-                        <InstagramIcon />
-                        <LinkedinIcon />
-                      </div> */}
                       </SheetContent>
                     </Sheet>
                   </div>
                 )}
               </div>
-              {/* Confirmation Dialog for Log out */}
+
+              {/* --- Logout Dialog --- */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
-                  <DialogTitle className="text-[20px] font-semibold">
-                    Confirm Logout
-                  </DialogTitle>
+                  <DialogTitle className="text-[20px] font-semibold">Confirm Logout</DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button
-                      onClick={handleCancel}
-                      variant={"outline"}
-                      className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleLogout}
-                      className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
-                    >
-                      {state.logoutLoading ? <Loader /> : "Confirm"}
-                    </Button>
+                    <Button onClick={handleCancel} variant="outline" className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen bg-none rounded text-sm">Cancel</Button>
+                    <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">{state.logoutLoading ? <Loader /> : "Confirm"}</Button>
                   </div>
                 </DialogContent>
               </Dialog>
