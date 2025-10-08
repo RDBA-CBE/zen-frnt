@@ -221,6 +221,7 @@ const WellnessLoungeList = () => {
            </Label>
          ),
        },
+       
    
        {
          Header: "Session Date",
