@@ -97,7 +97,7 @@ export default function studentRegistration() {
   };
 
   return (
-    <div className="flex md:min-h-[70vh] min-h-[70vh] w-full items-center  md:p-6 pb-5 md:pb-0">
+    <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center  md:p-6 pb-5 md:pb-0">
       <div className="flex items-center justify-center w-full">
         <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
           <CardHeader>
@@ -109,7 +109,7 @@ export default function studentRegistration() {
               Update your account information here. Be sure to save your changes
               once you&lsquo;re finished.
             </CardDescription>
-            <div className="flex gap-5 pt-5">
+            <div className="flex gap-5 pt-5 flex-col md:flex-row">
               {ROLE?.map((item) => (
                 <CheckboxDemo
                   key={item.value}
@@ -126,7 +126,7 @@ export default function studentRegistration() {
                     setState({ role: selected });
                   }}
                   isMulti={false}
-                  className={"text-xl"}
+                  className={" text-lg"}
                 />
               ))}
             </div>

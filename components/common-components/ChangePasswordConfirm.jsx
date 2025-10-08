@@ -109,7 +109,7 @@ const ChangePasswordConfirmForm = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <Card className="md:w-[400px] w-[100%]">
         <CardHeader>
           <CardTitle className="text-2xl">Change Password</CardTitle>

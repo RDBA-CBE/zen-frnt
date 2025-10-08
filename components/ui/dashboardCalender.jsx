@@ -372,9 +372,9 @@ const DashboardCalender = ({ events, setEvents }) => {
   return (
     <div className="container mt-0 mx-auto calendar-wrapper md:p-4">
       {/* Calendar Header */}
-      <div className="md:flex md:justify-between items-center mb-10">
+      <div className="md:flex md:justify-between items-center mb-6 md:mb-10">
         <div>
-          <h2 className="text-xl font-semibold text-left ">
+          <h2 className="text-xl font-semibold text-left mb-5 md:mb-0 ">
             {new Date(selectedDate).toLocaleString("default", {
               month: "long",
             })}{" "}
@@ -382,7 +382,7 @@ const DashboardCalender = ({ events, setEvents }) => {
           </h2>
         </div>
         <div className="md:flex md:gap-10 ">
-          <div className="md:w-[200px] w-full mb-2 md:mb-0">
+          <div className="md:w-[200px] w-full mb-5 md:mb-0 ">
             <CustomSelect
               options={state.categoryList}
               value={state.lounge_type?.value || ""}
@@ -426,7 +426,7 @@ const DashboardCalender = ({ events, setEvents }) => {
         </div>
       )}
 
-      <div className="flex justify-center items-center mb-8 flex-wrap gap-x-5 gap-y-2">
+      <div className="flex justify-start md:justify-center items-center mb-8 flex-wrap gap-x-5 gap-y-2">
         <div className="flex items-center">
           <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#8f87871f]"></span>
           <span className="text-black text-sm font-medium">
