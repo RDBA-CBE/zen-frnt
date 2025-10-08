@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Bell,
+  FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
   Loader,
@@ -257,6 +258,12 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  <Link
+                    href="https://www.facebook.com/zenwellnesslounge"
+                    target="_blank"
+                  >
+                    <FacebookIcon className="w-4 h-4" />
+                  </Link>
                   <Link
                     href="https://www.instagram.com/zen_wellness_lounge/"
                     target="_blank"
