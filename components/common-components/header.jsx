@@ -65,6 +65,7 @@ const Header = () => {
     logoutLoading: false,
     mentorCount: 0,
     conCount: 0,
+    sessionCount: 0,
   });
 
   useEffect(() => setIsClient(true), []);
@@ -89,21 +90,33 @@ const Header = () => {
     }
   }, [isClient, dispatch]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getApprovalCount();
-
-  },[router])
+  }, [router]);
 
   const getApprovalCount = async () => {
+console.log('✌️getApprovalCount --->', );
     try {
-      const mentorApproval = { is_open_to_be_mentor: "Yes", group_name_exact: ROLES.ALUMNI };
+      const mentorApproval = {
+        is_open_to_be_mentor: "Yes",
+        group_name_exact: ROLES.ALUMNI,
+      };
       const res = await Models.user.userList(1, mentorApproval);
 
       const conApproval = { is_active: "No" };
       const conApprovals = await Models.user.userList(1, conApproval);
       localStorage.setItem("conCount", conApprovals?.count);
 
-      setState({ mentorCount: res?.count, conCount: conApprovals?.count });
+      const session = {
+        is_approved: "No",
+      };
+      const sessionApp = await Models.session.list(1, session);
+
+      setState({
+        mentorCount: res?.count,
+        conCount: conApprovals?.count,
+        sessionCount: sessionApp?.count,
+      });
     } catch (error) {
       console.log("Error in getApprovalCount --->", error);
     }
@@ -163,15 +176,37 @@ const Header = () => {
         { title: "Mentor Approval", url: "/user-approval" },
       ],
     },
-    { title: "Payment Gateways", url:"/payment-gateway-list"},
-    { title: "Coupons", url: "#", items: [{ title: "Coupon List", url: "/coupon-list" }, { title: "Create Coupon", url: "/create-coupon" }] },
+    { title: "Payment Gateways", url: "/payment-gateway-list" },
+    {
+      title: "Coupons",
+      url: "#",
+      items: [
+        { title: "Coupon List", url: "/coupon-list" },
+        { title: "Create Coupon", url: "/create-coupon" },
+      ],
+    },
     { title: "Reports", url: "/reports" },
   ];
 
   const MentorOrConLeftSideMenu = [
     { title: "Dashboard", url: "/" },
-    { title: "Wellness Lounge", url: "/wellness-lounge-list", items: [{ title: "Lounge Session List", url: "/wellness-lounge-list" }, { title: "Create Lounge Session", url: "/create-wellness-lounge" }] },
-    { title: "Sessions", url: "#", items: [{ title: "Registered Users", url: "/order-list" }, { title: "Add User", url: "/create-order" }, { title: "Cancelled Users", url: "/cancel-order" }] },
+    {
+      title: "Wellness Lounge",
+      url: "/wellness-lounge-list",
+      items: [
+        { title: "Lounge Session List", url: "/wellness-lounge-list" },
+        { title: "Create Lounge Session", url: "/create-wellness-lounge" },
+      ],
+    },
+    {
+      title: "Sessions",
+      url: "#",
+      items: [
+        { title: "Registered Users", url: "/order-list" },
+        { title: "Add User", url: "/create-order" },
+        { title: "Cancelled Users", url: "/cancel-order" },
+      ],
+    },
     { title: "Profile", url: "/profile" },
   ];
 
@@ -181,7 +216,12 @@ const Header = () => {
     { title: "Profile", url: "/profile" },
   ];
 
-  const currentMenu = groups === ROLES.ADMIN ? AdminLeftSideMenu : groups === ROLES.MENTOR || groups === ROLES.COUNSELOR ? MentorOrConLeftSideMenu : StudentLeftSideMenu;
+  const currentMenu =
+    groups === ROLES.ADMIN
+      ? AdminLeftSideMenu
+      : groups === ROLES.MENTOR || groups === ROLES.COUNSELOR
+      ? MentorOrConLeftSideMenu
+      : StudentLeftSideMenu;
 
   return (
     <>
@@ -194,16 +234,36 @@ const Header = () => {
                 <div className="flex items-center gap-2 md:gap-4">
                   <div className="flex items-center gap-1 md:pr-4 pr-2">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link href="/registration" className="hover:underline md:text-[16px] text-[10px]">SIGN UP</Link>
+                    <Link
+                      href="/registration"
+                      className="hover:underline md:text-[16px] text-[10px]"
+                    >
+                      SIGN UP
+                    </Link>
                   </div>
                   <div className="flex items-center gap-1">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
-                    <Link href="/" className="hover:underline md:text-[16px] text-[10px]">LOGIN</Link>
+                    <Link
+                      href="/"
+                      className="hover:underline md:text-[16px] text-[10px]"
+                    >
+                      LOGIN
+                    </Link>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Link href="https://www.instagram.com/zen_wellness_lounge/" target="_blank"><InstagramIcon className="w-4 h-4" /></Link>
-                  <Link href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/" target="_blank"><LinkedinIcon className="w-4 h-4" /></Link>
+                  <Link
+                    href="https://www.instagram.com/zen_wellness_lounge/"
+                    target="_blank"
+                  >
+                    <InstagramIcon className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="https://www.linkedin.com/in/zen-wellness-lounge-a50670348/"
+                    target="_blank"
+                  >
+                    <LinkedinIcon className="w-4 h-4" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -215,68 +275,112 @@ const Header = () => {
               {/* Logo */}
               <div className="flex justify-center">
                 <Link href="https://zenwellnesslounge.com/" target="_blank">
-                  <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
+                  <Image
+                    src="/assets/images/logo.png"
+                    alt="logo"
+                    width={200}
+                    height={80}
+                  />
                 </Link>
               </div>
 
               {/* --- Desktop Menu --- */}
               <nav className="hidden lg:flex space-x-6">
-                {tokens && currentMenu.map((menu) => (
-                  <div
-                    key={menu.title}
-                    className="relative"
-                    onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
-                    onMouseLeave={() => setActiveMenu(null)}
-                  >
-                    <Link href={menu.url} className="hover:text-themePurple text-[14px] font-[600] uppercase">
-                      {menu.title}
-                    </Link>
+                {tokens &&
+                  currentMenu.map((menu) => (
+                    <div
+                      key={menu.title}
+                      className="relative"
+                      onMouseEnter={() =>
+                        menu.items && setActiveMenu(menu.title)
+                      }
+                      onMouseLeave={() => setActiveMenu(null)}
+                    >
+                      <Link
+                        href={menu.url}
+                        className="hover:text-themePurple text-[14px] font-[600] uppercase"
+                      >
+                        {menu.title}
+                      </Link>
 
-                    {menu.items && (activeMenu === menu.title) && (
-                      <div className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg border-b-2 border-themePurple">
-                        {menu.items.map((item) => (
-                          <div key={item.title} className="mb-2">
-                            <Link href={item.url} className="text-black font-[600] uppercase hover:text-themePurple text-[14px]">
-                              {item.title}
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {menu.items && activeMenu === menu.title && (
+                        <div className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg border-b-2 border-themePurple">
+                          {menu.items.map((item) => (
+                            <div key={item.title} className="mb-2">
+                              <Link
+                                href={item.url}
+                                className="text-black font-[600] uppercase hover:text-themePurple text-[14px]"
+                              >
+                                {item.title}
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
               </nav>
 
               {/* --- User Avatar & Notifications --- */}
               <div className="flex items-center gap-3">
                 {tokens && groups === ROLES.ADMIN && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Avatar className="h-10 w-10 rounded cursor-pointer">
-                        <AvatarFallback><Bell /></AvatarFallback>
-                      </Avatar>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
-                      <DropdownMenuLabel className="p-0 pb-2">
-                        <div className="flex items-center gap-2 text-sm"><span className="font-semibold">Notifications</span></div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => router.push("/user-approval")}>Menter Approval ({state.mentorCount})</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push("/counselor-approval")}>Counselor Approval ({state.conCount})</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <DropdownMenu onOpenChange={(isOpen) => isOpen && getApprovalCount()}>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="h-10 w-10 rounded cursor-pointer">
+                      <AvatarFallback>
+                        <Bell />
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                
+                  <DropdownMenuContent
+                    className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                    side="bottom"
+                    align="end"
+                    sideOffset={4}
+                  >
+                    <DropdownMenuLabel className="p-0 pb-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold">Notifications</span>
+                      </div>
+                    </DropdownMenuLabel>
+                
+                    <DropdownMenuItem onClick={() => router.push("/user-approval")}>
+                      Mentor Approval ({state.mentorCount})
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/counselor-approval")}>
+                      Counselor Approval ({state.conCount})
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/session-approval")}>
+                      Session Approval ({state.sessionCount})
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
                 )}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-10 w-10 rounded cursor-pointer">
-                      <AvatarFallback><User2Icon /></AvatarFallback>
+                      <AvatarFallback>
+                        <User2Icon />
+                      </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-fuchsia-100 w-[220px] p-4 rounded-lg" side="bottom" align="end" sideOffset={4}>
+                  <DropdownMenuContent
+                    className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                    side="bottom"
+                    align="end"
+                    sideOffset={4}
+                  >
                     {username && (
                       <DropdownMenuLabel className="p-0 pb-2">
                         <div className="flex items-center gap-2 text-sm">
-                          <Avatar className="h-8 w-8 rounded"><AvatarFallback><User2Icon /></AvatarFallback></Avatar>
+                          <Avatar className="h-8 w-8 rounded">
+                            <AvatarFallback>
+                              <User2Icon />
+                            </AvatarFallback>
+                          </Avatar>
                           <span className="font-semibold">{username}</span>
                         </div>
                       </DropdownMenuLabel>
@@ -284,12 +388,25 @@ const Header = () => {
                     {username && <DropdownMenuSeparator />}
                     {tokens && (
                       <>
-                        <DropdownMenuItem onClick={() => router.push("/change-password-confirm")}>Change Password</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push("/change-password-confirm")
+                          }
+                        >
+                          Change Password
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
                     )}
-                    {tokens ? <DropdownMenuItem onClick={() => setDialogOpen(true)}><LogOut /> Logout</DropdownMenuItem>
-                      : <DropdownMenuItem onClick={() => router.push("/login")}><LogIn /> Login</DropdownMenuItem>}
+                    {tokens ? (
+                      <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                        <LogOut /> Logout
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem onClick={() => router.push("/login")}>
+                        <LogIn /> Login
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -297,21 +414,42 @@ const Header = () => {
                 {tokens && groups && (
                   <div className="block lg:hidden">
                     <Sheet open={open} onOpenChange={setOpen}>
-                      <SheetTrigger asChild><MenuIcon className="cursor-pointer" /></SheetTrigger>
+                      <SheetTrigger asChild>
+                        <MenuIcon className="cursor-pointer" />
+                      </SheetTrigger>
                       <SheetContent>
-                        <SheetHeader><SheetTitle></SheetTitle></SheetHeader>
+                        <SheetHeader>
+                          <SheetTitle></SheetTitle>
+                        </SheetHeader>
                         <div className="flex justify-center">
-                          <Link href="https://zenwellnesslounge.com/" target="_blank">
-                            <Image src="/assets/images/logo.png" alt="logo" width={200} height={80} />
+                          <Link
+                            href="https://zenwellnesslounge.com/"
+                            target="_blank"
+                          >
+                            <Image
+                              src="/assets/images/logo.png"
+                              alt="logo"
+                              width={200}
+                              height={80}
+                            />
                           </Link>
                         </div>
 
                         <div className="mt-10">
                           {currentMenu?.map((menu, index) => (
-                            <Accordion key={index} type="single" collapsible className="w-full">
+                            <Accordion
+                              key={index}
+                              type="single"
+                              collapsible
+                              className="w-full"
+                            >
                               <AccordionItem value={`item-${index + 1}`}>
                                 <AccordionTrigger
-                                  className={`no-underline hover:no-underline uppercase text-sm ${menu.items?.length > 0 ? "" : "[&>svg]:hidden"}`}
+                                  className={`no-underline hover:no-underline uppercase text-sm ${
+                                    menu.items?.length > 0
+                                      ? ""
+                                      : "[&>svg]:hidden"
+                                  }`}
                                   onClick={() => {
                                     if (!menu.items?.length) {
                                       router.push(menu.url);
@@ -326,7 +464,10 @@ const Header = () => {
                                     <ul className="pl-5 uppercase">
                                       {menu.items.map((item, idx) => (
                                         <li key={idx} className="pb-2 text-sm">
-                                          <Link href={item.url} onClick={() => setOpen(false)}>
+                                          <Link
+                                            href={item.url}
+                                            onClick={() => setOpen(false)}
+                                          >
                                             {item.title}
                                           </Link>
                                         </li>
@@ -347,11 +488,24 @@ const Header = () => {
               {/* --- Logout Dialog --- */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
-                  <DialogTitle className="text-[20px] font-semibold">Confirm Logout</DialogTitle>
+                  <DialogTitle className="text-[20px] font-semibold">
+                    Confirm Logout
+                  </DialogTitle>
                   <div className="mb-4">Are you sure you want to log out?</div>
                   <div className="flex justify-end gap-4">
-                    <Button onClick={handleCancel} variant="outline" className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen bg-none rounded text-sm">Cancel</Button>
-                    <Button onClick={handleLogout} className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm">{state.logoutLoading ? <Loader /> : "Confirm"}</Button>
+                    <Button
+                      onClick={handleCancel}
+                      variant="outline"
+                      className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen bg-none rounded text-sm"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
+                    >
+                      {state.logoutLoading ? <Loader /> : "Confirm"}
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
