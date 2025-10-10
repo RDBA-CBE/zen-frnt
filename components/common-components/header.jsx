@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Bell,
+  FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
   Loader,
@@ -226,6 +227,8 @@ const Header = () => {
       ? MentorOrConLeftSideMenu
       : StudentLeftSideMenu;
 
+  console.log("state.ifNotify", state.ifNotify);
+
   return (
     <>
       {isClient && (
@@ -255,6 +258,12 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  <Link
+                    href="https://www.facebook.com/zenwellnesslounge"
+                    target="_blank"
+                  >
+                    <FacebookIcon className="w-4 h-4" />
+                  </Link>
                   <Link
                     href="https://www.instagram.com/zen_wellness_lounge/"
                     target="_blank"
@@ -333,39 +342,53 @@ const Header = () => {
                     <DropdownMenuTrigger asChild>
                       <Avatar className="h-10 w-10 rounded cursor-pointer">
                         <AvatarFallback>
-                          <Bell />
-                          {/* {state.ifNotify ? <Home /> : <Bell className="text-red-500"/>} */}
-
+                          {state.ifNotify ? (
+                            <Bell className="text-themePurple" />
+                          ) : (
+                            <Bell />
+                          )}
                         </AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent
-                      className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                      className="bg-fuchsia-100 w-[220px] p-4 px-3 rounded-lg"
                       side="bottom"
                       align="end"
                       sideOffset={4}
                     >
-                      <DropdownMenuLabel className="p-0 pb-2">
+                      <DropdownMenuLabel className="py-0 pb-2">
                         <div className="flex items-center gap-2 text-sm">
                           <span className="font-semibold">Notifications</span>
                         </div>
                       </DropdownMenuLabel>
 
                       <DropdownMenuItem
+                        className="flex justify-between "
                         onClick={() => router.push("/user-approval")}
                       >
-                        Mentor Approval ({state.mentorCount})
+                        Mentor Approval{" "}
+                        <span className="text-end border-none rounded-full px-2 py-0.5 backcolor-purpole text-white text-sm">
+                          {state.mentorCount}
+                        </span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
+                        className="flex justify-between "
                         onClick={() => router.push("/counselor-approval")}
                       >
-                        Counselor Approval ({state.conCount})
+                        Counselor Approval{" "}
+                        <span className="text-end border rounded-full px-2 py-0.5 backcolor-purpole text-white text-sm">
+                          {state.conCount}
+                        </span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
+                        className="flex justify-between "
                         onClick={() => router.push("/session-approval")}
                       >
-                        Session Approval ({state.sessionCount})
+                        Session Approval{" "}
+                        <span className="text-end border rounded-full px-2 py-0.5 backcolor-purpole text-white text-sm">
+                          {state.sessionCount}
+                        </span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -380,7 +403,7 @@ const Header = () => {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                    className="bg-fuchsia-100 w-[280px] p-4 rounded-lg"
                     side="bottom"
                     align="end"
                     sideOffset={4}
