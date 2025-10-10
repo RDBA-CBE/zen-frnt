@@ -1,18 +1,15 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import {
   capitalizeFLetter,
-  formatDate,
   formatDuration,
-  formatTime,
-  getTimeOnly,
   getTimes,
   objIsEmpty,
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import RevenueDashboard from "../../../components/ui/revenueDashboard";
 import dynamic from "next/dynamic";
 import {
   AYURVEDIC_LOUNGE_NAME,
@@ -22,9 +19,6 @@ import {
 import moment from "moment";
 import { DatePickers } from "@/components/common-components/datePickers";
 import { Loader } from "lucide-react";
-import { Label } from "@radix-ui/react-label";
-import { DataTable } from "@/components/ui/dataTable";
-import Card from "@mui/material/Card";
 import PrimaryButton from "@/components/common-components/primaryButton";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -102,7 +96,7 @@ const Dashboard = () => {
   }, [state.activeTab]);
 
   const bodyData = () => {
-    const body: any = {};
+    const body: { [key: string]: any } = {};
     if (state.start_date) {
       body.start_date = moment(state.start_date).format("YYYY-MM-DD");
     }
@@ -112,48 +106,48 @@ const Dashboard = () => {
     return body;
   };
 
-  const getReportData = async () => {
-    try {
-      setState({ loading: true });
-      const reports = [
-        { id: "9.1", name: "revenueByEachBookings" },
-        { id: "9.2", name: "revenueByEachCategory" },
-        { id: "9.3", name: "revenueByEachMentor" },
-        { id: "9.4", name: "revenueByEachCustomer" },
-      ];
+  // const getReportData = async () => {
+  //   try {
+  //     setState({ loading: true });
+  //     const reports = [
+  //       { id: "9.1", name: "revenueByEachBookings" },
+  //       { id: "9.2", name: "revenueByEachCategory" },
+  //       { id: "9.3", name: "revenueByEachMentor" },
+  //       { id: "9.4", name: "revenueByEachCustomer" },
+  //     ];
 
-      if (!reports || !Array.isArray(reports)) {
-        setState({
-          loading: false,
-          error: "Reports configuration is invalid",
-        });
-        return;
-      }
+  //     if (!reports || !Array.isArray(reports)) {
+  //       setState({
+  //         loading: false,
+  //         error: "Reports configuration is invalid",
+  //       });
+  //       return;
+  //     }
 
-      const responses = await Promise.all(
-        reports.map((report) => Models.session.reports(report.id))
-      );
+  //     const responses = await Promise.all(
+  //       reports.map((report) => Models.session.reports(report.id))
+  //     );
 
-      const reportData = {};
-      let index = 0;
-      for (const report of reports) {
-        reportData[report.name] = responses[index];
-        index++;
-      }
+  //     const reportData = {};
+  //     let index = 0;
+  //     for (const report of reports) {
+  //       reportData[report.name] = responses[index];
+  //       index++;
+  //     }
 
-      setState({
-        loading: false,
-        reportData: reportData,
-        error: null,
-      });
-    } catch (error) {
-      console.log("error: ", error);
-      setState({
-        loading: false,
-        error: error.message || "Failed to fetch reports",
-      });
-    }
-  };
+  //     setState({
+  //       loading: false,
+  //       reportData: reportData,
+  //       error: null,
+  //     });
+  //   } catch (error) {
+  //     console.log("error: ", error);
+  //     setState({
+  //       loading: false,
+  //       error: error.message || "Failed to fetch reports",
+  //     });
+  //   }
+  // };
 
   const reports_user_activity = async () => {
     try {
@@ -193,29 +187,29 @@ const Dashboard = () => {
     }
   };
 
-  const reports_usage = async () => {
-    try {
-      const body = bodyData();
+  // const reports_usage = async () => {
+  //   try {
+  //     const body = bodyData();
 
-      const res = await Models.session.reports_usage(body);
-      // console.log("reports_usage --->", res);
-      setState({ reports_usage: res });
-    } catch (error) {
-      console.log("✌️error --->", error);
-    }
-  };
+  //     const res = await Models.session.reports_usage(body);
+  //     // console.log("reports_usage --->", res);
+  //     setState({ reports_usage: res });
+  //   } catch (error) {
+  //     console.log("✌️error --->", error);
+  //   }
+  // };
 
-  const reports_session_duration = async () => {
-    try {
-      const body = bodyData();
+  // const reports_session_duration = async () => {
+  //   try {
+  //     const body = bodyData();
 
-      const res = await Models.session.reports_session_duration(body);
-      // console.log("reports_session_duration --->", res);
-      setState({ reports_session_duration: res });
-    } catch (error) {
-      console.log("✌️error --->", error);
-    }
-  };
+  //     const res = await Models.session.reports_session_duration(body);
+  //     // console.log("reports_session_duration --->", res);
+  //     setState({ reports_session_duration: res });
+  //   } catch (error) {
+  //     console.log("✌️error --->", error);
+  //   }
+  // };
 
   const reports_registrations = async () => {
     try {
@@ -371,17 +365,17 @@ const Dashboard = () => {
     });
   };
 
-  const reports_meetings = async () => {
-    try {
-      const body = bodyData();
+  // const reports_meetings = async () => {
+  //   try {
+  //     const body = bodyData();
 
-      const res = await Models.session.reports_meetings(body);
-      // console.log("reports_meetings --->", res);
-      setState({ reports_meetings: res });
-    } catch (error) {
-      console.log("✌️error --->", error);
-    }
-  };
+  //     const res = await Models.session.reports_meetings(body);
+  //     // console.log("reports_meetings --->", res);
+  //     setState({ reports_meetings: res });
+  //   } catch (error) {
+  //     console.log("✌️error --->", error);
+  //   }
+  // };
 
   const reports_engagement = async () => {
     try {
@@ -516,9 +510,9 @@ const Dashboard = () => {
       const totalAttended = data.map(
         (item) => item.attendance_summary.total_attended
       );
-      const totalRegistered = data.map(
-        (item) => item.attendance_summary.total_registered
-      );
+      // const totalRegistered = data.map(
+      //   (item) => item.attendance_summary.total_registered
+      // );
 
       const participatedChartOptions = {
         chart: {
