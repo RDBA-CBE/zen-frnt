@@ -292,6 +292,8 @@ const CreateUser = () => {
       return false;
     }
   }
+  console.log("state.thumbnail_images", state.thumbnail_images);
+  
 
   const onSubmit = async () => {
     try {
@@ -691,7 +693,7 @@ const CreateUser = () => {
             // error={state.errors?.dob}
             // required
           /> */}
-          {isValidImageUrl(state.thumbnail_image) ? (
+          {isValidImageUrl(state.thumbnail_image) || state.thumbnail_images ? (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Session Image

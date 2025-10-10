@@ -111,7 +111,7 @@ const CreateUser = () => {
       const localId = localStorage.getItem("userId");
       await Models.user.delete(localId);
       localStorage.clear();
-      window.location.href= "/"
+      window.location.href = "/";
     } catch (error) {
       setState({ deleteLoading: false });
 
@@ -717,13 +717,18 @@ const CreateUser = () => {
             // error={state.errors?.dob}
             // required
           /> */}
-          {isValidImageUrl(state.thumbnail_image) ? (
+          {isValidImageUrl(state.thumbnail_image) || state.thumbnail_images ? (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Session Image
               </label>
               <div className="flex items-center md:gap-10 gap-2">
-                <img src={state.thumbnail_image} height={200} width={200} />
+                <img
+                  src={state.thumbnail_image}
+                  height={200}
+                  width={200}
+                  className="object-cover rounded-md"
+                />
                 <div
                   className=" flex bg-slate-300 rounded-md p-3 items-center justify-center"
                   onClick={() =>
