@@ -30,7 +30,7 @@ import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
 import { TextInput } from "@/components/common-components/textInput";
 import useDebounce from "@/components/common-components/useDebounce";
-import { DatePicker } from "@/components/common-components/datePicker";
+import { DatePicker } from "@/components/common-components/datePickers";
 import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";

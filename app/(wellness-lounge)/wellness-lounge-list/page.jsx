@@ -40,6 +40,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { ROLES } from "@/utils/constant.utils";
+import { DatePickers } from "@/components/common-components/datePickers";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -267,19 +268,19 @@ const WellnessLoungeList = () => {
       Cell: (row) => <Label>{row?.row?.lounge_type?.name}</Label>,
     },
     {
-      Header: "Start Date",
+      Header: "Session Date",
       accessor: "start_date",
       Cell: (row) => (
         <Label>{moment(row?.row?.start_date).format("DD-MM-YYYY")}</Label>
       ),
     },
-    {
-      Header: "End Date",
-      accessor: "end_date",
-      Cell: (row) => (
-        <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
-      ),
-    },
+    // {
+    //   Header: "End Date",
+    //   accessor: "end_date",
+    //   Cell: (row) => (
+    //     <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
+    //   ),
+    // },
     {
       Header: "Start Time",
       accessor: "start_time",
@@ -430,7 +431,7 @@ const WellnessLoungeList = () => {
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
-                <DatePicker
+                <DatePickers
                   placeholder="Start date"
                   closeIcon={true}
                   selectedDate={state.start_date}
@@ -442,7 +443,7 @@ const WellnessLoungeList = () => {
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
-                <DatePicker
+                <DatePickers
                   placeholder="End date"
                   closeIcon={true}
                   selectedDate={state.end_date}

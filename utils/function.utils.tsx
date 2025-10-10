@@ -374,6 +374,11 @@ export const getHourOption = (startTime, endTime) => {
   return { value: totalHours, label };
 };
 
+export const getTimes=(dateString)=>{
+const date = new Date(dateString);
+return date.toLocaleTimeString(); 
+}
+
 export const isBeforeCurrentTimeBy30Min = (startDate, startTime) => {
   const startDateTime = moment(
     `${startDate} ${startTime}`,
@@ -459,3 +464,14 @@ export const getRoles = (groups) => {
 export const extractUsername=(email: string)=> {
   return email.replace('@kgpian.iitkgp.ac.in', '');
 }
+
+
+// export const getTimes=()=>{
+//   const joinTime = "2025-09-26T08:33:46Z";
+// const date = new Date(joinTime);
+// return date.toLocaleTimeString('en-US', { 
+//   hour: '2-digit', 
+//   minute: '2-digit',
+//   hour12: true 
+// });
+// }

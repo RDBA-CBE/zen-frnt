@@ -2,6 +2,8 @@ export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
 
 export const AYURVEDIC_LOUNGE = 15;
 
+export const AYURVEDIC_LOUNGE_NAME="Ayurvedic One-on-One Counseling Lounge"
+
 export const MENTOR = 5;
 
 export const IIT_KANPUR = 8;
@@ -295,3 +297,28 @@ export const ROLES = {
 };
 
 export const ROLE_ARRAY = ["Student", "Alumni", "Mentor", "Counselor"];
+
+
+export const HEAD = [
+  "Name",
+  "Email",
+  "Activity Type",
+  "Event Name",
+  "Event Date",
+  "Event Time",
+  "Meeting ID",
+  "Join Time",
+  "Leave Time",
+  "Duration",
+];
+
+export const TABLE_HEAD = [
+  "Session Title",
+  "Lounge Type",
+  "Start Date",
+
+  "Start Time",
+  "End Time",
+  "Registration Count",
+ 
+];

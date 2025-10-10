@@ -227,7 +227,6 @@ const Header = () => {
       ? MentorOrConLeftSideMenu
       : StudentLeftSideMenu;
 
-  console.log("state.ifNotify", state.ifNotify);
 
   return (
     <>

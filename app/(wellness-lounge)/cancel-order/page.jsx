@@ -33,6 +33,7 @@ import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { DatePickers } from "@/components/common-components/datePickers";
 
 const CancelOrderList = () => {
   const router = useRouter();
@@ -319,7 +320,7 @@ const CancelOrderList = () => {
                 />
               </div>
               <div className="md:w-1/4 w-full  md:mb-0 mb-2">
-                <DatePicker
+                <DatePickers
                   placeholder="Session Date"
                   closeIcon={true}
                   selectedDate={state.start_date}

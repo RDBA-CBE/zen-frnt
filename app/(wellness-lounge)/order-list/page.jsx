@@ -40,6 +40,7 @@ import Loading from "@/components/common-components/Loading";
 import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
+import { DatePickers } from "@/components/common-components/datePickers";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -400,7 +401,7 @@ const WellnessLoungeList = () => {
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
-                <DatePicker
+                <DatePickers
                   placeholder="Session Date"
                   closeIcon={true}
                   selectedDate={state.start_date}

@@ -25,7 +25,7 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const hideHeader = pathname === "/update-user-data";
+  const hideHeader = pathname === "/update-user-data" || pathname === "/user-verification";
 
   return (
     <Provider store={store}>

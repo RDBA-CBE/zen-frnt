@@ -33,6 +33,9 @@ const session = {
       if (body.is_approved == "No") {
         url += `&is_approved=${encodeURIComponent(false)}`;
       }
+      if (body.ids ) {
+        url += `&ids=${encodeURIComponent(body.ids )}`;
+      }
 
       instance()
         .get(url)
@@ -616,6 +619,230 @@ const session = {
   reports: (type) => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/reports/?type=${type}`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_attendance: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/attendance/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_engagement: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/engagement/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_meetings: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/meetings/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_registrations: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/registrations/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_session_duration: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/session-duration/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_usage: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/usage/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  reports_user_activity: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `zen/reports/user-activity/`;
+      let hasParams = false;
+
+      if (body?.start_date) {
+        url += `?start_date=${encodeURIComponent(body.start_date)}`;
+        hasParams = true;
+      }
+
+      if (body?.end_date) {
+        url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
+          body.end_date
+        )}`;
+        hasParams = true;
+      }
       instance()
         .get(url)
         .then((res) => {

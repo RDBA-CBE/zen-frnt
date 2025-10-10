@@ -187,7 +187,7 @@ const RevenueDashboard = (props) => {
         {/* Summary Cards */}
 
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow mb-6">
+        {/* <div className="bg-white rounded-lg shadow mb-6">
           <div className="border-b border-gray-200">
             <nav className="flex -mb-px">
               <button
@@ -242,7 +242,7 @@ const RevenueDashboard = (props) => {
               </button>
             </nav>
           </div>
-        </div>
+        </div> */}
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
