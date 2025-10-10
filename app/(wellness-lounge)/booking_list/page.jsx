@@ -30,7 +30,8 @@ import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
 import { TextInput } from "@/components/common-components/textInput";
 import useDebounce from "@/components/common-components/useDebounce";
-import { DatePicker } from "@/components/common-components/datePickers";
+// import { DatePickers } from "@/components/common-components/datePickers";
+
 import Modal from "@/components/common-components/modal";
 import { Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
@@ -443,8 +444,8 @@ const BookingList = () => {
                   loadOptions={loadSessionOptions}
                 />
               </div>
-              <div className="md:w-2/6 w-full  md:mb-0 mb-2">
-                <DatePicker
+              {/* <div className="md:w-2/6 w-full  md:mb-0 mb-2">
+                <DatePickers
                   placeholder="Start Date"
                   closeIcon={true}
                   selectedDate={state.start_date}
@@ -467,7 +468,7 @@ const BookingList = () => {
                     });
                   }}
                 />
-              </div>
+              </div> */}
               <div
                 className="md:w-1/5 w-full  md:text-end"
                 onClick={() => router.push("/create-order")}

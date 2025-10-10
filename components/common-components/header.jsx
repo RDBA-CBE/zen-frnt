@@ -167,7 +167,7 @@ const Header = () => {
         { title: "Registered Users", url: "/order-list" },
         { title: "Add User", url: "/create-order" },
         { title: "Cancelled Users", url: "/cancel-order" },
-        { title: "Booking List", url: "/booking_list" },
+        // { title: "Booking List", url: "/booking_list" },
       ],
     },
     {
