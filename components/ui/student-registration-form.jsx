@@ -15,10 +15,11 @@ import "react-phone-number-input/style.css";
 
 import Select from "react-select";
 import Checkboxs from "./singleCheckbox";
-import { CLIENT_ID } from "@/utils/constant.utils";
+import { CLIENT_ID, DOMAIN } from "@/utils/constant.utils";
 import { useDispatch } from "react-redux";
 import { setAuthData } from "@/store/slice/AuthSlice";
 import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
+import { Input } from "./input";
 
 const StudentRegistrationForm = () => {
   const router = useRouter();
@@ -204,17 +205,14 @@ const StudentRegistrationForm = () => {
   };
 
   console.log("state.currentInterestPage", state.currentInterestPage);
-  
 
-  const getIntrestedTopics = async (page=1) => {
+  const getIntrestedTopics = async (page = 1) => {
     try {
       const res = await Models.auth.getIntrestedTopics(page);
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: filter,
-        hasMoreInterest:res?.next
-       });
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
       console.log("res", res);
     } catch (error) {
       console.log(error);
@@ -223,11 +221,13 @@ const StudentRegistrationForm = () => {
 
   const interestedListLoadMore = async () => {
     console.log("hello");
-    
+
     try {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
-        const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1
+        );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
 
@@ -240,15 +240,11 @@ const StudentRegistrationForm = () => {
         setState({ intrestedTopicsList: state.intrestedTopicsList });
       }
     } catch (error) {
-            console.log('error: ', error);
+      console.log("error: ", error);
     }
   };
 
- 
-
   console.log("intrestedTopicsList", state.intrestedTopicsList);
-
- 
 
   const getCountry = async () => {
     try {
@@ -269,7 +265,7 @@ const StudentRegistrationForm = () => {
       const body = {
         first_name: state?.firstname,
         last_name: state?.lastname,
-        email: state?.email.trim(),
+        email: state?.email.trim() + DOMAIN,
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
           ? state?.year_of_entry?.value
@@ -384,10 +380,10 @@ const StudentRegistrationForm = () => {
         </div>
 
         <div className="space-y-1">
-          <TextInput
+          <Input
             id="email"
             type="email"
-            placeholder="user@gmail.com"
+            placeholder="Email"
             required
             value={state.email}
             onChange={(e) =>
@@ -517,6 +513,7 @@ const StudentRegistrationForm = () => {
                 errors: { ...state.errors, year_of_entry: "" },
               })
             }
+            required
             menuPortalTarget={document.body}
             error={state.errors?.year_of_entry}
           />

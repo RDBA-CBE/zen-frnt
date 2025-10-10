@@ -6,10 +6,11 @@ export const MENTOR = 5;
 
 export const IIT_KANPUR = 8;
 
+export const DOMAIN = "@kgpian.iitkgp.ac.in";
 
 export const CLIENT_ID =
   "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
-  // "652976835328-gr64duovnelh6j0tmts52huqa7aiodrc.apps.googleusercontent.com"
+// "652976835328-gr64duovnelh6j0tmts52huqa7aiodrc.apps.googleusercontent.com"
 
 export const welness_data = [
   {
@@ -293,4 +294,4 @@ export const ROLES = {
   COUNSELOR: "Counselor",
 };
 
-export const ROLE_ARRAY=["Student","Alumni","Mentor","Counselor"]
+export const ROLE_ARRAY = ["Student", "Alumni", "Mentor", "Counselor"];

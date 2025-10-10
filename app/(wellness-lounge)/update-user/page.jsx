@@ -7,9 +7,12 @@ import {
   Dropdown,
   DropdownCode,
   convertUrlToFile,
+  extractUsername,
   getFileNameFromUrl,
   isMenOrAlumni,
   isOnlyAlumniRole,
+  isOnlyStudent,
+  isOnlyStudents,
   isRole,
   isValidImageUrl,
   onlyCon,
@@ -28,7 +31,7 @@ import { Failure, Success } from "@/components/common-components/toast";
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useSelector } from "react-redux";
-import { MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
+import { DOMAIN, MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import PhoneInput, {
   isValidPhoneNumber,
@@ -40,6 +43,7 @@ import Select from "react-select";
 import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
+import { Input } from "@/components/ui/input";
 
 const CreateUser = () => {
   const router = useRouter();
@@ -108,6 +112,7 @@ const CreateUser = () => {
   const getDetails = async () => {
     try {
       const res = await Models.user.getUserId(id);
+      console.log("getDetails --->", res);
 
       const group = localStorage.getItem("group");
       setState({ group });
@@ -124,13 +129,21 @@ const CreateUser = () => {
       }
 
       const topic = Dropdown(res?.groups, "name");
-      console.log("✌️topic --->", topic);
       setState({ user_types: topic });
+      if (isOnlyStudent(res?.groups)) {
+        setState({
+          email: res.email ? extractUsername(res.email) : "",
+        });
+      } else {
+        setState({
+          email: res.email ? res.email : "",
+        });
+      }
 
       setState({
         firstname: res.first_name ? res.first_name : "",
         lastname: res.last_name ? res.last_name : "",
-        email: res.email ? res.email : "",
+        // email: res.email ? res.email : "",
         intrested_topics1: res?.lable,
         notify: res?.notify || false,
         address: res.address ? res.address : "",
@@ -226,43 +239,43 @@ const CreateUser = () => {
     }
   };
 
- const getIntrestedTopics = async (page=1) => {
-     try {
-       const res = await Models.auth.getIntrestedTopics(page);
-       const Dropdownss = Dropdown(res?.results, "topic");
-       const filter = Dropdownss?.filter((item) => item?.label !== "");
- 
-       setState({ intrestedTopicsList: filter,
-         hasMoreInterest:res?.next
+  const getIntrestedTopics = async (page = 1) => {
+    try {
+      const res = await Models.auth.getIntrestedTopics(page);
+      const Dropdownss = Dropdown(res?.results, "topic");
+      const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
+      console.log("res", res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const interestedListLoadMore = async () => {
+    console.log("hello");
+
+    try {
+      if (state.hasMoreInterest) {
+        console.log("hasMoreInterest");
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1
+        );
+        const Dropdownss = Dropdown(res?.results, "topic");
+        const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+        setState({
+          intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+          hasMoreInterest: res?.next,
+          currentInterestPage: state.currentInterestPage + 1,
         });
-       console.log("res", res);
-     } catch (error) {
-       console.log(error);
-     }
-   };
- 
-   const interestedListLoadMore = async () => {
-     console.log("hello");
-     
-     try {
-       if (state.hasMoreInterest) {
-         console.log("hasMoreInterest");
-         const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
-         const Dropdownss = Dropdown(res?.results, "topic");
-         const filter = Dropdownss?.filter((item) => item?.label !== "");
- 
-         setState({
-           intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
-           hasMoreInterest: res?.next,
-           currentInterestPage: state.currentInterestPage + 1,
-         });
-       } else {
-         setState({ intrestedTopicsList: state.intrestedTopicsList });
-       }
-     } catch (error) {
-             console.log('error: ', error);
-     }
-   };
+      } else {
+        setState({ intrestedTopicsList: state.intrestedTopicsList });
+      }
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   function shouldClearPhoneNumber(selectedCountry, currentPhone) {
     if (!selectedCountry?.code || !currentPhone?.startsWith("+")) return false;
@@ -279,12 +292,10 @@ const CreateUser = () => {
       return false;
     }
   }
-  console.log('✌️state.user_types --->', state.user_types);
 
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
-      console.log("state?.intrested_topics: ", state?.intrested_topics);
 
       if (isRole(state.user_types)) {
         let body = {
@@ -415,7 +426,7 @@ const CreateUser = () => {
           formData.append("year_of_graduation", body.year_of_graduation);
         }
         // if(body.is_open_to_be_mentor){
-          formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
+        formData.append("is_open_to_be_mentor", body.is_open_to_be_mentor);
 
         // }
 
@@ -436,10 +447,12 @@ const CreateUser = () => {
           `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`
         );
       } else {
+        console.log("✌️else --->");
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
-          email: state.email.trim(),
+          // email: state.email.trim() + ,
+          email: state?.email.trim() + DOMAIN,
           department:
             state?.user_type?.label !== "Admin" ||
             state?.user_type?.label === "Mentor"
@@ -463,6 +476,7 @@ const CreateUser = () => {
               : [],
           notify: state.notify,
         };
+        console.log("✌️body --->", body);
 
         await Validation.createStudentUser.validate(body, {
           abortEarly: false,
@@ -618,19 +632,51 @@ const CreateUser = () => {
             required
           />
 
-          <TextInput
-            value={state.email}
-            onChange={(e) => {
-              setState({
-                email: e.target.value,
-                errors: { ...state.errors, email: "" },
-              });
-            }}
-            placeholder="Email"
-            title="Email"
-            error={state.errors?.email}
-            required
-          />
+          {isOnlyStudents(state.user_types) ? (
+            // <TextInput
+            //   value={state.email}
+            //   onChange={(e) => {
+            //     setState({
+            //       email: e.target.value,
+            //       errors: { ...state.errors, email: "" },
+            //     });
+            //   }}
+            //   placeholder="Email"
+            //   title="Emailsss"
+            //   error={state.errors?.email}
+            //   required
+            // />
+
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              required
+              value={state.email}
+              onChange={(e) =>
+                setState({
+                  email: e.target.value,
+                  errors: { ...state.errors, email: "" },
+                })
+              }
+              error={state.errors?.email}
+              title="Email"
+            />
+          ) : (
+            <TextInput
+              value={state.email}
+              onChange={(e) => {
+                setState({
+                  email: e.target.value,
+                  errors: { ...state.errors, email: "" },
+                });
+              }}
+              placeholder="Email"
+              title="Email"
+              error={state.errors?.email}
+              required
+            />
+          )}
 
           {/* <DatePicker
             placeholder="Date Of Birth"
@@ -651,33 +697,51 @@ const CreateUser = () => {
                 Session Image
               </label>
               <div className="flex items-center md:gap-10 gap-2">
-                <img src={state.thumbnail_image} height={200} width={200} />
+                <img
+                  src={state.thumbnail_image}
+                  height={200}
+                  width={200}
+                  className="object-cover rounded-md"
+                  alt="Session image"
+                />
                 <div
-                  className=" flex bg-slate-300 rounded-md p-3 items-center justify-center"
+                  className="flex bg-slate-300 rounded-md p-3 items-center justify-center cursor-pointer hover:bg-slate-400 transition-colors"
                   onClick={() =>
-                    setState({ thumbnail_image: "", thumbnail_images: "" })
+                    setState({
+                      thumbnail_image: "",
+                      thumbnail_images: null,
+                    })
                   }
                 >
-                  <Trash2 className="  h-6 w-6 cursor-pointer text-red-600" />
+                  <Trash2 className="h-6 w-6 text-red-600" />
                 </div>
               </div>
             </div>
           ) : (
-            <TextInput
-              title="Profile Image (size: 300x300)"
-              placeholder="Profile Image"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const imageUrl = URL.createObjectURL(file); // Generate preview URL
-                setState({
-                  thumbnail_images: file, // Store actual file
-                  thumbnail_image: imageUrl, // Use preview URL instead of fakepath
-                });
-              }}
-              className="mt-2 w-full"
-              type="file"
-            />
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Profile Image (size: 300x300)
+              </label>
+              <TextInput
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    // Create object URL for preview
+                    const imageUrl = URL.createObjectURL(file);
+                    console.log("✌️imageUrl --->", imageUrl);
+
+                    // Set both the file for API and URL for preview
+                    setState({
+                      thumbnail_images: file, // File object for API upload
+                      thumbnail_image: imageUrl, // Object URL for preview
+                    });
+                  }
+                }}
+                className="mt-2 w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
           )}
         </div>
 

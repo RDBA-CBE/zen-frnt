@@ -72,8 +72,7 @@ const LoginForm = (props) => {
               })
             );
             window.location.href = "/";
-              Success("Google login successful!");
-
+            // Success("Google login successful!");
           } else if (
             res?.groups?.includes(ROLES.MENTOR) &&
             res?.mentor == false
@@ -88,8 +87,7 @@ const LoginForm = (props) => {
               })
             );
             window.location.href = "/";
-            Success("Google login successful!");
-
+            // Success("Google login successful!");
           } else if (res?.groups?.includes(ROLES.COUNSELOR)) {
             console.log("✌️res?.groups --->", res?.groups);
             if (res?.is_active) {
@@ -104,8 +102,7 @@ const LoginForm = (props) => {
                 })
               );
               Success("Google login successful!");
-            window.location.href = "/";
-
+              window.location.href = "/";
             } else {
               localStorage.clear();
               InfinitySuccess("Your account is waiting for approval.", () => {
@@ -141,7 +138,7 @@ const LoginForm = (props) => {
           // }, 100);
         } else {
           await updateUserGroup(res);
-          Success("Google login successful!");
+          // Success("Google login successful!");
         }
       } else {
         Failure("Google login failed: No access token received");
@@ -314,9 +311,9 @@ const LoginForm = (props) => {
                       <Label htmlFor="email">Email</Label>
                       <Input
                         id="email"
-                        type="email"
+                        type="text"
                         name="user_login_email"
-                        placeholder="Enter Your mail ID"
+                        placeholder="Enter your mail"
                         required
                         value={state.username}
                         onChange={(e) =>

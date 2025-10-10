@@ -28,7 +28,7 @@ import {
 import { Trash2, Square, Check } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { mentorList, ROLE, ROLES } from "@/utils/constant.utils";
+import { DOMAIN, mentorList, ROLE, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
 
@@ -43,11 +43,11 @@ import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "@/components/ui/singleCheckbox";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
 import { setAuthData } from "@/store/slice/AuthSlice";
+import { Input } from "@/components/ui/input";
 
 const CreateUser = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
 
   const params = useParams();
   console.log("✌️params --->", params);
@@ -92,20 +92,32 @@ const CreateUser = () => {
     // getCountry();
   }, [id]);
 
-  // useEffect(() => {
-  //   const preventBackNavigation = (e) => {
-  //     e.preventDefault();
-  //     e.returnValue = "";
-  //   };
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
 
-  //   window.history.pushState(null, null, window.location.pathname);
-  //   window.addEventListener("popstate", preventBackNavigation);
+    const handlePopState = () => {
+      deleteUser();
+    };
 
-  //   return () => {
-  //     window.removeEventListener("popstate", preventBackNavigation);
-  //   };
-  // }, []);
-  console.log("✌️firstname --->", state.firstname);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  const deleteUser = async (row) => {
+    try {
+      const localId = localStorage.getItem("userId");
+      await Models.user.delete(localId);
+      localStorage.clear();
+      window.location.href= "/"
+    } catch (error) {
+      setState({ deleteLoading: false });
+
+      console.log("error: ", error);
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -469,13 +481,14 @@ const CreateUser = () => {
               window.location.href = "/";
             }
           );
-        
         }
       } else {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
-          email: state.email.trim(),
+          // email: state.email.trim(),
+          email: state?.email.trim() + DOMAIN,
+
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
 
@@ -659,20 +672,37 @@ const CreateUser = () => {
             error={state.errors?.last_name}
             required
           />
-
-          <TextInput
-            value={state.email}
-            onChange={(e) => {
-              setState({
-                email: e.target.value,
-                errors: { ...state.errors, email: "" },
-              });
-            }}
-            placeholder="Email"
-            title="Email"
-            error={state.errors?.email}
-            required
-          />
+          {state.user_type?.label === ROLES.STUDENT ? (
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              required
+              value={state.email}
+              onChange={(e) =>
+                setState({
+                  email: e.target.value,
+                  errors: { ...state.errors, email: "" },
+                })
+              }
+              error={state.errors?.email}
+              title="Email"
+            />
+          ) : (
+            <TextInput
+              value={state.email}
+              onChange={(e) => {
+                setState({
+                  email: e.target.value,
+                  errors: { ...state.errors, email: "" },
+                });
+              }}
+              placeholder="Email"
+              title="Email"
+              error={state.errors?.email}
+              required
+            />
+          )}
 
           {/* <DatePicker
             placeholder="Date Of Birth"
@@ -709,7 +739,10 @@ const CreateUser = () => {
               title="Profile Image (size: 300x300)"
               placeholder="Profile Image"
               onChange={(e) => {
+                console.log("✌️e.target.files --->", e.target.files);
+
                 const file = e.target.files[0];
+                console.log("✌️file --->", file);
                 if (!file) return;
                 const imageUrl = URL.createObjectURL(file); // Generate preview URL
                 setState({

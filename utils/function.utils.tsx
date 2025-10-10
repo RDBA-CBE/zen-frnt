@@ -389,25 +389,37 @@ export const isBeforeCurrentTimeBy30Min = (startDate, startTime) => {
 
 export const isRole = (role) => {
   const targetLabels = [ROLES.COUNSELOR, ROLES.MENTOR, ROLES.ALUMNI];
-  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+  const hasMatch = role?.some((item) => targetLabels.includes(item.label));
   return hasMatch;
 };
 
 export const onlyCon = (role) => {
   const targetLabels = [ROLES.COUNSELOR];
-  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+  const hasMatch = role?.some((item) => targetLabels.includes(item.label));
+  return hasMatch;
+};
+
+export const isOnlyStudent = (role) => {
+  const targetLabels = [ROLES.STUDENT];
+  const hasMatch = role?.some((item) => targetLabels.includes(item.name));
+  return hasMatch;
+};
+
+export const isOnlyStudents = (role) => {
+  const targetLabels = [ROLES.STUDENT];
+  const hasMatch = role?.some((item) => targetLabels.includes(item.label));
   return hasMatch;
 };
 
 export const isMenOrAlumni = (role) => {
   const targetLabels = [ROLES.MENTOR, ROLES.ALUMNI];
-  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+  const hasMatch = role?.some((item) => targetLabels.includes(item.label));
   return hasMatch;
 };
 
 export const rolesExceptAluAndStudent = (role) => {
   const targetLabels = [ROLES.COUNSELOR, ROLES.MENTOR, ROLES.ADMIN];
-  const hasMatch = role.some((item) => targetLabels.includes(item.label));
+  const hasMatch = role?.some((item) => targetLabels.includes(item.label));
 
   return hasMatch;
 };
@@ -443,3 +455,7 @@ export const getRoles = (groups) => {
   
   return groups[0]?.name || 'No Role';
 };
+
+export const extractUsername=(email: string)=> {
+  return email.replace('@kgpian.iitkgp.ac.in', '');
+}
