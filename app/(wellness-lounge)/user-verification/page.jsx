@@ -32,6 +32,7 @@ const UserVerificationPage = () => {
 
   useEffect(() => {
     verifyToken();
+    localStorage.clear()
   }, []);
 
   const verifyToken = async () => {
@@ -55,7 +56,7 @@ const UserVerificationPage = () => {
     try {
       setState({ btnLoading: true });
       const body = {
-        email: state?.email.trim(),
+        email: state?.email.trim() + DOMAIN,
       };
 
       await Validation.resendToken.validate(body, {
@@ -64,8 +65,9 @@ const UserVerificationPage = () => {
       const res = await Models.auth.resendToken(body);
 
       setState({ btnLoading: false });
+      Success(res.message)
 
-      Success("Verification mail sent to your registered e-mail id");
+      // Success("Verification mail sent to your registered e-mail id");
     } catch (error) {
       setState({ btnLoading: false, errors: null });
 
