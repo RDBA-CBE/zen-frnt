@@ -114,7 +114,7 @@ const LoginForm = (props) => {
               const response = await Models.user.getUserId(res.user_id);
               console.log("response", response);
               
-              if (response.is_Verified) {
+              if (response.is_verified) {
                 console.log("hello");
                 
                 localStorage.setItem("group", res.groups?.[0]);
