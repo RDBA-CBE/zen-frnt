@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react"; // Import clear icon
+import { X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -8,19 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import React, { useState } from "react";
-
-// interface CustomSelectProps {
-//   options: { value: string; label: string }[];
-//   value: string;
-//   onChange: (selected: { value: string; label: string } | null) => void;
-//   placeholder?: string;
-//   required?: boolean;
-//   title?: string;
-//   error?:string
-
-// }
+import React from "react";
 
 const CustomSelect = (props) => {
   const {
@@ -33,10 +21,11 @@ const CustomSelect = (props) => {
     error,
     disabled,
   } = props;
+
   const selectedOption = options?.find((option) => option.value === value);
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {title && (
         <label className="block text-sm font-bold text-gray-700 mb-2">
           {title} {required && <span className="text-red-500">*</span>}
@@ -53,9 +42,10 @@ const CustomSelect = (props) => {
           value={value}
           disabled={disabled}
         >
-          <SelectTrigger hideIcon={!!value}>
-            {" "}
-            {/* Space for clear icon */}
+          {/* Remove the default chevron icon when we have a value */}
+          <SelectTrigger
+            className={value ? "[&_[data-role=icon]]]:hidden pr-8" : ""}
+          >
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
@@ -67,20 +57,21 @@ const CustomSelect = (props) => {
           </SelectContent>
         </Select>
 
-        {selectedOption && !disabled && (
+        {/* Clear button - only show when there's a value */}
+        {value && !disabled && (
           <button
-            onClick={() => onChange(null)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onChange(null);
+            }}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-sm bg-transparent hover:bg-gray-100"
           >
             <X className="w-4 h-4" />
           </button>
         )}
       </div>
-      {error && (
-        <p className="mt-2 text-sm text-red-600">
-          {error} {/* Display the error message if it exists */}
-        </p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 };

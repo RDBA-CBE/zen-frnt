@@ -303,6 +303,7 @@ export const HEAD = [
   "Name",
   "Email",
   "Activity Type",
+  'Last Login',
   "Event Name",
   "Event Date",
   "Event Time",

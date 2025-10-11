@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import {
   capitalizeFLetter,
+  Dropdown,
   formatDuration,
   getTimes,
   objIsEmpty,
@@ -20,6 +21,9 @@ import moment from "moment";
 import { DatePickers } from "@/components/common-components/datePickers";
 import { Loader } from "lucide-react";
 import PrimaryButton from "@/components/common-components/primaryButton";
+import CustomSelect from "@/components/common-components/dropdown";
+import * as FileSaver from "file-saver";
+import ExcelJS from "exceljs";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -36,7 +40,7 @@ const Dashboard = () => {
     reports_user_activity: null,
     reports_usage: null,
     reports_session_duration: null,
-    reports_registrations: null,
+    reports_registrations: [],
     reports_meetings: null,
     // reports_engagement: null,
     reports_attendance: null,
@@ -47,7 +51,6 @@ const Dashboard = () => {
     catChartSeries: [],
     participatedChartOptions: {},
     participatedChartSeries: [],
-
     activityHead: [],
     activityBody: [],
     loading: false,
@@ -58,20 +61,36 @@ const Dashboard = () => {
     showPartModal: false,
     selectedPart: {},
     participationUser: [],
+    lounge_type: null,
+    attendanceDropdown: [],
+    userList: [],
+    user_id: null,
+    exportLoading: false,
+    activityLoading: false,
   });
 
   useEffect(() => {
     setState({ isMounted: true });
-    // reports_user_activity();
-    // // reports_usage();
-    // // reports_session_duration();
-    // reports_registrations();
-    // // reports_meetings();
-    // reports_engagement();
-    // reports_attendance();
-    // // getReportData();
     reports_engagement();
   }, []);
+
+  useEffect(() => {
+    setState({ isMounted: true });
+    reports_engagement();
+    if (state.activeTab == "booking") {
+      getCategoryList();
+    }
+    if (state.activeTab == "customers") {
+      getSessionRegList();
+    }
+    if (state.activeTab == "participate") {
+      getSessionPartList();
+    }
+    if (state.activeTab == "activity") {
+      getUserList();
+    }
+    setState({ exportLoading: false });
+  }, [state.activeTab]);
 
   useEffect(() => {
     if (state.activeTab == "booking") {
@@ -84,15 +103,22 @@ const Dashboard = () => {
       reports_user_activity();
     }
   }, [
-    // state.lounge_status,
+    state.lounge_type,
     state.start_date,
     state.end_date,
     state.activeTab,
-    // state.event,
+    state.event,
+    state.user_id,
   ]);
 
   useEffect(() => {
-    setState({ start_date: null, end_date: null });
+    setState({
+      start_date: null,
+      end_date: null,
+      lounge_type: null,
+      event: null,
+      user_id: null,
+    });
   }, [state.activeTab]);
 
   const bodyData = () => {
@@ -103,7 +129,139 @@ const Dashboard = () => {
     if (state.end_date) {
       body.end_date = moment(state.end_date).format("YYYY-MM-DD");
     }
+    if (state.lounge_type?.value) {
+      body.category = state.lounge_type?.label;
+    }
+
+    if (state.event?.value) {
+      body.event = state.event?.label;
+    }
+    if (state.user_id?.value) {
+      body.user_id = state.user_id?.value;
+    }
+
     return body;
+  };
+
+  //Dropdown list
+
+  const getCategoryList = async () => {
+    try {
+      setState({ loading: true });
+
+      const res: any = await Models.category.catDropDownList();
+      const dropdowns = Dropdown(res?.results, "name");
+
+      const role = localStorage.getItem("group");
+      setState({ categoryList: dropdowns, loading: false, role: role });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getSessionRegList = async () => {
+    try {
+      setState({ loading: true });
+      const body = {};
+
+      const res: any = await Models.session.reports_registrations(body);
+
+      const groupedEvents = res?.registrations?.reduce((acc, registration) => {
+        const eventTitle = registration?.event?.title;
+        if (!acc[eventTitle]) {
+          acc[eventTitle] = {
+            title: eventTitle,
+            lounge_type: registration?.event?.category,
+            start_date: registration?.event?.start_date,
+            start_time: registration?.event?.start_time,
+            user_count: 0,
+            registrations: [],
+            id: registration?.event?.id,
+          };
+        }
+        acc[eventTitle].user_count++;
+        acc[eventTitle].registrations.push(registration);
+        return acc;
+      }, {});
+
+      const groupedEventsArray = groupedEvents
+        ? Object.values(groupedEvents)
+        : [];
+
+      const regDropDownList = groupedEventsArray?.map((item: any) => ({
+        value: item?.id,
+        label: item?.title,
+      }));
+
+      setState({ reports_registrations: regDropDownList });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getSessionPartList = async () => {
+    try {
+      setState({ loading: true });
+      const body = {};
+
+      const res: any = await Models.session.reports_attendance(body);
+      const dropdownEvents = res?.events?.map((item) => ({
+        value: item?.event?.id,
+        label: item?.event?.title,
+      }));
+
+      setState({ attendanceDropdown: dropdownEvents, loading: false });
+    } catch (error) {
+      setState({ loading: false });
+
+      console.log("error: ", error);
+    }
+  };
+
+  const getUserList = async () => {
+    try {
+      setState({ loading: true, activityLoading: true });
+      const body = {};
+
+      const res: any = await Models.session.reports_user_activity(body);
+
+      const usersById = res?.activities?.reduce((acc, activity) => {
+        const user = activity?.user;
+        if (!acc[user.id]) {
+          acc[user.id] = {
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            activities: [],
+          };
+        }
+        acc[user.id]?.activities?.push(activity);
+        return acc;
+      }, {});
+
+      const userList = Object?.values(usersById).sort(
+        (a: any, b: any) => a.id - b.id
+      );
+
+      const filterByDropdownFormat = userList?.map((item: any) => ({
+        value: item?.id,
+        label: item?.name,
+      }));
+
+      setState({
+        userList: filterByDropdownFormat,
+        loading: false,
+        activityLoading: false,
+      });
+    } catch (error) {
+      setState({ loading: false, activityLoading: false });
+
+      console.log("error: ", error);
+    }
   };
 
   // const getReportData = async () => {
@@ -149,9 +307,11 @@ const Dashboard = () => {
   //   }
   // };
 
+  // Chart
+
   const reports_user_activity = async () => {
     try {
-      setState({ loading: true });
+      setState({ loading: true,activityLoading: true });
       const body = bodyData();
       const res: any = await Models.session.reports_user_activity(body);
       const tableBody = res?.activities?.map((item) => ({
@@ -173,43 +333,26 @@ const Dashboard = () => {
         Duration: item?.details?.duration_minutes
           ? formatDuration(item?.details?.duration_minutes)
           : "",
+        "Last Login":
+          item?.activity_type == "login"
+            ? item?.timestamp
+              ? moment(item?.timestamp).format("DD-MM-YYYY")
+              : ""
+            : "",
       }));
 
       setState({
         reports_user_activity: res,
         activityBody: tableBody,
         loading: false,
+        activityLoading: false
       });
     } catch (error) {
-      setState({ loading: false });
+      setState({ loading: false,activityLoading: false });
 
       console.log("✌️error --->", error);
     }
   };
-
-  // const reports_usage = async () => {
-  //   try {
-  //     const body = bodyData();
-
-  //     const res = await Models.session.reports_usage(body);
-  //     // console.log("reports_usage --->", res);
-  //     setState({ reports_usage: res });
-  //   } catch (error) {
-  //     console.log("✌️error --->", error);
-  //   }
-  // };
-
-  // const reports_session_duration = async () => {
-  //   try {
-  //     const body = bodyData();
-
-  //     const res = await Models.session.reports_session_duration(body);
-  //     // console.log("reports_session_duration --->", res);
-  //     setState({ reports_session_duration: res });
-  //   } catch (error) {
-  //     console.log("✌️error --->", error);
-  //   }
-  // };
 
   const reports_registrations = async () => {
     try {
@@ -224,7 +367,7 @@ const Dashboard = () => {
         const eventCounts = {};
 
         registrations.forEach((registration) => {
-          const eventTitle = registration.event.title;
+          const eventTitle = registration?.event?.title;
           if (eventCounts[eventTitle]) {
             eventCounts[eventTitle]++;
           } else {
@@ -237,8 +380,8 @@ const Dashboard = () => {
 
       const eventCounts = processRegistrationData();
 
-      const eventTitles = Object.keys(eventCounts);
-      const registrationCounts = Object.values(eventCounts);
+      const eventTitles = Object?.keys(eventCounts);
+      const registrationCounts = Object?.values(eventCounts);
 
       const regChartOptions = {
         chart: {
@@ -302,80 +445,12 @@ const Dashboard = () => {
       setState({ regChartOptions, regChartSeries, loading: false });
 
       registrationList(res);
-
-      setState({ reports_registrations: res });
     } catch (error) {
       setState({ loading: false });
 
       console.log("✌️error --->", error);
     }
   };
-
-  const registrationList = async (res) => {
-    try {
-      const groupedEvents = res?.registrations?.reduce((acc, registration) => {
-        const eventTitle = registration.event.title;
-        if (!acc[eventTitle]) {
-          acc[eventTitle] = {
-            title: eventTitle,
-            lounge_type: registration.event.category,
-            start_date: registration.event.start_date,
-            start_time: registration.event.start_time,
-            user_count: 0,
-            registrations: [],
-          };
-        }
-        acc[eventTitle].user_count++;
-        acc[eventTitle].registrations.push(registration);
-        return acc;
-      }, {});
-
-      const groupedEventsArray = groupedEvents
-        ? Object.values(groupedEvents)
-        : [];
-      console.log("✌️groupedEventsArray --->", groupedEventsArray);
-      setState({ registrationList: groupedEventsArray });
-
-      // Function to show user details modal
-    } catch (error) {
-      console.log("✌️error --->", error);
-    }
-  };
-
-  const showUserDetails = (event) => {
-    console.log("✌️event --->", event);
-    setState({
-      selectedEvent: event,
-      showUserModal: true,
-    });
-
-    // setState((prev) => ({
-    //   ...prev,
-    //   selectedEvent: event,
-    //   showUserModal: true,
-    // }));
-  };
-
-  const showPartDetails = (event) => {
-    console.log("✌️event --->", event);
-    setState({
-      selectedPart: event?.event,
-      showPartModal: true,
-      participationUser: event?.participants,
-    });
-  };
-
-  // const reports_meetings = async () => {
-  //   try {
-  //     const body = bodyData();
-
-  //     const res = await Models.session.reports_meetings(body);
-  //     // console.log("reports_meetings --->", res);
-  //     setState({ reports_meetings: res });
-  //   } catch (error) {
-  //     console.log("✌️error --->", error);
-  //   }
-  // };
 
   const reports_engagement = async () => {
     try {
@@ -388,12 +463,8 @@ const Dashboard = () => {
 
       const promises = filter?.map((item) => LoungeList(item?.event_ids));
       const allResults = await Promise.all(promises);
-      console.log("✌️allResults --->", allResults);
       const combinedData = allResults.flat();
-      console.log("✌️combinedData --->", combinedData);
       setState({ loungeList: combinedData });
-
-      // filter?.map((item) => LoungeList(item?.event_ids));
 
       const catChartOptions = {
         chart: {
@@ -413,26 +484,22 @@ const Dashboard = () => {
           enabled: false,
         },
         xaxis: {
-          categories: filter?.map((item) =>
-            item.lounge_type__name.length > 15
-              ? item.lounge_type__name.substring(0, 15) + "..."
-              : item.lounge_type__name
-          ),
+          categories: filter?.map((item) => item?.lounge_type__name),
         },
         yaxis: {
           title: {
             text: "Count",
           },
         },
-        colors: ["#10b981", "#3b82f6"], // Green for events, blue for registrations
+        colors: ["#10b981", "#3b82f6"],
         series: [
           {
             name: "Event Count",
-            data: filter?.map((item) => item.event_count),
+            data: filter?.map((item) => item?.event_count),
           },
           {
             name: "Registration Count",
-            data: filter?.map((item) => item.total_registrations),
+            data: filter?.map((item) => item?.total_registrations),
           },
         ],
         legend: {
@@ -443,11 +510,11 @@ const Dashboard = () => {
       const catChartSeries = [
         {
           name: "Session Count",
-          data: filter?.map((item) => item.event_count),
+          data: filter?.map((item) => item?.event_count),
         },
         {
           name: "Registration Count",
-          data: filter?.map((item) => item.total_registrations),
+          data: filter?.map((item) => item?.total_registrations),
         },
       ];
       setState({
@@ -463,35 +530,6 @@ const Dashboard = () => {
     }
   };
 
-  const LoungeList = async (arr) => {
-    try {
-      // const arr = ["208", "207", "206", "205"];
-
-      const body = {
-        ids: arr,
-      };
-      const res: any = await Models.session.list(1, body);
-      const response = res?.results?.map((item) => ({
-        title: item?.title,
-        lounge_type: item?.lounge_type?.name,
-        start_date: item?.start_date
-          ? moment(item?.start_date).format("DD-MM-YYYY")
-          : "",
-        end_date: item?.end_date
-          ? moment(item?.end_date).format("DD-MM-YYYY")
-          : "",
-        start_time: item?.start_time,
-        end_time: item?.end_time,
-        event_registrations_count: item?.event_registrations_count,
-      }));
-      console.log("✌️response --->", response);
-
-      return response;
-    } catch (error) {
-      console.log("✌️error --->", error);
-    }
-  };
-
   const reports_attendance = async () => {
     try {
       setState({ loading: true });
@@ -499,16 +537,17 @@ const Dashboard = () => {
       const body = bodyData();
 
       const res: any = await Models.session.reports_attendance(body);
+
       const data = res?.events;
 
       const eventTitles = data.map((item) =>
         item.event.title.length > 20
-          ? item.event.title.substring(0, 20) + "..."
-          : item.event.title
+          ? item?.event?.title.substring(0, 20) + "..."
+          : item?.event?.title
       );
 
       const totalAttended = data.map(
-        (item) => item.attendance_summary.total_attended
+        (item) => item?.attendance_summary?.total_attended
       );
       // const totalRegistered = data.map(
       //   (item) => item.attendance_summary.total_registered
@@ -559,14 +598,14 @@ const Dashboard = () => {
           },
           min: 0,
 
-          forceNiceScale: true, // Force nice whole numbers
+          forceNiceScale: true,
           labels: {
             formatter: function (value) {
-              return Math.round(value); // Round to whole numbers
+              return Math.round(value);
             },
           },
         },
-        colors: ["#3b82f6", "#10b981"], // Blue for attended, Green for registered
+        colors: ["#3b82f6", "#10b981"],
         legend: {
           position: "top",
           horizontalAlign: "center",
@@ -603,7 +642,6 @@ const Dashboard = () => {
         //   data: totalRegistered,
         // },
       ];
-      console.log("✌️participatedChartOptions --->", participatedChartOptions);
 
       setState({
         participatedList: res?.events,
@@ -618,7 +656,694 @@ const Dashboard = () => {
       console.log("✌️error --->", error);
     }
   };
-  console.log("✌️state.participatedList --->", state.participatedList);
+
+  // Table List
+
+  const registrationList = async (res) => {
+    try {
+      const groupedEvents = res?.registrations?.reduce((acc, registration) => {
+        const eventTitle = registration?.event?.title;
+        if (!acc[eventTitle]) {
+          acc[eventTitle] = {
+            title: eventTitle,
+            lounge_type: registration?.event?.category,
+            start_date: registration?.event?.start_date,
+            start_time: registration?.event?.start_time,
+            user_count: 0,
+            registrations: [],
+            id: registration?.event?.id,
+          };
+        }
+        acc[eventTitle].user_count++;
+        acc[eventTitle]?.registrations?.push(registration);
+        return acc;
+      }, {});
+
+      const groupedEventsArray = groupedEvents
+        ? Object.values(groupedEvents)
+        : [];
+      setState({ registrationList: groupedEventsArray });
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const LoungeList = async (arr) => {
+    try {
+      const body = {
+        ids: arr,
+      };
+      const res: any = await Models.session.list(1, body);
+      const response = res?.results?.map((item) => ({
+        title: item?.title,
+        lounge_type: item?.lounge_type?.name,
+        start_date: item?.start_date
+          ? moment(item?.start_date).format("DD-MM-YYYY")
+          : "",
+        end_date: item?.end_date
+          ? moment(item?.end_date).format("DD-MM-YYYY")
+          : "",
+        start_time: item?.start_time,
+        end_time: item?.end_time,
+        event_registrations_count: item?.event_registrations_count,
+      }));
+
+      return response;
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const exportToExcel = async () => {
+    try {
+      setState({ exportLoading: true });
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Lounge Summary");
+
+      // Define columns for Excel - Use simple array for headers
+      const headers = [
+        "Title",
+        "Lounge Type",
+        "Start Date",
+        "End Date",
+        "Start Time",
+        "End Time",
+        "Registration Count",
+      ];
+
+      const headerRow = worksheet.addRow(headers);
+      headerRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "7f4099" },
+      };
+
+      state.loungeList.forEach((event) => {
+        const rowData = [
+          event.title,
+          event.lounge_type,
+          event.start_date,
+          event.end_date,
+          event.start_time,
+          event.end_time,
+          event.event_registrations_count,
+        ];
+        worksheet.addRow(rowData);
+      });
+
+      // Style the data rows
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) {
+          // Skip header row
+          if (rowNumber % 2 === 0) {
+            row.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "F8F9FA" },
+            };
+          }
+        }
+        row.alignment = { vertical: "middle", horizontal: "left" };
+        row.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+
+      // Auto-fit columns
+      worksheet.columns = [
+        { width: 30 }, // Title
+        { width: 25 }, // Lounge Type
+        { width: 15 }, // Start Date
+        { width: 15 }, // End Date
+        { width: 15 }, // Start Time
+        { width: 15 }, // End Time
+        { width: 15 }, // Registrations
+      ];
+
+      // Generate and save the Excel file
+      const buffer = await workbook.xlsx.writeBuffer();
+      FileSaver.saveAs(
+        new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        "Lounge Summary.xlsx"
+      );
+      setState({ exportLoading: false });
+    } catch (error) {
+      setState({ exportLoading: false });
+
+      console.error("❌ Error exporting Excel:", error);
+    } finally {
+      setState({ exportLoading: false });
+
+      // setBtnLoading(false);
+    }
+  };
+
+  const exportToExcelRegList = async () => {
+    try {
+      setState({ exportLoading: true });
+      const workbook = new ExcelJS.Workbook();
+
+      const eventSheet = workbook.addWorksheet("Session Registration Summary");
+
+      const eventHeaders = [
+        "Session Title",
+        "Lounge Type",
+        "Start Date",
+        "Start Time",
+        "Total Users",
+        "User Details",
+      ];
+
+      const eventHeaderRow = eventSheet.addRow(eventHeaders);
+      eventHeaderRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      eventHeaderRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      state.registrationList.forEach((event) => {
+        let userDetails = "";
+        if (event.registrations && event.registrations.length > 0) {
+          userDetails = event.registrations
+            .map((registration, index) => {
+              const userName = registration.user?.name || "";
+              const userEmail = registration.user?.email || "";
+              return `${index + 1}. Name: ${userName}, Email: ${userEmail}`;
+            })
+            .join(", ");
+        } else {
+          userDetails = "No registrations";
+        }
+
+        eventSheet.addRow([
+          event.title,
+          event.lounge_type,
+          event.start_date,
+          event.start_time,
+          event.user_count,
+          userDetails,
+        ]);
+      });
+
+      const registrationSheet = workbook.addWorksheet("Registration Details");
+
+      const regHeaders = [
+        "Event Title",
+        "Lounge Type",
+        "Start Date",
+        "Start Time",
+        "Registration ID",
+        "User Name",
+        "User Email",
+        "University",
+        "Registration Date",
+        "Registration Status",
+        "Amount",
+        "Discount Amount",
+        "Coupon Used",
+        "Slot",
+        "Credits Granted",
+        "Admin Registration",
+      ];
+
+      const regHeaderRow = registrationSheet.addRow(regHeaders);
+      regHeaderRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      regHeaderRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      state.registrationList.forEach((event) => {
+        if (event.registrations && event.registrations.length > 0) {
+          event.registrations.forEach((registration) => {
+            registrationSheet.addRow([
+              event.title,
+              event.lounge_type,
+              event.start_date,
+              event.start_time,
+              registration.registration_id,
+              registration.user?.name || "",
+              registration.user?.email || "",
+              registration.user?.university || "",
+              new Date(registration.registration_date).toLocaleString(),
+              registration.registration_status,
+              registration.amount,
+              registration.discount_amount,
+              registration.coupon_used || "None",
+              registration.slot || "",
+              registration.credits_granted ? "Yes" : "No",
+              registration.is_admin_registration ? "Yes" : "No",
+            ]);
+          });
+        }
+      });
+
+      [eventSheet, registrationSheet].forEach((sheet) => {
+        sheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) {
+            if (rowNumber % 2 === 0) {
+              row.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "F8F9FA" },
+              };
+            }
+          }
+          row.alignment = { vertical: "middle", horizontal: "left" };
+          row.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
+
+      eventSheet.columns = [
+        { width: 25 },
+        { width: 30 },
+        { width: 12 },
+        { width: 12 }, // Start Time
+        { width: 12 }, // Total Users
+        { width: 50 }, // User Details (wider column for user information)
+      ];
+
+      registrationSheet.columns = [
+        { width: 25 }, // Event Title
+        { width: 30 }, // Lounge Type
+        { width: 12 }, // Start Date
+        { width: 12 }, // Start Time
+        { width: 20 }, // Registration ID
+        { width: 20 }, // User Name
+        { width: 25 }, // User Email
+        { width: 20 }, // University
+        { width: 20 }, // Registration Date
+        { width: 18 }, // Registration Status
+        { width: 10 }, // Amount
+        { width: 15 }, // Discount Amount
+        { width: 15 }, // Coupon Used
+        { width: 15 }, // Slot
+        { width: 15 }, // Credits Granted
+        { width: 18 }, // Admin Registration
+      ];
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      FileSaver.saveAs(
+        new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        "Session Registration Summary.xlsx"
+      );
+      setState({ exportLoading: false });
+    } catch (error) {
+      setState({ exportLoading: false });
+
+      console.error("❌ Error exporting Excel:", error);
+    }
+  };
+
+  const exportToExcelAttendance = async () => {
+    try {
+      setState({ exportLoading: true });
+      const workbook = new ExcelJS.Workbook();
+
+      const eventSheet = workbook.addWorksheet("Session Participated Summary");
+
+      const eventHeaders = [
+        "Session Title",
+        "Lounge Type",
+        "Start Date",
+        "Moderator",
+        "Total Attended",
+        "User Details", // User details from participants array
+      ];
+
+      const eventHeaderRow = eventSheet.addRow(eventHeaders);
+      eventHeaderRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      eventHeaderRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      state.participatedList.forEach((item) => {
+        // Format user details from participants array
+        let userDetails = "";
+        if (item.participants && item.participants.length > 0) {
+          userDetails = item.participants
+            .map((participant, index) => {
+              const userName = participant.name || "";
+              const userEmail = participant.email || "";
+              return `${index + 1}. Name: ${userName}, Email: ${userEmail}`;
+            })
+            .join(", ");
+        } else {
+          userDetails = "No participants";
+        }
+
+        eventSheet.addRow([
+          item.event.title,
+          item.event.category,
+          item.event.start_date,
+          item.event.moderator || "",
+          item.attendance_summary.total_attended, // Only total attended
+          userDetails, // Add the formatted user details from participants
+        ]);
+      });
+
+      // Sheet 2: Detailed Participants Information
+      const participantsSheet = workbook.addWorksheet("Participants Details");
+
+      const participantHeaders = [
+        "Event Title",
+        "Lounge Type",
+        "Start Date",
+        "Moderator",
+        "Participant Name",
+        "Participant Email",
+        "Join Time",
+        "Leave Time",
+        "Duration (seconds)",
+        "Is Registered",
+      ];
+
+      const participantHeaderRow = participantsSheet.addRow(participantHeaders);
+      participantHeaderRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      participantHeaderRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      // Sheet 3: Registered Users Information
+      const registeredSheet = workbook.addWorksheet("Registered Users");
+
+      const registeredHeaders = [
+        "Event Title",
+        "Lounge Type",
+        "Start Date",
+        "User Name",
+        "User Email",
+        "Registration ID",
+        "Attended",
+        "Credits Granted",
+      ];
+
+      const registeredHeaderRow = registeredSheet.addRow(registeredHeaders);
+      registeredHeaderRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      registeredHeaderRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      // Add data to Participants Details sheet
+      state.participatedList.forEach((item) => {
+        if (item.participants && item.participants.length > 0) {
+          item.participants.forEach((participant) => {
+            participantsSheet.addRow([
+              item.event.title,
+              item.event.category,
+              item.event.start_date,
+              item.event.moderator || "",
+              participant.name || "",
+              participant.email || "",
+              new Date(participant.join_time).toLocaleString(),
+              new Date(participant.leave_time).toLocaleString(),
+              participant.duration,
+              participant.is_registered ? "Yes" : "No",
+            ]);
+          });
+        } else {
+          // If no participants, still show the event
+          participantsSheet.addRow([
+            item.event.title,
+            item.event.category,
+            item.event.start_date,
+            item.event.moderator || "",
+            "No participants",
+            "",
+            "",
+            "",
+            "",
+            "No",
+          ]);
+        }
+      });
+
+      // Add data to Registered Users sheet
+      state.participatedList.forEach((item) => {
+        if (item.registered_users && item.registered_users.length > 0) {
+          item.registered_users.forEach((user) => {
+            registeredSheet.addRow([
+              item.event.title,
+              item.event.category,
+              item.event.start_date,
+              user.name || "",
+              user.email || "",
+              user.registration_id,
+              user.attended ? "Yes" : "No",
+              user.credits_granted ? "Yes" : "No",
+            ]);
+          });
+        } else {
+          // If no registered users, still show the event
+          registeredSheet.addRow([
+            item.event.title,
+            item.event.category,
+            item.event.start_date,
+            "No registered users",
+            "",
+            "",
+            "No",
+            "No",
+          ]);
+        }
+      });
+
+      // Apply styling to all sheets
+      [eventSheet, participantsSheet, registeredSheet].forEach((sheet) => {
+        sheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) {
+            if (rowNumber % 2 === 0) {
+              row.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "F8F9FA" },
+              };
+            }
+          }
+          row.alignment = { vertical: "middle", horizontal: "left" };
+          row.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
+
+      // Set column widths for Event Summary (only 5 columns + User Details)
+      eventSheet.columns = [
+        { width: 25 }, // Session Title
+        { width: 30 }, // Lounge Type
+        { width: 12 }, // Start Date
+        { width: 20 }, // Moderator
+        { width: 15 }, // Total Attended
+        { width: 50 }, // User Details
+      ];
+
+      participantsSheet.columns = [
+        { width: 25 }, // Event Title
+        { width: 30 }, // Lounge Type
+        { width: 12 }, // Start Date
+        { width: 20 }, // Moderator
+        { width: 20 }, // Participant Name
+        { width: 25 }, // Participant Email
+        { width: 20 }, // Join Time
+        { width: 20 }, // Leave Time
+        { width: 15 }, // Duration
+        { width: 12 }, // Is Registered
+      ];
+
+      registeredSheet.columns = [
+        { width: 25 }, // Event Title
+        { width: 30 }, // Lounge Type
+        { width: 12 }, // Start Date
+        { width: 20 }, // User Name
+        { width: 25 }, // User Email
+        { width: 20 }, // Registration ID
+        { width: 10 }, // Attended
+        { width: 15 }, // Credits Granted
+      ];
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      FileSaver.saveAs(
+        new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        "Session Participated Summary.xlsx"
+      );
+
+      setState({ exportLoading: false });
+    } catch (error) {
+      setState({ exportLoading: false });
+      console.error("❌ Error exporting Excel:", error);
+    }
+  };
+
+  const exportToExcelUser = async () => {
+    try {
+      setState({ exportLoading: true });
+      const workbook = new ExcelJS.Workbook();
+
+      // Sheet: User Activity
+      const activitySheet = workbook.addWorksheet("User Activity");
+
+      const headers = [
+        "Name",
+        "Email",
+        "Activity Type",
+        "Last Login",
+        "Event Name",
+        "Event Date",
+        "Event Time",
+        "Meeting ID",
+        "Join Time",
+        "Leave Time",
+        "Duration",
+      ];
+
+      const headerRow = activitySheet.addRow(headers);
+      headerRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "2E86AB" },
+      };
+
+      // Add data rows with conditional formatting
+      state.activityBody.forEach((activity) => {
+        const activityType = activity["Activity Type"];
+
+        // Only show Last Login if activity type is Login, otherwise empty string
+        const lastLogin =
+          activityType === "Login" ? activity["Last Login"] || "" : "";
+
+        const row = activitySheet.addRow([
+          activity.Name || "",
+          activity.Email || "",
+          activityType || "",
+          lastLogin, // Only populated for Login activities
+          activity["Event Name"] || "",
+          activity["Event Date"] || "",
+          activity["Event Time"] || "",
+          activity["Meeting ID"] || "",
+          activity["Join Time"] || "",
+          activity["Leave Time"] || "",
+          activity.Duration || "",
+        ]);
+
+        // Optional: Add color coding based on activity type
+        if (activityType === "Login") {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "E8F5E8" }, // Light green for login
+          };
+        } else if (activityType === "Registration") {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "E3F2FD" }, // Light blue for registration
+          };
+        } else if (activityType === "Meeting_join") {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFF3E0" }, // Light orange for meeting join
+          };
+        }
+      });
+
+      // Apply basic styling to all rows
+      activitySheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) {
+          // If no conditional color applied, apply zebra striping
+          if (!row.fill) {
+            if (rowNumber % 2 === 0) {
+              row.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "F8F9FA" },
+              };
+            }
+          }
+        }
+        row.alignment = { vertical: "middle", horizontal: "left" };
+        row.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+
+      // Set column widths
+      activitySheet.columns = [
+        { width: 20 }, // Name
+        { width: 25 }, // Email
+        { width: 15 }, // Activity Type
+        { width: 20 }, // Last Login
+        { width: 25 }, // Event Name
+        { width: 12 }, // Event Date
+        { width: 12 }, // Event Time
+        { width: 20 }, // Meeting ID
+        { width: 15 }, // Join Time
+        { width: 15 }, // Leave Time
+        { width: 12 }, // Duration
+      ];
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      FileSaver.saveAs(
+        new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        "User Activity.xlsx"
+      );
+
+      setState({ exportLoading: false });
+    } catch (error) {
+      setState({ exportLoading: false });
+      console.error("❌ Error exporting Excel:", error);
+    }
+  };
+
+  // Handle View
+
+  const showUserDetails = (event) => {
+    setState({
+      selectedEvent: event,
+      showUserModal: true,
+    });
+  };
+
+  const showPartDetails = (event) => {
+    setState({
+      selectedPart: event?.event,
+      showPartModal: true,
+      participationUser: event?.participants,
+    });
+  };
+
 
   return (
     <div className="container mt-0 mx-auto calendar-wrapper md:p-4 ">
@@ -678,6 +1403,15 @@ const Dashboard = () => {
               </h2>
 
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <div className="w-auto sm:w-100">
+                  <CustomSelect
+                    options={state.categoryList}
+                    value={state.lounge_type?.value || ""}
+                    onChange={(value) => setState({ lounge_type: value })}
+                    placeholder="Select Lounge Type"
+                  />
+                </div>
+
                 <div className="w-full sm:w-50">
                   <DatePickers
                     fromDate={null}
@@ -709,8 +1443,8 @@ const Dashboard = () => {
                   name="Export"
                   variant={""}
                   className="bg-themeGreen hover:bg-themeGreen"
-                  onClick={() => {}}
-                  loading={state.submitLoading}
+                  onClick={() => exportToExcel()}
+                  loading={state.exportLoading}
                 />
               </div>
             </div>
@@ -803,6 +1537,14 @@ const Dashboard = () => {
               </h2>
 
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <div className="w-auto sm:w-100">
+                  <CustomSelect
+                    options={state.reports_registrations}
+                    value={state.event?.value || ""}
+                    onChange={(value) => setState({ event: value })}
+                    placeholder="Select Session"
+                  />
+                </div>
                 <div className="w-full sm:w-50">
                   <DatePickers
                     placeholder="Start date"
@@ -832,8 +1574,8 @@ const Dashboard = () => {
                   name="Export"
                   variant={""}
                   className="bg-themeGreen hover:bg-themeGreen"
-                  onClick={() => {}}
-                  loading={state.submitLoading}
+                  onClick={() => exportToExcelRegList()}
+                  loading={state.exportLoading}
                 />
               </div>
             </div>
@@ -865,7 +1607,7 @@ const Dashboard = () => {
                           "Session Title",
                           "Lounge Type",
                           "Start Date",
-                          "Start Time",
+                          "Moderator",
                           "Registered Users",
                           "Actions",
                         ]?.map((item, i) => (
@@ -888,7 +1630,7 @@ const Dashboard = () => {
                                 "Session Title",
                                 "Lounge Type",
                                 "Start Date",
-                                "Start Time",
+                                "Moderator",
                                 "Registered Users",
                                 "Actions",
                               ]?.length
@@ -917,8 +1659,13 @@ const Dashboard = () => {
                                 : ""}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                              {event?.start_time || ""}
+                              {event?.start_date
+                                ? moment(event?.start_date).format("DD-MM-YYYY")
+                                : ""}
                             </td>
+                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                              {event?.start_time || ""}
+                            </td> */}
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                               <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-blue-800 bg-blue-100 rounded-full">
                                 {event?.user_count} users
@@ -990,13 +1737,13 @@ const Dashboard = () => {
                                 (reg, index) => (
                                   <tr key={index} className="hover:bg-gray-50">
                                     <td className="px-4 py-3 text-sm text-gray-900">
-                                      {reg?.user?.name || "N/A"}
+                                      {reg?.user?.name || ""}
                                     </td>
                                     <td className="px-4 py-3 text-sm text-gray-600">
                                       {reg?.user?.email}
                                     </td>
                                     <td className="px-4 py-3 text-sm text-gray-600">
-                                      {reg?.user?.university || "N/A"}
+                                      {reg?.user?.university || ""}
                                     </td>
                                     <td className="px-4 py-3 text-sm text-gray-600">
                                       {reg?.registration_date
@@ -1054,6 +1801,14 @@ const Dashboard = () => {
               </h2>
 
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <div className="w-auto sm:w-100">
+                  <CustomSelect
+                    options={state.attendanceDropdown}
+                    value={state.event?.value || ""}
+                    onChange={(value) => setState({ event: value })}
+                    placeholder="Select Session"
+                  />
+                </div>
                 <div className="w-full sm:w-50">
                   <DatePickers
                     placeholder="Start date"
@@ -1083,8 +1838,8 @@ const Dashboard = () => {
                   name="Export"
                   variant={""}
                   className="bg-themeGreen hover:bg-themeGreen"
-                  onClick={() => {}}
-                  loading={state.submitLoading}
+                  onClick={() => exportToExcelAttendance()}
+                  loading={state.exportLoading}
                 />
               </div>
             </div>
@@ -1117,7 +1872,7 @@ const Dashboard = () => {
                           "Session Title",
                           "Lounge Type",
                           "Start Date",
-                          "Start Time",
+                          "Moderator",
                           "Registered Users",
                           "Actions",
                         ]?.map((item, i) => (
@@ -1171,7 +1926,7 @@ const Dashboard = () => {
                                 : ""}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                              {event.event?.start_time || ""}
+                              {event.event?.moderator || ""}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                               <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-blue-800 bg-blue-100 rounded-full">
@@ -1197,7 +1952,6 @@ const Dashboard = () => {
                     state.participationUser?.length > 0 && (
                       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
-                          {/* Modal Header */}
                           <div className="bg-gray-50 px-6 py-4 border-b">
                             <div className="flex justify-between ">
                               <div>
@@ -1207,8 +1961,6 @@ const Dashboard = () => {
                                 </h3>
                                 <p className="text-sm text-gray-600 mt-1">
                                   {state.selectedPart?.category} •{" "}
-                                  {/* {formatDate(state.selectedPart?.start_date)} •{" "}
-                                {formatTime(state.selectedPart?.start_time)} */}
                                 </p>
                               </div>
                               <button
@@ -1224,14 +1976,8 @@ const Dashboard = () => {
                             </div>
                           </div>
 
-                          {/* Modal Body */}
                           <div className="p-6 overflow-y-auto max-h-[70vh]">
-                            {/* Participants Section */}
                             <div className="mb-8">
-                              {/* <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                              Participants (
-                              {state.participationUser?.length})
-                            </h4> */}
                               {state.participationUser?.length > 0 ? (
                                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                                   <table className="min-w-full divide-y divide-gray-200">
@@ -1244,9 +1990,6 @@ const Dashboard = () => {
                                           Email
                                         </th>
 
-                                        {/* <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Session Date
-                                      </th> */}
                                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                           Join Time
                                         </th>
@@ -1269,12 +2012,9 @@ const Dashboard = () => {
                                               {participant.name || "Anonymous"}
                                             </td>
                                             <td className="px-4 py-3 text-sm text-gray-600">
-                                              {participant.email || "N/A"}
+                                              {participant.email || ""}
                                             </td>
-                                            {/* <td className="px-4 py-3 text-sm text-gray-600">
-                                            {getTimes(participant.join_time)}
-                                           
-                                          </td> */}
+
                                             <td className="px-4 py-3 text-sm text-gray-600">
                                               {getTimes(participant.join_time)}
                                             </td>
@@ -1286,19 +2026,6 @@ const Dashboard = () => {
                                                 participant.duration
                                               )}
                                             </td>
-                                            {/* <td className="px-4 py-3 text-sm">
-                                            <span
-                                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                participant.is_registered
-                                                  ? "bg-green-100 text-green-800"
-                                                  : "bg-gray-100 text-gray-800"
-                                              }`}
-                                            >
-                                              {participant.is_registered
-                                                ? "Yes"
-                                                : "No"}
-                                            </span>
-                                          </td> */}
                                           </tr>
                                         )
                                       )}
@@ -1311,85 +2038,6 @@ const Dashboard = () => {
                                 </p>
                               )}
                             </div>
-
-                            {/* Registered Users Section */}
-                            {/* {state.selectedEvent.registered_users.length > 0 && (
-                            <div>
-                              <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                                Registered Users (
-                                {state.selectedEvent.registered_users.length})
-                              </h4>
-                              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                  <thead className="bg-gray-100">
-                                    <tr>
-                                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Name
-                                      </th>
-                                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Email
-                                      </th>
-                                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Registration Date
-                                      </th>
-                                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Attended
-                                      </th>
-                                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                        Credits Granted
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-200">
-                                    {state.selectedEvent.registered_users.map(
-                                      (user, index) => (
-                                        <tr
-                                          key={index}
-                                          className="hover:bg-gray-50"
-                                        >
-                                          <td className="px-4 py-3 text-sm text-gray-900">
-                                            {user.name || "N/A"}
-                                          </td>
-                                          <td className="px-4 py-3 text-sm text-gray-600">
-                                            {user.email}
-                                          </td>
-                                          <td className="px-4 py-3 text-sm text-gray-600">
-                                            {new Date(
-                                              user.registration_date
-                                            ).toLocaleDateString()}
-                                          </td>
-                                          <td className="px-4 py-3 text-sm">
-                                            <span
-                                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                user.attended
-                                                  ? "bg-green-100 text-green-800"
-                                                  : "bg-red-100 text-red-800"
-                                              }`}
-                                            >
-                                              {user.attended ? "Yes" : "No"}
-                                            </span>
-                                          </td>
-                                          <td className="px-4 py-3 text-sm">
-                                            <span
-                                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                user.credits_granted
-                                                  ? "bg-green-100 text-green-800"
-                                                  : "bg-gray-100 text-gray-800"
-                                              }`}
-                                            >
-                                              {user.credits_granted
-                                                ? "Yes"
-                                                : "No"}
-                                            </span>
-                                          </td>
-                                        </tr>
-                                      )
-                                    )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          )} */}
                           </div>
 
                           {/* Modal Footer */}
@@ -1411,11 +2059,6 @@ const Dashboard = () => {
                 </div>
               </>
             )}
-            {/* {state.regChartOptions.length === 0 && ( */}
-            {/* <div className="h-64 flex items-center justify-center text-gray-500">
-                No category revenue data available
-              </div> */}
-            {/* )} */}
           </div>
         </>
       ) : state.activeTab === "activity" ? (
@@ -1426,6 +2069,14 @@ const Dashboard = () => {
             </h2>
 
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+              <div className="w-auto sm:w-100">
+                <CustomSelect
+                  options={state.userList}
+                  value={state.user_id?.value || ""}
+                  onChange={(value) => setState({ user_id: value })}
+                  placeholder="Select User"
+                />
+              </div>
               <div className="w-full sm:w-50">
                 <DatePickers
                   placeholder="Start date"
@@ -1455,8 +2106,8 @@ const Dashboard = () => {
                 name="Export"
                 variant={""}
                 className="bg-themeGreen hover:bg-themeGreen"
-                onClick={() => {}}
-                loading={state.submitLoading}
+                onClick={() => exportToExcelUser()}
+                loading={state.exportLoading}
               />
             </div>
           </div>
@@ -1474,7 +2125,7 @@ const Dashboard = () => {
                   ))}
                 </tr>
               </thead>
-              {state.loading ? (
+              {state.loading && state.activityLoading ? (
                 <tbody>
                   <tr>
                     <td
@@ -1499,6 +2150,9 @@ const Dashboard = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {item["Activity Type"] || ""}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {item["Last Login"] || ""}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {item["Event Name"] || ""}

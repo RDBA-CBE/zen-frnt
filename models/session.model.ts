@@ -33,8 +33,8 @@ const session = {
       if (body.is_approved == "No") {
         url += `&is_approved=${encodeURIComponent(false)}`;
       }
-      if (body.ids ) {
-        url += `&ids=${encodeURIComponent(body.ids )}`;
+      if (body.ids) {
+        url += `&ids=${encodeURIComponent(body.ids)}`;
       }
 
       instance()
@@ -651,6 +651,12 @@ const session = {
         )}`;
         hasParams = true;
       }
+      if (body?.event) {
+        url += `${hasParams ? "&" : "?"}event_title=${encodeURIComponent(
+          body.event
+        )}`;
+        hasParams = true;
+      }
       instance()
         .get(url)
         .then((res) => {
@@ -669,7 +675,7 @@ const session = {
 
   reports_engagement: (body) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/reports/engagement/`;
+      let url = `zen/reports/engagement`;
       let hasParams = false;
 
       if (body?.start_date) {
@@ -683,6 +689,14 @@ const session = {
         )}`;
         hasParams = true;
       }
+
+      if (body?.category) {
+        url += `${hasParams ? "&" : "?"}category=${encodeURIComponent(
+          body.category
+        )}`;
+        hasParams = true;
+      }
+
       instance()
         .get(url)
         .then((res) => {
@@ -747,6 +761,14 @@ const session = {
         )}`;
         hasParams = true;
       }
+
+      if (body?.event) {
+        url += `${hasParams ? "&" : "?"}event_title=${encodeURIComponent(
+          body.event
+        )}`;
+        hasParams = true;
+      }
+
       instance()
         .get(url)
         .then((res) => {
@@ -843,6 +865,14 @@ const session = {
         )}`;
         hasParams = true;
       }
+
+      if (body?.user_id) {
+        url += `${hasParams ? "&" : "?"}user_id=${encodeURIComponent(
+          body.user_id
+        )}`;
+        hasParams = true;
+      }
+
       instance()
         .get(url)
         .then((res) => {
