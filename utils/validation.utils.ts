@@ -334,3 +334,9 @@ export const sessionCreate = Yup.object().shape({
     otherwise: (schema) => schema.notRequired(),
   }),
 });
+
+export const resendToken = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+})
