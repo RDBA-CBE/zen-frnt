@@ -263,6 +263,46 @@ const auth = {
     });
     return promise;
   },
+
+  verifyToken: (body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `/auth/verify-email/?uid=${body.uid}&token=${body.token}`;
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          console.log("errorsss: ", error);
+          if (error.response) {
+            reject(error.response.data.error);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  resendToken: (data: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `auth/request-email-verification/`;
+      instance()
+        .post(url, data)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          console.log("errorsss: ", error);
+          if (error.response) {
+            reject(error.response.data);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
 };
 
 export default auth;
