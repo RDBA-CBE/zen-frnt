@@ -560,9 +560,22 @@ const CreateUser = () => {
         setState({ submitLoading: false });
         // window.location.href = "/";
 
-        Success(
-          `Form submitted successfully! A verification email has been sent to your account. Please check your inbox.`
-        );
+        if (res) {
+          await verifyEmail();
+        }
+
+        InfinitySuccess(
+                "Form submitted successfully! A verification email has been sent to your account. Please check your inbox.",
+                () => {
+                  localStorage.clear()
+                  window.location.href = "/";
+                }
+              );
+
+        // InfinitySuccess(
+        //   `Form submitted successfully! A verification email has been sent to your account. Please check your inbox.`
+        // );
+       
       }
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
@@ -584,6 +597,31 @@ const CreateUser = () => {
         } else {
           Failure("An error occurred. Please try again.");
         }
+      }
+    }
+  };
+
+  const verifyEmail = async () => {
+    try {
+      const body = {
+        email: state?.email.trim() + DOMAIN,
+      };
+
+      await Validation.resendToken.validate(body, {
+        abortEarly: false,
+      });
+      const res = await Models.auth.resendToken(body);
+    } catch (error) {
+      setState({ btnLoading: false, errors: null });
+
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
+        setState({ errors: validationErrors });
+      } else {
+        Failure(error.error);
       }
     }
   };
