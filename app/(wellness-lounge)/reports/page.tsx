@@ -225,7 +225,7 @@ const Dashboard = () => {
 
   const getUserList = async () => {
     try {
-      setState({ loading: true, activityLoading: true });
+      setState({ loading: true });
       const body = {};
 
       const res: any = await Models.session.reports_user_activity(body);
@@ -256,10 +256,9 @@ const Dashboard = () => {
       setState({
         userList: filterByDropdownFormat,
         loading: false,
-        activityLoading: false,
       });
     } catch (error) {
-      setState({ loading: false, activityLoading: false });
+      setState({ loading: false});
 
       console.log("error: ", error);
     }
@@ -1452,7 +1451,7 @@ const Dashboard = () => {
             </div>
             {state.loading ? (
               <div className="flex items-center justify-center w-full">
-                <Loader />
+                <Loader className="animate-spin" />
               </div>
             ) : (
               <>
@@ -1491,7 +1490,8 @@ const Dashboard = () => {
                             className="px-6 py-4 text-center"
                           >
                             <div className="flex justify-center items-center w-full">
-                              <Loader />
+                            <Loader className="animate-spin" />
+
                             </div>
                           </td>
                         </tr>
@@ -1583,7 +1583,7 @@ const Dashboard = () => {
             </div>
             {state.loading ? (
               <div className="flex items-center justify-center w-full">
-                <Loader />
+                <Loader className="animate-spin" />
               </div>
             ) : (
               <>
@@ -1640,7 +1640,7 @@ const Dashboard = () => {
                             className="px-6 py-4 text-center"
                           >
                             <div className="flex justify-center items-center w-full">
-                              <Loader />
+                              <Loader className="animate-spin" />
                             </div>
                           </td>
                         </tr>
@@ -1847,7 +1847,7 @@ const Dashboard = () => {
             </div>
             {state.loading  || state.attendanceLoading? (
               <div className="flex items-center justify-center w-full">
-                <Loader />
+                <Loader className="animate-spin" />
               </div>
             ) : (
               <>
@@ -1905,7 +1905,7 @@ const Dashboard = () => {
                             className="px-6 py-4 text-center"
                           >
                             <div className="flex justify-center items-center w-full">
-                              <Loader />
+                              <Loader className="animate-spin" />
                             </div>
                           </td>
                         </tr>
@@ -2135,7 +2135,7 @@ const Dashboard = () => {
                       className="px-6 py-4 text-center"
                     >
                       <div className="flex justify-center items-center w-full">
-                        <Loader />
+                        <Loader className="animate-spin" />
                       </div>
                     </td>
                   </tr>
