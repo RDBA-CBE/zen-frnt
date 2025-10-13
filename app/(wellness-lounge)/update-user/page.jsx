@@ -662,6 +662,7 @@ const CreateUser = () => {
                 })
               }
               error={state.errors?.email}
+              disabled={state.group != ROLES.ADMIN}
               title="Email"
             />
           ) : (

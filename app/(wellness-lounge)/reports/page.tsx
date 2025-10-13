@@ -2067,7 +2067,7 @@ const Dashboard = () => {
         <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
-              User Activity
+              User Activity (Zoom)
             </h2>
 
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
