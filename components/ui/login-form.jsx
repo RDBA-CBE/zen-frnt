@@ -110,17 +110,25 @@ const LoginForm = (props) => {
               });
             }
           } else {
-            localStorage.setItem("group", res.groups?.[0]);
+            if (res?.groups?.includes(ROLES.STUDENT)) {
+              const response = await Models.user.getUserId(res.user_id);
 
-            dispatch(
-              setAuthData({
-                tokens: res.access,
-                groups: res.groups?.[0],
-                userId: res.user_id,
-                username: res?.username,
-              })
-            );
-            window.location.href = "/";
+              if (response.is_verified) {
+                localStorage.setItem("group", res.groups?.[0]);
+                dispatch(
+                  setAuthData({
+                    tokens: res.access,
+                    groups: res.groups?.[0],
+                    userId: res.user_id,
+                    username: res?.username,
+                  })
+                );
+                window.location.href = "/";
+              } else {
+                Failure("User not verified");
+                localStorage.clear();
+              }
+            }
           }
           //
           // localStorage.setItem("group", res.groups[0]);
