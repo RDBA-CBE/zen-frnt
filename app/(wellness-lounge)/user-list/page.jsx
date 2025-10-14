@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, Eye, PlusIcon, Trash } from "lucide-react";
+import { CheckCircle, Edit, Eye, PlusIcon, Trash, XCircle } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 
@@ -22,7 +22,7 @@ import useDebounce from "@/components/common-components/useDebounce";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import Checkboxs from "@/components/ui/singleCheckbox";
-import { ROLE_ARRAY } from "@/utils/constant.utils";
+import { ROLE_ARRAY, ROLES } from "@/utils/constant.utils";
 
 const UserList = () => {
   const router = useRouter();
@@ -141,9 +141,34 @@ const UserList = () => {
     {
       Header: "Role",
       accessor: "Role",
-      Cell: (row) => (
-        <Label>{row?.row?.groups?.map((item) => item).join(",")}</Label>
-      ),
+      Cell: ({ row }) => {
+        const groups = row?.groups || [];
+        const isVerified = row?.is_verified;
+        const hasStudent = groups?.includes(ROLES.STUDENT);
+        
+        return (
+          <div className="flex items-center gap-2">
+            <Label>{groups?.join(",")}</Label>
+            {hasStudent && (
+              <div className="relative group">
+                {isVerified ? (
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                    <XCircle className="w-4 h-4 text-red-600" />
+                  </div>
+                )}
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                  {isVerified ? "Verified" : "Not Verified"}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      },
     },
     {
       Header: "Registration Date",

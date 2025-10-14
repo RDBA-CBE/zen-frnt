@@ -21,6 +21,24 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+const showTokenExpiredAlert = () => {
+  // You can replace this with a custom modal/dialog component
+  const userConfirmed = window.confirm(
+    "Your token has expired. Click OK to log in again."
+  );
+
+  if (userConfirmed) {
+    localStorage.clear();
+    window.location.href = "/login";
+  } else {
+    // If user clicks cancel, still redirect after a short delay
+    setTimeout(() => {
+      localStorage.clear();
+      window.location.href = "/login";
+    }, 1000);
+  }
+};
+
 export const instance = (): AxiosInstance => {
   if (api) return api;
 
@@ -55,9 +73,7 @@ export const instance = (): AxiosInstance => {
         const refreshToken = localStorage.getItem("refreshToken");
 
         if (!refreshToken) {
-          window.location.href = "/login";
-          localStorage.clear();
-
+          showTokenExpiredAlert();
           return Promise.reject(error);
         }
 
@@ -94,9 +110,13 @@ export const instance = (): AxiosInstance => {
             processQueue(null, access);
             resolve(api!(originalRequest));
           } catch (err) {
-            processQueue(err, null);
-            localStorage.clear();
-            window.location.href = "/login";
+            if (err.response?.data?.code === "token_not_valid") {
+              showTokenExpiredAlert();
+            } else {
+              processQueue(err, null);
+              localStorage.clear();
+              window.location.href = "/login";
+            }
             reject(err);
           } finally {
             isRefreshing = false;

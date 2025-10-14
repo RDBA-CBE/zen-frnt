@@ -112,11 +112,8 @@ const LoginForm = (props) => {
           } else {
             if (res?.groups?.includes(ROLES.STUDENT)) {
               const response = await Models.user.getUserId(res.user_id);
-              console.log("response", response);
-              
+
               if (response.is_verified) {
-                console.log("hello");
-                
                 localStorage.setItem("group", res.groups?.[0]);
                 dispatch(
                   setAuthData({
@@ -127,11 +124,9 @@ const LoginForm = (props) => {
                   })
                 );
                 window.location.href = "/";
-              }
-              else{
-
-                Failure("User not verified")
-                localStorage.clear()
+              } else {
+                Failure("User not verified");
+                localStorage.clear();
               }
             }
           }
