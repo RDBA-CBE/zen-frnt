@@ -23,6 +23,7 @@ import * as Yup from "yup";
 import { forgetPassword } from "@/utils/validation.utils";
 import Link from "next/link";
 import { Loader } from "lucide-react";
+import { TextInput } from "./textInput";
 
 const ForgotPasswordEmailForm = () => {
   const router = useRouter();
@@ -112,14 +113,30 @@ const ForgotPasswordEmailForm = () => {
           <form>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
+                
+                {/* <Input
                   id="email"
                   type="email"
                   placeholder="Enter Your mail ID"
                   required
                   value={state.username}
                   onChange={(e) =>
+                    setState({
+                      username: e.target.value,
+                      errors: { ...state.errors, email: "" },
+                    })
+                  }
+                  error={state.errors?.email}
+                /> */}
+
+                <TextInput
+                  id="email"
+                  type="email"
+                  placeholder="Enter Your mail ID"
+                  required
+                  title="Email"
+                  value={state.username}
+                   onChange={(e) =>
                     setState({
                       username: e.target.value,
                       errors: { ...state.errors, email: "" },
@@ -158,11 +175,11 @@ const ForgotPasswordEmailForm = () => {
                     //      router?.push("/")
                     //   }}
                     onClick={() =>
-                    setState({
-                      btnLoading: false,
-                      email:""
-                    })
-                  }
+                      setState({
+                        btnLoading: false,
+                        email: "",
+                      })
+                    }
                     variant="outline"
                     className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
                   >
@@ -175,7 +192,7 @@ const ForgotPasswordEmailForm = () => {
                   className="w-full bg-themeGreen hover:bg-themeGreen "
                   onClick={handleSubmit}
                 >
-                   {state.btnLoading ? <Loader /> : "Confirm"}
+                  {state.btnLoading ? <Loader /> : "Confirm"}
                 </Button>
               </div>
             </div>
