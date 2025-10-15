@@ -128,6 +128,17 @@ const LoginForm = (props) => {
                 Failure("User not verified");
                 localStorage.clear();
               }
+            } else {
+              localStorage.setItem("group", res.groups?.[0]);
+              dispatch(
+                setAuthData({
+                  tokens: res.access,
+                  groups: res.groups?.[0],
+                  userId: res.user_id,
+                  username: res?.username,
+                })
+              );
+              window.location.href = "/";
             }
           }
           //
