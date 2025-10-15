@@ -119,7 +119,10 @@ const UpdateOrder = () => {
     let nextPage = true;
 
     while (nextPage) {
-      const res = await Models.user.dropdownUserserList(page);
+      const body = {
+        group_name: "Student",
+      };
+      const res = await Models.user.dropdownUserserList(page,body);
       allResults = [...allResults, ...(res?.results || [])];
 
       page += 1;
@@ -249,7 +252,12 @@ const UpdateOrder = () => {
 
   const loadUserOptions = async (search, loadedOptions, { page }) => {
     try {
-      const res = await Models.user.dropdownUserserList(page); // API should support pagination
+      
+      const body = {
+        group_name: "Student",
+
+      };
+      const res = await Models.user.dropdownUserserList(page,body); // API should support pagination
       const Dropdowns = UserDropdown(
         res?.results,
         (item) => `${item.first_name} ${item.last_name}`

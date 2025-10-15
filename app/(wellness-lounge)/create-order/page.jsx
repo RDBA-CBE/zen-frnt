@@ -72,7 +72,11 @@ const CreateOrder = () => {
     let nextPage = true;
 
     while (nextPage) {
-      const res = await Models.user.dropdownUserserList(page);
+      const body = {
+        group_name: "Student",
+      };
+
+      const res = await Models.user.dropdownUserserList(page, body);
       allResults = [...allResults, ...(res?.results || [])];
 
       page += 1;
@@ -85,6 +89,8 @@ const CreateOrder = () => {
     try {
       const body = {
         search,
+        group_name: "Student",
+
       };
       const res = await Models.user.dropdownUserserList(page, body); // API should support pagination
       const Dropdowns = UserDropdown(
@@ -182,8 +188,7 @@ const CreateOrder = () => {
         event: state?.eventId,
         slot: state.slots?.fullSlot?.id,
         lounge_type: state.lounge_type,
-        session:state.session?.value
-
+        session: state.session?.value,
       };
 
       if (state.lounge_type == AYURVEDIC_LOUNGE) {
@@ -445,9 +450,7 @@ const CreateOrder = () => {
                     sessionDetail: [],
                     slots: [],
                     errors: { ...state.errors, session: "" },
-                    price:0
-
-
+                    price: 0,
                   });
                 } else {
                   setState({
@@ -456,7 +459,7 @@ const CreateOrder = () => {
                     sessionDetail: [],
                     slots: [],
                     session: null,
-                    price:0
+                    price: 0,
                   });
                 }
               }}
