@@ -534,7 +534,8 @@ const CreateWellnessLounge = () => {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
         // group_name_exact:ROLES.MENTOR
         is_open_to_be_mentor:"Yes",
-        is_activity:"true"
+        is_activity:"true",
+        search
       };
       // if (state.start_date) {
       //   body.available_from = moment(state.start_date).format("YYYY-MM-DD");
@@ -888,6 +889,7 @@ const CreateWellnessLounge = () => {
                 disabled={
                   state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
                 }
+                
                 // reRender={state.start_date}
               />
 
