@@ -282,7 +282,13 @@ const AlumniRegistrationForm = () => {
     });
   };
 
-  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+  // const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+  //   const year = 1951 + i;
+  //   return { value: year.toString(), label: year.toString() };
+  // });
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1951 + 1 }, (_, i) => {
     const year = 1951 + i;
     return { value: year.toString(), label: year.toString() };
   });

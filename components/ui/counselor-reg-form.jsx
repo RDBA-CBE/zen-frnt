@@ -112,8 +112,8 @@ const CounselorRegForm = () => {
         last_name: state?.aluminilastname,
         email: state?.alumniEmail.trim(),
         phone_number: state?.alumniPhone,
-        department: state?.alumniDepartment,
-        work: state?.work,
+        // department: state?.alumniDepartment,
+        // work: state?.work,
         country: state?.country?.value,
         address: state?.address,
         year_of_graduation: state?.year_of_graduation?.value
@@ -131,7 +131,7 @@ const CounselorRegForm = () => {
         role: "Counselor",
       };
 
-      await Validation.AlumniRegistration.validate(body, { abortEarly: false });
+      await Validation.CounselorRegistration.validate(body, { abortEarly: false });
 
       if (!isValidPhoneNumber(body.phone_number)) {
         setState({
@@ -231,10 +231,17 @@ const CounselorRegForm = () => {
     });
   };
 
-  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+  // const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+  //   const year = 1951 + i;
+  //   return { value: year.toString(), label: year.toString() };
+  // });
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1951 + 1 }, (_, i) => {
     const year = 1951 + i;
     return { value: year.toString(), label: year.toString() };
   });
+
 
   const loadCountryOptions = async (search, loadedOptions, { page = 1 }) => {
     try {
@@ -320,7 +327,7 @@ const CounselorRegForm = () => {
           />
         </div>
 
-         <div className="space-y-1">
+        <div className="space-y-1">
           <div className="relative">
             <TextInput
               id="password"
@@ -418,7 +425,7 @@ const CounselorRegForm = () => {
           />
         </div>
 
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <TextInput
             id="alumniDepartment"
             type="text"
@@ -434,7 +441,7 @@ const CounselorRegForm = () => {
             required
             error={state?.errors?.department}
           />
-        </div>
+        </div> */}
 
         <div className="space-y-1">
           <MultiSelectDropdown
@@ -454,7 +461,7 @@ const CounselorRegForm = () => {
           />
         </div>
 
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <TextInput
             id="work"
             type="text"
@@ -463,7 +470,7 @@ const CounselorRegForm = () => {
             value={state.work}
             onChange={(e) => setState({ work: e.target.value })}
           />
-        </div>
+        </div> */}
 
         {/* <div className="space-y-1">
           <MultiSelectDropdown
@@ -478,7 +485,6 @@ const CounselorRegForm = () => {
           />
         </div> */}
 
-      
         {/* {Array.isArray(state.alumniIntrested_topics) &&
           state.alumniIntrested_topics.some((item) => item.value === 13) && (
             <div className="space-y-1">
@@ -494,18 +500,16 @@ const CounselorRegForm = () => {
               />
             </div>
           )} */}
-
-       
       </div>
 
-       <div className="space-y-1 pb-5">
-          <TextArea
-            placeholder="Enter Your address"
-            title="Address"
-            value={state.address}
-            onChange={(e) => setState({ address: e.target.value })}
-          />
-        </div>
+      <div className="space-y-1 pb-5">
+        <TextArea
+          placeholder="Enter Your address"
+          title="Address"
+          value={state.address}
+          onChange={(e) => setState({ address: e.target.value })}
+        />
+      </div>
 
       {/* <div className="pt-2 pb-2">
         <Checkboxs

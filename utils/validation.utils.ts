@@ -302,6 +302,20 @@ export const AlumniRegistration = Yup.object().shape({
   department: Yup.string().required("Department is required"),
 });
 
+export const CounselorRegistration = Yup.object().shape({
+  first_name: Yup.string().required("First Name is required"),
+  last_name: Yup.string().required("Last Name is required"),
+  email: Yup.string()
+    .required("Email is required")
+    .email("Invalid email address"),
+  // email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required"),
+  phone_number: Yup.string().required("Phone number is required"),
+  year_of_graduation: Yup.string().required("Year of graduation is required"),
+  country: Yup.string().required("Country is required"),
+  university: Yup.string().required("University is required"),
+});
+
 export const change_password = Yup.object().shape({
   confirm_password: Yup.string()
     .required("Confirm password is required")

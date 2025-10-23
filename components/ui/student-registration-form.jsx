@@ -335,11 +335,11 @@ const StudentRegistrationForm = () => {
     });
   };
 
-  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
-    const year = 1951 + i;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 2021 + 1 }, (_, i) => {
+    const year = 2021 + i;
     return { value: year.toString(), label: year.toString() };
   });
-
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-5">
