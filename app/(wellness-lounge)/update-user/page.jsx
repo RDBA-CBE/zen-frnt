@@ -293,7 +293,6 @@ const CreateUser = () => {
     }
   }
   console.log("state.thumbnail_images", state.thumbnail_images);
-  
 
   const onSubmit = async () => {
     try {
@@ -348,9 +347,15 @@ const CreateUser = () => {
         };
 
         console.log("body", body);
-        await Validation.createUser.validate(body, {
-          abortEarly: false,
-        });
+        if (state?.user_type?.label != "Counselor") {
+          await Validation.createUser.validate(body, {
+            abortEarly: false,
+          });
+        } else {
+          await Validation.updateUser.validate(body, {
+            abortEarly: false,
+          });
+        }
 
         // let groups = [state.user_types?.map((item) => item?.value)];
         let formData = new FormData();
@@ -375,7 +380,10 @@ const CreateUser = () => {
         //   );
         // }
 
-        if (body.department) formData.append("department", body.department);
+        if (body.department && state?.user_type?.label != "Counselor") {
+          formData.append("department", body.department);
+        }
+
         if (body.phone_number)
           formData.append("phone_number", body.phone_number);
         formData.append("date_of_birth", body.dob);
@@ -412,7 +420,7 @@ const CreateUser = () => {
         if (body.phone_number && isRole(state.user_types)) {
           formData.append("phone_number", body.phone_number);
         }
-        if (body.work && isRole(state.user_types)) {
+        if (body.work && state?.user_type?.label != "Counselor") {
           formData.append("work", body.work);
         }
 
@@ -594,8 +602,14 @@ const CreateUser = () => {
     }
   };
 
-  const years = Array.from({ length: 2025 - 1951 + 1 }, (_, i) => {
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1951 + 1 }, (_, i) => {
     const year = 1951 + i;
+    return { value: year.toString(), label: year.toString() };
+  });
+
+  const yearOfEntry = Array.from({ length: currentYear - 2021 + 1 }, (_, i) => {
+    const year = 2021 + i;
     return { value: year.toString(), label: year.toString() };
   });
 
@@ -838,15 +852,16 @@ const CreateUser = () => {
                     </p>
                   )} */}
                 </div>
-
-                <TextInput
-                  id="work"
-                  type="text"
-                  placeholder="Enter Your Work"
-                  title="Job Sector / Role"
-                  value={state.work}
-                  onChange={(e) => setState({ work: e.target.value })}
-                />
+                {state?.user_type?.label != ROLES.COUNSELOR && (
+                  <TextInput
+                    id="work"
+                    type="text"
+                    placeholder="Enter Your Work"
+                    title="Job Sector / Role"
+                    value={state.work}
+                    onChange={(e) => setState({ work: e.target.value })}
+                  />
+                )}
 
                 <LoadMoreDropdown
                   value={state.country}
@@ -947,24 +962,25 @@ const CreateUser = () => {
                     error={state.errors?.university}
                   />
                 </div>
-
-                <div className="space-y-1">
-                  <TextInput
-                    id="department"
-                    type="text"
-                    placeholder="Enter Your Department Name"
-                    title="Department"
-                    value={state.department}
-                    onChange={(e) =>
-                      setState({
-                        department: e.target.value,
-                        errors: { ...state.errors, department: "" },
-                      })
-                    }
-                    error={state.errors?.department}
-                    required
-                  />
-                </div>
+                {state?.user_type?.label != ROLES.COUNSELOR && (
+                  <div className="space-y-1">
+                    <TextInput
+                      id="department"
+                      type="text"
+                      placeholder="Enter Your Department Name"
+                      title="Department"
+                      value={state.department}
+                      onChange={(e) =>
+                        setState({
+                          department: e.target.value,
+                          errors: { ...state.errors, department: "" },
+                        })
+                      }
+                      error={state.errors?.department}
+                      required
+                    />
+                  </div>
+                )}
 
                 <TextArea
                   name="Address"
@@ -1077,7 +1093,7 @@ const CreateUser = () => {
                 <div className="space-y-1">
                   <MultiSelectDropdown
                     label="Year of Entry"
-                    options={years || []}
+                    options={yearOfEntry || []}
                     placeholder="Year Of Entry"
                     value={state.year_of_entry || ""}
                     onChange={(value) =>
