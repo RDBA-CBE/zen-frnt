@@ -679,7 +679,8 @@ const UpdateWellnessLounge = () => {
       const body = {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
         is_open_to_be_mentor:"Yes",
-        is_activity:"true"
+        is_activity:"true",
+        search
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
