@@ -389,6 +389,8 @@ const CreateUser = () => {
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
         formData.append("notify", body.notify);
+        formData.append("is_registering", true);
+
 
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
@@ -527,6 +529,7 @@ const CreateUser = () => {
         formData.append("last_name", body.last_name);
         formData.append("email", body.email);
         formData.append("notify", body.notify);
+        formData.append("is_registering", true);
 
         if (body.department && state?.user_type?.label != "Counselor") {
           formData.append("department", body.department);
