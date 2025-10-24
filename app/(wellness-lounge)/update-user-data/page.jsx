@@ -496,7 +496,7 @@ const CreateUser = () => {
           first_name: state.firstname,
           last_name: state.lastname,
           // email: state.email.trim(),
-          email: state?.email.trim() + DOMAIN,
+          email: state?.email.trim() ,
 
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -615,7 +615,7 @@ const CreateUser = () => {
   const verifyEmail = async () => {
     try {
       const body = {
-        email: state?.email.trim() + DOMAIN,
+        email: state?.email.trim() ,
       };
 
       await Validation.resendToken.validate(body, {

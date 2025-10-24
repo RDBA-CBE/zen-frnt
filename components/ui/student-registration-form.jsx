@@ -265,7 +265,7 @@ const StudentRegistrationForm = () => {
       const body = {
         first_name: state?.firstname,
         last_name: state?.lastname,
-        email: state?.email.trim() + DOMAIN,
+        email: state?.email.trim() ,
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
           ? state?.year_of_entry?.value
@@ -289,7 +289,7 @@ const StudentRegistrationForm = () => {
       const res = await Models.auth.registration(body);
 
       InfinitySuccess(
-        "Thank you. You are being registered as a student. Please visit our Programs page, explore the lounges, and register for the sessions that align with your interests.",
+        "Thank you for registering as a student. Please check your inbox to verify your email and then log in to your account. Visit the Programs page to explore Lounges and register for sessions that match your interests.",
         () => {
           router?.push("/login");
         }
