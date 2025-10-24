@@ -56,7 +56,7 @@ const UserVerificationPage = () => {
     try {
       setState({ btnLoading: true });
       const body = {
-        email: state?.email.trim() + DOMAIN,
+        email: state?.email.trim(),
       };
 
       await Validation.resendToken.validate(body, {
