@@ -530,6 +530,8 @@ const CreateUser = () => {
         formData.append("email", body.email);
         formData.append("notify", body.notify);
         formData.append("is_registering", true);
+        formData.append("is_verified", true);
+
 
         if (body.department && state?.user_type?.label != "Counselor") {
           formData.append("department", body.department);
