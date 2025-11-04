@@ -392,7 +392,7 @@ const StudentRegistrationForm = () => {
                 errors: { ...state.errors, email: "" },
               })
             }
-            error={state.errors?.email}
+            // error={state.errors?.email}
             title="E-Mail"
           />
         </div>
