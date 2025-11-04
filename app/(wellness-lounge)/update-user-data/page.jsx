@@ -392,6 +392,7 @@ const CreateUser = () => {
         formData.append("is_registering", true);
 
 
+
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
           formData.append("phone_number", body.phone_number);
@@ -496,7 +497,7 @@ const CreateUser = () => {
           first_name: state.firstname,
           last_name: state.lastname,
           // email: state.email.trim(),
-          email: state?.email.trim() + DOMAIN,
+          email: state?.email.trim() ,
 
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -530,6 +531,8 @@ const CreateUser = () => {
         formData.append("email", body.email);
         formData.append("notify", body.notify);
         formData.append("is_registering", true);
+        formData.append("is_verified", true);
+
 
         if (body.department && state?.user_type?.label != "Counselor") {
           formData.append("department", body.department);
