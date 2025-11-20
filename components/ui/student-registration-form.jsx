@@ -265,7 +265,9 @@ const StudentRegistrationForm = () => {
       const body = {
         first_name: state?.firstname,
         last_name: state?.lastname,
-        email: state?.email.trim() + DOMAIN,
+        email: state?.email.trim(),
+        // email: state?.email.trim() + DOMAIN,
+
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
           ? state?.year_of_entry?.value
