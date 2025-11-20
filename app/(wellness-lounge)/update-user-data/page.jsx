@@ -496,8 +496,8 @@ const CreateUser = () => {
         let body = {
           first_name: state.firstname,
           last_name: state.lastname,
-          email: state.email.trim(),
-          // email: state?.email.trim() + DOMAIN ,
+          // email: state.email.trim(),
+          email: state?.email.trim() + DOMAIN ,
 
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -618,8 +618,8 @@ const CreateUser = () => {
   const verifyEmail = async () => {
     try {
       const body = {
-        email: state?.email.trim(),
-        // email: state?.email.trim() + DOMAIN,
+        // email: state?.email.trim(),
+        email: state?.email.trim() + DOMAIN,
 
       };
 
