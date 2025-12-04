@@ -74,7 +74,6 @@ const WellnessLoungeList = () => {
     state.start_date,
     state.end_date,
   ]);
-  
 
   const getLoungeList = async (page) => {
     try {
