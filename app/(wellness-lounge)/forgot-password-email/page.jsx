@@ -4,6 +4,7 @@ import LoginForm from "@/components/ui/login-form";
 import { useState } from "react";
 import ForgotPasswordEmailForm from "../../../components/common-components/ForgotPasswordMailForm";
 
+
 export default function ForgotPasswordEmail() {
     // const [isAuthenticated, setIsAuthenticated] = useState(
     //   !!localStorage.getItem("token") // Check for token
