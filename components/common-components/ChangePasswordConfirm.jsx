@@ -29,6 +29,7 @@ const ChangePasswordConfirmForm = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
+  
 
   const [id, setId] = useState(null);
   const [token, setToken] = useState(null);
