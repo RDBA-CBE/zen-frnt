@@ -1,6 +1,7 @@
 export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
+// 
 
-export const AYURVEDIC_LOUNGE = 15;
+export const AYURVEDIC_LOUNGE = 22;
 
 export const AYURVEDIC_LOUNGE_NAME="Ayurvedic One-on-One Counseling Lounge"
 

@@ -30,7 +30,7 @@ const daysOfWeek = [
 
 const getLoungeTypeColor = (loungeTypeId) => {
   const colorMap = {
-    15: "#e25197", // Ayurvedic One-on-One Counseling Lounge - Pink
+    22: "#e25197", // Ayurvedic One-on-One Counseling Lounge - Pink
     14: "#7f4099", // Yoga/Meditation Lounge - Purple
     7: "#834ae9", // Mentorship Lounge - Light Purple
     6: "#88c742", // Tales & Echoes Lounge - Green

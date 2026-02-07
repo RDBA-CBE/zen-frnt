@@ -371,7 +371,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
               className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2"
               style={{
                 backgroundColor:
-                  item?.value == 15
+                  item?.value == 22
                     ? "#e25197"
                     : item?.value == 14
                     ? "#7f4099"
@@ -479,7 +479,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             ? "#8f87871f"
                                             : isOngoingEvent(event)
                                             ? "#48badb"
-                                            : event.lounge_type?.id === 15
+                                            : event.lounge_type?.id === 22
                                             ? "#e25197"
                                             : event.lounge_type?.id === 14
                                             ? "#7f4099"

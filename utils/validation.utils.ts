@@ -38,7 +38,7 @@ export const createSession = Yup.object().shape({
       })
     )
     .when("lounge_type", {
-      is: (val) => String(val) == "15",
+      is: (val) => String(val) == "22",
       then: (schema) =>
         schema
           .test("validate-slot", "At least one slot is required", (value) => {
@@ -49,7 +49,7 @@ export const createSession = Yup.object().shape({
       otherwise: (schema) => schema.notRequired(),
     }),
   interval: Yup.string().when("lounge_type", {
-    is: (val) => String(val) == "15",
+    is: (val) => String(val) == "22",
     then: (schema) => schema.required("Interval is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -113,7 +113,7 @@ export const createPaidSession = Yup.object().shape({
       })
     )
     .when("lounge_type", {
-      is: (val) => String(val) == "15",
+      is: (val) => String(val) == "22",
       then: (schema) =>
         schema
           .test("validate-slot", "At least one slot is required", (value) => {
@@ -124,7 +124,7 @@ export const createPaidSession = Yup.object().shape({
       otherwise: (schema) => schema.notRequired(),
     }),
   interval: Yup.string().when("lounge_type", {
-    is: (val) => String(val) == "15",
+    is: (val) => String(val) == "22",
     then: (schema) => schema.required("Interval is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -190,7 +190,7 @@ export const createSessionOrder = Yup.object().shape({
     .required("Lounge is required")
     .nonNullable("Lounge is required"),
   slot: Yup.string().when("lounge_type", {
-    is: 15,
+    is: 22,
     then: (schema) => schema.required("Slot is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -362,7 +362,7 @@ export const reset_password = Yup.object().shape({
 export const sessionCreate = Yup.object().shape({
   lounge_type: Yup.string().required("Lounge type is required"),
   start_time: Yup.string().when("lounge_type", {
-    is: (val) => String(val) != "15",
+    is: (val) => String(val) != "22",
     then: (schema) => schema.required("Start time is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
