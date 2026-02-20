@@ -1,9 +1,9 @@
 export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
-// 
+//
 
 export const AYURVEDIC_LOUNGE = 22;
 
-export const AYURVEDIC_LOUNGE_NAME="Ayurvedic One-on-One Counseling Lounge"
+export const AYURVEDIC_LOUNGE_NAME = "Ayurvedic One-on-One Counseling Lounge";
 
 export const MENTOR = 5;
 
@@ -260,6 +260,11 @@ export const ROLE = [
     name: "Counselor Registration",
     value: "counselor",
   },
+
+  {
+    name: "Group Registration",
+    value: "group",
+  },
 ];
 
 export const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -299,12 +304,11 @@ export const ROLES = {
 
 export const ROLE_ARRAY = ["Student", "Alumni", "Mentor", "Counselor"];
 
-
 export const HEAD = [
   "Name",
   "Email",
   "Activity Type",
-  'Last Login',
+  "Last Login",
   "Event Name",
   "Event Date",
   "Event Time",
@@ -322,5 +326,4 @@ export const TABLE_HEAD = [
   "Start Time",
   "End Time",
   "Registration Count",
- 
 ];

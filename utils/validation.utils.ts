@@ -335,6 +335,19 @@ export const CounselorRegistration = Yup.object().shape({
   university: Yup.string().required("University is required"),
 });
 
+export const groupRegistration = Yup.object().shape({
+  first_name: Yup.string().required("First Name is required"),
+  last_name: Yup.string().required("Last Name is required"),
+  email: Yup.string()
+    .required("Email is required")
+    .email("Invalid email address"),
+  // email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required"),
+  age: Yup.string().required("Age is required"),
+  is_married: Yup.string().required("Marital Status is required"),
+  gender : Yup.string().required("Gender is required"),
+});
+
 export const change_password = Yup.object().shape({
   confirm_password: Yup.string()
     .required("Confirm password is required")
