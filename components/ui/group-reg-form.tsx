@@ -4,9 +4,9 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useSetState } from "@/utils/function.utils";
 import { TextInput } from "../common-components/textInput";
-import TextArea from "../common-components/textArea";
+// import TextArea from "../common-components/textArea";
 import CustomSelect from "../common-components/dropdown";
-import { Eye, EyeOff, Group, Loader } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
 import { Failure, InfinitySuccess } from "../common-components/toast";
@@ -50,7 +50,7 @@ const GroupRegForm = () => {
 
       await Validation.groupRegistration.validate(body, { abortEarly: false });
 
-      const res = await Models.auth.registration(body);
+      await Models.auth.registration(body);
 
       console.log("body", body);
       
