@@ -11,9 +11,11 @@ import { Dropdown, useSetState } from "@/utils/function.utils";
 import { CheckboxDemo } from "@/components/common-components/checkbox";
 import AlumniRegistrationForm from "@/components/ui/alumni-registration-form";
 import CounselorRegForm from "@/components/ui/counselor-reg-form";
+import GroupRegForm from "@/components/ui/group-reg-form";
+
 
 import { ROLE } from "@/utils/constant.utils";
-import { Loader, Loader2 } from "lucide-react";
+import { Group, Loader, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
 
@@ -44,45 +46,43 @@ export default function studentRegistration() {
     }
   };
 
-  const getIntrestedTopics = async (page=1) => {
-      try {
-        const res = await Models.auth.getIntrestedTopics(page);
+  const getIntrestedTopics = async (page = 1) => {
+    try {
+      const res = await Models.auth.getIntrestedTopics(page);
+      const Dropdownss = Dropdown(res?.results, "topic");
+      const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
+      console.log("res", res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const interestedListLoadMore = async () => {
+    console.log("hello");
+
+    try {
+      if (state.hasMoreInterest) {
+        console.log("hasMoreInterest");
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1,
+        );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
-  
-        setState({ intrestedTopicsList: filter,
-          hasMoreInterest:res?.next
-         });
-        console.log("res", res);
-      } catch (error) {
-        console.log(error);
+
+        setState({
+          intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+          hasMoreInterest: res?.next,
+          currentInterestPage: state.currentInterestPage + 1,
+        });
+      } else {
+        setState({ intrestedTopicsList: state.intrestedTopicsList });
       }
-    };
-  
-    
-  
-    const interestedListLoadMore = async () => {
-      console.log("hello");
-      
-      try {
-        if (state.hasMoreInterest) {
-          console.log("hasMoreInterest");
-          const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
-          const Dropdownss = Dropdown(res?.results, "topic");
-          const filter = Dropdownss?.filter((item) => item?.label !== "");
-  
-          setState({
-            intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
-            hasMoreInterest: res?.next,
-            currentInterestPage: state.currentInterestPage + 1,
-          });
-        } else {
-          setState({ intrestedTopicsList: state.intrestedTopicsList });
-        }
-      } catch (error) {
-              console.log('error: ', error);
-      }
-    };
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   const getCountry = async () => {
     try {
@@ -149,6 +149,12 @@ export default function studentRegistration() {
               />
             ) : state.role === "counselor" ? (
               <CounselorRegForm
+                countryList={state.countryList}
+                intrestedTopicsList={state.intrestedTopicsList}
+                universityList={state.universityList}
+              />
+            ) : state.role === "group" ? (
+              <GroupRegForm
                 countryList={state.countryList}
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
