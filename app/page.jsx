@@ -23,6 +23,7 @@ import { ROLES } from "@/utils/constant.utils";
 const App = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  
 
   const [state, setState] = useSetState({
     loungeList: [],
