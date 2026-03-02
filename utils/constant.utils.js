@@ -252,6 +252,10 @@ export const ROLE = [
     name: "Student Registration",
     value: "student",
   },
+  // {
+  //   name: "Individual Registration",
+  //   value: "individual",
+  // },
   {
     name: "Alumni Registration",
     value: "alumni",
@@ -262,7 +266,7 @@ export const ROLE = [
   },
 
   {
-    name: "Group Registration",
+    name: "Individual/Group Registration",
     value: "group",
   },
 ];
