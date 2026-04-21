@@ -1,4 +1,7 @@
 export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
+
+export const BACKEND_URL = "https://reputeaze.zenwellnesslounge.com/api/";
+
 //
 
 export const AYURVEDIC_LOUNGE = 22;

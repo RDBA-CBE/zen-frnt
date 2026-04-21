@@ -4,6 +4,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
+import { BACKEND_URL } from "./constant.utils";
 
 let api: AxiosInstance | null = null;
 let isRefreshing = false;
@@ -43,7 +44,7 @@ export const instance = (): AxiosInstance => {
   if (api) return api;
 
   api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    baseURL: BACKEND_URL,
   });
 
   // Request interceptor
