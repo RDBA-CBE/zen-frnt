@@ -12,6 +12,7 @@ import { CheckboxDemo } from "@/components/common-components/checkbox";
 import AlumniRegistrationForm from "@/components/ui/alumni-registration-form";
 import CounselorRegForm from "@/components/ui/counselor-reg-form";
 import GroupRegForm from "@/components/ui/group-reg-form";
+// import IndividualRegistrationForm from "@/components/ui/IndividualRegistrationForm";
 
 
 import { ROLE } from "@/utils/constant.utils";
@@ -99,7 +100,7 @@ export default function studentRegistration() {
   return (
     <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center  md:p-6 pb-5 md:pb-0">
       <div className="flex items-center justify-center w-full">
-        <Card className="lg:w-[800px] md:600px sm:w-[100%] w-[100%]">
+        <Card className="lg:w-[950px] md:700px sm:w-[100%] w-[100%]">
           <CardHeader>
             <CardTitle className="text-xl">
               {" "}
@@ -136,7 +137,14 @@ export default function studentRegistration() {
               </div>
             ) :  */}
 
-            {state.role === "student" ? (
+            {
+            // state.role === "individual" ? (
+            //   <IndividualRegistrationForm
+            //     intrestedTopicsList={state.intrestedTopicsList}
+            //     universityList={state.universityList}
+            //   />
+            // ) : 
+            state.role === "student" ? (
               <StudentRegistrationForm
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
