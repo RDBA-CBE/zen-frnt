@@ -7,6 +7,13 @@ const user = {
       if (body.search) {
         url += `&search=${encodeURIComponent(body.search)}`;
       }
+      if(body.google_form == "Yes"){
+        url += `&google_form=${encodeURIComponent(true)}`;
+      }
+
+      if(body.google_form == "No"){
+        url += `&google_form=${encodeURIComponent(false)}`;
+      }
 
       if (body?.group_name) {
         url += `&group_name=${encodeURIComponent(body?.group_name)}`;

@@ -21,7 +21,7 @@ export default function RootLayout({
 
         <footer className="sticky bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-4">
           <p className="mb-0 md:text-sm text-xs">
-            Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
+            Copyright @ 2026 ZenWellness Lounge. Concept by{" "}
             <Link href="https://irepute.in/">repute</Link>
           </p>
         </footer>

@@ -175,6 +175,8 @@ const Header = () => {
       url: "#",
       items: [
         { title: "User List", url: "/user-list" },
+        { title: "Google Registration", url: "/google_calendar_user" },
+
         { title: "Create User", url: "/create-user" },
         { title: "Counselor Approval", url: "/counselor-approval" },
         { title: "Mentor Approval", url: "/user-approval" },

@@ -2,8 +2,6 @@ export const BASEURL = "https://zenbkad.zenwellnesslounge.com/api";
 
 export const BACKEND_URL = "https://reputeaze.zenwellnesslounge.com/api/";
 
-//
-
 export const AYURVEDIC_LOUNGE = 22;
 
 export const AYURVEDIC_LOUNGE_NAME = "Ayurvedic One-on-One Counseling Lounge";
@@ -16,6 +14,12 @@ export const DOMAIN = "@kgpian.iitkgp.ac.in";
 
 export const CLIENT_ID =
   "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
+
+export const  CAPTCHA_SITE_KEY = "6LeEe9gsAAAAAKddSPmwNUF4J-v7zaz8CgeKZ7n3"
+
+export const GOOGLE_CAPTCHA_ID =
+  "130334216230-e5jae1ofurpna8bmk9msglc744ikdbfq.apps.googleusercontent.com";
+
 // "652976835328-gr64duovnelh6j0tmts52huqa7aiodrc.apps.googleusercontent.com"
 
 export const welness_data = [

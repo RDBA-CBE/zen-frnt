@@ -21,13 +21,20 @@ import * as Yup from "yup";
 import { Loader, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { login } from "@/utils/validation.utils";
-import { CLIENT_ID, ROLES } from "@/utils/constant.utils";
+import {
+  CLIENT_ID,
+  ROLES,
+  GOOGLE_CAPTCHA_ID,
+  CAPTCHA_SITE_KEY,
+} from "@/utils/constant.utils";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const LoginForm = (props) => {
   const { isRefresh } = props;
   const router = useRouter();
   const dispatch = useDispatch();
+  const loginRecaptchaRef = useRef(null);
 
   const [state, setState] = useSetState({
     username: "",
@@ -36,6 +43,7 @@ const LoginForm = (props) => {
     loading: false,
     showPassword: false,
     googleLoading: false,
+    loginCaptchaToken: "",
   });
 
   useEffect(() => {
@@ -69,7 +77,7 @@ const LoginForm = (props) => {
                 groups: ROLES.MENTOR,
                 userId: res.user_id,
                 username: res?.username,
-              })
+              }),
             );
             window.location.href = "/";
             // Success("Google login successful!");
@@ -84,7 +92,7 @@ const LoginForm = (props) => {
                 groups: ROLES.ALUMNI,
                 userId: res.user_id,
                 username: res?.username,
-              })
+              }),
             );
             window.location.href = "/";
             // Success("Google login successful!");
@@ -99,7 +107,7 @@ const LoginForm = (props) => {
                   groups: res.groups?.[0],
                   userId: res.user_id,
                   username: res?.username,
-                })
+                }),
               );
               Success("Google login successful!");
               window.location.href = "/";
@@ -121,7 +129,7 @@ const LoginForm = (props) => {
                     groups: res.groups?.[0],
                     userId: res.user_id,
                     username: res?.username,
-                  })
+                  }),
                 );
                 window.location.href = "/";
               } else {
@@ -136,7 +144,7 @@ const LoginForm = (props) => {
                   groups: res.groups?.[0],
                   userId: res.user_id,
                   username: res?.username,
-                })
+                }),
               );
               window.location.href = "/";
             }
@@ -169,7 +177,7 @@ const LoginForm = (props) => {
       } else {
         Failure(
           error.response?.data?.message ||
-            "Google login failed. Please try again."
+            "Google login failed. Please try again.",
         );
       }
     } finally {
@@ -189,7 +197,7 @@ const LoginForm = (props) => {
           groups: "Student",
           userId: res.user_id,
           username: res?.username || "",
-        })
+        }),
       );
       router.push(`/update-user-data/?id=${res?.user_id}`);
       setState({ googleLoading: false });
@@ -211,6 +219,7 @@ const LoginForm = (props) => {
       const body = {
         email: state.username.trim(),
         password: state.password,
+        recaptcha_token: state.loginCaptchaToken,
       };
 
       await login.validate(validatebody, {
@@ -234,7 +243,7 @@ const LoginForm = (props) => {
               groups: ROLES.MENTOR,
               userId: res.user_id,
               username: res?.username,
-            })
+            }),
           );
         } else if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == false) {
           localStorage.setItem("group", ROLES.ALUMNI);
@@ -244,7 +253,7 @@ const LoginForm = (props) => {
               groups: ROLES.ALUMNI,
               userId: res.user_id,
               username: res?.username,
-            })
+            }),
           );
         } else {
           localStorage.setItem("group", res.group?.[0]);
@@ -255,7 +264,7 @@ const LoginForm = (props) => {
               groups: res.group?.[0],
               userId: res.user_id,
               username: res?.username,
-            })
+            }),
           );
         }
       }
@@ -393,6 +402,28 @@ const LoginForm = (props) => {
                         </button>
                       </div>
                     </div>
+                    {/* <div className="flex items-center justify-center gap-3 py-0">
+                      <ReCAPTCHA
+                        ref={loginRecaptchaRef}
+                        sitekey={CAPTCHA_SITE_KEY}
+                        onChange={(token) => {
+                          setState({ loginCaptchaToken: token || "" });
+                          if (token)
+                            setState({
+                              errors: {
+                                ...state.errors,
+                                loginCaptchaInput: "",
+                              },
+                            });
+                        }}
+                      />
+                    </div>
+                    {state.errors?.loginCaptchaInput && (
+                      <p className="text-sm text-red-600 text-center -mt-2">
+                        {state.errors.loginCaptchaInput}
+                      </p>
+                    )} */}
+
                     <Button
                       type="button"
                       className="w-full bg-themeGreen hover:bg-themeGreen"

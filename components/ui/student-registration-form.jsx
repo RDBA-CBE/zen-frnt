@@ -15,17 +15,20 @@ import "react-phone-number-input/style.css";
 
 import Select from "react-select";
 import Checkboxs from "./singleCheckbox";
-import { CLIENT_ID, DOMAIN } from "@/utils/constant.utils";
+import { CLIENT_ID, DOMAIN, CAPTCHA_SITE_KEY } from "@/utils/constant.utils";
 import { useDispatch } from "react-redux";
 import { setAuthData } from "@/store/slice/AuthSlice";
 import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
 import { Input } from "./input";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const StudentRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
   const [googleAuthInitialized, setGoogleAuthInitialized] = useState(false);
   const dispatch = useDispatch();
+  const loginRecaptchaRef = useRef(null);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -60,6 +63,7 @@ const StudentRegistrationForm = () => {
     role: "student",
     notify: false,
     currentInterestPage: 1,
+    loginCaptchaToken: "",
   });
 
   useEffect(() => {
@@ -226,7 +230,7 @@ const StudentRegistrationForm = () => {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
         const res = await Models.auth.getIntrestedTopics(
-          state.currentInterestPage + 1
+          state.currentInterestPage + 1,
         );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
@@ -294,7 +298,7 @@ const StudentRegistrationForm = () => {
         "Thank you for registering as a student. Please check your inbox to verify your email and then log in to your account. Visit the Programs page to explore Lounges and register for sessions that match your interests.",
         () => {
           router?.push("/login");
-        }
+        },
       );
       resetForm();
     } catch (error) {
@@ -344,93 +348,94 @@ const StudentRegistrationForm = () => {
   });
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-5">
-        <div className="space-y-1">
-          <TextInput
-            id="firstname"
-            type="text"
-            placeholder="Enter Your First Name"
-            required
-            value={state.firstname}
-            onChange={(e) =>
-              setState({
-                firstname: e.target.value,
-                errors: { ...state.errors, first_name: "" },
-              })
-            }
-            error={state.errors?.first_name}
-            title="First Name"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <TextInput
-            id="lastname"
-            type="text"
-            placeholder="Enter Your Last Name"
-            required
-            value={state.lastname}
-            onChange={(e) =>
-              setState({
-                lastname: e.target.value,
-                errors: { ...state.errors, last_name: "" },
-              })
-            }
-            error={state.errors?.last_name}
-            title="Last Name"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            required
-            value={state.email}
-            onChange={(e) =>
-              setState({
-                email: e.target.value,
-                errors: { ...state.errors, email: "" },
-              })
-            }
-            error={state.errors?.email}
-            title="E-Mail"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <div className="relative">
+      <GoogleOAuthProvider clientId={CLIENT_ID}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-5">
+          <div className="space-y-1">
             <TextInput
-              id="password"
-              type={state.showPassword ? "text" : "password"}
-              placeholder="Enter Your password"
+              id="firstname"
+              type="text"
+              placeholder="Enter Your First Name"
               required
-              title="Password"
-              value={state.password}
+              value={state.firstname}
               onChange={(e) =>
                 setState({
-                  password: e.target.value,
-                  errors: { ...state.errors, password: "" },
+                  firstname: e.target.value,
+                  errors: { ...state.errors, first_name: "" },
                 })
               }
-              error={state.errors?.password}
+              error={state.errors?.first_name}
+              title="First Name"
             />
-            <button
-              type="button"
-              onClick={() => {
-                setState({ showPassword: !state.showPassword });
-              }}
-              className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-              style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
-            >
-              {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
           </div>
-          <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
-        </div>
 
-        {/* <div className="space-y-1">
+          <div className="space-y-1">
+            <TextInput
+              id="lastname"
+              type="text"
+              placeholder="Enter Your Last Name"
+              required
+              value={state.lastname}
+              onChange={(e) =>
+                setState({
+                  lastname: e.target.value,
+                  errors: { ...state.errors, last_name: "" },
+                })
+              }
+              error={state.errors?.last_name}
+              title="Last Name"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              required
+              value={state.email}
+              onChange={(e) =>
+                setState({
+                  email: e.target.value,
+                  errors: { ...state.errors, email: "" },
+                })
+              }
+              error={state.errors?.email}
+              title="E-Mail"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <div className="relative">
+              <TextInput
+                id="password"
+                type={state.showPassword ? "text" : "password"}
+                placeholder="Enter Your password"
+                required
+                title="Password"
+                value={state.password}
+                onChange={(e) =>
+                  setState({
+                    password: e.target.value,
+                    errors: { ...state.errors, password: "" },
+                  })
+                }
+                error={state.errors?.password}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setState({ showPassword: !state.showPassword });
+                }}
+                className="absolute  right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                style={{ top: `${state.errors?.password ? "40%" : "55%"}` }}
+              >
+                {state?.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p style={{ fontSize: "12px" }}>Min 8 characters required</p>
+          </div>
+
+          {/* <div className="space-y-1">
           <CustomSelect
             options={state?.universityList || []} // Safely pass empty array if universityList is null
             value={state.university?.value || ""}
@@ -441,24 +446,24 @@ const StudentRegistrationForm = () => {
           />
         </div> */}
 
-        <div className="space-y-1">
-          <MultiSelectDropdown
-            label="University"
-            options={state?.universityList || []}
-            value={state.university || ""}
-            onChange={(value) =>
-              setState({
-                university: value,
-                errors: { ...state.errors, university: "" },
-              })
-            }
-            required
-            placeholder="Select University"
-            menuPortalTarget={document.body}
-            error={state.errors?.university}
-          />
+          <div className="space-y-1">
+            <MultiSelectDropdown
+              label="University"
+              options={state?.universityList || []}
+              value={state.university || ""}
+              onChange={(value) =>
+                setState({
+                  university: value,
+                  errors: { ...state.errors, university: "" },
+                })
+              }
+              required
+              placeholder="Select University"
+              menuPortalTarget={document.body}
+              error={state.errors?.university}
+            />
 
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+            {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"University"} {<span className="text-red-500">*</span>}
           </label>
           <Select
@@ -483,44 +488,44 @@ const StudentRegistrationForm = () => {
               {state.errors?.university}{" "}
             </p>
           )} */}
-        </div>
+          </div>
 
-        <div className="space-y-1">
-          <TextInput
-            id="department"
-            type="text"
-            placeholder="Enter Your Department Name"
-            error={state.errors?.department}
-            title="Department"
-            value={state.department}
-            onChange={(e) =>
-              setState({
-                department: e.target.value,
-                errors: { ...state.errors, department: "" },
-              })
-            }
-            required
-          />
-        </div>
+          <div className="space-y-1">
+            <TextInput
+              id="department"
+              type="text"
+              placeholder="Enter Your Department Name"
+              error={state.errors?.department}
+              title="Department"
+              value={state.department}
+              onChange={(e) =>
+                setState({
+                  department: e.target.value,
+                  errors: { ...state.errors, department: "" },
+                })
+              }
+              required
+            />
+          </div>
 
-        <div className="space-y-1">
-          <MultiSelectDropdown
-            label="Year of Entry"
-            options={years || []}
-            placeholder="Year Of Entry"
-            value={state.year_of_entry || ""}
-            onChange={(value) =>
-              setState({
-                year_of_entry: value,
-                errors: { ...state.errors, year_of_entry: "" },
-              })
-            }
-            required
-            menuPortalTarget={document.body}
-            error={state.errors?.year_of_entry}
-          />
+          <div className="space-y-1">
+            <MultiSelectDropdown
+              label="Year of Entry"
+              options={years || []}
+              placeholder="Year Of Entry"
+              value={state.year_of_entry || ""}
+              onChange={(value) =>
+                setState({
+                  year_of_entry: value,
+                  errors: { ...state.errors, year_of_entry: "" },
+                })
+              }
+              required
+              menuPortalTarget={document.body}
+              error={state.errors?.year_of_entry}
+            />
 
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+            {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Year of Entry"} {<span className="text-red-500">*</span>}
           </label>
           <Select
@@ -543,21 +548,21 @@ const StudentRegistrationForm = () => {
               {state.errors?.year_of_entry}{" "}
             </p>
           )} */}
-        </div>
+          </div>
 
-        <div className="space-y-1">
-          <MultiSelectDropdown
-            label="Interests in Topics"
-            value={state.alumniIntrested_topics}
-            isMulti
-            options={state.intrestedTopicsList || []}
-            placeholder="Select Topics"
-            onChange={(value) => setState({ alumniIntrested_topics: value })}
-            name="topics"
-            menuPortalTarget={document.body}
-            loadMore={interestedListLoadMore}
-          />
-          {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+          <div className="space-y-1">
+            <MultiSelectDropdown
+              label="Interests in Topics"
+              value={state.alumniIntrested_topics}
+              isMulti
+              options={state.intrestedTopicsList || []}
+              placeholder="Select Topics"
+              onChange={(value) => setState({ alumniIntrested_topics: value })}
+              name="topics"
+              menuPortalTarget={document.body}
+              loadMore={interestedListLoadMore}
+            />
+            {/* <label className="block text-sm font-bold text-gray-700 mb-2">
             {"Interests in Topics"}
           </label>
           <Select
@@ -570,48 +575,70 @@ const StudentRegistrationForm = () => {
             menuPortalTarget={document.body} // required when using menuPosition="fixed"
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           /> */}
-        </div>
-        {Array.isArray(state.alumniIntrested_topics) &&
-          state.alumniIntrested_topics.some((item) => item.value === 13) && (
-            <div className="space-y-1">
-              <TextInput
-                id="intrested_topics1"
-                type="text"
-                placeholder="Enter New Topics"
-                title="New Topics"
-                value={state.intrested_topics1}
-                onChange={(e) =>
-                  setState({ intrested_topics1: e.target.value })
-                }
-              />
-            </div>
+          </div>
+          {Array.isArray(state.alumniIntrested_topics) &&
+            state.alumniIntrested_topics.some((item) => item.value === 13) && (
+              <div className="space-y-1">
+                <TextInput
+                  id="intrested_topics1"
+                  type="text"
+                  placeholder="Enter New Topics"
+                  title="New Topics"
+                  value={state.intrested_topics1}
+                  onChange={(e) =>
+                    setState({ intrested_topics1: e.target.value })
+                  }
+                />
+              </div>
+            )}
+
+          <div className=" pt-4">
+            <Checkboxs
+              label={"Notify me on these topics"}
+              checked={state.notify}
+              onChange={(val) => setState({ notify: val })}
+            />
+           
+          </div>
+          {state.errors?.loginCaptchaInput && (
+            <p className="text-sm text-red-600 text-center -mt-2">
+              {state.errors.loginCaptchaInput}
+            </p>
           )}
-
-        <div className="pb-2 pt-4">
-          <Checkboxs
-            label={"Notify me on these topics"}
-            checked={state.notify}
-            onChange={(val) => setState({ notify: val })}
-          />
         </div>
-      </div>
-
-      <div className="flex justify-center gap-2">
-        <Button
-          onClick={() => resetForm()}
-          variant="outline"
-          className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
-        >
-          Reset
-        </Button>
-        <Button
-          onClick={StudentRegistration}
-          className="w-full bg-themeGreen hover:bg-themeGreen"
-        >
-          {state.btnLoading ? <Loader /> : "Submit"}
-        </Button>
-      </div>
-      {/* <div className="relative  p-4">
+        {/* <div className="flex justify-center items-center  gap-3 py-0">
+              <ReCAPTCHA
+                ref={loginRecaptchaRef}
+                sitekey={CAPTCHA_SITE_KEY}
+                onChange={(token) => {
+                  setState({ loginCaptchaToken: token || "" });
+                  if (token)
+                    setState({
+                      errors: {
+                        ...state.errors,
+                        loginCaptchaInput: "",
+                      },
+                    });
+                }}
+              />
+            </div> */}
+        <div className="flex justify-center gap-2">
+          <Button
+            onClick={() => resetForm()}
+            variant="outline"
+            className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+          >
+            Reset
+          </Button>
+          <Button
+            onClick={StudentRegistration}
+            className="w-full bg-themeGreen hover:bg-themeGreen"
+          >
+            {state.btnLoading ? <Loader /> : "Submit"}
+          </Button>
+        </div>
+        
+        {/* <div className="relative  p-4">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
@@ -625,6 +652,7 @@ const StudentRegistrationForm = () => {
       <div className="flex flex-col gap-3 w-full">
         <div id="googleButtonContainer" className="flex justify-center"></div>
       </div> */}
+      </GoogleOAuthProvider>
     </>
   );
 };

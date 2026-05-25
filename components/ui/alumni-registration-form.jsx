@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Dropdown, DropdownCode, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { Failure, InfinitySuccess, Success } from "../common-components/toast";
 import CustomSelect from "../common-components/dropdown";
-import { CLIENT_ID, mentorList } from "@/utils/constant.utils";
+import { CLIENT_ID, mentorList,  ROLES,
+  GOOGLE_CAPTCHA_ID,
+  CAPTCHA_SITE_KEY, } from "@/utils/constant.utils";
 import TextArea from "../common-components/textArea";
 import * as Yup from "yup";
 import * as Validation from "@/utils/validation.utils";
@@ -22,10 +24,14 @@ import { useDispatch } from "react-redux";
 import LoadMoreDropdown from "../common-components/LoadMoreDropdown";
 import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import ReCAPTCHA from "react-google-recaptcha";
+
 const AlumniRegistrationForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
   const dispatch = useDispatch();
+  const loginRecaptchaRef = useRef(null);
 
   const [googleAuthInitialized, setGoogleAuthInitialized] = useState(false);
 
@@ -322,6 +328,7 @@ const AlumniRegistrationForm = () => {
 
   return (
     <>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 pb-2">
         <div className="space-y-1">
           <TextInput
@@ -810,6 +817,15 @@ const AlumniRegistrationForm = () => {
           onChange={(e) => setState({ address: e.target.value })}
         />
       </div>
+      {/* <div className="flex items-center justify-center gap-3 py-0">
+        <ReCAPTCHA
+          ref={loginRecaptchaRef}
+          sitekey={CAPTCHA_SITE_KEY}
+          onChange={(token) => {
+            setState({ loginCaptchaToken: token || "" });
+          }}
+        />
+      </div> */}
 
       <div className="flex justify-center gap-2 ">
         <Button
@@ -827,6 +843,7 @@ const AlumniRegistrationForm = () => {
           {state.btnLoading ? <Loader /> : "Submit"}
         </Button>
       </div>
+      </GoogleOAuthProvider>
 
       {/* <div className="relative  p-4">
         <div className="absolute inset-0 flex items-center">

@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
               <footer className="backcolor-purpole text-white fixed bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-8">
                 <div className="flex justify-between items-center text-xs md:text-[14px] ps-0 md:pl-10 ">
                   <div>
-                    Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
+                    Copyright @ 2026 ZenWellness Lounge. Concept by{" "}
                     <Link
                       href="https://irepute.in/"
                       className="font-bold"

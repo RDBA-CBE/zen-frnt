@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Dropdown, DropdownCode, useSetState } from "@/utils/function.utils";
@@ -17,10 +17,19 @@ import { getCountryCallingCode } from "libphonenumber-js";
 import Checkboxs from "./singleCheckbox";
 import LoadMoreDropdown from "../common-components/LoadMoreDropdown";
 import MultiSelectDropdown from "../common-components/CustomSelectDropdown";
+import {
+  CLIENT_ID,
+  ROLES,
+  GOOGLE_CAPTCHA_ID,
+  CAPTCHA_SITE_KEY,
+} from "@/utils/constant.utils";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const CounselorRegForm = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
+  const loginRecaptchaRef = useRef(null);
 
   const [state, setState] = useSetState({
     firstname: "",
@@ -54,6 +63,7 @@ const CounselorRegForm = () => {
     alumniPassword: "",
     btnLoading: false,
     notify: false,
+    loginCaptchaToken: "",
   });
 
   useEffect(() => {
@@ -272,6 +282,7 @@ const CounselorRegForm = () => {
 
   return (
     <>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5">
         <div className="space-y-1">
           <TextInput
@@ -460,6 +471,7 @@ const CounselorRegForm = () => {
             error={state.errors?.year_of_graduation}
           />
         </div>
+       
 
         {/* <div className="space-y-1">
           <TextInput
@@ -510,6 +522,15 @@ const CounselorRegForm = () => {
           onChange={(e) => setState({ address: e.target.value })}
         />
       </div>
+      {/* <div className="flex items-center justify-center gap-3 py-0">
+          <ReCAPTCHA
+            ref={loginRecaptchaRef}
+            sitekey={CAPTCHA_SITE_KEY}
+            onChange={(token) => {
+              setState({ loginCaptchaToken: token || "" });
+            }}
+          />
+        </div> */}
 
       {/* <div className="pt-2 pb-2">
         <Checkboxs
@@ -533,6 +554,7 @@ const CounselorRegForm = () => {
           {state.btnLoading ? <Loader /> : "Submit"}
         </Button>
       </div>
+      </GoogleOAuthProvider>
     </>
   );
 };

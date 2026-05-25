@@ -1253,7 +1253,7 @@ const CreateUser = () => {
               variant={"outline"}
               name="Cancel"
               className="border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen "
-              onClick={() => router.push("/user-list")}
+              onClick={() => router.back()}
             />
 
             <PrimaryButton

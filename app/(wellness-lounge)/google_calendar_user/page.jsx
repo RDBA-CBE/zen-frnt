@@ -2,7 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { CheckCircle, Edit, Eye, PlusIcon, Trash, XCircle } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  Edit,
+  Eye,
+  PlusIcon,
+  Table,
+  Trash,
+  XCircle,
+} from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 
@@ -23,6 +32,7 @@ import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import Checkboxs from "@/components/ui/singleCheckbox";
 import { ROLE_ARRAY, ROLES } from "@/utils/constant.utils";
+import GoogleCalendar from "@/app/google_calender";
 
 const UserList = () => {
   const router = useRouter();
@@ -41,7 +51,7 @@ const UserList = () => {
     roleList: [],
     deleteLoading: false,
     filterByRole: [],
-    one_to_one:null
+    calender:false
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -52,7 +62,7 @@ const UserList = () => {
   }, []);
   useEffect(() => {
     getUserList(state.currentPage);
-  }, [debouncedSearch, state.filterByRole,state.one_to_one]);
+  }, [debouncedSearch, state.filterByRole]);
 
   const getGroups = async () => {
     try {
@@ -146,7 +156,7 @@ const UserList = () => {
         const groups = row?.groups || [];
         const isVerified = row?.is_verified;
         const hasStudent = groups?.includes(ROLES.STUDENT);
-        
+
         return (
           <div className="flex items-center gap-2">
             <Label>{groups?.join(",")}</Label>
@@ -178,6 +188,16 @@ const UserList = () => {
         <Label>{moment(row?.row?.date_joined).format("DD-MM-YYYY")}</Label>
       ),
     },
+    // {
+    //   Header: "Registration Slot",
+    //   accessor: "event_registrations",
+    //   Cell: (row) => {
+    //     return(
+    //       <Label>{row?.row?.event_registrations?.length>0 && `${moment(row?.row?.event_registrations?.[0]?.google_event_data?.start?.dateTime).format("HH:MM A")} - ${moment(row?.row?.event_registrations?.[0]?.google_event_data?.end?.dateTime).format("HH:MM A") }`}</Label>
+    //     )
+    //   }
+      
+    // },
 
     {
       Header: "Event Registration Count",
@@ -366,21 +386,14 @@ const UserList = () => {
 
   const bodyData = () => {
     let body = {};
+    body.google_form = "Yes";
     if (state.search) {
       body.search = state.search;
     }
     if (state.filterByRole?.length > 0) {
       body.group_name = state.filterByRole;
     }
-    if(state.one_to_one == true){
-      body.google_form="Yes"
-    }else if(state.one_to_one == false){
-      body.google_form=null
-
-    }else{
-      body.google_form=null
-    }
-    body.is_active="Yes"
+    body.is_active = "Yes";
     return body;
   };
 
@@ -403,7 +416,7 @@ const UserList = () => {
       setState({ filterByRole: [...state.filterByRole, item] });
     } else {
       const filter = state.filterByRole?.filter(
-        (checkedItem) => checkedItem !== item
+        (checkedItem) => checkedItem !== item,
       );
       setState({ filterByRole: filter });
     }
@@ -413,42 +426,66 @@ const UserList = () => {
     <div className="container mx-auto pt-4 pb-2">
       <div className="flex flex-1 flex-col gap-2 p-4 pt-5">
         <Card className="w-[100%] p-4">
-          <div className="flex items-center gap-3 w-full flex-wrap">
-            <h2 className="md:text-[20px] text-sm font-semibold whitespace-nowrap">Users</h2>
-            <div className="w-[280px]">
-              <TextInput
-                value={state.search}
-                onChange={(e) => setState({ search: e.target.value })}
-                placeholder="Search Name"
-                required
-                className="w-full"
-              />
+          <div className="block justify-between items-center lg:flex">
+            <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
+              <h2 className="md:text-[20px] text-sm font-semibold">
+                One To One User
+              </h2>
             </div>
-            <div className="flex items-center gap-4 flex-1 justify-end flex-wrap">
-              {ROLE_ARRAY?.map((item) => (
-                <Checkboxs
-                  key={item}
-                  label={item}
-                  checked={state.filterByRole?.includes(item)}
-                  onChange={(isChecked) => handleCheckboxChange(item, isChecked)}
+            <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
+              <div className="md:w-3/4 w-full  md:mb-0 mb-2">
+                <TextInput
+                  value={state.search}
+                  onChange={(e) => {
+                    setState({ search: e.target.value });
+                  }}
+                  placeholder="Search Name"
+                  required
+                  className="w-full"
                 />
+              </div>
+              {/* <CustomSelect
+                options={state?.roleList || []} // Safely pass empty array if universityList is null
+                value={state.role?.value || ""}
+                onChange={(value) => setState({ role: value })}
+                placeholder="Filter by role"
+              /> */}
+              {ROLE_ARRAY?.map((item) => (
+                <div className="pt-2 pb-2" key={item}>
+                  <Checkboxs
+                    label={item}
+                    checked={state.filterByRole?.includes(item)}
+                    onChange={(isChecked) => {
+                      console.log("✌️val --->", isChecked, item);
+                      handleCheckboxChange(item, isChecked);
+                    }}
+                  />
+                </div>
               ))}
-              <Checkboxs
-                label="Google Form"
-                checked={state.one_to_one}
-                onChange={() => setState({ one_to_one: !state.one_to_one })}
-              />
-              <Button
-                className="bg-themeGreen hover:bg-themeGreen"
-                onClick={() => router.push("/create-user")}
-              >
-                <PlusIcon />
-              </Button>
+              <div className="flex gap-7">
+                <div
+                  className="md:w-1/4 w-full  md:text-end"
+                  onClick={() => setState({calender:!state.calender})}
+                >
+                  <Button className="backcolor-purpole mt-2 md:mt-0">
+                    {!state.calender?<Calendar />:<Table />}
+                  </Button>
+                </div>
+                <div
+                  className="md:w-1/4 w-full  md:text-end"
+                  onClick={() => router.push("/create-user")}
+                >
+                  <Button className="bg-themeGreen hover:bg-themeGreen mt-2 md:mt-0">
+                    <PlusIcon />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </Card>
-
-        {state.loading ? (
+        {state.calender ? (
+          <GoogleCalendar />
+        ) : state.loading ? (
           <Loading />
         ) : state.userList?.length > 0 ? (
           <>
