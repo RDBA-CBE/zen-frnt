@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { useSetState } from "@/utils/function.utils";
 import { TextInput } from "../common-components/textInput";
@@ -14,16 +14,15 @@ import Models from "@/imports/models.import";
 import { useRouter } from "next/navigation";
 import {
   CLIENT_ID,
-  ROLES,
-  GOOGLE_CAPTCHA_ID,
-  CAPTCHA_SITE_KEY,
+  // ROLES,
+  // GOOGLE_CAPTCHA_ID,
+  // CAPTCHA_SITE_KEY,
 } from "@/utils/constant.utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 
 const GroupRegForm = () => {
   const router = useRouter();
-  const loginRecaptchaRef = useRef(null);
   const [state, setState] = useSetState({
     groupFirstName: "",
     groupLastName: "",
