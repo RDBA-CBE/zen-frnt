@@ -6,9 +6,14 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BadgeCheck, Bell, CreditCard, LogOut, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Navbar() {
-  const router =useRouter()
+  const router = useRouter();
+
+  useEffect(() => {
+    router.refresh();
+  }, []);
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md p-2 flex items-center">
       <div className="flex justify-between items-center w-full">
@@ -65,8 +70,10 @@ export default function Navbar() {
               <DropdownMenuSeparator />
               {/* ✅ Logout Button with Click Handler */}
               <DropdownMenuItem onClick={() => {
-                localStorage.clear()
-                router.replace("/")
+                localStorage.clear();
+                sessionStorage.clear();
+                router.refresh();
+                router.replace("/");
                 }}>
                 <LogOut />
                 Log out

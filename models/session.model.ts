@@ -258,21 +258,28 @@ const session = {
       if (body?.search) {
         url += `&registration_id=${encodeURIComponent(body.search)}`;
       }
+
+      if (body?.include_deleted == "Yes") {
+        url += `&include_deleted=${encodeURIComponent(true)}`;
+      }
+      if (body?.include_deleted == "No") {
+        url += `&include_deleted=${encodeURIComponent(false)}`;
+      }
       if (body?.event) {
         url += `&event=${encodeURIComponent(body.event)}`;
       }
 
-      if (body?.user) {
-        url += `&user=${encodeURIComponent(body.user)}`;
+      if (body?.userId) {
+        url += `&user=${encodeURIComponent(body.userId)}`;
       }
       if (body?.start_date) {
         url += `&registration_date_before=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body?.start_date) {
         url += `&registration_date_after=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body?.lounge_status) {
@@ -318,7 +325,7 @@ const session = {
       }
       if (body?.start_date) {
         url += `&registration_date_after=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body?.end_date) {
@@ -326,7 +333,7 @@ const session = {
       } else {
         if (body?.start_date) {
           url += `&registration_date_before=${encodeURIComponent(
-            body.start_date
+            body.start_date,
           )}`;
         }
       }
@@ -368,12 +375,12 @@ const session = {
       }
       if (body.start_date) {
         url += `&registration_date_before=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body.start_date) {
         url += `&registration_date_after=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       // if (body.lounge_status) {
@@ -447,12 +454,12 @@ const session = {
       }
       if (body.start_date) {
         url += `&registration_date_before=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body.start_date) {
         url += `&registration_date_after=${encodeURIComponent(
-          body.start_date
+          body.start_date,
         )}`;
       }
       if (body.lounge_status) {
@@ -647,13 +654,13 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
       if (body?.event) {
         url += `${hasParams ? "&" : "?"}event_title=${encodeURIComponent(
-          body.event
+          body.event,
         )}`;
         hasParams = true;
       }
@@ -685,14 +692,14 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
 
       if (body?.category) {
         url += `${hasParams ? "&" : "?"}category=${encodeURIComponent(
-          body.category
+          body.category,
         )}`;
         hasParams = true;
       }
@@ -725,7 +732,7 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
@@ -757,14 +764,14 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
 
       if (body?.event) {
         url += `${hasParams ? "&" : "?"}event_title=${encodeURIComponent(
-          body.event
+          body.event,
         )}`;
         hasParams = true;
       }
@@ -797,7 +804,7 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
@@ -829,7 +836,7 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
@@ -861,14 +868,14 @@ const session = {
 
       if (body?.end_date) {
         url += `${hasParams ? "&" : "?"}end_date=${encodeURIComponent(
-          body.end_date
+          body.end_date,
         )}`;
         hasParams = true;
       }
 
       if (body?.user_id) {
         url += `${hasParams ? "&" : "?"}user_id=${encodeURIComponent(
-          body.user_id
+          body.user_id,
         )}`;
         hasParams = true;
       }

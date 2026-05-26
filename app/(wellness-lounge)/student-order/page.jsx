@@ -1,13 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
-import { Eye, Trash2 } from "lucide-react";
+import {
+  CalendarCheck2,
+  CalendarX2,
+  Edit,
+  Eye,
+  Trash,
+  Trash2,
+} from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
-import { Dropdown, UserDropdown, useSetState } from "@/utils/function.utils";
+import {
+  capitalizeFLetter,
+  Dropdown,
+  UserDropdown,
+  useSetState,
+} from "@/utils/function.utils";
 import { Label } from "@radix-ui/react-label";
 import moment from "moment";
 import CustomSelect from "@/components/common-components/dropdown";
@@ -69,30 +81,92 @@ const WellnessLoungeList = () => {
     }
   }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
 
+  // const getOrdersList = async (page) => {
+  //   try {
+  //     setState({ loading: true });
+
+  //     const body = bodyData();
+  //     const userId = state.userId;
+  //     if (!userId) return;
+
+  //     const res = await Models.session.singleUserRegistrationList(
+  //       page,
+  //       body,
+  //       userId
+  //     );
+
+  //     setState({
+  //       loungeList: res?.results || [],
+  //       next: res?.next,
+  //       previous: res?.previous,
+  //       currentPage: page,
+  //       loading: false,
+  //     });
+  //   } catch (error) {
+  //     setState({ loading: false });
+  //     console.error("Error fetching orders:", error);
+  //   }
+  // };
+
   const getOrdersList = async (page) => {
     try {
       setState({ loading: true });
-
-      const body = bodyData();
+      let body = bodyData();
       const userId = state.userId;
       if (!userId) return;
+      body.userId = userId;
 
-      const res = await Models.session.singleUserRegistrationList(
-        page,
-        body,
-        userId
-      );
+      const res = await Models.session.registrationList(page, body);
+      console.log("res", res);
+
+      const data = (res?.results || []).map((item) => {
+        const isAyurvedic = item?.event?.lounge_type?.id === AYURVEDIC_LOUNGE;
+        return {
+          id: item?.id,
+          name: `${item?.user?.first_name || ""} ${item?.user?.last_name || ""}`,
+          registration_id: item?.registration_id,
+          registration_status: item?.registration_status,
+          session_date: item?.google_event_id
+            ? moment(item?.start_datetime).format("DD-MM-YYYY")
+            : moment(item?.registration_date).format("DD-MM-YYYY"),
+          registration_date: moment(item?.created_at).format("DD-MM-YYYY"),
+          slotDateOrStartTime: isAyurvedic
+            ? item?.slot?.event_slot?.date
+            : item?.google_event_id
+              ? moment(item?.start_datetime).format("HH:mm")
+              : item?.event?.start_time,
+          slotTimeOrEndTime: isAyurvedic
+            ? item?.slot?.start_time
+            : item?.google_event_id
+              ? moment(item?.end_datetime).format("HH:mm")
+              : item?.event?.end_time,
+          google_event_id: item?.google_event_id,
+          deleted: item?.deleted,
+          isAyurvedic,
+          event: {
+            start_date: item?.google_event_id
+              ? moment(item?.start_datetime).format("DD-MM-YYYY")
+              : moment(item?.registration_date).format("DD-MM-YYYY"),
+            start_time: item?.google_event_id
+              ? moment(item?.start_datetime).format("HH:mm")
+              : item?.event?.start_time,
+            end_time: item?.google_event_id
+              ? moment(item?.end_datetime).format("HH:mm")
+              : item?.event?.end_time,
+          },
+          lounge_type: capitalizeFLetter(item?.event?.lounge_type?.name),
+        };
+      });
 
       setState({
-        loungeList: res?.results || [],
-        next: res?.next,
-        previous: res?.previous,
+        loungeList: data,
+        next: res.next,
+        previous: res.previous,
         currentPage: page,
         loading: false,
       });
     } catch (error) {
       setState({ loading: false });
-      console.error("Error fetching orders:", error);
     }
   };
 
@@ -156,6 +230,9 @@ const WellnessLoungeList = () => {
     if (state.search) {
       body.search = state.search;
     }
+
+    body.include_deleted = "Yes";
+
     if (state.start_date) {
       body.start_date = moment(state.start_date).format("YYYY-MM-DD");
     }
@@ -175,9 +252,16 @@ const WellnessLoungeList = () => {
     router.push(`/update-order/?id=${item?.id}`);
   };
 
+ 
+
   const handleView = (item) => {
-    console.log("Viewing:", item);
+    if (item?.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
+      router.push(`/view-paid-order/?id=${item?.id}`);
+    } else {
+      router.push(`/view-order/?id=${item?.id}`);
+    }
   };
+
 
   const deleteSession = async () => {
     try {
@@ -211,76 +295,98 @@ const WellnessLoungeList = () => {
     {
       Header: "Session Id",
       accessor: "registration_id",
-    },
-   {
-         Header: "Registration Date",
-         accessor: "registration_date",
-         Cell: (row) => (
-           <Label>
-             {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
-           </Label>
-         ),
-       },
-       
-   
-       {
-         Header: "Session Date",
-         accessor: "session_date",
-         Cell: (row) => (
-           <Label>
-             {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
-           </Label>
-         ),
-       },
-   
-       {
-         Header: "Start Time",
-         accessor: "start_time",
-         Cell: (row) => <Label>{row?.row?.event?.start_time}</Label>,
-       },
-       {
-         Header: "End Time",
-         accessor: "end_time",
-         Cell: (row) => <Label>{row?.row?.event?.end_time}</Label>,
-       },
-       {
-         Header: "Booking Status",
-         accessor: "registration_status",
-       },
-    {
-      Header: "Lounge",
-      accessor: "event",
-      Cell: (row) => <Label>{row?.row?.event?.title}</Label>,
-    },
-
-    {
-      Header: "View",
-      accessor: "action",
       Cell: (row) => (
-        <div className="flex items-center gap-1">
-          <Link
-            href={
-              row?.row?.event?.lounge_type?.id == AYURVEDIC_LOUNGE
-                ? `/view-paid-order?id=${row?.row?.id}`
-                : `/view-order?id=${row?.row?.id}`
-            }
-            className="pointer"
-            prefetch={true}
-          >
-            <Eye size={16} className="mr-2" />
-          </Link>
-          {/* <Link
-            href={`/view-order/?id=${row?.row?.id}`}
-            passHref
-            prefetch={true}
-          >
-            <Eye size={16} className="mr-2" />
-          </Link> */}
+        <div className="flex items-center gap-1.5">
+          <Label>{row?.row?.registration_id}</Label>
+          {row?.row?.google_event_id && (
+            <div className="relative group">
+              {row?.row?.deleted ? (
+                <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
+              ) : (
+                <CalendarCheck2
+                  size={14}
+                  className="text-green-500 cursor-pointer"
+                />
+              )}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                {row?.row?.deleted
+                  ? "Session deleted from Google Calendar"
+                  : "Google Form Session"}
+              </div>
+            </div>
+          )}
         </div>
       ),
     },
-  ];
 
+    {
+      Header: "Registration Date",
+      accessor: "registration_date",
+      Cell: (row) => <Label>{row?.row?.registration_date}</Label>,
+    },
+
+    {
+      Header: "Session Date",
+      accessor: "session_date",
+      Cell: (row) => <Label>{row?.row?.session_date}</Label>,
+    },
+
+    {
+      Header: "Start Time",
+      accessor: "start_time",
+      Cell: (row) => <Label>{row?.row?.slotDateOrStartTime}</Label>,
+    },
+    {
+      Header: "End Time",
+      accessor: "end_time",
+      Cell: (row) => <Label>{row?.row?.slotTimeOrEndTime}</Label>,
+    },
+    {
+      Header: "Booking Status",
+      accessor: "registration_status",
+    },
+    {
+      Header: "Lounge Type",
+      accessor: "event",
+      Cell: (row) => <Label>{row?.row?.lounge_type}</Label>,
+    },
+
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: (row) => (
+        <div className="flex items-center gap-2">
+          <div className="cursor-pointer" onClick={() => handleView(row?.row)}>
+            <Eye size={20} className="mr-2" />
+          </div>
+        </div>
+        // <DropdownMenu>
+        //     <DropdownMenuTrigger asChild>
+        //         <button className="p-2 rounded-md hover:bg-gray-300">
+        //             <MoreHorizontal size={20} />
+        //         </button>
+        //     </DropdownMenuTrigger>
+        //     <DropdownMenuContent align="end" className="w-32">
+        //         <DropdownMenuItem onClick={() => handleEdit(row?.row)}>
+        //             <Edit size={16} className="mr-2" />
+        //             Edit
+        //         </DropdownMenuItem>
+        //         <DropdownMenuItem onClick={() => handleView(row?.row)}>
+        //             <Eye size={16} className="mr-2" />
+        //             View
+        //         </DropdownMenuItem>
+        //         <DropdownMenuItem
+        //             onClick={() => setState({ isOpen: true, deleteId: row?.row?.id })}
+        //             className="text-red-500"
+        //         >
+        //             <Trash size={16} className="mr-2" />
+        //             Delete
+        //         </DropdownMenuItem>
+        //     </DropdownMenuContent>
+        // </DropdownMenu>
+      ),
+    },
+  ];
   const handleNextPage = () => {
     if (state.next) {
       const newPage = state.currentPage + 1;
@@ -295,6 +401,7 @@ const WellnessLoungeList = () => {
     }
   };
 
+  console.log("state.loungeList", state.loungeList);
   return (
     <div className="container mx-auto pt-4">
       <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
@@ -345,7 +452,7 @@ const WellnessLoungeList = () => {
                 </div>
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <DatePicker
-                    placeholder="Order Date"
+                    placeholder="Booking Date"
                     closeIcon={true}
                     selectedDate={state.start_date}
                     onChange={(date) => {
@@ -366,7 +473,11 @@ const WellnessLoungeList = () => {
           <>
             <div className=" mt-2 overflow-x-auto">
               <Card className="w-[100%] p-4">
-                <DataTable columns={columns} data={state.loungeList} />
+                <DataTable columns={columns} data={state.loungeList}
+                getRowClassName={(row) =>
+                  row?.deleted ? "opacity-120 text-gray-400" : ""
+                }
+                />
               </Card>
             </div>
 

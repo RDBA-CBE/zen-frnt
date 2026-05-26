@@ -450,7 +450,7 @@ const UserList = () => {
                 onChange={(value) => setState({ role: value })}
                 placeholder="Filter by role"
               /> */}
-              {ROLE_ARRAY?.map((item) => (
+              {/* {ROLE_ARRAY?.map((item) => (
                 <div className="pt-2 pb-2" key={item}>
                   <Checkboxs
                     label={item}
@@ -461,7 +461,7 @@ const UserList = () => {
                     }}
                   />
                 </div>
-              ))}
+              ))} */}
               <div className="flex gap-7">
                 <div
                   className="md:w-1/4 w-full  md:text-end"

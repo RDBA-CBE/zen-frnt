@@ -16,9 +16,10 @@ interface Column {
 interface DataTableProps {
   columns: Column[];
   data: RowData[];
+  getRowClassName?: (row: RowData) => string;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
+const DataTable: React.FC<DataTableProps> = ({ columns, data, getRowClassName }) => {
   return (
     <div className="overflow-x-auto w-full">
       <Table className="min-w-full">
@@ -37,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
         </TableHeader>
         <TableBody>
           {data.map((row, index) => (
-            <TableRow key={index} className="hover:bg-gray-100">
+            <TableRow key={index} className={`hover:bg-gray-100 ${getRowClassName ? getRowClassName(row) : ""}`}>
               {columns.map((column) => (
                 <TableCell key={column.accessor} className="py-4 px-4">
                   {column.Cell ? column.Cell({ value: row[column.accessor], row }) : row[column.accessor]}

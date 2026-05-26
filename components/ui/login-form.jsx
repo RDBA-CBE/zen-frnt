@@ -216,15 +216,21 @@ const LoginForm = (props) => {
         password: state.password,
       };
 
+      await login.validate(validatebody, { abortEarly: false });
+
+      if (!state.loginCaptchaToken) {
+        setState({
+          loading: false,
+          errors: { ...state.errors, loginCaptchaInput: "Please complete the captcha verification." },
+        });
+        return;
+      }
+
       const body = {
         email: state.username.trim(),
         password: state.password,
         recaptcha_token: state.loginCaptchaToken,
       };
-
-      await login.validate(validatebody, {
-        abortEarly: false,
-      });
 
       const res = await Models.auth.login(body);
       console.log("✌️res --->", res);
@@ -301,6 +307,8 @@ const LoginForm = (props) => {
         setState({ errors: validationErrors, loading: false });
       } else {
         setState({ loading: false });
+        loginRecaptchaRef.current?.reset();
+        setState({ loginCaptchaToken: "" });
         if (error?.detail) {
           Failure(error.detail);
         } else {
@@ -333,7 +341,7 @@ const LoginForm = (props) => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form autoComplete="off">
+                <form autoComplete="new-password">
                   <div className="flex flex-col gap-6">
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
@@ -351,7 +359,7 @@ const LoginForm = (props) => {
                           })
                         }
                         error={state.errors?.email}
-                        autoComplete="off"
+                        autoComplete="new-password"
                       />
                     </div>
                     <div className="grid gap-2">
@@ -381,7 +389,7 @@ const LoginForm = (props) => {
                           }
                           error={state.errors?.password}
                           className="pr-10"
-                          autoComplete="off"
+                          autoComplete="new-password"
                         />
                         <button
                           type="button"
@@ -402,7 +410,7 @@ const LoginForm = (props) => {
                         </button>
                       </div>
                     </div>
-                    {/* <div className="flex items-center justify-center gap-3 py-0">
+                 <div className="flex items-center justify-center gap-3 py-0">
                       <ReCAPTCHA
                         ref={loginRecaptchaRef}
                         sitekey={CAPTCHA_SITE_KEY}
@@ -422,7 +430,7 @@ const LoginForm = (props) => {
                       <p className="text-sm text-red-600 text-center -mt-2">
                         {state.errors.loginCaptchaInput}
                       </p>
-                    )} */}
+                    )} 
 
                     <Button
                       type="button"

@@ -67,6 +67,7 @@ const AlumniRegistrationForm = () => {
     alumniPassword: "",
     btnLoading: false,
     notify: false,
+    loginCaptchaToken: "",
   });
 
   useEffect(() => {
@@ -182,6 +183,8 @@ const AlumniRegistrationForm = () => {
         password: state.password,
         notify: false,
         role: "Alumni",
+        recaptcha_token: state.loginCaptchaToken,
+
       };
 
       // First: Run Yup validation
@@ -199,7 +202,17 @@ const AlumniRegistrationForm = () => {
       }
 
       // If all validations pass
+      if (!state.loginCaptchaToken) {
+        setState({
+          btnLoading: false,
+          errors: { ...state.errors, loginCaptchaInput: "Please complete the captcha verification." },
+        });
+        return;
+      }
+
       const res = await Models.auth.registration(body);
+      loginRecaptchaRef.current?.reset();
+      setState({ loginCaptchaToken: "" });
 
       setState({ btnLoading: false });
 
@@ -234,6 +247,8 @@ const AlumniRegistrationForm = () => {
 
         setState({ errors: validationErrors });
 
+        loginRecaptchaRef.current?.reset();
+        setState({ loginCaptchaToken: "" });
         if (error?.email) {
           Failure(error.email[0]);
           setState({ errors: null });
@@ -267,6 +282,7 @@ const AlumniRegistrationForm = () => {
   };
 
   const resetForm = () => {
+    loginRecaptchaRef.current?.reset();
     setState({
       errors: null,
       aluminifirstname: "",
@@ -283,7 +299,7 @@ const AlumniRegistrationForm = () => {
       alumniUniversity: null,
       is_open_to_be_mentor: false,
       password: "",
-      errors: null,
+      loginCaptchaToken: "",
       notify: false,
     });
   };
@@ -372,6 +388,7 @@ const AlumniRegistrationForm = () => {
             type="email"
             placeholder="user@gmail.com"
             required
+            autoComplete="new-password"
             title="E-Mail"
             value={state.alumniEmail}
             onChange={(e) =>
@@ -391,6 +408,7 @@ const AlumniRegistrationForm = () => {
               type={state.showPassword ? "text" : "password"}
               placeholder="Enter Your password"
               required
+              autoComplete="new-password"
               title="Password"
               value={state.password}
               onChange={(e) =>
@@ -817,7 +835,7 @@ const AlumniRegistrationForm = () => {
           onChange={(e) => setState({ address: e.target.value })}
         />
       </div>
-      {/* <div className="flex items-center justify-center gap-3 py-0">
+      <div className="flex items-center justify-center gap-3 py-0">
         <ReCAPTCHA
           ref={loginRecaptchaRef}
           sitekey={CAPTCHA_SITE_KEY}
@@ -825,7 +843,12 @@ const AlumniRegistrationForm = () => {
             setState({ loginCaptchaToken: token || "" });
           }}
         />
-      </div> */}
+      </div>
+      {state.errors?.loginCaptchaInput && (
+          <p className="text-sm text-red-600 text-center -mt-2">
+            {state.errors.loginCaptchaInput}
+          </p>
+        )}
 
       <div className="flex justify-center gap-2 ">
         <Button

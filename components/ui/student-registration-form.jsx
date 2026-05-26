@@ -269,9 +269,7 @@ const StudentRegistrationForm = () => {
       const body = {
         first_name: state?.firstname,
         last_name: state?.lastname,
-        // email: state?.email.trim(),
         email: state?.email.trim() + DOMAIN,
-
         department: state?.department,
         year_of_entry: state?.year_of_entry?.value
           ? state?.year_of_entry?.value
@@ -286,13 +284,29 @@ const StudentRegistrationForm = () => {
         is_alumni: false,
         notify: state.notify,
         role: "Student",
+        recaptcha_token: state.loginCaptchaToken,
+
       };
-      console.log("✌️body --->", body);
 
       await Validation.studentRegistration.validate(body, {
         abortEarly: false,
       });
+
+      if (!state.loginCaptchaToken) {
+        setState({
+          btnLoading: false,
+          errors: {
+            ...state.errors,
+            loginCaptchaInput: "Please complete the captcha verification.",
+          },
+        });
+        return;
+      }
+
       const res = await Models.auth.registration(body);
+
+      loginRecaptchaRef.current?.reset();
+      setState({ loginCaptchaToken: "" });
 
       InfinitySuccess(
         "Thank you for registering as a student. Please check your inbox to verify your email and then log in to your account. Visit the Programs page to explore Lounges and register for sessions that match your interests.",
@@ -314,6 +328,8 @@ const StudentRegistrationForm = () => {
         setState({ btnLoading: false });
       } else {
         setState({ btnLoading: false });
+        loginRecaptchaRef.current?.reset();
+        setState({ loginCaptchaToken: "" });
         if (error?.email) {
           Failure(error.email[0]);
         } else if (error?.password) {
@@ -326,6 +342,7 @@ const StudentRegistrationForm = () => {
   };
 
   const resetForm = () => {
+    loginRecaptchaRef.current?.reset();
     setState({
       btnLoading: false,
       firstname: "",
@@ -338,6 +355,7 @@ const StudentRegistrationForm = () => {
       errors: null,
       alumniIntrested_topics: [],
       notify: false,
+      loginCaptchaToken: "",
     });
   };
 
@@ -392,6 +410,7 @@ const StudentRegistrationForm = () => {
               type="email"
               placeholder="Email"
               required
+              autoComplete="new-password"
               value={state.email}
               onChange={(e) =>
                 setState({
@@ -411,6 +430,7 @@ const StudentRegistrationForm = () => {
                 type={state.showPassword ? "text" : "password"}
                 placeholder="Enter Your password"
                 required
+                autoComplete="new-password"
                 title="Password"
                 value={state.password}
                 onChange={(e) =>
@@ -598,30 +618,29 @@ const StudentRegistrationForm = () => {
               checked={state.notify}
               onChange={(val) => setState({ notify: val })}
             />
-           
           </div>
-          {state.errors?.loginCaptchaInput && (
-            <p className="text-sm text-red-600 text-center -mt-2">
-              {state.errors.loginCaptchaInput}
-            </p>
-          )}
         </div>
-        {/* <div className="flex justify-center items-center  gap-3 py-0">
-              <ReCAPTCHA
-                ref={loginRecaptchaRef}
-                sitekey={CAPTCHA_SITE_KEY}
-                onChange={(token) => {
-                  setState({ loginCaptchaToken: token || "" });
-                  if (token)
-                    setState({
-                      errors: {
-                        ...state.errors,
-                        loginCaptchaInput: "",
-                      },
-                    });
-                }}
-              />
-            </div> */}
+        <div className="flex justify-center items-center  gap-3 py-0">
+          <ReCAPTCHA
+            ref={loginRecaptchaRef}
+            sitekey={CAPTCHA_SITE_KEY}
+            onChange={(token) => {
+              setState({ loginCaptchaToken: token || "" });
+              if (token)
+                setState({
+                  errors: {
+                    ...state.errors,
+                    loginCaptchaInput: "",
+                  },
+                });
+            }}
+          />
+        </div>
+        {state.errors?.loginCaptchaInput && (
+          <p className="text-sm text-red-600 text-center -mt-2">
+            {state.errors.loginCaptchaInput}
+          </p>
+        )}
         <div className="flex justify-center gap-2">
           <Button
             onClick={() => resetForm()}
@@ -637,7 +656,7 @@ const StudentRegistrationForm = () => {
             {state.btnLoading ? <Loader /> : "Submit"}
           </Button>
         </div>
-        
+
         {/* <div className="relative  p-4">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

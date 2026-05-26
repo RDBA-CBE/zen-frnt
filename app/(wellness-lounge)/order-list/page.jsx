@@ -9,6 +9,8 @@ import {
   Trash,
   X,
   XIcon,
+  CalendarX2,
+  CalendarCheck2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
 import {
+  capitalizeFLetter,
   Dropdown,
   isBeforeCurrentTimeBy30Min,
   objIsEmpty,
@@ -75,7 +78,7 @@ const WellnessLoungeList = () => {
 
     const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
       row?.row?.event?.start_date,
-      row?.row?.event?.start_time
+      row?.row?.event?.start_time,
     );
     setState({ isEventBefore30Mins });
 
@@ -86,21 +89,43 @@ const WellnessLoungeList = () => {
       return "The event start time is not available";
     }
 
-    const formattedDate = moment(startDate).format("DD-MM-YYYY");
     const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
 
     if (isEventBefore30Mins) {
       Failure(
-        `Booking delete can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+        `Booking delete can be enable only before 1 hour from event start time (${startDate} ${formattedTime})`,
       );
     } else {
       setState({
         isOpen: true,
         deleteId: row?.row?.id,
         sessionID: row?.row?.registration_id,
+        deleted:
+          row?.row?.deleted,
       });
     }
   };
+
+  // const getOrdersList = async (page) => {
+  //   try {
+  //     setState({ loading: true });
+  //     let body = bodyData();
+
+  //     const res = await Models.session.registrationList(page, body);
+
+  //     setState({
+  //       loungeList: res?.results,
+  //       next: res.next,
+  //       previous: res.previous,
+  //       currentPage: page,
+  //       loading: false,
+  //     });
+  //   } catch (error) {
+  //     setState({ loading: false });
+
+  //     console.log("error: ", error);
+  //   }
+  // };
 
   const getOrdersList = async (page) => {
     try {
@@ -109,17 +134,70 @@ const WellnessLoungeList = () => {
 
       const res = await Models.session.registrationList(page, body);
 
-      setState({
-        loungeList: res?.results,
-        next: res.next,
-        previous: res.previous,
-        currentPage: page,
-        loading: false,
-      });
+      if (res?.results?.length > 0) {
+        const data = res?.results?.map((item) => {
+          const isAyurvedic = item?.event?.lounge_type?.id === AYURVEDIC_LOUNGE;
+
+          return {
+            id: item?.id,
+            name: `${item?.user?.first_name || ""} ${
+              item?.user?.last_name || ""
+            }`,
+            registration_id: item?.registration_id,
+            registration_status: item?.registration_status,
+            session_date: item?.google_event_id
+              ? moment(item?.start_datetime).format("DD-MM-YYYY")
+              : moment(item?.registration_date).format("DD-MM-YYYY"),
+            registration_date: moment(item?.created_at).format("DD-MM-YYYY"),
+
+            slotDateOrStartTime: isAyurvedic
+              ? item?.slot?.event_slot?.date
+              : item?.google_event_id
+                ? moment(item?.start_datetime).format("HH:mm")
+                : item?.event?.start_time,
+
+            slotTimeOrEndTime: isAyurvedic
+              ? item?.slot?.start_time
+              : item?.google_event_id
+                ? moment(item?.end_datetime).format("HH:mm")
+                : item?.event?.end_time,
+            lounge_type: capitalizeFLetter(item?.event?.lounge_type?.name),
+
+            amount: item?.amount,
+            email: item?.user?.email,
+            google_event_id: item?.google_event_id,
+            deleted: item?.deleted,
+            isAyurvedic,
+            event: {
+              start_date: item?.google_event_id
+                ? moment(item?.start_datetime).format("DD-MM-YYYY")
+                : moment(item?.registration_date).format("DD-MM-YYYY"),
+
+              start_time: item?.google_event_id
+                ? moment(item?.start_datetime).format("HH:mm")
+                : item?.event?.start_time,
+
+              end_time: item?.google_event_id
+                ? moment(item?.end_datetime).format("HH:mm")
+                : item?.event?.end_time,
+            },
+          };
+        });
+
+        console.log("✌️data --->", data);
+
+        setState({
+          loungeList: data,
+          next: res.next,
+          previous: res.previous,
+          currentPage: page,
+          loading: false,
+        });
+      } else {
+        setState({ loading: false });
+      }
     } catch (error) {
       setState({ loading: false });
-
-      console.log("error: ", error);
     }
   };
 
@@ -159,6 +237,7 @@ const WellnessLoungeList = () => {
     let body = {
       exclude_category: AYURVEDIC_LOUNGE,
     };
+    body.include_deleted = "Yes";
     if (state.search) {
       body.search = state.search;
     }
@@ -179,7 +258,7 @@ const WellnessLoungeList = () => {
   const handleEdit = (item) => {
     const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
       item?.event?.start_date,
-      item?.event?.start_time
+      item?.event?.start_time,
     );
     setState({ isEventBefore30Mins });
 
@@ -190,12 +269,11 @@ const WellnessLoungeList = () => {
       return "The event start time is not available";
     }
 
-    const formattedDate = moment(startDate).format("DD-MM-YYYY");
     const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
 
     if (isEventBefore30Mins) {
       Failure(
-        `Booking update can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
+        `Booking update can be enable only before 1 hour from event start time (${startDate} ${formattedTime})`,
       );
     } else {
       console.log("Editing:", item);
@@ -212,15 +290,18 @@ const WellnessLoungeList = () => {
   };
 
   const deleteSession = async () => {
+    console.log("deleteSession",state.deleteId)
     try {
       setState({ submitLoading: true });
-      const res = await Models.session.deleteRegistration(state.deleteId);
+      if (state.deleted) {
+        await Models.session.updateRegistration( { deleted: false },state.deleteId);
+      }
+      await Models.session.deleteRegistration(state.deleteId);
       getOrdersList(state.currentPage);
-      setState({ isOpen: false, deleteId: null, submitLoading: false });
+      setState({ isOpen: false, deleteId: null, deleted: null, submitLoading: false });
       Success("Record deleted successfully");
     } catch (error) {
       setState({ submitLoading: false });
-
       console.log("error: ", error);
     }
   };
@@ -251,45 +332,69 @@ const WellnessLoungeList = () => {
     {
       Header: "Session Id",
       accessor: "registration_id",
+      Cell: (row) => (
+        <div className="flex items-center gap-1.5">
+          <Label>{row?.row?.registration_id}</Label>
+          {row?.row?.google_event_id && (
+            <div className="relative group">
+              {row?.row?.deleted ? (
+                <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
+              ) : (
+                <CalendarCheck2
+                  size={14}
+                  className="text-green-500 cursor-pointer"
+                />
+              )}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                {row?.row?.deleted
+                  ? "Session deleted from Google Calendar"
+                  : "Google Form Session"}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
     },
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+
+    {
+      Header: "Email",
+      accessor: "email",
+    },
+
     {
       Header: "Registration Date",
       accessor: "registration_date",
-      Cell: (row) => (
-        <Label>
-          {moment(row?.row?.registration_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
+      Cell: (row) => <Label>{row?.row?.registration_date}</Label>,
     },
 
     {
       Header: "Session Date",
       accessor: "session_date",
-      Cell: (row) => (
-        <Label>
-          {moment(row?.row?.event?.start_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
+      Cell: (row) => <Label>{row?.row?.session_date}</Label>,
     },
 
     {
       Header: "Start Time",
       accessor: "start_time",
-      Cell: (row) => <Label>{row?.row?.event?.start_time}</Label>,
+      Cell: (row) => <Label>{row?.row?.slotDateOrStartTime}</Label>,
     },
     {
       Header: "End Time",
       accessor: "end_time",
-      Cell: (row) => <Label>{row?.row?.event?.end_time}</Label>,
+      Cell: (row) => <Label>{row?.row?.slotTimeOrEndTime}</Label>,
     },
     {
       Header: "Booking Status",
       accessor: "registration_status",
     },
     {
-      Header: "Lounge",
+      Header: "Lounge Type",
       accessor: "event",
-      Cell: (row) => <Label>{row?.row?.event?.title}</Label>,
+      Cell: (row) => <Label>{row?.row?.lounge_type}</Label>,
     },
 
     {
@@ -465,7 +570,13 @@ const WellnessLoungeList = () => {
           <>
             <div className=" mt-2 overflow-x-auto">
               <Card className="w-[100%] p-4">
-                <DataTable columns={columns} data={state.loungeList} />
+                <DataTable
+                  columns={columns}
+                  data={state.loungeList}
+                  getRowClassName={(row) =>
+                    row?.deleted ? "opacity-120 text-gray-400" : ""
+                  }
+                />
               </Card>
             </div>
 

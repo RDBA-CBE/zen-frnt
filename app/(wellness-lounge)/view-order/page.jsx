@@ -12,7 +12,14 @@ import {
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { Calendar1, CalendarClock, Clock, Clock10, Loader, MapPin } from "lucide-react";
+import {
+  Calendar1,
+  CalendarClock,
+  Clock,
+  Clock10,
+  Loader,
+  MapPin,
+} from "lucide-react";
 
 import Link from "next/link";
 
@@ -56,23 +63,50 @@ const viewWellnessLounge = () => {
   const getDetails = async () => {
     try {
       const res = await Models.session.registrationDetails(id);
+
       setState({
         orderData: res,
       });
-      console.log("✌️res --->", res);
+
+      const start_date = res?.google_event_id
+        ? moment(res?.start_datetime)?.format("DD-MM-YYYY")
+        : res?.event?.start_date;
+
+      const start_time = res?.google_event_id
+        ? moment(res?.start_datetime)?.format("HH:mm:ss")
+        : res?.event?.start_time;
+
+      const end_date = res?.google_event_id
+        ? moment(res?.end_datetime)?.format("DD-MM-YYYY")
+        : res?.event?.end_date;
+
+      const end_time = res?.google_event_id
+        ? moment(res?.end_datetime)?.format("HH:mm:ss")
+        : res?.event?.end_time;
+
+      const event_date = res?.google_event_id
+        ? moment(res?.start_datetime)?.format("DD MMM YYYY")
+        : res?.event?.start_date;
 
       const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
-        res?.event?.start_date,
-        res?.event?.start_time
+        start_date,
+        start_time,
       );
-      console.log("✌️isEventBefore30Mins --->", isEventBefore30Mins);
 
       // const isEventBefore30Min=isBeforeCurrentTimeBy30Min("2025-09-27", "14:14:00")
 
       // const link = extractZoomMeetingId(res?.event?.session_link);
       // attendanceList(link);
       const group = localStorage.getItem("group");
-      setState({ group: group, isEventBefore30Mins });
+      setState({
+        group: group,
+        isEventBefore30Mins,
+        start_date,
+        start_time,
+        end_time,
+        end_date,
+        event_date,
+      });
     } catch (error) {
       setState({ error: error?.detail });
       console.log("error: ", error);
@@ -102,9 +136,12 @@ const viewWellnessLounge = () => {
 
     const { end_date, end_time } = state.orderData.event;
 
-    if (!end_date || !end_time) return false;
+    if (state.end_date || state.end_time) return false;
 
-    const eventEnd = moment(`${end_date} ${end_time}`, "YYYY-MM-DD HH:mm:ss");
+    const eventEnd = moment(
+      `${state.end_date} ${state.end_time}`,
+      "YYYY-MM-DD HH:mm:ss",
+    );
 
     return moment().isAfter(eventEnd);
   };
@@ -124,20 +161,20 @@ const viewWellnessLounge = () => {
       window.open(
         state.orderData.event?.session_link,
         "_blank",
-        "noopener,noreferrer"
+        "noopener,noreferrer",
       );
     } else {
-      const startDate = state.orderData?.event?.start_date;
-      const startTime = state.orderData?.event?.start_time;
+      const startDate = state.start_date;
+      const startTime = state.start_time;
 
       if (!startDate || !startTime) {
         return "The event start time is not available";
       }
 
-      const formattedDate = moment(startDate).format("DD-MM-YYYY");
-      const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
+      // const formattedDate = moment(startDate).format("DD-MM-YYYY");
+      // const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
       Failure(
-        `The session link will be enabled 1 hour before the event start time (${formattedDate} ${formattedTime})`
+        `The session link will be enabled 1 hour before the event start time (${startDate} ${startTime})`,
       );
     }
   };
@@ -223,9 +260,7 @@ const viewWellnessLounge = () => {
                             className="font-bold"
                             style={{ color: "#4a4a4a" }}
                           >
-                            {moment(state?.orderData?.event?.start_date).format(
-                              "DD MMM YYYY"
-                            )}
+                            {state.event_date}
                           </span>{" "}
                         </div>
                         <div className="flex gap-x-1 mb-4">
@@ -241,10 +276,9 @@ const viewWellnessLounge = () => {
                             className="font-bold "
                             style={{ color: "#4a4a4a" }}
                           >
-                            {moment(
-                              state?.orderData?.event?.start_time,
-                              "HH:mm:ss"
-                            ).format("hh:mm A")}{" "}
+                            {moment(state?.start_time, "HH:mm:ss").format(
+                              "hh:mm A",
+                            )}{" "}
                             (IST)
                           </span>
                         </div>
@@ -262,10 +296,9 @@ const viewWellnessLounge = () => {
                             className="font-bold "
                             style={{ color: "#4a4a4a" }}
                           >
-                            {moment(
-                              state?.orderData?.event?.end_time,
-                              "HH:mm:ss"
-                            ).format("hh:mm A")}{" "}
+                            {moment(state?.end_time, "HH:mm:ss").format(
+                              "hh:mm A",
+                            )}{" "}
                             (IST)
                           </span>
                         </div>

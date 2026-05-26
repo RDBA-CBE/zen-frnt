@@ -2,7 +2,17 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
 
-import { Edit, Eye, Loader, PlusIcon, Trash } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  Loader,
+  PlusIcon,
+  Trash,
+  CalendarX2,
+  CalendarCheck2,
+  FormInput,
+  Sheet,
+} from "lucide-react";
 
 import {
   Dropdown,
@@ -71,6 +81,7 @@ const RegistrationList = () => {
       if (idFromSearchParams) {
         let body = {
           event: idFromSearchParams,
+          include_deleted: "Yes",
         };
 
         const res = await Models.session.registrationList(page, body);
@@ -90,18 +101,24 @@ const RegistrationList = () => {
               }`,
               registration_id: item?.registration_id,
               registration_status: item?.registration_status,
-              registration_date: item?.registration_date,
+              registration_date:item?.google_event_id?(item?.start_datetime): item?.registration_date,
 
               slotDateOrStartTime: isAyurvedic
                 ? item?.slot?.event_slot?.date
-                : item?.event?.start_time,
+                : item?.google_event_id
+                  ? moment(item?.start_datetime).format("HH:mm")
+                  : item?.event?.start_time,
 
               slotTimeOrEndTime: isAyurvedic
                 ? item?.slot?.start_time
-                : item?.event?.end_time,
+                : item?.google_event_id
+                  ? moment(item?.end_datetime).format("HH:mm")
+                  : item?.event?.end_time,
 
               amount: item?.amount,
               email: item?.user?.email,
+              google_event_id: item?.google_event_id,
+              deleted: item?.deleted,
               isAyurvedic, // keep flag for column headers
             };
           });
@@ -165,6 +182,8 @@ const RegistrationList = () => {
         leave_time: item?.leave_time,
         duration: item?.duration ? formatDuration(item?.duration) : "_",
         email: item?.user_email,
+        google_event_id: item?.google_event_id,
+        deleted: item?.deleted,
       }));
       setState({
         participatedList: data,
@@ -182,7 +201,25 @@ const RegistrationList = () => {
     {
       Header: "Registration ID",
       accessor: "registration_id",
-      Cell: (row) => <Label>{`${row?.row?.registration_id}  `}</Label>,
+      Cell: (row) => (
+        <div className="flex items-center gap-1.5">
+          <Label>{row?.row?.registration_id}</Label>
+          {row?.row?.google_event_id && (
+            <div className="relative group">
+              {row?.row?.deleted ? (
+                <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
+              ) : (
+                <Sheet size={14} className="text-green-500 cursor-pointer" />
+              )}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                {row?.row?.deleted
+                  ? "Session deleted from Google Calendar"
+                  : "Google Form Session"}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       Header: "Registration Date",
@@ -198,14 +235,13 @@ const RegistrationList = () => {
     {
       Header: "Name",
       accessor: "name",
-      Cell: (row) => <Label>{`${row?.row?.name}  `}</Label>,
+      Cell: (row) => <Label>{row?.row?.name}</Label>,
     },
     {
       Header: "Email",
       accessor: "email",
       Cell: (row) => <Label>{row?.row?.email || "-"}</Label>,
     },
-
     {
       Header: "Start Time",
       accessor: "slotDateOrStartTime",
@@ -230,7 +266,23 @@ const RegistrationList = () => {
     {
       Header: "Registration ID",
       accessor: "registration_id",
-      Cell: (row) => <Label>{`${row?.row?.registration_id}  `}</Label>,
+      Cell: (row) => (
+        <div className="flex items-center gap-1.5">
+          <Label>{row?.row?.registration_id}</Label>
+          {row?.row?.google_event_id && (
+            <div className="relative group">
+              {row?.row?.deleted ? (
+                <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
+              ) : row?.row?.google_event_id?
+                <Sheet size={14} className="text-green-500 cursor-pointer" />:null
+              }
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                {row?.row?.deleted ? "Event deleted from Google Calendar" : "Google Form Event"}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       Header: "Registration Date",
@@ -246,14 +298,13 @@ const RegistrationList = () => {
     {
       Header: "Name",
       accessor: "name",
-      Cell: (row) => <Label>{`${row?.row?.name}  `}</Label>,
+      Cell: (row) => <Label>{row?.row?.name}</Label>,
     },
     {
       Header: "Email",
       accessor: "email",
       Cell: (row) => <Label>{row?.row?.email || "-"}</Label>,
     },
-
     {
       Header: "Session Date",
       accessor: "slot",
@@ -463,6 +514,9 @@ const RegistrationList = () => {
                                 : registerColumn
                             }
                             data={state?.registrationList ?? []}
+                            getRowClassName={(row) =>
+                              row?.deleted ? "opacity-120 text-gray-400" : ""
+                            }
                           />
                         </div>
                       </div>

@@ -44,7 +44,7 @@ const CustomSelect = (props) => {
         >
           {/* Remove the default chevron icon when we have a value */}
           <SelectTrigger
-            className={value ? "[&_[data-role=icon]]]:hidden pr-8" : ""}
+            className={`h-10 ${value ? "[&_[data-role=icon]]]:hidden pr-8" : ""} ${error ? "border-red-500 focus:ring-red-500" : ""}`}
           >
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>

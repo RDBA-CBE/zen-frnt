@@ -14,8 +14,10 @@ export const DOMAIN = "@kgpian.iitkgp.ac.in";
 
 export const CLIENT_ID =
   "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
+  
 
-export const  CAPTCHA_SITE_KEY = "6LeEe9gsAAAAAKddSPmwNUF4J-v7zaz8CgeKZ7n3"
+export const  CAPTCHA_SITE_KEY = "6LeACv0sAAAAAOrfGWRGvjxvlIpdZW-4GNI-J3Pf"
+
 
 export const GOOGLE_CAPTCHA_ID =
   "130334216230-e5jae1ofurpna8bmk9msglc744ikdbfq.apps.googleusercontent.com";

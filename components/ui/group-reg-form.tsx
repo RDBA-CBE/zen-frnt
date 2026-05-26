@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useSetState } from "@/utils/function.utils";
 import { TextInput } from "../common-components/textInput";
@@ -13,16 +13,19 @@ import { Failure, InfinitySuccess } from "../common-components/toast";
 import Models from "@/imports/models.import";
 import { useRouter } from "next/navigation";
 import {
+  CAPTCHA_SITE_KEY,
   CLIENT_ID,
   // ROLES,
   // GOOGLE_CAPTCHA_ID,
   // CAPTCHA_SITE_KEY,
 } from "@/utils/constant.utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-// import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const GroupRegForm = () => {
   const router = useRouter();
+  const loginRecaptchaRef = useRef(null);
+
   const [state, setState] = useSetState({
     groupFirstName: "",
     groupLastName: "",
@@ -49,20 +52,29 @@ const GroupRegForm = () => {
         email: state?.groupEmail.trim(),
         password: state.password,
         age: state?.groupAge,
-        is_married: state?.is_married?.value,
+        is_married: state?.is_married?.value || "",
         kids: state?.kids,
         geo_detail: state?.geo_detail,
-        gender: state?.groupGender?.value,
+        gender: state?.groupGender?.value || "",
         group_name: "Group",
+        recaptcha_token: state.loginCaptchaToken,
+
       };
+      console.log("first",body)
 
       await Validation.groupRegistration.validate(body, { abortEarly: false });
 
+      if (!state.loginCaptchaToken) {
+        setState({
+          btnLoading: false,
+          errors: { ...state.errors, loginCaptchaInput: "Please complete the captcha verification." },
+        });
+        return;
+      }
+
       await Models.auth.registration(body);
-
-      console.log("body", body);
-
-      setState({ btnLoading: false });
+      loginRecaptchaRef.current?.reset();
+      setState({ btnLoading: false, loginCaptchaToken: "" });
 
       InfinitySuccess(
         "Thank you for registering as a Group member. Please check your inbox to verify your email and then log in to your account. Visit the Programs page to explore Lounges and register for sessions that match your interests.",
@@ -81,9 +93,13 @@ const GroupRegForm = () => {
         error.inner.forEach((err) => {
           validationErrors[err.path] = err.message;
         });
+        console.log(validationErrors)
 
-        setState({ errors: validationErrors });
+        setState({ errors: validationErrors, loginCaptchaToken: ""  });
       } else {
+        setState({ loginCaptchaToken: "" })
+        loginRecaptchaRef.current?.reset();
+        setState({ loginCaptchaToken: "" });
         if (error?.email) {
           Failure(error.email[0]);
           setState({ errors: null });
@@ -99,6 +115,7 @@ const GroupRegForm = () => {
   };
 
   const resetForm = () => {
+    loginRecaptchaRef.current?.reset();
     setState({
       groupName: "",
       groupEmail: "",
@@ -109,6 +126,7 @@ const GroupRegForm = () => {
       geo_detail: "",
       groupGender: null,
       errors: null,
+      loginCaptchaToken: "",
     });
   };
 
@@ -169,6 +187,7 @@ const GroupRegForm = () => {
               type="email"
               placeholder="user@gmail.com"
               required
+              autoComplete="new-password"
               title="E-Mail"
               value={state.groupEmail}
               onChange={(e) =>
@@ -188,6 +207,7 @@ const GroupRegForm = () => {
                 type={state.showPassword ? "text" : "password"}
                 placeholder="Enter Your password"
                 required
+                autoComplete="new-password"
                 title="Password"
                 value={state.password}
                 onChange={(e) =>
@@ -215,7 +235,7 @@ const GroupRegForm = () => {
           <div className="space-y-1">
             <TextInput
               id="age"
-              type="text"
+              type="number"
               placeholder="Enter Age"
               title="Age"
               required
@@ -234,7 +254,7 @@ const GroupRegForm = () => {
             <CustomSelect
               options={genderOptions}
               value={state.groupGender?.value || ""}
-              onChange={(value) => setState({ groupGender: value })}
+              onChange={(value) => setState({ groupGender: value,errors: { ...state.errors, gender: "" } })}
               error={state.errors?.gender}
               title="Gender"
               placeholder="Select Gender"
@@ -246,7 +266,7 @@ const GroupRegForm = () => {
             <CustomSelect
               options={marriedOptions}
               value={state.is_married?.value || ""}
-              onChange={(value) => setState({ is_married: value })}
+              onChange={(value) => setState({ is_married: value,errors: { ...state.errors, is_married: "" } })}
               error={state.errors?.is_married}
               title="Married"
               placeholder="Select Status"
@@ -283,7 +303,7 @@ const GroupRegForm = () => {
             />
           </div>
         </div>
-        {/* <div className="flex items-center justify-center gap-3 py-0">
+        <div className="flex items-center justify-center gap-3 py-0">
           <ReCAPTCHA
             ref={loginRecaptchaRef}
             sitekey={CAPTCHA_SITE_KEY}
@@ -291,21 +311,16 @@ const GroupRegForm = () => {
               setState({ loginCaptchaToken: token || "" });
             }}
           />
-        </div> */}
+        </div>
+        {state.errors?.loginCaptchaInput && (
+          <p className="text-sm text-red-600 text-center -mt-2">
+            {state.errors.loginCaptchaInput}
+          </p>
+        )}
 
         <div className="flex justify-center gap-2">
           <Button
-            onClick={() =>
-              setState({
-                name: "",
-                age: "",
-                is_married: null,
-                kids: "",
-                geo_detail: "",
-                gender: null,
-                errors: null,
-              })
-            }
+            onClick={() => resetForm()}
             variant="outline"
             className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
           >
