@@ -45,6 +45,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { DatePickers } from "@/components/common-components/datePickers";
 
 const RegistrationList = () => {
   const router = useRouter();
@@ -72,7 +73,7 @@ const RegistrationList = () => {
   useEffect(() => {
     eventDetail();
     registrationList(state.currentPage);
-  }, [searchParams]);
+  }, [searchParams,state.start_date]);
 
   const registrationList = async (page) => {
     try {
@@ -83,9 +84,11 @@ const RegistrationList = () => {
           event: idFromSearchParams,
           include_deleted: "Yes",
         };
+        if (state.start_date) {
+          body.start_date = moment(state.start_date).format("YYYY-MM-DD");
+        }
 
         const res = await Models.session.registrationList(page, body);
-        console.log("registrationList --->", res);
         // const updateObj=res?.results?.map((item)=>({
         //   user:
         // }))
@@ -101,7 +104,11 @@ const RegistrationList = () => {
               }`,
               registration_id: item?.registration_id,
               registration_status: item?.registration_status,
-              registration_date:item?.google_event_id?(item?.start_datetime): item?.registration_date,
+              // registration_date:item?.google_event_id?(item?.start_datetime): item?.registration_date,
+              session_date: item?.google_event_id
+                ? moment(item?.start_datetime).format("DD-MM-YYYY")
+                : moment(item?.registration_date).format("DD-MM-YYYY"),
+              registration_date: item?.created_at,
 
               slotDateOrStartTime: isAyurvedic
                 ? item?.slot?.event_slot?.date
@@ -233,6 +240,11 @@ const RegistrationList = () => {
       ),
     },
     {
+      Header: "Session Date",
+      accessor: "session_date",
+      Cell: (row) => <Label>{row?.row?.session_date || "-"}</Label>,
+    },
+    {
       Header: "Name",
       accessor: "name",
       Cell: (row) => <Label>{row?.row?.name}</Label>,
@@ -273,11 +285,13 @@ const RegistrationList = () => {
             <div className="relative group">
               {row?.row?.deleted ? (
                 <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
-              ) : row?.row?.google_event_id?
-                <Sheet size={14} className="text-green-500 cursor-pointer" />:null
-              }
+              ) : row?.row?.google_event_id ? (
+                <Sheet size={14} className="text-green-500 cursor-pointer" />
+              ) : null}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                {row?.row?.deleted ? "Event deleted from Google Calendar" : "Google Form Event"}
+                {row?.row?.deleted
+                  ? "Event deleted from Google Calendar"
+                  : "Google Form Event"}
               </div>
             </div>
           )}
@@ -475,6 +489,7 @@ const RegistrationList = () => {
           <Tabs
             defaultValue="registered"
             className="lg:flex lg:gap-20 gap-4 w-[100%]"
+            onValueChange={() => setState({ start_date: null })}
           >
             <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
               <TabsTrigger
@@ -493,11 +508,20 @@ const RegistrationList = () => {
             <div className="lg:flex-1 lg:w-[75%] w-[100%]">
               <TabsContent value="registered">
                 <Card>
-                  <CardHeader>
-                    <CardTitle> Registered List</CardTitle>
-                    {/* <CardDescription>
-                      Change your password here. After saving, you'll be logged out.
-                    </CardDescription> */}
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Registered List</CardTitle>
+                    <div className="md:mb-0 mb-2">
+                      <DatePickers
+                        placeholder="Session Date"
+                        closeIcon={true}
+                        selectedDate={state.start_date}
+                        onChange={(date) => {
+                          setState({
+                            start_date: date,
+                          });
+                        }}
+                      />
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {state.loading ? (
@@ -553,8 +577,23 @@ const RegistrationList = () => {
 
               <TabsContent value="participated">
                 <Card>
-                  <CardHeader>
+                  {/* <CardHeader>
                     <CardTitle>Participated List</CardTitle>
+                  </CardHeader> */}
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Participated List</CardTitle>
+                    <div className="md:mb-0 mb-2">
+                      <DatePickers
+                        placeholder="Session Date"
+                        closeIcon={true}
+                        selectedDate={state.start_date}
+                        onChange={(date) => {
+                          setState({
+                            start_date: date,
+                          });
+                        }}
+                      />
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {state.loading ? (
