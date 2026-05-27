@@ -194,7 +194,9 @@ const WellnessLoungeList = () => {
           loading: false,
         });
       } else {
-        setState({ loading: false });
+        setState({ loading: false ,loungeList:[], next: res.next,
+          previous: res.previous,
+          currentPage: page,});
       }
     } catch (error) {
       setState({ loading: false });
@@ -507,7 +509,7 @@ const WellnessLoungeList = () => {
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
                 <DatePickers
-                  placeholder="Session Date"
+                  placeholder="Registration Date"
                   closeIcon={true}
                   selectedDate={state.start_date}
                   onChange={(date) => {

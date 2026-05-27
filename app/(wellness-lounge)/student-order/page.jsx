@@ -34,6 +34,7 @@ import { AYURVEDIC_LOUNGE, orderStatusList } from "@/utils/constant.utils";
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import LoadMoreDropdown from "@/components/common-components/LoadMoreDropdown";
+import { DatePickers } from "@/components/common-components/datePickers";
 
 const WellnessLoungeList = () => {
   const router = useRouter();
@@ -451,7 +452,7 @@ const WellnessLoungeList = () => {
                   />
                 </div>
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
-                  <DatePicker
+                  <DatePickers
                     placeholder="Booking Date"
                     closeIcon={true}
                     selectedDate={state.start_date}
@@ -461,6 +462,16 @@ const WellnessLoungeList = () => {
                       });
                     }}
                   />
+                   {/* <DatePickers
+                        placeholder="Registration Date"
+                        closeIcon={true}
+                        selectedDate={state.start_date}
+                        onChange={(date) => {
+                          setState({
+                            start_date: date,
+                          });
+                        }}
+                      /> */}
                 </div>
               </div>
             </div>

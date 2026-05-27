@@ -66,6 +66,7 @@ const RegistrationList = () => {
     roleList: [],
     deleteLoading: false,
     isAyurvedic: false,
+    activeTab: "registered",
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
@@ -405,14 +406,22 @@ const RegistrationList = () => {
   const handleNextPage = () => {
     if (state.next) {
       const newPage = state.currentPage + 1;
-      getUserList(newPage);
+      if (state.activeTab === "participated") {
+        participatedList(newPage);
+      } else {
+        registrationList(newPage);
+      }
     }
   };
 
   const handlePreviousPage = () => {
     if (state.previous) {
       const newPage = state.currentPage - 1;
-      getUserList(newPage);
+      if (state.activeTab === "participated") {
+        participatedList(newPage);
+      } else {
+        registrationList(newPage);
+      }
     }
   };
 
@@ -489,7 +498,7 @@ const RegistrationList = () => {
           <Tabs
             defaultValue="registered"
             className="lg:flex lg:gap-20 gap-4 w-[100%]"
-            onValueChange={() => setState({ start_date: null })}
+            onValueChange={(val) => setState({ start_date: null, activeTab: val })}
           >
             <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
               <TabsTrigger
@@ -512,7 +521,7 @@ const RegistrationList = () => {
                     <CardTitle>Registered List</CardTitle>
                     <div className="md:mb-0 mb-2">
                       <DatePickers
-                        placeholder="Session Date"
+                        placeholder="Registration Date"
                         closeIcon={true}
                         selectedDate={state.start_date}
                         onChange={(date) => {
@@ -582,9 +591,9 @@ const RegistrationList = () => {
                   </CardHeader> */}
                   <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Participated List</CardTitle>
-                    <div className="md:mb-0 mb-2">
+                    {/* <div className="md:mb-0 mb-2">
                       <DatePickers
-                        placeholder="Session Date"
+                        placeholder="Registration Date"
                         closeIcon={true}
                         selectedDate={state.start_date}
                         onChange={(date) => {
@@ -593,7 +602,7 @@ const RegistrationList = () => {
                           });
                         }}
                       />
-                    </div>
+                    </div> */}
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {state.loading ? (
