@@ -79,7 +79,9 @@ const LoginForm = (props) => {
                 username: res?.username,
               }),
             );
-            window.location.href = "/";
+            // window.location.href = "/";
+            router.push("/")
+
             // Success("Google login successful!");
           } else if (
             res?.groups?.includes(ROLES.MENTOR) &&
@@ -94,7 +96,9 @@ const LoginForm = (props) => {
                 username: res?.username,
               }),
             );
-            window.location.href = "/";
+            // window.location.href = "/";
+            router.push("/")
+
             // Success("Google login successful!");
           } else if (res?.groups?.includes(ROLES.COUNSELOR)) {
             console.log("✌️res?.groups --->", res?.groups);
@@ -110,7 +114,10 @@ const LoginForm = (props) => {
                 }),
               );
               Success("Google login successful!");
-              window.location.href = "/";
+              // window.location.href = "/";
+              router.push("/")
+
+              
             } else {
               localStorage.clear();
               InfinitySuccess("Your account is waiting for approval.", () => {
@@ -131,7 +138,8 @@ const LoginForm = (props) => {
                     username: res?.username,
                   }),
                 );
-                window.location.href = "/";
+                router.push("/")
+                // window.location.href = "/";
               } else {
                 Failure("User not verified");
                 localStorage.clear();
@@ -146,7 +154,9 @@ const LoginForm = (props) => {
                   username: res?.username,
                 }),
               );
-              window.location.href = "/";
+              // window.location.href = "/";
+              router.push("/")
+
             }
           }
           //
