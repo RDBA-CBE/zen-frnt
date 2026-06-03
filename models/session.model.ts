@@ -584,7 +584,7 @@ const session = {
 
   activeCalendar: (body) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `zen/events/?is_active=true&pagination=false`;
+      let url = `zen/events/?is_active=true&pagination=false&is_approved=true`;
       if (body.lounge_type) {
         url += `&lounge_type=${encodeURIComponent(body.lounge_type)}`;
       }

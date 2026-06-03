@@ -326,7 +326,7 @@ ${
                 )}
 
                 {(state?.group == ROLES.STUDENT ||
-                  state?.group == ROLES.ALUMNI) &&
+                  state?.group == ROLES.ALUMNI || state?.group == ROLES.GROUP) &&
                 state?.orderData?.is_registered == false ? (
                   <div>
                     <Button
@@ -341,7 +341,7 @@ ${
                     </Button>
                   </div>
                 ) :(state?.group == ROLES.STUDENT ||
-                  state?.group == ROLES.ALUMNI) ? (
+                  state?.group == ROLES.ALUMNI || state?.group == ROLES.GROUP) ? (
                   <div>
                     <Button
                       style={{ cursor: "not-allowed" }}
@@ -361,7 +361,7 @@ ${
                   </div>
                 ) : (
                   (state?.group !== ROLES.STUDENT ||
-                    state?.group !== ROLES.ALUMNI) && (
+                    state?.group !== ROLES.ALUMNI || state?.group !== ROLES.GROUP) && (
                     <div>
                       <Button
                         className={`mt-3 ${

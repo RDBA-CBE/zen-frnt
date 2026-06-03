@@ -222,6 +222,19 @@ export const createUser = Yup.object().shape({
   // dob: Yup.string().required("Date of birth is required"), // Optional array of strings
 });
 
+export const groupUser = Yup.object().shape({
+ first_name: Yup.string().required("First Name is required"),
+  last_name: Yup.string().required("Last Name is required"),
+  email: Yup.string()
+    .required("Email is required")
+    .email("Invalid email address"),
+  // email: Yup.string().required("Email is required"),
+  // password: Yup.string().required("Password is required"),
+  age: Yup.string().required("Age is required"),
+  is_married: Yup.string().required("Marital Status is required"),
+  gender : Yup.string().required("Gender is required"),
+});
+
 
 export const updateUser = Yup.object().shape({
   first_name: Yup.string().required("First Name is required"),
