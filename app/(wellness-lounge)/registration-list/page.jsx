@@ -108,8 +108,8 @@ const RegistrationList = () => {
               // registration_date:item?.google_event_id?(item?.start_datetime): item?.registration_date,
               session_date: item?.google_event_id
                 ? moment(item?.start_datetime).format("DD-MM-YYYY")
-                : moment(item?.registration_date).format("DD-MM-YYYY"),
-              registration_date: item?.created_at,
+                : moment(item?.event?.start_date).format("DD-MM-YYYY"),
+              registration_date: item?.registration_date,
 
               slotDateOrStartTime: isAyurvedic
                 ? item?.slot?.event_slot?.date

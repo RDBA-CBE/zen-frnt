@@ -129,8 +129,8 @@ const WellnessLoungeList = () => {
           registration_status: item?.registration_status,
           session_date: item?.google_event_id
             ? moment(item?.start_datetime).format("DD-MM-YYYY")
-            : moment(item?.registration_date).format("DD-MM-YYYY"),
-          registration_date: moment(item?.created_at).format("DD-MM-YYYY"),
+            : moment(item?.event?.start_date).format("DD-MM-YYYY"),
+          registration_date: moment(item?.registration_date).format("DD-MM-YYYY"),
           slotDateOrStartTime: isAyurvedic
             ? item?.slot?.event_slot?.date
             : item?.google_event_id

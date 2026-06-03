@@ -119,7 +119,7 @@ const Dashboard = () => {
       console.log("error: ", error);
       setState({
         loading: false,
-        error: error.message || "Failed to fetch reports",
+        error: error?.message || "Failed to fetch reports",
       });
     }
   };
