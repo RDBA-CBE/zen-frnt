@@ -167,8 +167,8 @@ const GroupRegForm = () => {
             <TextInput
               id="last_name"
               type="text"
-              placeholder="Enter First Name"
-              title="First Name"
+              placeholder="Enter Last Name"
+              title="Last Name"
               required
               value={state.groupLastName}
               onChange={(e) =>

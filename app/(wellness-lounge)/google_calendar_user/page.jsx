@@ -185,8 +185,36 @@ const UserList = () => {
       Header: "Registration Date",
       accessor: "date_joined",
       Cell: (row) => (
-        <Label>{moment(row?.row?.date_joined).format("DD-MM-YYYY")}</Label>
+        <Label>
+  {row?.row?.event_registrations?.[0]?.registration_date
+    ? moment(row.row.event_registrations[0].registration_date).format("DD-MM-YYYY")
+    : row?.row?.date_joined
+      ? moment(row.row.date_joined).format("DD-MM-YYYY")
+      : "-"}
+</Label>
       ),
+    },
+
+    {
+      Header: "Appointment Status",
+      accessor: "google_form",
+      Cell: (row) => (
+        // <Label>{row?.row?.google_form == true ? "Booked" : "Not Booked"}</Label>
+         <Label>
+  Booked
+     
+</Label>
+      ),
+    },
+     {
+      Header: "Session Slot",
+      accessor: "event_registrations",
+      Cell: (row) => {
+        return(
+          <Label>{row?.row?.event_registrations?.length>0 && `${moment(row?.row?.event_registrations?.[0]?.google_event_data?.start?.dateTime).format("DD-MM-YYYY")}`}</Label>
+        )
+      }
+      
     },
     // {
     //   Header: "Registration Slot",
@@ -199,21 +227,21 @@ const UserList = () => {
       
     // },
 
-    {
-      Header: "Event Registration Count",
-      accessor: "event_registrations_count",
-      Cell: (row) => <Label>{row?.row?.event_registrations_count}</Label>,
-    },
+    // {
+    //   Header: "Event Registration Count",
+    //   accessor: "event_registrations_count",
+    //   Cell: (row) => <Label>{row?.row?.event_registrations_count}</Label>,
+    // },
 
-    {
-      Header: "Credits",
-      accessor: "obtained_credits",
-      Cell: (row) => (
-        <Label>
-          {row?.row?.obtained_credits ? row?.row?.obtained_credits : 0}
-        </Label>
-      ),
-    },
+    // {
+    //   Header: "Credits",
+    //   accessor: "obtained_credits",
+    //   Cell: (row) => (
+    //     <Label>
+    //       {row?.row?.obtained_credits ? row?.row?.obtained_credits : 0}
+    //     </Label>
+    //   ),
+    // },
 
     {
       Header: "Action",
@@ -427,13 +455,13 @@ const UserList = () => {
       <div className="flex flex-1 flex-col gap-2 p-4 pt-5">
         <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
-            <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
+            <div className="lg:w-2/6 w-full lg:mb-0 mb-2">
               <h2 className="md:text-[20px] text-sm font-semibold">
-                One To One User
+                Google Calendar
               </h2>
             </div>
-            <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
-              <div className="md:w-3/4 w-full  md:mb-0 mb-2">
+            <div className="block md:flex justify-between items-center gap-3 lg:w-4/6 w-full">
+              {/* <div className="md:w-3/4 w-full  md:mb-0 mb-2">
                 <TextInput
                   value={state.search}
                   onChange={(e) => {
@@ -443,7 +471,7 @@ const UserList = () => {
                   required
                   className="w-full"
                 />
-              </div>
+              </div> */}
               {/* <CustomSelect
                 options={state?.roleList || []} // Safely pass empty array if universityList is null
                 value={state.role?.value || ""}
@@ -463,29 +491,29 @@ const UserList = () => {
                 </div>
               ))} */}
               <div className="flex gap-7">
-                <div
+                {/* <div
                   className="md:w-1/4 w-full  md:text-end"
                   onClick={() => setState({calender:!state.calender})}
                 >
                   <Button className="backcolor-purpole mt-2 md:mt-0">
                     {!state.calender?<Calendar />:<Table />}
                   </Button>
-                </div>
-                <div
+                </div> */}
+                {/* <div
                   className="md:w-1/4 w-full  md:text-end"
                   onClick={() => router.push("/create-user")}
                 >
                   <Button className="bg-themeGreen hover:bg-themeGreen mt-2 md:mt-0">
                     <PlusIcon />
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </Card>
-        {state.calender ? (
+        {/* {state.calender ? ( */}
           <GoogleCalendar />
-        ) : state.loading ? (
+        {/* ) : state.loading ? (
           <Loading />
         ) : state.userList?.length > 0 ? (
           <>
@@ -521,7 +549,7 @@ const UserList = () => {
           <div className="items-center justify-center flex">
             <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
           </div>
-        )}
+        )} */}
         {/* <div>
           <Pagination>
             <PaginationContent>

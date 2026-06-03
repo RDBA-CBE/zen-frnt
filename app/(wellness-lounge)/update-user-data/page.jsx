@@ -158,7 +158,7 @@ const CreateUser = () => {
         const fileName = getFileNameFromUrl(res?.profile_picture);
         const thumbnail = await convertUrlToFile(
           res?.profile_picture,
-          fileName
+          fileName,
         );
         setState({
           thumbnail_images: thumbnail,
@@ -278,7 +278,7 @@ const CreateUser = () => {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
         const res = await Models.auth.getIntrestedTopics(
-          state.currentInterestPage + 1
+          state.currentInterestPage + 1,
         );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
@@ -319,7 +319,8 @@ const CreateUser = () => {
 
       if (
         state.user_type?.label === ROLES.ALUMNI ||
-        state?.user_type?.label === ROLES.COUNSELOR
+        state?.user_type?.label === ROLES.COUNSELOR ||
+        state?.user_type?.label === ROLES.GROUP
       ) {
         let body = {
           first_name: state.firstname,
@@ -365,9 +366,14 @@ const CreateUser = () => {
               : undefined,
           country:
             state?.user_type?.label === ROLES.ALUMNI ||
-            state?.user_type?.label === ROLES.COUNSELOR
+            state?.user_type?.label === ROLES.COUNSELOR 
               ? state?.country?.value
               : undefined,
+              age: state?.groupAge,
+        is_married: state?.is_married?.value || "",
+        kids: state?.kids,
+        geo_detail: state?.geo_detail,
+        gender: state?.groupGender?.value || "",
           notify: state.notify,
         };
 
@@ -375,6 +381,10 @@ const CreateUser = () => {
 
         if (state?.user_type?.label === "Alumni") {
           await Validation.createUser.validate(body, {
+            abortEarly: false,
+          });
+        } else if (state?.user_type?.label === "Group") {
+          await Validation.groupUser.validate(body, {
             abortEarly: false,
           });
         } else {
@@ -390,8 +400,6 @@ const CreateUser = () => {
         formData.append("email", body.email);
         formData.append("notify", body.notify);
         formData.append("is_registering", true);
-
-
 
         if (body.department) formData.append("department", body.department);
         if (body.phone_number)
@@ -433,9 +441,9 @@ const CreateUser = () => {
           formData.append("work", body.work);
         }
 
-        // if (body.country && state?.user_type?.label === "Alumni") {
+        if (body.country && (state?.user_type?.label === "Alumni" || state?.user_type?.label === ROLES.COUNSELOR)) {
         formData.append("country", body.country);
-        // }
+        }
 
         // if (body.address && state?.user_type?.label === "Alumni") {
         formData.append("address", body.address);
@@ -459,6 +467,14 @@ const CreateUser = () => {
           formData.append("is_active", false);
         }
 
+        if (state?.user_type?.label === ROLES.GROUP) {
+          formData.append("is_married", body.is_married);
+          formData.append("kids", body.kids);
+          formData.append("geo_detail", body.geo_detail);
+          formData.append("gender", body.gender);
+          formData.append("age", body.age);
+        }
+
         const res = await Models.user.updateUser(formData, id);
         console.log("updated --->", res);
         if (state?.user_type?.label === ROLES.COUNSELOR) {
@@ -466,13 +482,23 @@ const CreateUser = () => {
             `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform. Waiting for approval`,
             () => {
               window.location.href = "/";
-            }
+            },
           );
           localStorage.clear();
-        } else {
+        } 
+        else if (state?.user_type?.label === ROLES.GROUP) {
+          InfinitySuccess(
+            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`,
+            () => {
+              window.location.href = "/";
+            },
+          );
+          localStorage.clear();
+        }
+        else {
           localStorage.setItem(
             "username",
-            `${res?.first_name || ""} ${res?.last_name || ""}`
+            `${res?.first_name || ""} ${res?.last_name || ""}`,
           );
 
           dispatch(
@@ -480,7 +506,7 @@ const CreateUser = () => {
               groups: state.user_type?.label,
               userId: res.user_id,
               username: `${res?.first_name} ${res?.last_name}`,
-            })
+            }),
           );
           localStorage.setItem("group", state.user_type?.label || "");
           setState({ submitLoading: false });
@@ -489,7 +515,7 @@ const CreateUser = () => {
 
             () => {
               window.location.href = "/";
-            }
+            },
           );
         }
       } else {
@@ -497,7 +523,7 @@ const CreateUser = () => {
           first_name: state.firstname,
           last_name: state.lastname,
           // email: state.email.trim(),
-          email: state?.email.trim() + DOMAIN ,
+          email: state?.email.trim() + DOMAIN,
 
           department:
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
@@ -533,7 +559,6 @@ const CreateUser = () => {
         formData.append("is_registering", true);
         formData.append("is_verified", true);
 
-
         if (body.department && state?.user_type?.label != "Counselor") {
           formData.append("department", body.department);
         }
@@ -568,7 +593,7 @@ const CreateUser = () => {
 
         localStorage.setItem(
           "username",
-          `${res?.first_name || ""} ${res?.last_name || ""}`
+          `${res?.first_name || ""} ${res?.last_name || ""}`,
         );
         localStorage.setItem("group", res.groups?.[0] || "");
 
@@ -584,7 +609,7 @@ const CreateUser = () => {
           () => {
             localStorage.clear();
             window.location.href = "/";
-          }
+          },
         );
 
         // InfinitySuccess(
@@ -620,7 +645,6 @@ const CreateUser = () => {
       const body = {
         // email: state?.email.trim(),
         email: state?.email.trim() + DOMAIN,
-
       };
 
       await Validation.resendToken.validate(body, {
@@ -698,6 +722,17 @@ const CreateUser = () => {
     return { value: year.toString(), label: year.toString() };
   });
 
+  const marriedOptions = [
+    { label: "Yes", value: "yes" },
+    { label: "No", value: "no" },
+  ];
+
+  const genderOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Other", value: "other" },
+  ];
+
   return (
     <div className="container mx-auto updateUser">
       <h2 className="font-semibold md:text-[20px] text-sm mb-3">Update User</h2>
@@ -731,7 +766,7 @@ const CreateUser = () => {
             required
           />
           {state.user_type?.label === ROLES.STUDENT ? (
-            <Input
+            <TextInput
               id="email"
               type="email"
               placeholder="Email"
@@ -937,7 +972,7 @@ const CreateUser = () => {
                   onChange={(value) => {
                     const shouldClear = shouldClearPhoneNumber(
                       value,
-                      state.alumniPhone
+                      state.alumniPhone,
                     );
 
                     setState({
@@ -1287,6 +1322,91 @@ const CreateUser = () => {
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
+
+          {state?.user_type?.label === ROLES.GROUP && (
+            <>
+              <div className="space-y-1">
+                <TextInput
+                  id="age"
+                  type="number"
+                  placeholder="Enter Age"
+                  title="Age"
+                  required
+                  value={state.groupAge}
+                  onChange={(e) =>
+                    setState({
+                      groupAge: e.target.value,
+                      errors: { ...state.errors, age: "" },
+                    })
+                  }
+                  error={state.errors?.age}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={genderOptions}
+                  value={state.groupGender?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      groupGender: value,
+                      errors: { ...state.errors, gender: "" },
+                    })
+                  }
+                  error={state.errors?.gender}
+                  title="Gender"
+                  placeholder="Select Gender"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={marriedOptions}
+                  value={state.is_married?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      is_married: value,
+                      errors: { ...state.errors, is_married: "" },
+                    })
+                  }
+                  error={state.errors?.is_married}
+                  title="Married"
+                  placeholder="Select Status"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <TextInput
+                  id="kids"
+                  type="text"
+                  placeholder="Number of Kids"
+                  title="Kids"
+                  value={state.kids}
+                  onChange={(e) =>
+                    setState({
+                      kids: e.target.value,
+                      errors: { ...state.errors, kids: "" },
+                    })
+                  }
+                  error={state.errors?.kids}
+                />
+              </div>
+
+              <div className="space-y-1 ">
+                <TextInput
+                  id="geo_detail"
+                  type="text"
+                  placeholder="Enter Geographical Details"
+                  title="Geographical Details"
+                  value={state.geo_detail}
+                  onChange={(e) => setState({ geo_detail: e.target.value })}
+                  error={state.errors?.geo_detail}
+                />
+              </div>
+            </>
+          )}
 
           <div className="flex justify-end gap-5 mt-10">
             {/* <PrimaryButton

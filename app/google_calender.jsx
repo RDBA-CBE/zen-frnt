@@ -64,7 +64,9 @@ export default function GoogleCalendar() {
   return (
     <div className="p-4">
       {/* Header */}
+      <p className="text-sm text-black">Users Registered via Google Form and Calendar Slot Selection</p>
       <div className="flex justify-between items-center mb-6">
+        
         <h2 className="text-xl font-semibold">
           {selectedDate.toLocaleString("default", { month: "long" })} {selectedDate.getFullYear()}
         </h2>

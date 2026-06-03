@@ -106,6 +106,7 @@ const viewWellnessLounge = () => {
         end_time,
         end_date,
         event_date,
+        deleted: res?.deleted,
       });
     } catch (error) {
       setState({ error: error?.detail });
@@ -213,14 +214,13 @@ const viewWellnessLounge = () => {
                             Order ID: {state?.orderData?.registration_id}
                           </p>
                         </div>
-                        {/* <div className="mb-3">
-                          <p className="text-sm">
-                            Session Date:{" "}
-                            {moment(state?.orderData?.registration_date).format(
-                              "DD-MMM-YYYY"
-                            )}
+                        {state.deleted&&
+                        <div className="mb-3">
+                          <p className="text-sm text-red-600">
+                            Session Deleted from Google Calendar
                           </p>
-                        </div> */}
+                        </div>
+                        }
                       </div>
 
                       <div className="pt-3">
@@ -323,7 +323,7 @@ const viewWellnessLounge = () => {
                         )}
                       </blockquote>
                     </div>
-
+{!state.deleted &&
                     <div>
                       <h4 className="md:text-[22px] text-[18px]">
                         {" "}
@@ -369,6 +369,7 @@ const viewWellnessLounge = () => {
                                     </Link>
                                 )} */}
                     </div>
+                    }
                   </div>
                 </div>
                 {/* {state.attendanceList?.length > 0 && state.group == "Admin" && (

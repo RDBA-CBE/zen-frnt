@@ -14,7 +14,7 @@ export const DOMAIN = "@kgpian.iitkgp.ac.in";
 
 export const CLIENT_ID =
   "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
-  
+
 
 export const  CAPTCHA_SITE_KEY = "6LeACv0sAAAAAOrfGWRGvjxvlIpdZW-4GNI-J3Pf"
 
@@ -313,6 +313,7 @@ export const ROLES = {
   ADMIN: "Admin",
   MENTOR: "Mentor",
   COUNSELOR: "Counselor",
+  GROUP: "Group",
 };
 
 export const ROLE_ARRAY = ["Student", "Alumni", "Mentor", "Counselor"];

@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import { FileText, ChevronDown, ChevronUp, Loader } from "lucide-react";
+import { FileText, ChevronDown, ChevronUp, Loader, CalendarX2, Sheet } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const FormSection = ({ title, children }) => (
@@ -219,13 +219,47 @@ const viewWellnessLounge = () => {
   );
 
   const columns = [
-    { Header: "Order ID", accessor: "registration_id" },
+    { Header: "Order ID", accessor: "registration_id",
+
+      Cell: (row) => (
+        <div className="flex items-center gap-1.5">
+          <Label>{row?.row?.registration_id}</Label>
+          {row?.row?.google_event_id && (
+            <div className="relative group">
+              {row?.row?.deleted ? (
+                <CalendarX2 size={14} className="text-red-400 cursor-pointer" />
+              ) : (
+                <Sheet size={14} className="text-green-500 cursor-pointer" />
+              )}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                {row?.row?.deleted
+                  ? "Session deleted from Google Calendar"
+                  : "Google Form Session"}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
+     },
+    
     { Header: "Order Status", accessor: "registration_status" },
     {
       Header: "Registration Date",
       accessor: "registration_date",
       Cell: (row) => (
         <Label>{moment(row?.row?.registration_date).format("DD-MM-YYYY")}</Label>
+      ),
+    },
+
+    {
+      Header: "Session Date",
+      accessor: "google_event_datas",
+      Cell: (row) => (
+        <Label>
+          {row?.row?.google_event_data?.start?.dateTime
+            ? moment(row.row.google_event_data.start.dateTime).format("DD-MM-YYYY")
+            : "-"}
+        </Label>
       ),
     },
     ...(hasGoogleEventData ? [{
@@ -333,6 +367,9 @@ const viewWellnessLounge = () => {
                   <DataTable
                     columns={columns}
                     data={state?.userData?.event_registrations ?? []}
+                    getRowClassName={(row) =>
+                      row?.deleted ? "opacity-120 text-gray-400" : ""
+                    }
                   />
                 </div>
               </div>

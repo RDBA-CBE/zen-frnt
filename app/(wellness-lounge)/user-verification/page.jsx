@@ -18,6 +18,7 @@ import Models from "@/imports/models.import";
 import { useSearchParams } from "next/navigation";
 import * as Yup from "yup";
 import { DOMAIN } from "@/utils/constant.utils";
+import { TextInput } from "@/components/common-components/textInput";
 
 const UserVerificationPage = () => {
   const [state, setState] = useSetState({
@@ -56,8 +57,8 @@ const UserVerificationPage = () => {
     try {
       setState({ btnLoading: true });
       const body = {
-        email: state?.email.trim() + DOMAIN,
-        // email: state?.email.trim(),
+        // email: state?.email.trim() + DOMAIN,
+        email: state?.email.trim(),
 
       };
 
@@ -134,7 +135,7 @@ const UserVerificationPage = () => {
             </h1>
             <div className="space-y-1 mb-8 text-left">
               {" "}
-              <Input
+              <TextInput
                 id="email"
                 type="email"
                 placeholder="Email"
