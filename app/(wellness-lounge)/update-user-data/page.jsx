@@ -158,7 +158,7 @@ const CreateUser = () => {
         const fileName = getFileNameFromUrl(res?.profile_picture);
         const thumbnail = await convertUrlToFile(
           res?.profile_picture,
-          fileName,
+          fileName
         );
         setState({
           thumbnail_images: thumbnail,
@@ -278,7 +278,7 @@ const CreateUser = () => {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
         const res = await Models.auth.getIntrestedTopics(
-          state.currentInterestPage + 1,
+          state.currentInterestPage + 1
         );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
@@ -363,17 +363,19 @@ const CreateUser = () => {
               ? state?.is_open_to_be_mentor?.value == "Yes"
                 ? true
                 : false
+              : state?.user_type?.label === ROLES.COUNSELOR
+              ? true
               : undefined,
           country:
             state?.user_type?.label === ROLES.ALUMNI ||
-            state?.user_type?.label === ROLES.COUNSELOR 
+            state?.user_type?.label === ROLES.COUNSELOR
               ? state?.country?.value
               : undefined,
-              age: state?.groupAge,
-        is_married: state?.is_married?.value || "",
-        kids: state?.kids,
-        geo_detail: state?.geo_detail,
-        gender: state?.groupGender?.value || "",
+          age: state?.groupAge,
+          is_married: state?.is_married?.value || "",
+          kids: state?.kids,
+          geo_detail: state?.geo_detail,
+          gender: state?.groupGender?.value || "",
           notify: state.notify,
         };
 
@@ -441,8 +443,12 @@ const CreateUser = () => {
           formData.append("work", body.work);
         }
 
-        if (body.country && (state?.user_type?.label === "Alumni" || state?.user_type?.label === ROLES.COUNSELOR)) {
-        formData.append("country", body.country);
+        if (
+          body.country &&
+          (state?.user_type?.label === "Alumni" ||
+            state?.user_type?.label === ROLES.COUNSELOR)
+        ) {
+          formData.append("country", body.country);
         }
 
         // if (body.address && state?.user_type?.label === "Alumni") {
@@ -451,6 +457,10 @@ const CreateUser = () => {
 
         if (body.year_of_graduation !== undefined) {
           formData.append("year_of_graduation", body.year_of_graduation);
+        }
+
+        if (state?.user_type?.label === ROLES.COUNSELOR) {
+          formData.append("is_open_to_be_mentor", true);
         }
 
         if (
@@ -482,23 +492,21 @@ const CreateUser = () => {
             `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform. Waiting for approval`,
             () => {
               window.location.href = "/";
-            },
+            }
           );
           localStorage.clear();
-        } 
-        else if (state?.user_type?.label === ROLES.GROUP) {
+        } else if (state?.user_type?.label === ROLES.GROUP) {
           InfinitySuccess(
             `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`,
             () => {
               window.location.href = "/";
-            },
+            }
           );
           localStorage.clear();
-        }
-        else {
+        } else {
           localStorage.setItem(
             "username",
-            `${res?.first_name || ""} ${res?.last_name || ""}`,
+            `${res?.first_name || ""} ${res?.last_name || ""}`
           );
 
           dispatch(
@@ -506,7 +514,7 @@ const CreateUser = () => {
               groups: state.user_type?.label,
               userId: res.user_id,
               username: `${res?.first_name} ${res?.last_name}`,
-            }),
+            })
           );
           localStorage.setItem("group", state.user_type?.label || "");
           setState({ submitLoading: false });
@@ -515,7 +523,7 @@ const CreateUser = () => {
 
             () => {
               window.location.href = "/";
-            },
+            }
           );
         }
       } else {
@@ -593,7 +601,7 @@ const CreateUser = () => {
 
         localStorage.setItem(
           "username",
-          `${res?.first_name || ""} ${res?.last_name || ""}`,
+          `${res?.first_name || ""} ${res?.last_name || ""}`
         );
         localStorage.setItem("group", res.groups?.[0] || "");
 
@@ -609,7 +617,7 @@ const CreateUser = () => {
           () => {
             localStorage.clear();
             window.location.href = "/";
-          },
+          }
         );
 
         // InfinitySuccess(
@@ -972,7 +980,7 @@ const CreateUser = () => {
                   onChange={(value) => {
                     const shouldClear = shouldClearPhoneNumber(
                       value,
-                      state.alumniPhone,
+                      state.alumniPhone
                     );
 
                     setState({

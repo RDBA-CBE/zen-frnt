@@ -6,6 +6,7 @@ import Models from "@/imports/models.import";
 import {
   addHoursToTimeOnly,
   buildFormData,
+  capitalizeFLetter,
   Dropdown,
   getDisplayRole,
   useSetState,
@@ -549,7 +550,7 @@ const CreateWellnessLounge = () => {
 
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(item?.groups)})`,
+        label: `${capitalizeFLetter(item?.first_name)} ${item.last_name} (${getDisplayRole(item?.groups)})`,
       }));
 
       return {

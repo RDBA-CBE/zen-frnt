@@ -136,21 +136,21 @@ export default function GoogleCalendar() {
             <div className="flex gap-2 items-center">
               <CalendarClock size={14} />
               <span>
-                <strong>Start:</strong>{" "}
+                <strong>Start :</strong>{" "}
                 {moment(selectedEvent?.start?.dateTime).format("DD MMM YYYY, hh:mm A")}
               </span>
             </div>
             <div className="flex gap-2 items-center">
               <CalendarClock size={14} />
               <span>
-                <strong>End:</strong>{" "}
+                <strong>End :</strong>{" "}
                 {moment(selectedEvent?.end?.dateTime).format("DD MMM YYYY, hh:mm A")}
               </span>
             </div>
             <div className="flex gap-2 items-center">
               <Users size={14} />
               <span>
-                <strong>Attendees</strong>
+                <strong>Email</strong>
               </span>
             </div>
             <ul className="ml-6 list-disc space-y-1">
@@ -159,7 +159,7 @@ export default function GoogleCalendar() {
                 .map((a) => (
                   <li key={a.email} className="flex items-center gap-2">
                     {a.email}
-                    <span
+                    {/* <span
                       className={`text-xs px-1 rounded ${
                         a.responseStatus === "accepted"
                           ? "bg-green-100 text-green-700"
@@ -167,7 +167,7 @@ export default function GoogleCalendar() {
                       }`}
                     >
                       {a.responseStatus}
-                    </span>
+                    </span> */}
                   </li>
                 ))}
             </ul>

@@ -99,7 +99,7 @@ const UpdateWellnessLounge = () => {
   useEffect(() => {
     getCategoryList();
     getIntrestedTopics(1);
-    getRole()
+    getRole();
   }, []);
 
   useEffect(() => {
@@ -113,11 +113,13 @@ const UpdateWellnessLounge = () => {
       const res = await Models.session.details(id);
       if (res?.thumbnail) {
         const fileName = getFileNameFromUrl(res?.thumbnail);
-        const thumbnail = await convertUrlToFile(res?.thumbnail, fileName);
-        setState({
-          thumbnail_images: thumbnail,
-          thumbnail_image: res?.thumbnail,
-        });
+        try {
+          const thumbnail = await convertUrlToFile(res?.thumbnail, fileName);
+          setState({
+            thumbnail_images: thumbnail,
+            thumbnail_image: res?.thumbnail,
+          });
+        } catch (_) {}
       }
       if (res.start_time && res.end_time) {
         const sessionInterval = getHourOption(res.start_time, res.end_time);
@@ -137,7 +139,9 @@ const UpdateWellnessLounge = () => {
         setState({
           moderator: {
             value: res?.moderator?.id,
-            label: `${res?.moderator?.first_name} ${res?.moderator?.last_name} (${getRoles(res?.moderator?.groups)})`,
+            label: `${res?.moderator?.first_name} ${
+              res?.moderator?.last_name
+            } (${getRoles(res?.moderator?.groups)})`,
           },
         });
       }
@@ -238,43 +242,41 @@ const UpdateWellnessLounge = () => {
     }
   };
 
-  const getIntrestedTopics = async (page=1) => {
-      try {
-        const res = await Models.auth.getIntrestedTopics(page);
+  const getIntrestedTopics = async (page = 1) => {
+    try {
+      const res = await Models.auth.getIntrestedTopics(page);
+      const Dropdownss = Dropdown(res?.results, "topic");
+      const filter = Dropdownss?.filter((item) => item?.label !== "");
+
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
+      console.log("res", res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const interestedListLoadMore = async () => {
+
+    try {
+      if (state.hasMoreInterest) {
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1
+        );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
-  
-        setState({ intrestedTopicsList: filter,
-          hasMoreInterest:res?.next
-         });
-        console.log("res", res);
-      } catch (error) {
-        console.log(error);
+
+        setState({
+          intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
+          hasMoreInterest: res?.next,
+          currentInterestPage: state.currentInterestPage + 1,
+        });
+      } else {
+        setState({ intrestedTopicsList: state.intrestedTopicsList });
       }
-    };
-  
-    const interestedListLoadMore = async () => {
-      console.log("hello");
-      
-      try {
-        if (state.hasMoreInterest) {
-          console.log("hasMoreInterest");
-          const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
-          const Dropdownss = Dropdown(res?.results, "topic");
-          const filter = Dropdownss?.filter((item) => item?.label !== "");
-  
-          setState({
-            intrestedTopicsList: [...state.intrestedTopicsList, ...filter],
-            hasMoreInterest: res?.next,
-            currentInterestPage: state.currentInterestPage + 1,
-          });
-        } else {
-          setState({ intrestedTopicsList: state.intrestedTopicsList });
-        }
-      } catch (error) {
-              console.log('error: ', error);
-      }
-    };
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   const onSubmit = async () => {
     try {
@@ -678,9 +680,9 @@ const UpdateWellnessLounge = () => {
     try {
       const body = {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
-        is_open_to_be_mentor:"Yes",
-        is_activity:"true",
-        search
+        is_open_to_be_mentor: "Yes",
+        is_activity: "true",
+        search,
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
@@ -731,8 +733,7 @@ const UpdateWellnessLounge = () => {
     }
   };
 
-  console.log("state.role",state.role);
-  
+  console.log("state.role", state.role);
 
   return state.loading ? (
     <div className="container mx-auto flex justify-center items-center ">
