@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
-import { useSetState } from "@/utils/function.utils";
+import { capitalizeFLetter, useSetState } from "@/utils/function.utils";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable } from "@/components/ui/dataTable";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import { FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, ChevronDown, ChevronUp, Loader } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const FormSection = ({ title, children }) => (
@@ -38,7 +38,7 @@ const FormSubmissionsModal = ({ entries }) => {
 
   return (
     <>
-      <div className="mt-5">
+      <div>
         <Button
           onClick={() => setOpen(true)}
           className="bg-[#7f4099] hover:bg-purple-700 text-white flex items-center gap-2"
@@ -73,7 +73,7 @@ const FormSubmissionsModal = ({ entries }) => {
                       {idx + 1}
                     </div>
                     <div className="text-left">
-                      <p className="font-semibold text-gray-800">{entry.full_name}</p>
+                      <p className="font-semibold text-gray-800">{capitalizeFLetter(entry.full_name)}</p>
                       <p className="text-xs text-gray-500">{entry.email}</p>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ const viewWellnessLounge = () => {
     }
   }, [searchParams]);
 
-  const [state, setState] = useSetState({ userData: [] });
+  const [state, setState] = useSetState({ userData: [], loading: false });
 
   useEffect(() => {
     if (id) getDetails();
@@ -205,10 +205,12 @@ const viewWellnessLounge = () => {
 
   const getDetails = async () => {
     try {
+      setState({ loading: true });
       const res = await Models.user.getUserId(id);
-      setState({ userData: res });
+      setState({ userData: res, loading: false });
     } catch (error) {
       console.log("error: ", error);
+      setState({ loading: false });
     }
   };
 
@@ -244,29 +246,36 @@ const viewWellnessLounge = () => {
     },
   ];
 
+  if (state.loading) {
+    return (
+      <div className="container mx-auto flex items-center justify-center min-h-[60vh]">
+        <Loader className="animate-spin h-10 w-10"/>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto flex items-center">
       <div className="w-full">
-        <div className="flex justify-between items-center">
-          <h2 className="font-semibold md:text-[20px] text-sm mb-3">User Details</h2>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-semibold md:text-[20px] text-sm">User Details</h2>
+          {(state?.userData?.google_form_entries ?? []).length > 0 && (
+            <FormSubmissionsModal entries={state.userData.google_form_entries} />
+          )}
         </div>
-
         <div className="auto-rows-min gap-4 flex flex-col xl:flex-row">
           {/* Profile Card */}
-          <div className="border w-full xl:w-2/4 rounded-xl p-4 gap-10 flex flex-row flex-wrap">
-            <div>
-              <img
-                src={
-                  !state?.userData?.profile_picture
-                    ? "/assets/images/dummy-profile.jpg"
-                    : state?.userData?.profile_picture
-                }
-                alt="thumbnail"
-                className="w-[200px] h-[200px]"
-                style={{ borderRadius: "10px", objectFit: "cover" }}
-              />
-            </div>
-            <div>
+          <div className="border w-full xl:w-2/4 rounded-xl p-4 flex flex-row items-start gap-4">
+            <img
+              src={
+                !state?.userData?.profile_picture
+                  ? "/assets/images/dummy-profile.jpg"
+                  : state?.userData?.profile_picture
+              }
+              alt="thumbnail"
+              className="w-[120px] h-[120px] shrink-0 rounded-xl object-cover"
+            />
+            <div className="min-w-0">
               <h2 className="mt-3 scroll-m-20 text-xl font-[500] tracking-tight transition-colors first:mt-0 capitalize">
                 {state?.userData.first_name} {state?.userData.last_name}
               </h2>
@@ -336,9 +345,7 @@ const viewWellnessLounge = () => {
         </div>
 
         {/* Google Form Entries */}
-        {(state?.userData?.google_form_entries ?? []).length > 0 && (
-          <FormSubmissionsModal entries={state.userData.google_form_entries} />
-        )}
+       
       </div>
     </div>
   );

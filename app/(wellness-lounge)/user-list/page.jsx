@@ -6,7 +6,7 @@ import { CheckCircle, Edit, Eye, PlusIcon, Trash, XCircle } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 
-import { Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
+import { capitalizeFLetter, Dropdown, objIsEmpty, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useEffect } from "react";
 import Modal from "@/components/common-components/modal";
@@ -130,8 +130,15 @@ const UserList = () => {
       Header: "Name",
       accessor: "first_name", // required for sorting/search, can be any relevant field
       Cell: (row) => {
-        const { first_name, last_name } = row.row;
-        return <Label>{`${first_name || ""} ${last_name || ""}`}</Label>;
+        const { first_name, last_name, username } = row.row;
+      
+        return (
+          <Label>
+            {first_name
+              ? `${capitalizeFLetter(first_name) || ""} ${last_name || ""}`
+              : capitalizeFLetter(username)}
+          </Label>
+        );
       },
     },
     {
@@ -163,7 +170,7 @@ const UserList = () => {
                 )}
                 {/* Tooltip */}
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
-                  {isVerified ? "Verified" : "Not Verified"}
+                  {isVerified ? "Email Verified" : "Email Not Verified"}
                 </div>
               </div>
             )}
@@ -410,21 +417,22 @@ const UserList = () => {
   };
 
   return (
-    <div className="container mx-auto pt-4 pb-2">
-      <div className="flex flex-1 flex-col gap-2 p-4 pt-5">
+    <div className="container mx-auto pb-2">
+      <div className="flex flex-1 flex-col gap-2 p-4 pt-2">
         <Card className="w-[100%] p-4">
-          <div className="flex items-center gap-3 w-full flex-wrap">
-            <h2 className="md:text-[20px] text-sm font-semibold whitespace-nowrap">Users</h2>
-            <div className="w-[280px]">
+          {/* mobile + ipad */}
+          <div className="flex lg:hidden flex-col gap-3 w-full">
+            <div className="flex items-center gap-3">
+              <h2 className="text-sm font-semibold whitespace-nowrap">Users</h2>
               <TextInput
                 value={state.search}
                 onChange={(e) => setState({ search: e.target.value })}
                 placeholder="Search Name"
                 required
-                className="w-full"
+                className="flex-1"
               />
             </div>
-            <div className="flex items-center gap-4 flex-1 justify-end flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               {ROLE_ARRAY?.map((item) => (
                 <Checkboxs
                   key={item}
@@ -439,12 +447,42 @@ const UserList = () => {
                 onChange={() => setState({ one_to_one: !state.one_to_one })}
               />
               <Button
-                className="bg-themeGreen hover:bg-themeGreen"
+                className="bg-themeGreen hover:bg-themeGreen ml-auto"
                 onClick={() => router.push("/create-user")}
               >
                 <PlusIcon />
               </Button>
             </div>
+          </div>
+          {/* desktop only - single row */}
+          <div className="hidden lg:flex items-center gap-3 w-full">
+            <h2 className="text-[20px] font-semibold whitespace-nowrap">Users</h2>
+            <TextInput
+              value={state.search}
+              onChange={(e) => setState({ search: e.target.value })}
+              placeholder="Search Name"
+              required
+              className="w-[260px] shrink-0"
+            />
+            {ROLE_ARRAY?.map((item) => (
+              <Checkboxs
+                key={item}
+                label={item}
+                checked={state.filterByRole?.includes(item)}
+                onChange={(isChecked) => handleCheckboxChange(item, isChecked)}
+              />
+            ))}
+            <Checkboxs
+              label="Google Form"
+              checked={state.one_to_one}
+              onChange={() => setState({ one_to_one: !state.one_to_one })}
+            />
+            <Button
+              className="bg-themeGreen hover:bg-themeGreen ml-auto shrink-0"
+              onClick={() => router.push("/create-user")}
+            >
+              <PlusIcon />
+            </Button>
           </div>
         </Card>
 

@@ -23,7 +23,7 @@ const Checkboxs: React.FC<CheckboxProps> = ({ label, checked, onChange }) => {
           <CheckIcon className="h-4 w-4 text-white" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
-      <label className="text-sm">{label}</label>
+      <label className="text-sm whitespace-nowrap">{label}</label>
     </div>
   );
 };
