@@ -29,6 +29,7 @@ import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { Loader } from "lucide-react";
 import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import Loading from "@/components/common-components/Loading";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -42,6 +43,7 @@ const ProfilePage = () => {
     id: null,
     group: null,
     logoutLoading: false,
+    loading: false,
   });
   const [isClient, setIsClient] = useState(false);
 
@@ -77,15 +79,18 @@ const ProfilePage = () => {
   const getDetails = async () => {
     try {
       if (state?.id) {
+        setState({ loading: true });
         console.log("Fetching user details for ID:", state?.id);
         const res = await Models.user.getUserId(state?.id);
         console.log("User details fetched:", res);
         setState({
           userData: res,
+          loading: false,
         });
       }
     } catch (error) {
       console.log("Error fetching user details: ", error);
+      setState({ loading: false });
     }
   };
 
@@ -201,6 +206,11 @@ const ProfilePage = () => {
   ];
 
   return (
+    <>
+      {state.loading ? 
+      <Loading />
+    :
+    
     <div className="container mx-auto flex items-center pt-4">
       <div className="w-full pt-5">
         {/* <div className="flex justify-between items-center">
@@ -695,6 +705,8 @@ const ProfilePage = () => {
         } */}
       </div>
     </div>
+}
+    </>
   );
 };
 
