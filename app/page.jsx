@@ -16,6 +16,8 @@ import useDebounce from "@/components/common-components/useDebounce";
 import { Success } from "@/components/common-components/toast";
 import Calendar from "./(wellness-lounge)/calendar/page";
 import Dashboard from "./(wellness-lounge)/dashboard/page";
+import UserList from "./(wellness-lounge)/google_calendar_user/page.jsx";
+import WellnessLoungeList from "./(wellness-lounge)/student-order/page.jsx";
 import Script from "next/script";
 import LoginForm from "@/components/ui/login-form";
 import { ROLES } from "@/utils/constant.utils";
@@ -135,9 +137,11 @@ const App = () => {
         group == ROLES.ADMIN ||
         group == ROLES.COUNSELOR ||
         group == ROLES.MENTOR ? (
-          <Dashboard />
+          // <Dashboard />
+          <UserList/>
         ) : (
-          <Calendar />
+          // <Calendar />
+           <WellnessLoungeList />
         )
       ) : (
         <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">

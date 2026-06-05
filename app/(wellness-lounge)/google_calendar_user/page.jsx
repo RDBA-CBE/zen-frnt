@@ -34,6 +34,7 @@ import Checkboxs from "@/components/ui/singleCheckbox";
 import { ROLE_ARRAY, ROLES } from "@/utils/constant.utils";
 import GoogleCalendar from "@/app/google_calender";
 
+
 const UserList = () => {
   const router = useRouter();
 
@@ -453,11 +454,12 @@ const UserList = () => {
   return (
     <div className="container mx-auto pt-4 pb-2">
       <div className="flex flex-1 flex-col gap-2 p-4 pt-5">
-        <Card className="w-[100%] p-4">
+        <Card className="w-[100%] p-4 pb-0 !bg-none shadow-none border-none">
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-2/6 w-full lg:mb-0 mb-2">
               <h2 className="md:text-[20px] text-sm font-semibold">
-                Google Calendar
+                {/* Google Calendar */}
+                Ayurvedic Counseling Lounge
               </h2>
             </div>
             <div className="block md:flex justify-between items-center gap-3 lg:w-4/6 w-full">

@@ -149,7 +149,10 @@ const Header = () => {
 
   // --- Menu definitions ---
   const AdminLeftSideMenu = [
-    { title: "Dashboard", url: "/" },
+    { title: "Dashboard", 
+      // url: "/",
+      url:"/google_calendar_user"
+     },
     {
       title: "Wellness Lounge",
       url: "/wellness-lounge-list",
@@ -175,7 +178,7 @@ const Header = () => {
       url: "#",
       items: [
         { title: "User List", url: "/user-list" },
-        { title: "Google Calendar", url: "/google_calendar_user" },
+        // { title: "Google Calendar", url: "/google_calendar_user" },
 
         { title: "Create User", url: "/create-user" },
         { title: "Counselor Approval", url: "/counselor-approval" },
@@ -195,7 +198,10 @@ const Header = () => {
   ];
 
   const MentorOrConLeftSideMenu = [
-    { title: "Dashboard", url: "/" },
+    { title: "Dashboard",
+      //  url: "/" 
+      url:"/google_calendar_user"
+      },
     {
       title: "Wellness Lounge",
       url: "/wellness-lounge-list",
@@ -217,7 +223,7 @@ const Header = () => {
   ];
 
   const StudentLeftSideMenu = [
-    { title: "The Program", url: "/calendar" },
+    // { title: "The Program", url: "/calendar" },
     { title: "Session", url: "/student-order" },
     { title: "Profile", url: "/profile" },
   ];
