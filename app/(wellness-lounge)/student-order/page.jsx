@@ -408,13 +408,18 @@ const WellnessLoungeList = () => {
       <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
         {state.loading ? (
           <Loading />
-        ) : state.loungeList?.length > 0 ? (
-          <Card className="w-[100%] p-4 pt-5 pb-0 bg-none shadow-none border-none ">
-            <div className="block justify-between items-center lg:flex">
-              <div className="lg:w-full w-full lg:mb-0 mb-2">
-                <h2 className="md:text-lg text-sm font-semibold">Ayurvedic Counseling Lounge Bookings</h2>
-              </div>
-              {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
+        ) : (
+          <>
+            {state.loungeList?.length > 0 ? (
+              <>
+                <Card className="w-[100%] p-4 pt-5 pb-0 bg-none shadow-none border-none ">
+                  <div className="block justify-between items-center lg:flex">
+                    <div className="lg:w-full w-full lg:mb-0 mb-2">
+                      <h2 className="md:text-lg text-sm font-semibold">
+                        Ayurvedic Counseling Lounge Bookings
+                      </h2>
+                    </div>
+                    {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <TextInput
                     value={state.search}
@@ -465,67 +470,65 @@ const WellnessLoungeList = () => {
                    
                 </div>
               </div> */}
-            </div>
-          </Card>
-        ) : null}
+                  </div>
+                </Card>
 
-        {state.loading ? (
-          <Loading />
-        ) : state.loungeList?.length > 0 ? (
-          <>
-            <div className=" mt-2 overflow-x-auto">
-              <Card className="w-[100%] p-4">
-                <DataTable columns={columns} data={state.loungeList}
-                getRowClassName={(row) =>
-                  row?.deleted ? "opacity-120 text-gray-400" : ""
-                }
-                />
+                <div className=" mt-2 overflow-x-auto">
+                  <Card className="w-[100%] p-4">
+                    <DataTable
+                      columns={columns}
+                      data={state.loungeList}
+                      getRowClassName={(row) =>
+                        row?.deleted ? "opacity-120 text-gray-400" : ""
+                      }
+                    />
+                  </Card>
+                </div>
+
+                <div className="mt-5 flex justify-center gap-3">
+                  <Button
+                    disabled={!state.previous}
+                    onClick={handlePreviousPage}
+                    className={`btn ${
+                      !state.previous ? "btn-disabled" : "btn-primary"
+                    }`}
+                  >
+                    Prev
+                  </Button>
+                  <Button
+                    disabled={!state.next}
+                    onClick={handleNextPage}
+                    className={`btn ${
+                      !state.next ? "btn-disabled" : "btn-primary"
+                    }`}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <Card className="w-[100%] mt-5 p-4">
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No Record Found
+                  </p>
+
+                  <p className="mt-4">
+                    Click the below button to get register in the session
+                  </p>
+
+                  <Button
+                    className={`mt-3 bg-themePurple hover:bg-themePurple`}
+                    onClick={() => {
+                      router.push("/calendar");
+                    }}
+                  >
+                    Go to programs
+                  </Button>
+                </div>
               </Card>
-            </div>
-
-            <div className="mt-5 flex justify-center gap-3">
-              <Button
-                disabled={!state.previous}
-                onClick={handlePreviousPage}
-                className={`btn ${
-                  !state.previous ? "btn-disabled" : "btn-primary"
-                }`}
-              >
-                Prev
-              </Button>
-              <Button
-                disabled={!state.next}
-                onClick={handleNextPage}
-                className={`btn ${
-                  !state.next ? "btn-disabled" : "btn-primary"
-                }`}
-              >
-                Next
-              </Button>
-            </div>
+            )}
           </>
-        ) : (
-          <Card className="w-[100%] mt-5 p-4">
-            <div className="flex flex-col items-center justify-center">
-              <p className="text-gray-500 dark:text-gray-400">
-                No Record Found
-              </p>
-
-              <p className="mt-4">
-                Click the below button to get register in the session
-              </p>
-
-              <Button
-                className={`mt-3 bg-themePurple hover:bg-themePurple
-                      }`}
-                onClick={() => {
-                  router.push("/calendar");
-                }}
-              >
-                Go to programs
-              </Button>
-            </div>
-          </Card>
         )}
       </div>
       <Modal
