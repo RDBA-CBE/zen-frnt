@@ -513,18 +513,18 @@ const WellnessLoungeList = () => {
                     No Record Found
                   </p>
 
-                  <p className="mt-4">
+                  {/* <p className="mt-4">
                     Click the below button to get register in the session
-                  </p>
+                  </p> */}
 
-                  <Button
+                  {/* <Button
                     className={`mt-3 bg-themePurple hover:bg-themePurple`}
                     onClick={() => {
                       router.push("/calendar");
                     }}
                   >
                     Go to programs
-                  </Button>
+                  </Button> */}
                 </div>
               </Card>
             )}
