@@ -196,6 +196,18 @@ const CreateUser = () => {
           value: res?.groups?.[0]?.id,
           label: res?.groups?.[0]?.name,
         },
+        is_married:{
+          value: res?.is_married,
+          label: res?.is_married  == "yes" ? "Yes" : "No",
+        },
+        kids: res?.kids ? res?.kids : 0,
+        geo_detail: res?.geo_detail ? res?.geo_detail : "",
+        groupGender: {
+          value: res?.gender,
+          label: res?.gender == "male" ? "Male" : res?.gender == "female" ? "Female" : "Other",
+        },
+        groupAge: res?.age ? res?.age : "",
+        
       });
     } catch (error) {
       console.log("error: ", error);
@@ -462,7 +474,7 @@ const CreateUser = () => {
           first_name: state.firstname,
           last_name: state.lastname,
           // email: state.email.trim(),
-          email: state?.email.trim() + DOMAIN,
+          email: state?.email.trim(),
           department:
             state?.user_type?.label !== "Admin" ||
             state?.user_type?.label === "Mentor"
@@ -484,13 +496,25 @@ const CreateUser = () => {
             state?.intrested_topics?.length > 0
               ? state?.intrested_topics?.map((item) => item?.value)
               : [],
+          age: state?.groupAge,
+          is_married: state?.is_married?.value || "",
+          kids: state?.kids,
+          geo_detail: state?.geo_detail,
+          gender: state?.groupGender?.value || "",
           notify: state.notify,
         };
         console.log("✌️body --->", body);
 
+         if (state?.user_type?.label === ROLES.GROUP) {
+                   await Validation.groupUser.validate(body, {
+                  abortEarly: false,
+                });
+        } else {
+
         await Validation.createStudentUser.validate(body, {
           abortEarly: false,
         });
+      }
 
         let groups = [state.user_type?.value];
         let formData = new FormData();
@@ -516,6 +540,8 @@ const CreateUser = () => {
           formData.append("groups", group?.toString());
         });
 
+        
+
         if (body.thumbnail_image) {
           formData.append("profile_picture", body.thumbnail_image);
         } else {
@@ -526,6 +552,14 @@ const CreateUser = () => {
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
         }
+        if (state?.user_type?.label === ROLES.GROUP) {
+          formData.append("is_married", body.is_married);
+          formData.append("kids", body.kids);
+          formData.append("geo_detail", body.geo_detail);
+          formData.append("gender", body.gender);
+          formData.append("age", body.age);
+        }
+
         await Models.user.updateUser(formData, id);
         setState({ submitLoading: false });
         router?.back();
@@ -612,6 +646,18 @@ const CreateUser = () => {
     const year = 2021 + i;
     return { value: year.toString(), label: year.toString() };
   });
+
+
+    const marriedOptions = [
+    { label: "Yes", value: "yes" },
+    { label: "No", value: "no" },
+  ];
+
+  const genderOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Other", value: "other" },
+  ];
 
   return (
     <div className="container mx-auto updateUser pt-3 pb-3">
@@ -1247,6 +1293,91 @@ const CreateUser = () => {
               </>
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
+
+          {state?.user_type?.label === ROLES.GROUP && (
+            <>
+              <div className="space-y-1">
+                <TextInput
+                  id="age"
+                  type="text"
+                  placeholder="Enter Age"
+                  title="Age"
+                  required
+                  value={state.groupAge}
+                  onChange={(e) =>
+                    setState({
+                      groupAge: e.target.value,
+                      errors: { ...state.errors, age: "" },
+                    })
+                  }
+                  error={state.errors?.age}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={genderOptions}
+                  value={state.groupGender?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      groupGender: value,
+                      errors: { ...state.errors, gender: "" },
+                    })
+                  }
+                  error={state.errors?.gender}
+                  title="Gender"
+                  placeholder="Select Gender"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={marriedOptions}
+                  value={state.is_married?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      is_married: value,
+                      errors: { ...state.errors, is_married: "" },
+                    })
+                  }
+                  error={state.errors?.is_married}
+                  title="Married"
+                  placeholder="Select Status"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <TextInput
+                  id="kids"
+                  type="text"
+                  placeholder="Number of Kids"
+                  title="Kids"
+                  value={state.kids}
+                  onChange={(e) =>
+                    setState({
+                      kids: e.target.value,
+                      errors: { ...state.errors, kids: "" },
+                    })
+                  }
+                  error={state.errors?.kids}
+                />
+              </div>
+
+              <div className="space-y-1 ">
+                <TextInput
+                  id="geo_detail"
+                  type="text"
+                  placeholder="Enter Geographical Details"
+                  title="Geographical Details"
+                  value={state.geo_detail}
+                  onChange={(e) => setState({ geo_detail: e.target.value })}
+                  error={state.errors?.geo_detail}
+                />
+              </div>
+            </>
+          )}
 
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton

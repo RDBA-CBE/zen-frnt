@@ -220,13 +220,18 @@ const CreateUser = () => {
             state.user_type?.label === ROLES.COUNSELOR
               ? state?.country?.value
               : undefined,
+              age: state?.groupAge,
+          
           notify: state.notify,
         };
         console.log("✌️body --->", body);
 
+        
+       
         await Validation.createUser.validate(body, {
           abortEarly: false,
         });
+      
 
         if (
           state?.user_type?.label === ROLES.ALUMNI ||
@@ -345,15 +350,26 @@ Login credentials have been generated, and the user can now access the platform 
           university: state?.university?.value,
           intrested_topics: state?.intrested_topics?.map((item) => item.value),
           lable: state?.intrested_topics1,
+          age: state?.groupAge,
+          is_married: state?.is_married?.value || "",
+          kids: state?.kids,
+          geo_detail: state?.geo_detail,
+          gender: state?.groupGender?.value || "",
           notify: state.notify,
         };
 
         console.log("body: ", body); // For debugging purposes
 
+        if (state?.user_type?.label === ROLES.GROUP) {
+           await Validation.groupUser.validate(body, {
+          abortEarly: false,
+        });
+        } else {
         // Validate the body object using Yup
         await Validation.createStudentUser.validate(body, {
           abortEarly: false,
         });
+      }
 
         if (state?.user_type?.label === "Alumni") {
           if (!isValidPhoneNumber(body.phone_number)) {
@@ -395,6 +411,14 @@ Login credentials have been generated, and the user can now access the platform 
         }
 
         formData.append("lable", state?.intrested_topics1);
+
+        if (state?.user_type?.label === ROLES.GROUP) {
+          formData.append("is_married", body.is_married);
+          formData.append("kids", body.kids);
+          formData.append("geo_detail", body.geo_detail);
+          formData.append("gender", body.gender);
+          formData.append("age", body.age);
+        }
 
         if (body.year_of_entry && state?.user_type?.label === "Student") {
           formData.append("year_of_entry", body.year_of_entry);
@@ -487,6 +511,17 @@ Login credentials have been generated, and the user can now access the platform 
       };
     }
   };
+
+  const marriedOptions = [
+    { label: "Yes", value: "yes" },
+    { label: "No", value: "no" },
+  ];
+
+  const genderOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Other", value: "other" },
+  ];
 
   return (
     <div className="container mx-auto pt-3">
@@ -781,8 +816,94 @@ Login credentials have been generated, and the user can now access the platform 
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
 
-          {state?.user_type?.label !== "Admin" && (
+           {state?.user_type?.label === ROLES.GROUP && (
             <>
+              <div className="space-y-1">
+                <TextInput
+                  id="age"
+                  type="number"
+                  placeholder="Enter Age"
+                  title="Age"
+                  required
+                  value={state.groupAge}
+                  onChange={(e) =>
+                    setState({
+                      groupAge: e.target.value,
+                      errors: { ...state.errors, age: "" },
+                    })
+                  }
+                  error={state.errors?.age}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={genderOptions}
+                  value={state.groupGender?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      groupGender: value,
+                      errors: { ...state.errors, gender: "" },
+                    })
+                  }
+                  error={state.errors?.gender}
+                  title="Gender"
+                  placeholder="Select Gender"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={marriedOptions}
+                  value={state.is_married?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      is_married: value,
+                      errors: { ...state.errors, is_married: "" },
+                    })
+                  }
+                  error={state.errors?.is_married}
+                  title="Married"
+                  placeholder="Select Status"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <TextInput
+                  id="kids"
+                  type="text"
+                  placeholder="Number of Kids"
+                  title="Kids"
+                  value={state.kids}
+                  onChange={(e) =>
+                    setState({
+                      kids: e.target.value,
+                      errors: { ...state.errors, kids: "" },
+                    })
+                  }
+                  error={state.errors?.kids}
+                />
+              </div>
+
+              <div className="space-y-1 ">
+                <TextInput
+                  id="geo_detail"
+                  type="text"
+                  placeholder="Enter Geographical Details"
+                  title="Geographical Details"
+                  value={state.geo_detail}
+                  onChange={(e) => setState({ geo_detail: e.target.value })}
+                  error={state.errors?.geo_detail}
+                />
+              </div>
+            </>
+          )}
+
+          {state?.user_type?.label !== "Admin"  && (
+            <>
+              {state?.user_type?.label !==  ROLES.GROUP && <>
               <div className="space-y-1">
                 <MultiSelectDropdown
                   label="University"
@@ -842,6 +963,7 @@ Login credentials have been generated, and the user can now access the platform 
                   required
                 />
               </div>
+              
               {/* <div className="space-y-1">
                 <MultiSelectDropdown
                   options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
@@ -879,6 +1001,8 @@ Login credentials have been generated, and the user can now access the platform 
                 placeholder="Address"
                 title="Address"
               />
+              </>
+              }
               {state?.user_type?.label === "Alumni" && (
                 <CustomSelect
                   options={mentorList || []} // Safely pass empty array if intrestedTopicsList is null
