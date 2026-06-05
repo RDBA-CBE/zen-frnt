@@ -409,12 +409,12 @@ const WellnessLoungeList = () => {
         {state.loading ? (
           <Loading />
         ) : state.loungeList?.length > 0 ? (
-          <Card className="w-[100%] p-4 pt-5">
+          <Card className="w-[100%] p-4 pt-5 pb-0 bg-none shadow-none border-none ">
             <div className="block justify-between items-center lg:flex">
-              <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
-                <h2 className="md:text-lg text-sm font-bold">Bookings</h2>
+              <div className="lg:w-full w-full lg:mb-0 mb-2">
+                <h2 className="md:text-lg text-sm font-semibold">Ayurvedic Counseling Lounge Bookings</h2>
               </div>
-              <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
+              {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <TextInput
                     value={state.search}
@@ -462,18 +462,9 @@ const WellnessLoungeList = () => {
                       });
                     }}
                   />
-                   {/* <DatePickers
-                        placeholder="Registration Date"
-                        closeIcon={true}
-                        selectedDate={state.start_date}
-                        onChange={(date) => {
-                          setState({
-                            start_date: date,
-                          });
-                        }}
-                      /> */}
+                   
                 </div>
-              </div>
+              </div> */}
             </div>
           </Card>
         ) : null}

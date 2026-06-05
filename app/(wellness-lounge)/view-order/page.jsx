@@ -159,11 +159,19 @@ const viewWellnessLounge = () => {
   const joinSession = () => {
     if (state.isEventBefore30Mins) {
       // router.push(state.orderData.event?.session_link);
-      window.open(
-        state.orderData.event?.session_link,
-        "_blank",
-        "noopener,noreferrer",
-      );
+      if (state.orderData?.zoom_link) {
+        window.open(
+          state.orderData?.zoom_link,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      } else if (state.orderData.event?.session_link) {
+        window.open(
+            state.orderData.event?.session_link,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }
     } else {
       const startDate = state.start_date;
       const startTime = state.start_time;
@@ -214,13 +222,13 @@ const viewWellnessLounge = () => {
                             Order ID: {state?.orderData?.registration_id}
                           </p>
                         </div>
-                        {state.deleted&&
-                        <div className="mb-3">
-                          <p className="text-sm text-red-600">
-                            Session Deleted from Google Calendar
-                          </p>
-                        </div>
-                        }
+                        {state.deleted && (
+                          <div className="mb-3">
+                            <p className="text-sm text-red-600">
+                              Session Deleted from Google Calendar
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <div className="pt-3">
@@ -323,53 +331,57 @@ const viewWellnessLounge = () => {
                         )}
                       </blockquote>
                     </div>
-{!state.deleted &&
-                    <div>
-                      <h4 className="md:text-[22px] text-[18px]">
-                        {" "}
-                        Session Link: <br />
-                        <p className="mb-3 italic" style={{ fontSize: "16px" }}>
-                          Click the below button to join the meeting
-                        </p>
-                        <div className="flex justify-between">
-                          <div>
-                            {isExpired() ? (
-                              <span className="text-red-500 text-[18px] font-semibold">
-                                Session Expired
-                              </span>
-                            ) : state?.orderData?.event?.session_link ? (
-                              <Button
-                                onClick={() => joinSession()}
-                                className={`p-2 rounded rounded-sm transition-all duration-200
+                    {!state.deleted && (
+                      <div>
+                        <h4 className="md:text-[22px] text-[18px]">
+                          {" "}
+                          Session Link: <br />
+                          <p
+                            className="mb-3 italic"
+                            style={{ fontSize: "16px" }}
+                          >
+                            Click the below button to join the meeting
+                          </p>
+                          <div className="flex justify-between">
+                            <div>
+                              {isExpired() ? (
+                                <span className="text-red-500 text-[18px] font-semibold">
+                                  Session Expired
+                                </span>
+                              ) : state?.orderData?.zoom_link ||
+                                state?.orderData?.event?.session_link ? (
+                                <Button
+                                  onClick={() => joinSession()}
+                                  className={`p-2 rounded rounded-sm transition-all duration-200
     ${
       state.isEventBefore30Mins
         ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
         : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
     }
   `}
-                              >
-                                Join Meeting
-                              </Button>
-                            ) : (
-                              "No session link available"
-                            )}
+                                >
+                                  Join Meeting
+                                </Button>
+                              ) : (
+                                "No session link available"
+                              )}
+                            </div>
+                            <Button
+                              className="p-2 rounded bg-green-500 hover:themePurple text-white"
+                              onClick={() => handleClickOrder()}
+                            >
+                              <div className="rounded-sm">Booking List</div>
+                            </Button>
                           </div>
-                          <Button
-                            className="p-2 rounded bg-green-500 hover:themePurple text-white"
-                            onClick={() => handleClickOrder()}
-                          >
-                            <div className="rounded-sm">Booking List</div>
-                          </Button>
-                        </div>
-                      </h4>
+                        </h4>
 
-                      {/* {state?.orderData?.event?.session_link && (
+                        {/* {state?.orderData?.event?.session_link && (
                                     <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
                                         <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />
                                     </Link>
                                 )} */}
-                    </div>
-                    }
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* {state.attendanceList?.length > 0 && state.group == "Admin" && (
