@@ -385,7 +385,7 @@ const CreateUser = () => {
           await Validation.createUser.validate(body, {
             abortEarly: false,
           });
-        } else if (state?.user_type?.label === "Group") {
+        } else if (state?.user_type?.label === ROLES.GROUP) {
           await Validation.groupUser.validate(body, {
             abortEarly: false,
           });

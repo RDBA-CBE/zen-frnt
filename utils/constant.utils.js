@@ -313,10 +313,10 @@ export const ROLES = {
   ADMIN: "Admin",
   MENTOR: "Mentor",
   COUNSELOR: "Counselor",
-  GROUP: "Group",
+  GROUP: "Individual/Group",
 };
 
-export const ROLE_ARRAY = ["Student", "Alumni", "Mentor", "Counselor"];
+export const ROLE_ARRAY = ["Student", "Individual/Group", "Alumni", "Mentor", "Counselor"];
 
 export const HEAD = [
   "Name",
