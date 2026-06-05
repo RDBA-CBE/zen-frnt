@@ -478,7 +478,7 @@ const LoginForm = (props) => {
                       />
                     </div>
 
-                    <p className="text-center text-[14px]">
+                    {/* <p className="text-center text-[14px]">
                       Don't have an account?{" "}
                       <Link
                         href="/registration"
@@ -487,7 +487,7 @@ const LoginForm = (props) => {
                       >
                         Sign up
                       </Link>{" "}
-                    </p>
+                    </p> */}
                   </div>
                 </form>
               </CardContent>
