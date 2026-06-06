@@ -130,7 +130,9 @@ const WellnessLoungeList = () => {
           session_date: item?.google_event_id
             ? moment(item?.start_datetime).format("DD-MM-YYYY")
             : moment(item?.event?.start_date).format("DD-MM-YYYY"),
-          registration_date: moment(item?.registration_date).format("DD-MM-YYYY"),
+          registration_date: moment(item?.registration_date).format(
+            "DD-MM-YYYY",
+          ),
           slotDateOrStartTime: isAyurvedic
             ? item?.slot?.event_slot?.date
             : item?.google_event_id
@@ -253,8 +255,6 @@ const WellnessLoungeList = () => {
     router.push(`/update-order/?id=${item?.id}`);
   };
 
- 
-
   const handleView = (item) => {
     if (item?.event?.lounge_type?.id == AYURVEDIC_LOUNGE) {
       router.push(`/view-paid-order/?id=${item?.id}`);
@@ -262,7 +262,6 @@ const WellnessLoungeList = () => {
       router.push(`/view-order/?id=${item?.id}`);
     }
   };
-
 
   const deleteSession = async () => {
     try {
@@ -401,6 +400,12 @@ const WellnessLoungeList = () => {
       getOrdersList(newPage);
     }
   };
+  const redirectGoogleSlot = () => {
+    window.open(
+      "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0r0FeLaXwhigXJW11SQm5eq1AlWVOE7-UblnnQYh_moBdt9AzYL6McEribitlb-tIkik_rXq3q",
+      "_blank",
+    );
+  };
 
   console.log("state.loungeList", state.loungeList);
   return (
@@ -419,6 +424,12 @@ const WellnessLoungeList = () => {
                         Ayurvedic Counseling Lounge Bookings
                       </h2>
                     </div>
+                    <Button
+                      onClick={() => redirectGoogleSlot()}
+                      className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
+                    >
+                      New Booking
+                    </Button>
                     {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <TextInput
@@ -525,6 +536,12 @@ const WellnessLoungeList = () => {
                   >
                     Go to programs
                   </Button> */}
+                  <Button
+                      onClick={() => redirectGoogleSlot()}
+                      className={`mt-3 p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
+                    >
+                      New Booking
+                    </Button>
                 </div>
               </Card>
             )}
