@@ -39,7 +39,7 @@ import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
 import Loading from "@/components/common-components/Loading";
 import ProtectedRoute from "@/components/common-components/privateRouter";
-import { ROLES } from "@/utils/constant.utils";
+import { GOOGLE_LOUNGE, GOOGLE_LOUNGE_ID, ROLES } from "@/utils/constant.utils";
 import { DatePickers } from "@/components/common-components/datePickers";
 
 const WellnessLoungeList = () => {
@@ -56,13 +56,15 @@ const WellnessLoungeList = () => {
     submitLoading: false,
     loading: false,
     isEventBefore30Mins: false,
+    lounge_type: { value: GOOGLE_LOUNGE_ID, label: GOOGLE_LOUNGE },
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
 
   useEffect(() => {
-    getLoungeList(state.currentPage);
     getCategoryList();
+
+    // getLoungeList(state.currentPage);
   }, []);
 
   useEffect(() => {
@@ -109,7 +111,7 @@ const WellnessLoungeList = () => {
       const dropdowns = Dropdown(res?.results, "name");
 
       const role = localStorage.getItem("group");
-      setState({ categoryList: dropdowns, loading: false, role: role });
+      setState({ categoryList: dropdowns, loading: false, role: role, lounge_type: { value: GOOGLE_LOUNGE_ID, label: GOOGLE_LOUNGE } });
     } catch (error) {
       setState({ loading: false });
 

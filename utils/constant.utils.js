@@ -6,6 +6,11 @@ export const AYURVEDIC_LOUNGE = 22;
 
 export const AYURVEDIC_LOUNGE_NAME = "Ayurvedic One-on-One Counseling Lounge";
 
+export const GOOGLE_LOUNGE='Ayurvedic Counseling Lounge'
+
+export const GOOGLE_LOUNGE_ID=23
+
+
 export const MENTOR = 5;
 
 export const IIT_KANPUR = 8;
