@@ -71,7 +71,7 @@ const WellnessLoungeList = () => {
 
   useEffect(() => {
     getOrdersList(1);
-  }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
+  }, [debouncedSearch, state.lounge_status, state.start_date, state.event,state.session_date,state.lounge_type]);
 
   const sessionId = (row) => {
     console.log(row);
@@ -131,6 +131,7 @@ const WellnessLoungeList = () => {
     try {
       setState({ loading: true });
       let body = bodyData();
+      console.log("body",body)
 
       const res = await Models.session.registrationList(page, body);
 
@@ -246,12 +247,24 @@ const WellnessLoungeList = () => {
     if (state.start_date) {
       body.start_date = moment(state.start_date).format("YYYY-MM-DD");
     }
-    if (state.event) {
-      body.event = state.event?.value;
+    // if (state.event) {
+    //   body.event = state.event?.value;
+    // }
+
+    if ( state.lounge_type?.value) {
+      body.category = state.lounge_type?.value;
     }
+
+   
     if (state.lounge_status) {
       body.lounge_status = state.lounge_status?.value;
     }
+
+    if (state.session_date) {
+      body.session_date = moment(state.session_date).format("YYYY-MM-DD");
+    }
+
+    
 
     return body;
   };
@@ -459,6 +472,8 @@ const WellnessLoungeList = () => {
       getOrdersList(newPage);
     }
   };
+console.log('✌️state.lounge_type?.value  --->', state.lounge_type?.value );
+
 
   return (
     <div className="container mx-auto pt-4">
@@ -491,7 +506,7 @@ const WellnessLoungeList = () => {
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
-                <LoadMoreDropdown
+                {/* <LoadMoreDropdown
                   value={state.event}
                   onChange={(value) => {
                     setState({
@@ -501,10 +516,17 @@ const WellnessLoungeList = () => {
                   // title="Select User"
                   error={state.errors?.user}
                   required
-                  placeholder="Lounge"
+                  placeholder="Lounge Type"
                   height={34}
                   placeholderSize={"14px"}
-                  loadOptions={loadSessionOptions}
+                  // options={state.categoryList}
+                  loadOptions={getCategoryList}
+                /> */}
+                    <CustomSelect
+                  options={state.categoryList}
+                  value={state.lounge_type?.value || ""}
+                  onChange={(value) => setState({ lounge_type: value })}
+                  placeholder="Lounge Type"
                 />
               </div>
               <div className="md:w-1/5 w-full  md:mb-0 mb-2">
@@ -515,6 +537,18 @@ const WellnessLoungeList = () => {
                   onChange={(date) => {
                     setState({
                       start_date: date,
+                    });
+                  }}
+                />
+              </div>
+              <div className="md:w-1/5 w-full  md:mb-0 mb-2">
+                <DatePickers
+                  placeholder="Session Date"
+                  closeIcon={true}
+                  selectedDate={state.session_date}
+                  onChange={(date) => {
+                    setState({
+                      session_date: date,
                     });
                   }}
                 />
@@ -556,11 +590,23 @@ const WellnessLoungeList = () => {
           {state?.start_date && (
             <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
               <p className=" text-xs text-white">
-                {moment(state.start_date).format("YYYY-MM-DD")}
+              Reg Date : {moment(state.start_date).format("DD-MM-YYYY")}
               </p>
               <XIcon
                 className="text-white h-4 w-4 ml-2 cursor-pointer"
                 onClick={() => setState({ start_date: null })}
+              />
+            </div>
+          )}
+
+{state?.session_date && (
+            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+              <p className=" text-xs text-white">
+                Session Date : {moment(state.session_date).format("DD-MM-YYYY")}
+              </p>
+              <XIcon
+                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                onClick={() => setState({ session_date: null })}
               />
             </div>
           )}

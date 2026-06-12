@@ -26,8 +26,8 @@ const FormField = ({ label, value }) => {
   if (!value && value !== 0) return null;
   return (
     <div className="flex items-start justify-between px-3 py-2 gap-4">
-      <p className="text-xs text-gray-500 w-1/2 shrink-0">{label}</p>
-      <p className="text-xs text-gray-800 font-semibold text-right">{value}</p>
+      <p className="text-xs text-gray-500 w-1/2 shrink-0">{capitalizeFLetter(label)}</p>
+      <p className="text-xs text-gray-800 font-semibold text-right">{capitalizeFLetter(value)}</p>
     </div>
   );
 };
@@ -96,6 +96,19 @@ const FormSubmissionsModal = ({ entries }) => {
                       <FormField label="Phone" value={entry.phone} />
                       <FormField label="Consent" value={entry.consent} />
                     </FormSection>
+
+                    {(entry.breakfast || entry.morning_time_snack || entry.lunch ||  entry.evening_time_snack || entry.dinner || entry?.bedtime_snack) && (
+                      <FormSection title="Food Intake Schedule">
+                        <FormField label="Breakfast" value={entry.breakfast} />
+                        <FormField label="Morning time snack" value={entry.morning_time_snack} />
+                        <FormField label="Lunch" value={entry.lunch} />
+                        <FormField label="Evening time snack" value={entry.evening_time_snack} />
+                        <FormField label="Dinner" value={entry.dinner} />
+                        <FormField label="Bedtime snack" value={entry.bedtime_snack} />
+
+
+                      </FormSection>
+                    )}
 
                     {(entry.health_goals || entry.health_concerns || entry.medical_conditions || entry.medications) && (
                       <FormSection title="Health Overview">

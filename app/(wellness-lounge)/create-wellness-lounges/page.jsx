@@ -9,7 +9,7 @@ import {
   Dropdown,
   extractTimeFromDateTime,
   useSetState,
-  getDisplayRole
+  getDisplayRole,
 } from "@/utils/function.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import TextArea from "@/components/common-components/textArea";
@@ -31,6 +31,7 @@ import BookingCalender from "@/components/common-components/bookingCalender";
 import {
   AYURVEDIC_LOUNGE,
   getTimeIntervals,
+  GOOGLE_LOUNGE_ID,
   IIT_KANPUR,
   ROLES,
 } from "@/utils/constant.utils";
@@ -165,30 +166,28 @@ const CreateWellnessLounge = () => {
     }
   };
 
- const getIntrestedTopics = async (page=1) => {
+  const getIntrestedTopics = async (page = 1) => {
     try {
       const res = await Models.auth.getIntrestedTopics(page);
       const Dropdownss = Dropdown(res?.results, "topic");
       const filter = Dropdownss?.filter((item) => item?.label !== "");
 
-      setState({ intrestedTopicsList: filter,
-        hasMoreInterest:res?.next
-       });
+      setState({ intrestedTopicsList: filter, hasMoreInterest: res?.next });
       console.log("res", res);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
-
   const interestedListLoadMore = async () => {
     console.log("hello");
-    
+
     try {
       if (state.hasMoreInterest) {
         console.log("hasMoreInterest");
-        const res = await Models.auth.getIntrestedTopics(state.currentInterestPage+1);
+        const res = await Models.auth.getIntrestedTopics(
+          state.currentInterestPage + 1
+        );
         const Dropdownss = Dropdown(res?.results, "topic");
         const filter = Dropdownss?.filter((item) => item?.label !== "");
 
@@ -201,7 +200,7 @@ const CreateWellnessLounge = () => {
         setState({ intrestedTopicsList: state.intrestedTopicsList });
       }
     } catch (error) {
-            console.log('error: ', error);
+      console.log("error: ", error);
     }
   };
 
@@ -215,12 +214,12 @@ const CreateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.start_date
-          ? moment(state.start_date).format("YYYY-MM-DD")
+        end_date: state.end_date
+          ? moment(state.end_date).format("YYYY-MM-DD")
           : null,
-        // end_time: state.end_time
-        //   ? moment(state.end_time).format("HH:mm:ss")
-        //   : null,
+        end_time: state.end_time
+          ? moment(state.end_time).format("HH:mm:ss")
+          : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
@@ -236,15 +235,15 @@ const CreateWellnessLounge = () => {
         venue: state.venue?.value,
       };
 
-      if (state.sessionInterval) {
-        const daatta = addHoursToTimeOnly(
-          moment(state.start_time).format("HH:mm:ss"),
-          state.sessionInterval?.value
-        );
+      // if (state.sessionInterval) {
+      //   const daatta = addHoursToTimeOnly(
+      //     moment(state.start_time).format("HH:mm:ss"),
+      //     state.sessionInterval?.value
+      //   );
 
-        validForFree.end_time = daatta;
-        console.log("✌️daatta --->", daatta);
-      }
+      //   validForFree.end_time = daatta;
+      //   console.log("✌️daatta --->", daatta);
+      // }
 
       let validForPaid = {
         title: state.title,
@@ -271,21 +270,21 @@ const CreateWellnessLounge = () => {
         venue: state.venue?.value,
       };
 
-      if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
-        await Validation.createPaidSession.validate(validForPaid, {
-          abortEarly: false,
-        });
-      } else {
-        await Validation.calenderCreateFreeSession.validate(validForFree, {
-          abortEarly: false,
-        });
-      }
+      // if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
+      //   await Validation.createPaidSession.validate(validForPaid, {
+      //     abortEarly: false,
+      //   });
+      // } else {
+      await Validation.calenderCreateFreeSession.validate(validForFree, {
+        abortEarly: false,
+      });
+      // }
 
-      if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
-        await createPaidSession();
-      } else {
-        await createFreeSession();
-      }
+      // if (state.lounge_type?.value == AYURVEDIC_LOUNGE) {
+      //   await createPaidSession();
+      // } else {
+      await createFreeSession();
+      // }
 
       // let body = {
       //   description: state.description ? state.description : "",
@@ -359,6 +358,7 @@ const CreateWellnessLounge = () => {
       //       Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
       // `);
     } catch (error) {
+      console.log("✌️error --->", error);
       if (
         error?.start_date &&
         Array.isArray(error.start_date) &&
@@ -463,72 +463,84 @@ const CreateWellnessLounge = () => {
   //   }
   // };
 
-   const createFreeSession = async (res) => {
-      try {
-        const group = localStorage.getItem("group");
-        const userId = localStorage.getItem("userId");
-        let body = {
-          title: state.title,
-          description: state.description ? state.description : "",
-          lounge_type: state.lounge_type ? state.lounge_type?.value : null,
-  
-          start_date: state.start_date
-            ? moment(state.start_date).format("YYYY-MM-DD")
-            : null,
-          end_date: state.start_date
-            ? moment(state.start_date).format("YYYY-MM-DD")
-            : null,
-          // end_time: state.end_time
-          //   ? moment(state.end_time).format("HH:mm:ss")
-          //   : null,
-          start_time: state.start_time
-            ? moment(state.start_time).format("HH:mm:ss")
-            : null,
-          timezone: state?.timezones,
-          moderator: state.moderator?.value,
-          intrested_topics:
-            state?.intrested_topics?.length > 0
-              ? state?.intrested_topics?.map((item) => item.value)
-              : [],
-          session_link: state.session_link,
-          passcode: state?.passcode,
-          event_credits: state.price ? state.price : 0,
-          thumbnail: state.thumbnail_images,
-          event_credits: state.price ? state.price : 0,
-          price: state.price ? state.price : 0,
-          is_active: true,
-          venue: state.venue?.value,
-        };
-  
-        if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
-          body.is_approved = "No";
-        } else {
-          body.is_approved = "Yes";
-        }
-  
-        if (state.sessionInterval) {
-          const daatta = addHoursToTimeOnly(
-            moment(state.start_time).format("HH:mm:ss"),
-            state.sessionInterval?.value
-          );
-  
-          body.end_time = daatta;
-          console.log("✌️daatta --->", daatta);
-        }
-        console.log("✌️body --->", body);
-  
-        const formData = buildFormData(body);
-        const res = await Models.session.create(formData);
-        setState({ submitLoading: false });
-  
-        router.push("/wellness-lounge-list");
-        Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
-        // `);
-      } catch (error) {
-        setState({ submitLoading: false });
-        console.log("error: ", error);
+  const createFreeSession = async (res) => {
+    console.log("createFreeSession");
+    try {
+      const group = localStorage.getItem("group");
+      const userId = localStorage.getItem("userId");
+      let body = {
+        title: state.title,
+        description: state.description ? state.description : "",
+        lounge_type: state.lounge_type ? state.lounge_type?.value : null,
+
+        start_date: state.start_date
+          ? moment(state.start_date).format("YYYY-MM-DD")
+          : null,
+        end_date: state.end_date
+          ? moment(state.end_date).format("YYYY-MM-DD")
+          : null,
+        start_time: state.start_time
+          ? moment(state.start_time).format("HH:mm:ss")
+          : null,
+        end_time: state.end_time
+          ? moment(state.end_time).format("HH:mm:ss")
+          : null,
+
+        timezone: state?.timezones,
+        moderator: state.moderator?.value,
+        intrested_topics:
+          state?.intrested_topics?.length > 0
+            ? state?.intrested_topics?.map((item) => item.value)
+            : [],
+        session_link: state.session_link,
+        passcode: state?.passcode,
+        event_credits: state.price ? state.price : 0,
+        thumbnail: state.thumbnail_images,
+        event_credits: state.price ? state.price : 0,
+        price: state.price ? state.price : 0,
+        is_active: true,
+        venue: state.venue?.value,
+      };
+
+      if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
+        body.is_approved = "No";
+      } else {
+        body.is_approved = "Yes";
       }
-    };
+
+      // if (state.sessionInterval) {
+      //   const daatta = addHoursToTimeOnly(
+      //     moment(state.start_time).format("HH:mm:ss"),
+      //     state.sessionInterval?.value
+      //   );
+
+      //   body.end_time = daatta;
+      //   console.log("✌️daatta --->", daatta);
+      // }
+      console.log("✌️body --->", body);
+
+      const formData = buildFormData(body);
+      const res = await Models.session.create(formData);
+      setState({ submitLoading: false });
+
+      // router.push("/wellness-lounge-list");
+      // Success(`New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.
+      //   // `);
+
+      if (state.lounge_type?.value == GOOGLE_LOUNGE_ID) {
+        window.open(
+          "https://calendar.google.com/calendar/u/1/r/appointment/2onrjl7fb5o1s0p6aq3ugq5vgo_aW5mb0B6ZW53ZWxsbmVzc2xvdW5nZS5jb20?pli=1",
+          "_blank"
+        );
+        router.push("/wellness-lounge-list");
+      } else {
+        router.push("/wellness-lounge-list");
+      }
+    } catch (error) {
+      setState({ submitLoading: false });
+      console.log("error: ", error);
+    }
+  };
 
   const createPaidSession = async (res) => {
     try {
@@ -618,14 +630,16 @@ const CreateWellnessLounge = () => {
     try {
       const body = {
         group_name: [ROLES.MENTOR, ROLES.COUNSELOR],
-        is_open_to_be_mentor:"Yes",
-        is_activity:"true",
-        search
+        is_open_to_be_mentor: "Yes",
+        is_activity: "true",
+        search,
       };
       const res = await Models.user.userList(page, body);
       const dropdownsa = res?.results?.map((item) => ({
         value: item?.id,
-        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(item?.groups)})`,
+        label: `${item?.first_name} ${item.last_name} (${getDisplayRole(
+          item?.groups
+        )})`,
       }));
       return {
         options: dropdownsa,
@@ -845,7 +859,7 @@ const CreateWellnessLounge = () => {
                       error={state.errors?.start_time}
                       value={state.start_time}
                     />
-                    {/* <DatePicker
+                    <DatePicker
                       placeholder="End Date"
                       title="End Date"
                       required
@@ -859,9 +873,23 @@ const CreateWellnessLounge = () => {
                         });
                       }}
                       fromDate={state.start_date}
-                    /> */}
+                    />
+
+                    <TimePicker
+                      title="End Time"
+                      onChange={(value) => {
+                        console.log("✌️value --->", value);
+                        setState({
+                          end_time: value,
+                          errors: { ...state.errors, end_time: "" },
+                        });
+                      }}
+                      required
+                      error={state.errors?.end_time}
+                      value={state.end_time}
+                    />
                   </div>
-                  <div className="grid auto-rows-min gap-4 grid-cols-2">
+                  {/* <div className="grid auto-rows-min gap-4 grid-cols-2">
                     <LoadMoreDropdown
                       value={state.sessionInterval}
                       onChange={(value) => {
@@ -905,8 +933,8 @@ const CreateWellnessLounge = () => {
                           errors: { ...state.errors, timezone: "" },
                         });
                       }}
-                    />
-                    {/* <TimePicker
+                    /> */}
+                  {/* <TimePicker
                       title="Start Time"
                       onChange={(value) => {
                         console.log("✌️value --->", value);
@@ -932,8 +960,8 @@ const CreateWellnessLounge = () => {
                       required
                       value={state.end_time}
                     /> */}
-                  </div>
-                  <LoadMoreDropdown
+                  {/* </div> */}
+                  {/* <LoadMoreDropdown
                     value={state.venue}
                     onChange={(value) => {
                       setState({
@@ -948,7 +976,7 @@ const CreateWellnessLounge = () => {
                     required
                     placeholder="Select Venue"
                     loadOptions={loadUserOptions}
-                  />
+                  /> */}
                 </>
               )}
             </div>
@@ -985,7 +1013,7 @@ const CreateWellnessLounge = () => {
                   state.role == ROLES.COUNSELOR || state.role == ROLES.MENTOR
                 }
               />
-
+              {/* 
               <div className="space-y-1">
                 <MultiSelectDropdown
                   value={state.intrested_topics}
@@ -1004,8 +1032,8 @@ const CreateWellnessLounge = () => {
                   menuPortalTarget={document.body}
                   loadMore={interestedListLoadMore}
                   error={state.errors?.intrested_topics}
-                />
-                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+                /> */}
+              {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Topics"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -1029,7 +1057,7 @@ const CreateWellnessLounge = () => {
                     {state.errors?.intrested_topics}
                   </p>
                 )} */}
-              </div>
+              {/* </div> */}
 
               {/* {state.intrested_topics?.length > 0 &&
                 state.intrested_topics?.some(

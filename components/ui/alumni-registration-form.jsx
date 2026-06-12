@@ -301,6 +301,7 @@ const AlumniRegistrationForm = () => {
       password: "",
       loginCaptchaToken: "",
       notify: false,
+      phone_number:null
     });
   };
 

@@ -83,12 +83,12 @@ export const createFreeSession = Yup.object().shape({
   lounge_type: Yup.string().required("Lounge type is required"),
   // thumbnail_image: Yup.string().required("Session Image is required"),
   moderator: Yup.string().required("Mentor is required"),
-  timezone: Yup.string().required("Timezone is required"),
-  intrested_topics: Yup.array()
-    .min(1, "Topics are required") // This ensures array is not empty
-    .required("Topics are required"), // This ensures the field exists
-  sessionInterval: Yup.string().required("Session interval is required"),
-  venue: Yup.string().required("Venue is required"),
+  // timezone: Yup.string().required("Timezone is required"),
+  // intrested_topics: Yup.array()
+  //   .min(1, "Topics are required") // This ensures array is not empty
+  //   .required("Topics are required"), // This ensures the field exists
+  // sessionInterval: Yup.string().required("Session interval is required"),
+  // venue: Yup.string().required("Venue is required"),
 });
 
 export const createPaidSession = Yup.object().shape({
@@ -164,12 +164,12 @@ export const calenderCreateFreeSession = Yup.object().shape({
   lounge_type: Yup.string().required("Lounge type is required"),
   // thumbnail_image: Yup.string().required("Session Image is required"),
   moderator: Yup.string().required("Mentor is required"),
-  timezone: Yup.string().required("Timezone is required"),
-  intrested_topics: Yup.array()
-    .min(1, "Topics are required") // This ensures array is not empty
-    .required("Topics are required"), // This ensures the field exists
-  sessionInterval: Yup.string().required("Session interval is required"),
-  venue: Yup.string().required("Venue is required"),
+  // timezone: Yup.string().required("Timezone is required"),
+  // intrested_topics: Yup.array()
+  //   .min(1, "Topics are required") // This ensures array is not empty
+  //   .required("Topics are required"), // This ensures the field exists
+  // sessionInterval: Yup.string().required("Session interval is required"),
+  // venue: Yup.string().required("Venue is required"),
 });
 
 export const createSessionOrder = Yup.object().shape({
@@ -359,6 +359,8 @@ export const groupRegistration = Yup.object().shape({
   age: Yup.string().required("Age is required"),
   is_married: Yup.string().required("Marital Status is required"),
   gender : Yup.string().required("Gender is required"),
+  phone_number: Yup.string().required("Phone number is required"),
+
 });
 
 export const change_password = Yup.object().shape({

@@ -110,7 +110,7 @@ export default function studentRegistration() {
               Update your account information here. Be sure to save your changes
               once you&lsquo;re finished.
             </CardDescription>
-            <div className="flex gap-5 pt-5 flex-col md:flex-row">
+            {/* <div className="flex gap-5 pt-5 flex-col md:flex-row">
               {ROLE?.map((item) => (
                 <CheckboxDemo
                   key={item.value}
@@ -130,20 +130,20 @@ export default function studentRegistration() {
                   className={" text-lg"}
                 />
               ))}
-            </div>
+            </div> */}
             {/* {state.loading ? (
               <div className="w-full items-center justify-center flex">
               <Loader />
               </div>
             ) :  */}
 
-            {
-            // state.role === "individual" ? (
-            //   <IndividualRegistrationForm
-            //     intrestedTopicsList={state.intrestedTopicsList}
-            //     universityList={state.universityList}
-            //   />
-            // ) : 
+            {/* {
+            state.role === "individual" ? (
+              <IndividualRegistrationForm
+                intrestedTopicsList={state.intrestedTopicsList}
+                universityList={state.universityList}
+              />
+            ) : 
             state.role === "student" ? (
               <StudentRegistrationForm
                 intrestedTopicsList={state.intrestedTopicsList}
@@ -161,13 +161,13 @@ export default function studentRegistration() {
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
               />
-            ) : state.role === "group" ? (
+            ) : state.role === "group" ? ( */}
               <GroupRegForm
                 countryList={state.countryList}
                 intrestedTopicsList={state.intrestedTopicsList}
                 universityList={state.universityList}
               />
-            ) : null}
+            {/* ) : null} */}
           </CardHeader>
         </Card>
       </div>

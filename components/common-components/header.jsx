@@ -150,8 +150,8 @@ const Header = () => {
   // --- Menu definitions ---
   const AdminLeftSideMenu = [
     { title: "Dashboard", 
-      // url: "/",
-      url:"/google_calendar_user"
+      url: "/",
+      // url:"/google_calendar_user"
      },
     {
       title: "Wellness Lounge",
@@ -199,8 +199,8 @@ const Header = () => {
 
   const MentorOrConLeftSideMenu = [
     { title: "Dashboard",
-      //  url: "/" 
-      url:"/google_calendar_user"
+       url: "/" 
+      // url:"/google_calendar_user"
       },
     {
       title: "Wellness Lounge",
@@ -223,7 +223,7 @@ const Header = () => {
   ];
 
   const StudentLeftSideMenu = [
-    // { title: "The Program", url: "/calendar" },
+    { title: "The Program", url: "/" },
     { title: "Session", url: "/student-order" },
     { title: "Profile", url: "/profile" },
   ];
@@ -245,7 +245,7 @@ const Header = () => {
             <div className="backcolor-purpole text-white py-2">
               <div className="container mx-auto flex items-center justify-between px-5">
                 <div className="flex items-center gap-2 md:gap-4">
-                  {/* <div className="flex items-center gap-1 md:pr-4 pr-2">
+                  <div className="flex items-center gap-1 md:pr-4 pr-2">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                     <Link
                       href="/registration"
@@ -253,7 +253,7 @@ const Header = () => {
                     >
                       SIGN UP
                     </Link>
-                  </div> */}
+                  </div>
                   <div className="flex items-center gap-1">
                     <UserIcon className=" md:w-5 md:h-5 w-3 h-3" />
                     <Link

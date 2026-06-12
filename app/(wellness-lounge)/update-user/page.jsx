@@ -72,6 +72,7 @@ const CreateUser = () => {
     thumbnail_image: "",
     groupList: [],
     submitLoading: false,
+    loading: false,
     department: "",
     intrested_topics: null,
     intrested_topics1: "",
@@ -111,21 +112,22 @@ const CreateUser = () => {
 
   const getDetails = async () => {
     try {
+      setState({ loading: true });
       const res = await Models.user.getUserId(id);
       console.log("getDetails --->", res);
 
       const group = localStorage.getItem("group");
       setState({ group });
       if (res?.profile_picture) {
-        const fileName = getFileNameFromUrl(res?.profile_picture);
-        const thumbnail = await convertUrlToFile(
-          res?.profile_picture,
-          fileName
-        );
         setState({
-          thumbnail_images: thumbnail,
+          profile_preview: res?.profile_picture,
           thumbnail_image: res?.profile_picture,
         });
+        try {
+          const fileName = getFileNameFromUrl(res?.profile_picture);
+          const thumbnail = await convertUrlToFile(res?.profile_picture, fileName);
+          setState({ thumbnail_images: thumbnail });
+        } catch (_) {}
       }
 
       const topic = Dropdown(res?.groups, "name");
@@ -207,9 +209,10 @@ const CreateUser = () => {
           label: res?.gender == "male" ? "Male" : res?.gender == "female" ? "Female" : "Other",
         },
         groupAge: res?.age ? res?.age : "",
-        
+        loading: false,
       });
     } catch (error) {
+      setState({ loading: false });
       console.log("error: ", error);
     }
   };
@@ -320,7 +323,7 @@ const CreateUser = () => {
           address: state.address || "",
           dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "",
           user_type: state.user_type?.value,
-          thumbnail_image: state.thumbnail_images || "",
+          thumbnail_image: state.thumbnail_images instanceof File ? state.thumbnail_images : null,
           phone_number: isRole(state.user_types)
             ? state.phone_number
             : undefined,
@@ -404,13 +407,9 @@ const CreateUser = () => {
         //   formData.append("groups", group);
         // });
 
-        if (body.thumbnail_image) {
+        if (body.thumbnail_image instanceof File) {
           formData.append("profile_picture", body.thumbnail_image);
-        } else {
-          formData.append("profile_picture", "");
         }
-
-        // if (state?.user_type?.label !== "Admin") {
         if (body.university) {
           formData.append("university", body.university);
         } else {
@@ -482,7 +481,7 @@ const CreateUser = () => {
               : undefined,
 
           user_type: state.user_type?.value,
-          thumbnail_image: state.thumbnail_images || "",
+          thumbnail_image: state.thumbnail_images instanceof File ? state.thumbnail_images : null,
 
           year_of_entry:
             state?.user_type?.label === "Student"
@@ -542,10 +541,8 @@ const CreateUser = () => {
 
         
 
-        if (body.thumbnail_image) {
+        if (body.thumbnail_image instanceof File) {
           formData.append("profile_picture", body.thumbnail_image);
-        } else {
-          formData.append("profile_picture", "");
         }
         if (body.university) formData.append("university", body.university);
 
@@ -661,6 +658,12 @@ const CreateUser = () => {
 
   return (
     <div className="container mx-auto updateUser pt-3 pb-3">
+      {state.loading ? (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="w-10 h-10 border-4 border-[#7f4099] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
       <h2 className="font-semibold md:text-[20px] text-sm mb-3 pt-5">
         Update User
       </h2>
@@ -810,6 +813,89 @@ const CreateUser = () => {
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
+
+        <>
+              <div className="space-y-1">
+                <TextInput
+                  id="age"
+                  type="text"
+                  placeholder="Enter Age"
+                  title="Age"
+                  required
+                  value={state.groupAge}
+                  onChange={(e) =>
+                    setState({
+                      groupAge: e.target.value,
+                      errors: { ...state.errors, age: "" },
+                    })
+                  }
+                  error={state.errors?.age}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={genderOptions}
+                  value={state.groupGender?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      groupGender: value,
+                      errors: { ...state.errors, gender: "" },
+                    })
+                  }
+                  error={state.errors?.gender}
+                  title="Gender"
+                  placeholder="Select Gender"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <CustomSelect
+                  options={marriedOptions}
+                  value={state.is_married?.value || ""}
+                  onChange={(value) =>
+                    setState({
+                      is_married: value,
+                      errors: { ...state.errors, is_married: "" },
+                    })
+                  }
+                  error={state.errors?.is_married}
+                  title="Married"
+                  placeholder="Select Status"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <TextInput
+                  id="kids"
+                  type="text"
+                  placeholder="Number of Kids"
+                  title="Kids"
+                  value={state.kids}
+                  onChange={(e) =>
+                    setState({
+                      kids: e.target.value,
+                      errors: { ...state.errors, kids: "" },
+                    })
+                  }
+                  error={state.errors?.kids}
+                />
+              </div>
+
+              <div className="space-y-1 ">
+                <TextInput
+                  id="geo_detail"
+                  type="text"
+                  placeholder="Enter Geographical Details"
+                  title="Geographical Details"
+                  value={state.geo_detail}
+                  onChange={(e) => setState({ geo_detail: e.target.value })}
+                  error={state.errors?.geo_detail}
+                />
+              </div>
+            </>
           {/* <CustomSelect
             options={state.groupList}
             value={state.user_types}
@@ -834,7 +920,7 @@ const CreateUser = () => {
             disabled
           /> */}
 
-          <MultiSelectDropdown
+          {/* <MultiSelectDropdown
             label="User Type"
             options={state.groupList}
             placeholder="Select User Type"
@@ -849,7 +935,7 @@ const CreateUser = () => {
             required
             isDisabled
             menuPortalTarget={document.body}
-          />
+          /> */}
           {
             state?.user_type?.label === "Alumni" ||
             state?.user_type?.label === "Mentor" ||
@@ -1294,7 +1380,7 @@ const CreateUser = () => {
             ) : null // If neither "Alumni" nor "student", nothing will be rendered
           }
 
-          {state?.user_type?.label === ROLES.GROUP && (
+          {/* {state?.user_type?.label === ROLES.GROUP && (
             <>
               <div className="space-y-1">
                 <TextInput
@@ -1377,7 +1463,7 @@ const CreateUser = () => {
                 />
               </div>
             </>
-          )}
+          )} */}
 
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton
@@ -1396,6 +1482,8 @@ const CreateUser = () => {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

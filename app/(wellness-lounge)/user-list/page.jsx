@@ -433,14 +433,14 @@ const UserList = () => {
               />
             </div>
             <div className="flex items-center gap-3 flex-wrap">
-              {ROLE_ARRAY?.map((item) => (
+              {/* {ROLE_ARRAY?.map((item) => (
                 <Checkboxs
                   key={item}
                   label={item}
                   checked={state.filterByRole?.includes(item)}
                   onChange={(isChecked) => handleCheckboxChange(item, isChecked)}
                 />
-              ))}
+              ))} */}
               <Checkboxs
                 label="Google Form"
                 checked={state.one_to_one}
@@ -464,14 +464,14 @@ const UserList = () => {
               required
               className="w-[260px] shrink-0"
             />
-            {ROLE_ARRAY?.map((item) => (
+            {/* {ROLE_ARRAY?.map((item) => (
               <Checkboxs
                 key={item}
                 label={item}
                 checked={state.filterByRole?.includes(item)}
                 onChange={(isChecked) => handleCheckboxChange(item, isChecked)}
               />
-            ))}
+            ))} */}
             <Checkboxs
               label="Google Form"
               checked={state.one_to_one}

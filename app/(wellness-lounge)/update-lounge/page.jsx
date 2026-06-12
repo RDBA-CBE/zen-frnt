@@ -37,6 +37,8 @@ import dynamic from "next/dynamic";
 import {
   AYURVEDIC_LOUNGE,
   getTimeIntervals,
+  GOOGLE_LOUNGE,
+  GOOGLE_LOUNGE_ID,
   IIT_KANPUR,
   ROLES,
 } from "@/utils/constant.utils";
@@ -111,16 +113,24 @@ const UpdateWellnessLounge = () => {
     try {
       setState({ loading: true });
       const res = await Models.session.details(id);
+      // if (res?.thumbnail) {
+      //   const fileName = getFileNameFromUrl(res?.thumbnail);
+      //   try {
+      //     const thumbnail = await convertUrlToFile(res?.thumbnail, fileName);
+      //     setState({
+      //       thumbnail_images: thumbnail,
+      //       thumbnail_image: res?.thumbnail,
+      //     });
+      //   } catch (_) {}
+      // }
+
       if (res?.thumbnail) {
-        const fileName = getFileNameFromUrl(res?.thumbnail);
-        try {
-          const thumbnail = await convertUrlToFile(res?.thumbnail, fileName);
-          setState({
-            thumbnail_images: thumbnail,
-            thumbnail_image: res?.thumbnail,
-          });
-        } catch (_) {}
+        setState({
+          thumbnail_image: res?.thumbnail,
+        });
       }
+
+
       if (res.start_time && res.end_time) {
         const sessionInterval = getHourOption(res.start_time, res.end_time);
         setState({ sessionInterval: sessionInterval });
@@ -151,7 +161,7 @@ const UpdateWellnessLounge = () => {
 
       setState({
         title: res.title,
-        interval: res.interval ? res.interval : 60,
+        // interval: res.interval ? res.interval : 60,
         description: res.description,
         start_date: new Date(res.start_date),
         end_date: new Date(res.end_date),
@@ -288,15 +298,16 @@ const UpdateWellnessLounge = () => {
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-        end_date: state.start_date
-          ? moment(state.start_date).format("YYYY-MM-DD")
-          : null,
-        // end_time: state.end_time
-        //   ? moment(state.end_time).format("HH:mm:ss")
-        //   : null,
-        start_time: state.start_time
+          start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
+        end_date: state.end_date
+          ? moment(state.end_date).format("YYYY-MM-DD")
+          : null,
+        end_time: state.end_time
+          ? moment(state.end_time).format("HH:mm:ss")
+          : null,
+      
         timezone: state?.timezone?.value,
         moderator: state.moderator?.value,
         intrested_topics:
@@ -305,22 +316,22 @@ const UpdateWellnessLounge = () => {
             : [],
         session_link: state.session_link,
         thumbnail_image: state.thumbnail_images,
-        sessionInterval: state.sessionInterval?.value,
+        // sessionInterval: state.sessionInterval?.value,
         venue: state.venue?.value,
       };
       console.log(
-        "✌️state.start_time --->",
-        moment(state.start_time).format("HH:mm:ss")
+        "✌️validForFree --->",
+        validForFree
       );
 
-      if (state.sessionInterval) {
-        const nextHr = addHoursToTimeOnly(
-          moment(state.start_time).format("HH:mm:ss"),
-          state.sessionInterval?.value
-        );
+      // if (state.sessionInterval) {
+      //   const nextHr = addHoursToTimeOnly(
+      //     moment(state.start_time).format("HH:mm:ss"),
+      //     state.sessionInterval?.value
+      //   );
 
-        validForFree.end_time = nextHr;
-      }
+      //   validForFree.end_time = nextHr;
+      // }
 
       let validForPaid = {
         title: state.title,
@@ -488,6 +499,7 @@ const UpdateWellnessLounge = () => {
       }
     }
   };
+  console.log("state.end_time",state.start_date)
 
   const updateFreeSession = async (res) => {
     try {
@@ -500,11 +512,11 @@ const UpdateWellnessLounge = () => {
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
         end_date: state.end_date
-          ? moment(state.start_date).format("YYYY-MM-DD")
+          ? moment(state.end_date).format("YYYY-MM-DD")
           : null,
-        // end_time: state.end_time
-        //   ? moment(state.end_time).format("HH:mm:ss")
-        //   : null,
+        end_time: state.end_time
+          ? moment(state.end_time).format("HH:mm:ss")
+          : null,
         start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
@@ -516,23 +528,32 @@ const UpdateWellnessLounge = () => {
             : [],
         session_link: state.session_link,
         passcode: state?.passcode,
-        thumbnail: state.thumbnail_images,
         event_credits: state.price ? state.price : 0,
         price: state.price ? state.price : 0,
         venue: state.venue?.value,
       };
+         if(state.lounge_type?.value == GOOGLE_LOUNGE_ID){
+              body.sub_title=GOOGLE_LOUNGE
+            }else{
+              body.sub_title=capitalizeFLetter(state.title)
+            }
 
-      if (state.sessionInterval) {
-        const daatta = addHoursToTimeOnly(
-          moment(state.start_time).format("HH:mm:ss"),
-          state.sessionInterval?.value
-        );
+      // if (state.sessionInterval) {
+      //   const daatta = addHoursToTimeOnly(
+      //     moment(state.start_time).format("HH:mm:ss"),
+      //     state.sessionInterval?.value
+      //   );
 
-        body.end_time = daatta;
-        console.log("✌️daatta --->", daatta);
-      }
+      //   body.end_time = daatta;
+      //   console.log("✌️daatta --->", daatta);
+      // }
 
       const formData = buildFormData(body);
+      if (state.thumbnail_images instanceof File) {
+        formData.append("thumbnail", state.thumbnail_images);
+      } else if (state.thumbnailDeleted) {
+        formData.append("thumbnail", "");
+      }
 
       const res = await Models.session.update(formData, id);
 
@@ -560,7 +581,7 @@ const UpdateWellnessLounge = () => {
         end_date: state.end_date
           ? moment(state.end_date).format("YYYY-MM-DD")
           : null,
-        interval: state.interval,
+        // interval: state.interval,
 
         timezone: state?.timezones,
         moderator: state.moderator?.value,
@@ -572,7 +593,6 @@ const UpdateWellnessLounge = () => {
         passcode: state?.passcode,
         price: state.price ? state.price : 0,
         seat_count: state.seat_count || 0,
-        thumbnail: state.thumbnail_images,
         venue: state.venue?.value,
       };
 
@@ -603,6 +623,11 @@ const UpdateWellnessLounge = () => {
       }
 
       const formData = buildFormData(body);
+      if (state.thumbnail_images instanceof File) {
+        formData.append("thumbnail", state.thumbnail_images);
+      } else if (state.thumbnailDeleted) {
+        formData.append("thumbnail", "");
+      }
 
       const res = await Models.session.update(formData, id);
       await createSlot();
@@ -817,7 +842,7 @@ const UpdateWellnessLounge = () => {
                   }}
                   fromDate={state.start_date}
                 />
-                <TimezoneSelector
+                {/* <TimezoneSelector
                   title="Timezone"
                   required
                   position="top"
@@ -830,7 +855,7 @@ const UpdateWellnessLounge = () => {
                       errors: { ...state.errors, timezone: "" },
                     });
                   }}
-                />
+                /> */}
               </div>
 
               <SlideCalender
@@ -843,7 +868,7 @@ const UpdateWellnessLounge = () => {
                 error={state.errors?.slot}
                 eventSlot={state.eventSlot}
               />
-              <LoadMoreDropdown
+              {/* <LoadMoreDropdown
                 value={state.venue}
                 onChange={(value) => {
                   setState({
@@ -858,12 +883,13 @@ const UpdateWellnessLounge = () => {
                 required
                 placeholder="Select Venue"
                 loadOptions={loadUserOptions}
-              />
+              /> */}
             </>
           )}
           {state.lounge_type?.value != AYURVEDIC_LOUNGE && (
             <>
-              <div className="">
+                          <div className="w-full grid auto-rows-min gap-4 md:grid-cols-2">
+
                 <DateTimeField
                   disabled={state.isAnyBooked}
                   label={`Start Date & Time (Choose both date & time)`}
@@ -888,7 +914,7 @@ const UpdateWellnessLounge = () => {
                   fromDate={new Date()}
                 />
 
-                {/* <DateTimeField
+                <DateTimeField
                   label="End Date & Time (Choose both date & time)"
                   placeholder="End Date & Time"
                   value={state.combinedEndDateTime}
@@ -906,10 +932,10 @@ const UpdateWellnessLounge = () => {
                   fromDate={
                     !state.isAnyBooked ? state.end_date : state.start_date
                   }
-                /> */}
+                />
               </div>
               <div className="grid auto-rows-min gap-4 grid-cols-2">
-                <LoadMoreDropdown
+                {/* <LoadMoreDropdown
                   value={state.sessionInterval}
                   onChange={(value) => {
                     setState({
@@ -938,8 +964,8 @@ const UpdateWellnessLounge = () => {
                     return data;
                   }}
                   disabled={state.isAnyBooked}
-                />
-                <TimezoneSelector
+                /> */}
+                {/* <TimezoneSelector
                   title="Timezone"
                   required
                   position="top"
@@ -952,9 +978,9 @@ const UpdateWellnessLounge = () => {
                       errors: { ...state.errors, timezone: "" },
                     });
                   }}
-                />
+                /> */}
               </div>
-              <LoadMoreDropdown
+              {/* <LoadMoreDropdown
                 value={state.venue}
                 onChange={(value) => {
                   setState({
@@ -969,7 +995,7 @@ const UpdateWellnessLounge = () => {
                 required
                 placeholder="Select Venue"
                 loadOptions={loadUserOptions}
-              />
+              /> */}
             </>
           )}
           {state.lounge_type?.value == AYURVEDIC_LOUNGE && (
@@ -1011,7 +1037,7 @@ const UpdateWellnessLounge = () => {
             }
           />
           <div className="space-y-1">
-            <MultiSelectDropdown
+            {/* <MultiSelectDropdown
               value={state.intrested_topics}
               isMulti
               options={state.intrestedTopicsList || []}
@@ -1028,7 +1054,7 @@ const UpdateWellnessLounge = () => {
               menuPortalTarget={document.body}
               loadMore={interestedListLoadMore}
               error={state.errors?.intrested_topics}
-            />
+            /> */}
 
             {/* <label className="block text-sm font-bold text-gray-700 mb-2">
               {"Topics"} <span className="text-red-500">*</span>
@@ -1147,20 +1173,20 @@ const UpdateWellnessLounge = () => {
             }}
             isMulti={false} // Single selection
           /> */}
-          {isValidImageUrl(state.thumbnail_image) ? (
+          {(isValidImageUrl(state.thumbnail_image) || state.thumbnail_images instanceof File) ? (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Session Image
               </label>
               <div className="flex items-center gap-10">
-                <img src={state.thumbnail_image} height={200} width={200} />
+                <img src={state.thumbnail_image} height={200} width={200} className="rounded-lg object-cover" />
                 <div
-                  className=" flex bg-slate-300 rounded-md p-3 items-center justify-center"
+                  className="flex bg-slate-300 rounded-md p-3 items-center justify-center cursor-pointer"
                   onClick={() =>
-                    setState({ thumbnail_image: "", thumbnail_images: "" })
+                    setState({ thumbnail_image: "", thumbnail_images: null, thumbnailDeleted: true })
                   }
                 >
-                  <Trash2 className="  h-6 w-6 cursor-pointer text-red-600" />
+                  <Trash2 className="h-6 w-6 text-red-600" />
                 </div>
               </div>
             </div>
@@ -1173,10 +1199,11 @@ const UpdateWellnessLounge = () => {
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-                const imageUrl = URL.createObjectURL(file); // Generate preview URL
+                const imageUrl = URL.createObjectURL(file);
                 setState({
-                  thumbnail_images: file, // Store actual file
-                  thumbnail_image: imageUrl, // Use preview URL instead of fakepath
+                  thumbnail_images: file,
+                  thumbnail_image: imageUrl,
+                  thumbnailDeleted: false,
                   errors: { ...state.errors, thumbnail_image: "" },
                 });
               }}

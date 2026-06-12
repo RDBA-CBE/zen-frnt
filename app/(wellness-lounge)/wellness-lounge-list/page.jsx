@@ -111,7 +111,12 @@ const WellnessLoungeList = () => {
       const dropdowns = Dropdown(res?.results, "name");
 
       const role = localStorage.getItem("group");
-      setState({ categoryList: dropdowns, loading: false, role: role, lounge_type: { value: GOOGLE_LOUNGE_ID, label: GOOGLE_LOUNGE } });
+      setState({
+        categoryList: dropdowns,
+        loading: false,
+        role: role,
+        lounge_type: { value: GOOGLE_LOUNGE_ID, label: GOOGLE_LOUNGE },
+      });
     } catch (error) {
       setState({ loading: false });
 
@@ -212,7 +217,7 @@ const WellnessLoungeList = () => {
 
       if (isEventBefore30Mins) {
         console.log("true");
-        
+
         Failure(
           `Session delete can be enable only before 1 hour from event start time (${formattedDate} ${formattedTime})`
         );
@@ -264,25 +269,41 @@ const WellnessLoungeList = () => {
       Header: "Session Title",
       accessor: "title",
     },
+
     {
-      Header: "Lounge Type",
-      accessor: "lounge_type",
-      Cell: (row) => <Label>{row?.row?.lounge_type?.name}</Label>,
+      Header: "Description",
+      accessor: "description",
+      Cell: ({ row }) => {
+        const description = row?.description || "";
+
+        return (
+          <Label title={description}>
+            {description.length > 30
+              ? `${description.slice(0, 30)}...`
+              : description}
+          </Label>
+        );
+      },
     },
+    // {
+    //   Header: "Lounge Type",
+    //   accessor: "lounge_type",
+    //   Cell: (row) => <Label>{row?.row?.lounge_type?.name}</Label>,
+    // },
     {
-      Header: "Session Date",
+      Header: "Start Date",
       accessor: "start_date",
       Cell: (row) => (
         <Label>{moment(row?.row?.start_date).format("DD-MM-YYYY")}</Label>
       ),
     },
-    // {
-    //   Header: "End Date",
-    //   accessor: "end_date",
-    //   Cell: (row) => (
-    //     <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
-    //   ),
-    // },
+    {
+      Header: "End Date",
+      accessor: "end_date",
+      Cell: (row) => (
+        <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
+      ),
+    },
     {
       Header: "Start Time",
       accessor: "start_time",

@@ -62,6 +62,7 @@ const WellnessLoungeList = () => {
       const userId = localStorage.getItem("userId");
       if (userId) {
         setState({ userId });
+        profile(userId);
       }
     }
   }, []);
@@ -80,7 +81,30 @@ const WellnessLoungeList = () => {
         getOrdersList(1); // Reset to first page on filter change
       }
     }
-  }, [debouncedSearch, state.lounge_status, state.start_date, state.event]);
+  }, [
+    debouncedSearch,
+    state.lounge_status,
+    state.start_date,
+    state.event,
+    state.session_date,
+    state.lounge_type,
+  ]);
+
+  const profile = async (id) => {
+    try {
+      setState({ loading: true });
+      console.log("Fetching user details for ID:", id);
+      const res = await Models.user.getUserId(id);
+      console.log("User details fetched:", res);
+      setState({
+        userData: res,
+        loading: false,
+      });
+    } catch (error) {
+      console.log("Error fetching user details: ", error);
+      setState({ loading: false });
+    }
+  };
 
   // const getOrdersList = async (page) => {
   //   try {
@@ -124,25 +148,27 @@ const WellnessLoungeList = () => {
         const isAyurvedic = item?.event?.lounge_type?.id === AYURVEDIC_LOUNGE;
         return {
           id: item?.id,
-          name: `${item?.user?.first_name || ""} ${item?.user?.last_name || ""}`,
+          name: `${item?.user?.first_name || ""} ${
+            item?.user?.last_name || ""
+          }`,
           registration_id: item?.registration_id,
           registration_status: item?.registration_status,
           session_date: item?.google_event_id
             ? moment(item?.start_datetime).format("DD-MM-YYYY")
             : moment(item?.event?.start_date).format("DD-MM-YYYY"),
           registration_date: moment(item?.registration_date).format(
-            "DD-MM-YYYY",
+            "DD-MM-YYYY"
           ),
           slotDateOrStartTime: isAyurvedic
             ? item?.slot?.event_slot?.date
             : item?.google_event_id
-              ? moment(item?.start_datetime).format("HH:mm")
-              : item?.event?.start_time,
+            ? moment(item?.start_datetime).format("HH:mm")
+            : item?.event?.start_time,
           slotTimeOrEndTime: isAyurvedic
             ? item?.slot?.start_time
             : item?.google_event_id
-              ? moment(item?.end_datetime).format("HH:mm")
-              : item?.event?.end_time,
+            ? moment(item?.end_datetime).format("HH:mm")
+            : item?.event?.end_time,
           google_event_id: item?.google_event_id,
           deleted: item?.deleted,
           isAyurvedic,
@@ -239,8 +265,13 @@ const WellnessLoungeList = () => {
     if (state.start_date) {
       body.start_date = moment(state.start_date).format("YYYY-MM-DD");
     }
-    if (state.event) {
-      body.event = state.event?.value;
+
+    if (state.session_date) {
+      body.session_date = moment(state.session_date).format("YYYY-MM-DD");
+    }
+
+    if (state.lounge_type?.value) {
+      body.category = state.lounge_type?.value;
     }
     if (state.lounge_status) {
       body.lounge_status = state.lounge_status?.value;
@@ -400,14 +431,33 @@ const WellnessLoungeList = () => {
       getOrdersList(newPage);
     }
   };
+  console.log(
+    "✌️ state.userData?.google_form_entries --->",
+    state.userData?.google_form_entries
+  );
+
   const redirectGoogleSlot = () => {
-    window.open(
-      "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0r0FeLaXwhigXJW11SQm5eq1AlWVOE7-UblnnQYh_moBdt9AzYL6McEribitlb-tIkik_rXq3q",
-      "_blank",
-    );
+    router.push("/")
+    // if (
+    //   state.userData?.google_form_entries &&
+    //   state.userData?.google_form_entries?.length > 0
+    // ) {
+    //   console.log("✌️if --->");
+    //   window.open(
+    //     "https://calendar.app.google/Eaak9x8g7gM98zaZ6",
+    //     "_blank",
+    //     "noopener,noreferrer"
+    //   );
+    // } else {
+    //   window.open(
+    //     "https://docs.google.com/forms/d/e/1FAIpQLSfX8eBx5hyKkOoyz_FIE_KHjUF5_CmH1cgP6riKA1ybKxapkQ/viewform",
+    //     "_blank",
+    //     "noopener,noreferrer"
+    //   );
+     
+    // }
   };
 
-  console.log("state.loungeList", state.loungeList);
   return (
     <div className="container mx-auto pt-4">
       <div className="flex flex-1 flex-col gap-4 md:p-4 p-0 pt-0">
@@ -418,18 +468,51 @@ const WellnessLoungeList = () => {
             {state.loungeList?.length > 0 ? (
               <>
                 <Card className="w-[100%] p-4 pt-5 pb-0 bg-none shadow-none border-none ">
-                  <div className="block justify-between items-center lg:flex">
+                  <div className="block justify-between items-center lg:flex gap-3">
                     <div className="lg:w-full w-full lg:mb-0 mb-2">
                       <h2 className="md:text-lg text-sm font-semibold">
-                        Ayurvedic Counseling Lounge Bookings
+                        Booking List
                       </h2>
                     </div>
-                    <Button
+
+                    <div className="md:w-1/5 w-full  md:mb-0 mb-2">
+                      <CustomSelect
+                        options={state.categoryList}
+                        value={state.lounge_type?.value || ""}
+                        onChange={(value) => setState({ lounge_type: value })}
+                        placeholder="Lounge Type"
+                      />
+                    </div>
+                    <div className="md:w-1/5 w-full  md:mb-0 mb-2">
+                      <DatePickers
+                        placeholder="Registration Date"
+                        closeIcon={true}
+                        selectedDate={state.start_date}
+                        onChange={(date) => {
+                          setState({
+                            start_date: date,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="md:w-1/5 w-full  md:mb-0 mb-2">
+                      <DatePickers
+                        placeholder="Session Date"
+                        closeIcon={true}
+                        selectedDate={state.session_date}
+                        onChange={(date) => {
+                          setState({
+                            session_date: date,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* <Button
                       onClick={() => redirectGoogleSlot()}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
                     >
                       New Booking
-                    </Button>
+                    </Button> */}
                     {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <TextInput
@@ -537,11 +620,11 @@ const WellnessLoungeList = () => {
                     Go to programs
                   </Button> */}
                   <Button
-                      onClick={() => redirectGoogleSlot()}
-                      className={`mt-3 p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
-                    >
-                      New Booking
-                    </Button>
+                    onClick={() => redirectGoogleSlot()}
+                    className={`mt-3 p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
+                  >
+                    New Booking
+                  </Button>
                 </div>
               </Card>
             )}

@@ -14,11 +14,12 @@ import {
   CalendarClock,
   Clock,
   Clock10,
+  Mail,
   MapPin,
   XIcon,
 } from "lucide-react";
-import { Info } from "../common-components/toast";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { Failure, Info } from "../common-components/toast";
+import { AYURVEDIC_LOUNGE, BACKEND_URL, GOOGLE_LOUNGE, GOOGLE_LOUNGE_ID } from "@/utils/constant.utils";
 
 const daysOfWeek = [
   "Sunday",
@@ -53,24 +54,78 @@ const CustomFullCalendar = ({ events, setEvents }) => {
   const [lougeList, setLoungeList] = useState([]);
   const [token, setToken] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [googleEvents, setGoogleEvents] = useState([]);
+  const [googleEventModal, setGoogleEventModal] = useState(false);
+  const [selectedGoogleEvent, setSelectedGoogleEvent] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+  const [calendarLoading, setCalendarLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const [state, setState] = useSetState({
     categoryList: [],
     loading: false,
-    lounge_type: null,
+    lounge_type: {value:GOOGLE_LOUNGE_ID,label:GOOGLE_LOUNGE},
     role: null,
   });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      getLoungeList();
       getCategoryList();
       getRole();
+      getUserEmail();
     }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (userEmail) {
+      fetchEvents(userEmail);
       getLoungeList();
+      setInitialized(true);
+    }
+  }, [userEmail]);
+
+  const getUserEmail = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+      const res = await Models.user.getUserId(userId);
+      setUserEmail(res?.email || null);
+    } catch (err) {
+      console.error("Failed to fetch user email", err);
+    }
+  };
+
+  const fetchEvents = async (email) => {
+      try {
+        const res = await fetch(
+          `${BACKEND_URL}zen/events/google-events/?calendar_id=info@zenwellnesslounge.com`
+        );
+        const data = await res.json();
+        const allEvents = data.events || [];
+        const filtered = email
+          ? allEvents.filter((e) =>
+              e.attendees?.some((a) => a.email === email)
+            )
+          : allEvents;
+        setGoogleEvents(filtered);
+      } catch (err) {
+        console.error("Failed to fetch google events", err);
+      } finally {
+        setCalendarLoading(false);
+      }
+    };
+  
+  useEffect(() => {
+    if (!initialized) return;
+    if (typeof window !== "undefined") {
+      if (state.lounge_type?.value == GOOGLE_LOUNGE_ID) {
+        fetchEvents(userEmail);
+        getLoungeList();
+      } else if (!state.lounge_type) {
+        fetchEvents(userEmail);
+        getLoungeList();
+      } else {
+        getLoungeList();
+      }
     }
   }, [state.lounge_type]);
 
@@ -271,6 +326,16 @@ const CustomFullCalendar = ({ events, setEvents }) => {
     });
   };
 
+  const getGoogleEventsForDate = (day) => {
+    const cellDate = moment(
+      new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
+    ).format("YYYY-MM-DD");
+    return googleEvents.filter((e) => {
+      const eventDate = moment(e.start?.dateTime).format("YYYY-MM-DD");
+      return eventDate === cellDate;
+    });
+  };
+
   const isPastEvent = (event) => {
     const end = new Date(`${event.end_date}T${event.end_time}`);
     const now = new Date();
@@ -390,7 +455,12 @@ const CustomFullCalendar = ({ events, setEvents }) => {
         ))}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
+        {calendarLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
+            <div className="w-8 h-8 border-4 border-[#7f4099] border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
         <table className="min-w-full border-collapse table-auto rounded-lg">
           <thead>
             <tr>
@@ -418,7 +488,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                       <div className="flex justify-between items-start h-full">
                         <div className="text-end">{day}</div>
                         {day && (
-                          <div className="events-container overflow-y-auto  w-full h-full max-h-[100px] flex justify-center items-center flex-wrap scrollbar-thin">
+                          <div className="events-container overflow-y-auto w-full h-full max-h-[100px] flex justify-start items-start content-start flex-wrap gap-x-1 gap-y-0.5 scrollbar-thin">
                             <TooltipProvider>
                               {getEventsForDate(day).map((event) => {
                                 return (
@@ -473,7 +543,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             );
                                           }
                                         }}
-                                        className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
+                                        className="event p-0 border rounded"
                                         style={{
                                           backgroundColor: isPastEvent(event)
                                             ? "#8f87871f"
@@ -495,7 +565,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             isPastEvent(event)
                                               ? "text-black"
                                               : "text-white"
-                                          } py-1 px-2 truncate max-w-[15ch]`}
+                                          } py-0.5 px-1.5 truncate max-w-[15ch]`}
                                         >
                                           {event.title}
                                         </h4>
@@ -519,10 +589,26 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                               width={14}
                                               className="relative top-[0px]"
                                             />{" "}
-                                            Date -
+                                            Start Date -
                                           </span>
                                           <span className="font-bold">
                                             {moment(event.start_date).format(
+                                              "DD MMM YYYY"
+                                            )}
+                                          </span>{" "}
+                                        </div>
+
+                                        <div className="flex gap-1 mb-4">
+                                          <span className="flex gap-1 ">
+                                            <Calendar1
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />{" "}
+                                            End Date -
+                                          </span>
+                                          <span className="font-bold">
+                                            {moment(event.end_date).format(
                                               "DD MMM YYYY"
                                             )}
                                           </span>{" "}
@@ -563,6 +649,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             (IST)
                                           </span>
                                         </div>
+                                        {event?.venue?.name&&
                                         <div className="flex gap-x-1 mb-4">
                                           <span className="flex gap-1">
                                             <MapPin
@@ -578,12 +665,41 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                                             {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
                                           </span>
                                         </div>
+                                        }
                                       </blockquote>
                                     </TooltipContent>
                                   </Tooltip>
                                 );
                               })}
                             </TooltipProvider>
+                            {/* Google Calendar Events */}
+                            {(state.lounge_type?.value == GOOGLE_LOUNGE_ID || !state.lounge_type) &&
+                              getGoogleEventsForDate(day).map((gEvent) => {
+                                const attendee = gEvent.attendees?.find(
+                                  (a) => a.email !== "info@zenwellnesslounge.com"
+                                );
+                                const firstName = attendee?.displayName
+                                  ? attendee.displayName.split(" ")[0]
+                                  : attendee?.email?.split("@")[0];
+                                return (
+                                  <div
+                                    key={gEvent.id}
+                                    onClick={() => {
+                                      setSelectedGoogleEvent(gEvent);
+                                      setGoogleEventModal(true);
+                                    }}
+                                    className="event p-0 border rounded cursor-pointer"
+                                    style={{ backgroundColor: "#e25197" }}
+                                  >
+                                    <h4 className="text-xs text-white py-0.5 px-1.5 truncate max-w-[15ch]">
+                                      {firstName && (
+                                        <span className="font-semibold">{firstName} · </span>
+                                      )}
+                                      {gEvent.summary}
+                                    </h4>
+                                  </div>
+                                );
+                              })}
                           </div>
                         )}
                         {state.role == "Admin" &&
@@ -649,10 +765,24 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                     width={14}
                     className="relative top-[7px]"
                   />{" "}
-                  Date -
+                  Start Date -
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
                   {moment(selectedEvent?.start_date).format("DD MMM YYYY")},{" "}
+                </span>{" "}
+              </div>
+
+              <div className="flex gap-x-1">
+                <span className="flex gap-1 ">
+                  <Calendar1
+                    height={14}
+                    width={14}
+                    className="relative top-[7px]"
+                  />{" "}
+                  End Date -
+                </span>
+                <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")},{" "}
                 </span>{" "}
               </div>
               <div className="flex gap-x-1">
@@ -688,7 +818,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   (IST)
                 </span>
               </div>
-
+              {selectedEvent?.venue?.name&&
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
                   <MapPin
@@ -704,6 +834,7 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                   {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
                 </span>
               </div>
+              }
             </div>
           </DialogTitle>
           <div className="flex gap-4 mt-4 w-full">
@@ -721,6 +852,66 @@ const CustomFullCalendar = ({ events, setEvents }) => {
                 Edit Session
               </Button>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Google Event Modal */}
+      <Dialog open={googleEventModal} onOpenChange={setGoogleEventModal}>
+        <DialogContent className="bg-white p-6 rounded-lg w-[90vw] max-w-md">
+          <DialogTitle className="text-lg font-semibold mb-2">
+            <div className="flex flex-col gap-1 mb-3">
+              <p className="font-[400] text-[18px] leading-snug break-words">
+                {selectedGoogleEvent?.summary}
+              </p>
+            </div>
+            <div className="font-[400] text-[15px] flex flex-col gap-2">
+              <div className="flex gap-1 items-center">
+                <Calendar1 height={14} width={14} className="shrink-0" />
+                <span className="shrink-0">Date -</span>
+                <span className="font-bold text-[#4a4a4a]">
+                  {selectedGoogleEvent?.start?.dateTime
+                    ? moment(selectedGoogleEvent.start.dateTime).format("DD MMM YYYY")
+                    : "-"}
+                </span>
+              </div>
+              <div className="flex gap-1 items-center">
+                <Clock height={14} width={14} className="shrink-0" />
+                <span className="shrink-0">Start Time -</span>
+                <span className="font-bold text-[#4a4a4a]">
+                  {selectedGoogleEvent?.start?.dateTime
+                    ? moment(selectedGoogleEvent.start.dateTime).format("hh:mm A")
+                    : "-"}
+                </span>
+              </div>
+              <div className="flex gap-1 items-center">
+                <Clock10 height={14} width={14} className="shrink-0" />
+                <span className="shrink-0">End Time -</span>
+                <span className="font-bold text-[#4a4a4a]">
+                  {selectedGoogleEvent?.end?.dateTime
+                    ? moment(selectedGoogleEvent.end.dateTime).format("hh:mm A")
+                    : "-"}
+                </span>
+              </div>
+              {selectedGoogleEvent?.attendees
+                ?.filter((a) => a.email !== "info@zenwellnesslounge.com")
+                .map((a, i) => (
+                  <div key={i} className="flex gap-2 items-center min-w-0">
+                    <Mail height={14} width={14} className="shrink-0" />
+                    <span className="shrink-0">Email -</span>
+                    <span className="font-bold text-[#4a4a4a] truncate min-w-0">
+                      {a.email}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </DialogTitle>
+          <div className="flex mt-4">
+            <Button
+              onClick={() => setGoogleEventModal(false)}
+              className="w-full bg-[#7f4099] hover:bg-purple-700 text-white"
+            >
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -21,6 +21,8 @@ import {
 } from "@/utils/constant.utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ReCAPTCHA from "react-google-recaptcha";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+
 
 const GroupRegForm = () => {
   const router = useRouter();
@@ -40,6 +42,7 @@ const GroupRegForm = () => {
     password: "",
     loginCaptchaToken: "",
   });
+  console.log('✌️state?.kids --->', state?.kids);
 
   const GroupRegistration = async () => {
     // Placeholder for submission logic
@@ -48,19 +51,28 @@ const GroupRegForm = () => {
       const body = {
         first_name: state?.groupFirstName,
         last_name: state?.groupLastName,
-
         email: state?.groupEmail.trim(),
         password: state.password,
         age: state?.groupAge,
         is_married: state?.is_married?.value || "",
-        kids: state?.kids,
+        kids: state?.kids??null,
         geo_detail: state?.geo_detail,
         gender: state?.groupGender?.value || "",
-        group_name: "Group",
+        group_name: "Individual/Group",
+        role: "Individual/Group",
         recaptcha_token: state.loginCaptchaToken,
+        phone_number:state.phone_number
 
       };
       console.log("first",body)
+
+      if (state.phone_number && !isValidPhoneNumber(state.phone_number)) {
+        setState({
+          btnLoading: false,
+          errors: { ...state.errors, phone_number: "Please enter a valid phone number" },
+        });
+        return;
+      }
 
       await Validation.groupRegistration.validate(body, { abortEarly: false });
 
@@ -127,6 +139,10 @@ const GroupRegForm = () => {
       groupGender: null,
       errors: null,
       loginCaptchaToken: "",
+      country:null,
+      phone_number:null,
+      groupFirstName:"",
+      groupLastName:"",
     });
   };
 
@@ -141,6 +157,24 @@ const GroupRegForm = () => {
     { label: "Other", value: "other" },
   ];
 
+
+  const handlePhoneChange = (value) => {
+    const valid = value && isValidPhoneNumber(value);
+    if (valid == false) {
+      setState({
+        errors: {
+          ...state.errors,
+          phone_number: "Please enter a valid phone number",
+        },
+        phone_number: value,
+      });
+    } else {
+      setState({
+        errors: { ...state.errors, phone_number: "" },
+        phone_number: value,
+      });
+    }
+  };
   return (
     <>
       <GoogleOAuthProvider clientId={CLIENT_ID}>
@@ -199,6 +233,28 @@ const GroupRegForm = () => {
               error={state?.errors?.email}
             />
           </div>
+
+          <div className="space-y-1">
+          <label className="block text-sm font-bold text-gray-700">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
+          <div className="phone-input-wrapper pt-1">
+            <PhoneInput
+              placeholder="Enter phone number"
+              country={state.country?.code}
+              defaultCountry={state.country?.code}
+              value={state.phone_number}
+              onChange={handlePhoneChange}
+              international
+              className="custom-phone-input"
+            />
+            {state.errors?.phone_number && (
+              <p className="mt-2 text-sm text-red-600">
+                {state.errors?.phone_number}
+              </p>
+            )}
+          </div>
+        </div>
 
           <div className="space-y-1">
             <div className="relative">

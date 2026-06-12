@@ -27,7 +27,7 @@ import ProtectedRoute from "@/components/common-components/privateRouter";
 import NoEventFound from "@/components/common-components/noEventFound";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, GOOGLE_LOUNGE_ID } from "@/utils/constant.utils";
 import { Failure } from "@/components/common-components/toast";
 
 const viewWellnessLounge = () => {
@@ -86,11 +86,11 @@ const viewWellnessLounge = () => {
 
       const event_date = res?.google_event_id
         ? moment(res?.start_datetime)?.format("DD MMM YYYY")
-        : res?.event?.start_date;
+        : moment(res?.event?.start_date)?.format("DD MMM YYYY");
 
       const isEventBefore30Mins = isBeforeCurrentTimeBy30Min(
         start_date,
-        start_time,
+        start_time
       );
 
       // const isEventBefore30Min=isBeforeCurrentTimeBy30Min("2025-09-27", "14:14:00")
@@ -141,7 +141,7 @@ const viewWellnessLounge = () => {
 
     const eventEnd = moment(
       `${state.end_date} ${state.end_time}`,
-      "YYYY-MM-DD HH:mm:ss",
+      "YYYY-MM-DD HH:mm:ss"
     );
 
     return moment().isAfter(eventEnd);
@@ -163,13 +163,13 @@ const viewWellnessLounge = () => {
         window.open(
           state.orderData?.zoom_link,
           "_blank",
-          "noopener,noreferrer",
+          "noopener,noreferrer"
         );
       } else if (state.orderData.event?.session_link) {
         window.open(
-            state.orderData.event?.session_link,
+          state.orderData.event?.session_link,
           "_blank",
-          "noopener,noreferrer",
+          "noopener,noreferrer"
         );
       }
     } else {
@@ -183,7 +183,7 @@ const viewWellnessLounge = () => {
       // const formattedDate = moment(startDate).format("DD-MM-YYYY");
       // const formattedTime = moment(startTime, "HH:mm:ss").format("hh:mm A");
       Failure(
-        `The session link will be enabled 1 hour before the event start time (${startDate} ${startTime})`,
+        `The session link will be enabled 1 hour before the event start time (${startDate} ${startTime})`
       );
     }
   };
@@ -285,7 +285,7 @@ const viewWellnessLounge = () => {
                             style={{ color: "#4a4a4a" }}
                           >
                             {moment(state?.start_time, "HH:mm:ss").format(
-                              "hh:mm A",
+                              "hh:mm A"
                             )}{" "}
                             (IST)
                           </span>
@@ -305,7 +305,7 @@ const viewWellnessLounge = () => {
                             style={{ color: "#4a4a4a" }}
                           >
                             {moment(state?.end_time, "HH:mm:ss").format(
-                              "hh:mm A",
+                              "hh:mm A"
                             )}{" "}
                             (IST)
                           </span>
@@ -331,56 +331,63 @@ const viewWellnessLounge = () => {
                         )}
                       </blockquote>
                     </div>
-                    {!state.deleted && (
-                      <div>
-                        <h4 className="md:text-[22px] text-[18px]">
-                          {" "}
-                          Session Link: <br />
-                          <p
-                            className="mb-3 italic"
-                            style={{ fontSize: "16px" }}
-                          >
-                            Click the below button to join the meeting
-                          </p>
-                          <div className="flex justify-between">
-                            <div>
-                              {isExpired() ? (
-                                <span className="text-red-500 text-[18px] font-semibold">
-                                  Session Expired
-                                </span>
-                              ) : state?.orderData?.zoom_link ||
-                                state?.orderData?.event?.session_link ? (
-                                <Button
-                                  onClick={() => joinSession()}
-                                  className={`p-2 rounded rounded-sm transition-all duration-200
+                    {state?.orderData?.event?.lounge_type?.id ==
+                    GOOGLE_LOUNGE_ID ? (
+                      <p className="mb-3 italic" style={{ fontSize: "16px" }}>
+                        Click the below button to join the meeting
+                      </p>
+                    ) : (
+                      !state.deleted && (
+                        <div>
+                          <h4 className="md:text-[22px] text-[18px]">
+                            {" "}
+                            Session Link: <br />
+                            <p
+                              className="mb-3 italic"
+                              style={{ fontSize: "16px" }}
+                            >
+                              Click the below button to join the meeting
+                            </p>
+                            <div className="flex justify-between">
+                              <div>
+                                {isExpired() ? (
+                                  <span className="text-red-500 text-[18px] font-semibold">
+                                    Session Expired
+                                  </span>
+                                ) : state?.orderData?.zoom_link ||
+                                  state?.orderData?.event?.session_link ? (
+                                  <Button
+                                    onClick={() => joinSession()}
+                                    className={`p-2 rounded rounded-sm transition-all duration-200
     ${
       state.isEventBefore30Mins
         ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
         : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
     }
   `}
-                                >
-                                  Join Meeting
-                                </Button>
-                              ) : (
-                                "No session link available"
-                              )}
+                                  >
+                                    Join Meeting
+                                  </Button>
+                                ) : (
+                                  "No session link available"
+                                )}
+                              </div>
+                              <Button
+                                className="p-2 rounded bg-green-500 hover:themePurple text-white"
+                                onClick={() => handleClickOrder()}
+                              >
+                                <div className="rounded-sm">Booking List</div>
+                              </Button>
                             </div>
-                            <Button
-                              className="p-2 rounded bg-green-500 hover:themePurple text-white"
-                              onClick={() => handleClickOrder()}
-                            >
-                              <div className="rounded-sm">Booking List</div>
-                            </Button>
-                          </div>
-                        </h4>
+                          </h4>
 
-                        {/* {state?.orderData?.event?.session_link && (
+                          {/* {state?.orderData?.event?.session_link && (
                                     <Link href={state.orderData.event.session_link} target="_blank" rel="noopener noreferrer">
                                         <img src="/assets/images/join-meeting.webp" alt="thumbnail" className="w-[300px] h-50" />
                                     </Link>
                                 )} */}
-                      </div>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>

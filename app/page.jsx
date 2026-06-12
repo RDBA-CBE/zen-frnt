@@ -137,11 +137,13 @@ const App = () => {
         group == ROLES.ADMIN ||
         group == ROLES.COUNSELOR ||
         group == ROLES.MENTOR ? (
-          // <Dashboard />
-          <UserList/>
+          <>
+        <Dashboard />
+          {/* <UserList/> */}
+          </>
         ) : (
-          // <Calendar />
-           <WellnessLoungeList />
+          <Calendar />
+          //  <WellnessLoungeList />
         )
       ) : (
         <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6">

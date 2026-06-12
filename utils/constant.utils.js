@@ -13,6 +13,8 @@ export const GOOGLE_LOUNGE_ID=23
 
 export const MENTOR = 5;
 
+export const INDIVIDUAL = 8;
+
 export const IIT_KANPUR = 8;
 
 export const DOMAIN = "@kgpian.iitkgp.ac.in";

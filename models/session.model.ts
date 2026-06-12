@@ -272,6 +272,15 @@ const session = {
       if (body?.userId) {
         url += `&user=${encodeURIComponent(body.userId)}`;
       }
+
+      if (body?.session_date) {
+        url += `&start_datetime=${encodeURIComponent(body.session_date)}`;
+        url += `&end_datetime=${encodeURIComponent(body.session_date)}`;
+
+        // url += `&start_date=${encodeURIComponent(body.session_date)}`;
+      }
+
+      
       if (body?.start_date) {
         url += `&registration_date_before=${encodeURIComponent(
           body.start_date,

@@ -16,7 +16,7 @@ import * as Yup from "yup";
 import * as Validation from "../../../utils/validation.utils";
 import { Failure, Success } from "@/components/common-components/toast";
 import PrimaryButton from "@/components/common-components/primaryButton";
-import { MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
+import { INDIVIDUAL, MENTOR, mentorList, ROLES } from "@/utils/constant.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import MultiSelectDropdown from "@/components/common-components/CustomSelectDropdown";
 import SingleSelectDropdown from "@/components/common-components/singleSelectDropdown";
@@ -74,6 +74,7 @@ const CreateUser = () => {
     try {
       const res = await Models.Common.groups();
       const Dropdowns = Dropdown(res?.results, "name");
+      console.log("filter",Dropdowns)
       const filter = Dropdowns?.filter((item) => item.value != MENTOR);
       setState({ groupList: filter });
     } catch (error) {
@@ -177,7 +178,7 @@ const CreateUser = () => {
             state?.user_type?.label !== "Admin" ? state?.department : undefined,
           address: state.address || "", // Set an empty string if address is falsy
           dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "", // Format dob to YYYY-MM-DD if it exists
-          user_type: state.user_type?.value,
+          user_type: INDIVIDUAL,
           thumbnail_image: state.thumbnail_images || "", // Default empty string if image doesn't exist
           phone_number:
             state.user_type?.label === ROLES.ALUMNI ||
@@ -604,7 +605,7 @@ Login credentials have been generated, and the user can now access the platform 
         </div>
 
         <div className="border rounded-xl p-4 gap-4 flex flex-col ">
-          <CustomSelect
+          {/* <CustomSelect
             options={state.groupList}
             value={state.user_type?.value || ""}
             onChange={(value) =>
@@ -623,13 +624,12 @@ Login credentials have been generated, and the user can now access the platform 
             title="User Type"
             error={state.errors?.user_type}
             required
-          />
-          {
+          /> */}
+          {/* {
             state.user_type?.label === ROLES.ALUMNI ||
             state.user_type?.label === ROLES.COUNSELOR ? (
-              // Add the component or content you want to render for "Alumni" here
               <>
-                {/* <CustomSelect
+                <CustomSelect
                   options={years || []} // Safely pass empty array if universityList is null
                   value={state.year_of_graduation?.value || ""}
                   onChange={(value) =>
@@ -642,7 +642,7 @@ Login credentials have been generated, and the user can now access the platform 
                   title="Year Graduated"
                   placeholder="Select Year of Graduated"
                   required
-                /> */}
+                />
 
                 <div className="space-y-1">
                   <MultiSelectDropdown
@@ -660,7 +660,7 @@ Login credentials have been generated, and the user can now access the platform 
                     menuPortalTarget={document.body}
                     error={state.errors?.year_of_graduation}
                   />
-                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year Graduated"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -684,7 +684,7 @@ Login credentials have been generated, and the user can now access the platform 
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_graduation}{" "}
                     </p>
-                  )} */}
+                  )}
                 </div>
 
                 <TextInput
@@ -696,7 +696,7 @@ Login credentials have been generated, and the user can now access the platform 
                   onChange={(e) => setState({ work: e.target.value })}
                 />
 
-                {/* <SingleSelectDropdown
+                <SingleSelectDropdown
                   options={state?.countryList || []} // Safely pass empty array if universityList is null
                   value={state.country || ""}
                   onChange={(value) => {
@@ -705,7 +705,7 @@ Login credentials have been generated, and the user can now access the platform 
                   error={state.errors?.country}
                   title="Country"
                   placeholder="Select Your Country"
-                /> */}
+                />
 
                 <LoadMoreDropdown
                   value={state.country}
@@ -771,7 +771,7 @@ Login credentials have been generated, and the user can now access the platform 
                     error={state.errors?.year_of_entry}
                   />
 
-                  {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
                     {"Year of Entry"} {<span className="text-red-500">*</span>}
                   </label>
                   <Select
@@ -795,10 +795,10 @@ Login credentials have been generated, and the user can now access the platform 
                     <p className="mt-2 text-sm text-red-600">
                       {state.errors?.year_of_entry}{" "}
                     </p>
-                  )} */}
+                  )}
                 </div>
 
-                {/* <CustomSelect
+                <CustomSelect
                   options={years || []} // Safely pass empty array if universityList is null
                   value={state.year_of_entry?.value || ""}
                   onChange={(value) =>
@@ -811,12 +811,12 @@ Login credentials have been generated, and the user can now access the platform 
                   title="Year of Entry"
                   placeholder="Select Year of Entry"
                   required
-                /> */}
+                />
               </>
-            ) : null // If neither "Alumni" nor "student", nothing will be rendered
-          }
+            ) : null 
+          } */}
 
-           {state?.user_type?.label === ROLES.GROUP && (
+           {/* {state?.user_type?.label === ROLES.GROUP && ( */}
             <>
               <div className="space-y-1">
                 <TextInput
@@ -899,9 +899,9 @@ Login credentials have been generated, and the user can now access the platform 
                 />
               </div>
             </>
-          )}
+          {/* )} */}
 
-          {state?.user_type?.label !== "Admin"  && (
+          {/* {state?.user_type?.label !== "Admin"  && (
             <>
               {state?.user_type?.label !==  ROLES.GROUP && <>
               <div className="space-y-1">
@@ -921,7 +921,7 @@ Login credentials have been generated, and the user can now access the platform 
                   error={state.errors?.university}
                 />
 
-                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"University"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -944,7 +944,7 @@ Login credentials have been generated, and the user can now access the platform 
                   <p className="mt-2 text-sm text-red-600">
                     {state.errors?.university}
                   </p>
-                )} */}
+                )}
               </div>
               <div className="space-y-1">
                 <TextInput
@@ -964,7 +964,7 @@ Login credentials have been generated, and the user can now access the platform 
                 />
               </div>
               
-              {/* <div className="space-y-1">
+              <div className="space-y-1">
                 <MultiSelectDropdown
                   options={state.intrestedTopicsList || []} // Safely pass empty array if intrestedTopicsList is null
                   value={state.intrested_topics || ""}
@@ -988,9 +988,8 @@ Login credentials have been generated, and the user can now access the platform 
                   placeholder="Select Topics"
                   title="Interests in Topics"
                 />
-              </div> */}
+              </div>
 
-              {/* <> */}
               <TextArea
                 name="Address"
                 value={state.address}
@@ -1051,7 +1050,7 @@ Login credentials have been generated, and the user can now access the platform 
                       </div>
                     )}
 
-                  {/* <div className="space-y-1">
+                  <div className="space-y-1">
                 <CustomSelect
                   options={state?.universityList || []} // Safely pass empty array if universityList is null
                   value={state.university?.value || ""}
@@ -1060,7 +1059,7 @@ Login credentials have been generated, and the user can now access the platform 
                   title="University"
                   placeholder="Select University"
                 />
-              </div> */}
+              </div>
                   <div className="pt-2 pb-2">
                     <Checkboxs
                       label={"Notify me on these topics"}
@@ -1074,7 +1073,7 @@ Login credentials have been generated, and the user can now access the platform 
                 </>
               )}
             </>
-          )}
+          )} */}
 
           <div className="flex justify-end gap-5 mt-10">
             <PrimaryButton

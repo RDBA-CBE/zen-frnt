@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { TimeClock } from "@mui/x-date-pickers/TimeClock";
-import { ROLES } from "@/utils/constant.utils";
+import { GOOGLE_LOUNGE_ID, ROLES } from "@/utils/constant.utils";
 
 const viewWellnessLounge = () => {
   const router = useRouter();
@@ -72,10 +72,34 @@ const viewWellnessLounge = () => {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const ID = localStorage.getItem("userId");
+      profile(ID);
+    }
+  }, []);
+
+  useEffect(() => {
     if (id) {
       getDetails();
+      profile();
     }
   }, [id]);
+
+  const profile = async (id) => {
+    try {
+      setState({ loading: true });
+      console.log("Fetching user details for ID:", id);
+      const res = await Models.user.getUserId(id);
+      console.log("User details fetched:", res);
+      setState({
+        userData: res,
+        loading: false,
+      });
+    } catch (error) {
+      console.log("Error fetching user details: ", error);
+      setState({ loading: false });
+    }
+  };
 
   const getDetails = async () => {
     setState({ loading: true }); // Start loading
@@ -108,14 +132,43 @@ const viewWellnessLounge = () => {
   const closeDialog = () => {
     setState({ isOpen: false });
   };
+  console.log('✌️ state.userData?.google_form_entries --->',  state.userData);
 
   const confirmOrder = async () => {
     try {
+      if (state.orderData?.lounge_type?.id == GOOGLE_LOUNGE_ID) {
+        if (
+          state.userData?.google_form_entries &&
+          state.userData?.google_form_entries?.length > 0
+        ) {
+
+          window.open(
+            "https://calendar.app.google/Eaak9x8g7gM98zaZ6",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          
+          setState({ isOpen: false });
+          return;
+        } else {
+          window.open(
+            "https://docs.google.com/forms/d/e/1FAIpQLSfX8eBx5hyKkOoyz_FIE_KHjUF5_CmH1cgP6riKA1ybKxapkQ/viewform",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          setState({ isOpen: false });
+          return;
+        }
+      }
       setState({ btnLoading: true });
       const userID = localStorage.getItem("userId");
       let body = {
         user: Number(userID),
         event: [id],
+        start_datetime:
+          state.orderData?.start_date + " " + state.orderData?.start_time,
+        end_datetime:
+          state.orderData?.end_date + " " + state.orderData?.end_time,
       };
 
       const EventId = localStorage?.getItem("eventId");
@@ -169,6 +222,12 @@ const viewWellnessLounge = () => {
       );
     }
   };
+  console.log(
+    "first",
+    state?.group == ROLES.STUDENT ||
+      state?.group == ROLES.ALUMNI ||
+      state?.group == ROLES.GROUP
+  );
 
   return (
     <div className="container mx-auto pt-4">
@@ -215,12 +274,26 @@ const viewWellnessLounge = () => {
                         width={18}
                         className="relative top-[3px]"
                       />{" "}
-                      Date -
+                      Start Date -
                     </span>
                     <span className="font-bold" style={{ color: "#4a4a4a" }}>
                       {moment(state?.orderData?.start_date).format(
                         "DD MMM YYYY"
                       )}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-1 mb-4">
+                    <span className="flex gap-1 ">
+                      <Calendar1
+                        height={16}
+                        width={18}
+                        className="relative top-[3px]"
+                      />{" "}
+                      End Date -
+                    </span>
+                    <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                      {moment(state?.orderData?.end_date).format("DD MMM YYYY")}
                     </span>
                   </div>
 
@@ -288,45 +361,50 @@ const viewWellnessLounge = () => {
                   {/* {state?.orderData?.description} */}
                 </p>
 
-                {state?.orderData?.is_registered == true && (
-                  <p className="pt-5 md:text-[20px] text-[18px]">
-                    Session Link: <br />
-                    <span className="mb-3 italic" style={{ fontSize: "16px" }}>
-                      Click the below button to join the meeting
-                    </span>{" "}
-                    <br />
-                    {state?.orderData?.session_link ? (
-                      <Button
-                        onClick={() => joinSession()}
-                        className={`p-2 rounded rounded-sm transition-all duration-200
+                {state.orderData?.lounge_type?.id != GOOGLE_LOUNGE_ID &&
+                  state?.orderData?.is_registered == true && (
+                    <p className="pt-5 md:text-[20px] text-[18px]">
+                      Session Link: <br />
+                      <span
+                        className="mb-3 italic"
+                        style={{ fontSize: "16px" }}
+                      >
+                        Click the below button to join the meeting
+                      </span>{" "}
+                      <br />
+                      {state?.orderData?.session_link ? (
+                        <Button
+                          onClick={() => joinSession()}
+                          className={`p-2 rounded rounded-sm transition-all duration-200
 ${
   state.isEventBefore30Mins
     ? "bg-themePurple text-white hover:bg-purple-700 hover:text-white"
     : "bg-secondary text-black hover:bg-gray-300 hover:text-black"
 }
 `}
-                      >
-                        Join Meeting
-                      </Button>
-                    ) : (
-                      // <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
-                      //   <Link
-                      //     prefetch={true}
-                      //     href={state?.orderData.session_link}
-                      //     className="text-fuchsia-900 text-white "
-                      //     target="_blank"
-                      //     rel="noopener noreferrer"
-                      //   >
-                      //     Join Meeting
-                      //   </Link>
-                      // </Button>
-                      " No session link available"
-                    )}
-                  </p>
-                )}
+                        >
+                          Join Meeting
+                        </Button>
+                      ) : (
+                        // <Button className="p-2 rounded bg-themePurple hover:bg-themePurple text-white mb-2 mt-2">
+                        //   <Link
+                        //     prefetch={true}
+                        //     href={state?.orderData.session_link}
+                        //     className="text-fuchsia-900 text-white "
+                        //     target="_blank"
+                        //     rel="noopener noreferrer"
+                        //   >
+                        //     Join Meeting
+                        //   </Link>
+                        // </Button>
+                        " No session link available"
+                      )}
+                    </p>
+                  )}
 
                 {(state?.group == ROLES.STUDENT ||
-                  state?.group == ROLES.ALUMNI || state?.group == ROLES.GROUP) &&
+                  state?.group == ROLES.ALUMNI ||
+                  state?.group == ROLES.GROUP) &&
                 state?.orderData?.is_registered == false ? (
                   <div>
                     <Button
@@ -340,28 +418,41 @@ ${
                       Enroll
                     </Button>
                   </div>
-                ) :(state?.group == ROLES.STUDENT ||
-                  state?.group == ROLES.ALUMNI || state?.group == ROLES.GROUP) ? (
-                  <div>
-                    <Button
-                      style={{ cursor: "not-allowed" }}
-                      className={`mt-3 ${
-                        state?.orderData?.is_registered
-                          ? "bg-themeGreen hover:bg-themeGreen"
-                          : "bg-themePurple hover:bg-themePurple"
-                      }`}
-                      // onClick={() => setState({ isOpen: true })}
-                    >
-                      <span style={{ color: "white", fontSize: "22px" }}>
-                        ✓
-                      </span>{" "}
-                      Already Enrolled{" "}
-                      <span style={{ color: " #88c742" }}></span>
-                    </Button>
-                  </div>
+                ) : state?.group == ROLES.STUDENT ||
+                  state?.group == ROLES.ALUMNI ||
+                  state?.group == ROLES.GROUP ? (
+                  state.orderData?.lounge_type?.id == GOOGLE_LOUNGE_ID ? (
+                    <div>
+                      <Button
+                        className={`mt-3 newclass ${"bg-themePurple hover:bg-[#b382c7]"}`}
+                        onClick={() => setState({ isOpen: true })}
+                      >
+                        Enroll
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Button
+                        style={{ cursor: "not-allowed" }}
+                        className={`mt-3 ${
+                          state?.orderData?.is_registered
+                            ? "bg-themeGreen hover:bg-themeGreen"
+                            : "bg-themePurple hover:bg-themePurple"
+                        }`}
+                        // onClick={() => setState({ isOpen: true })}
+                      >
+                        <span style={{ color: "white", fontSize: "22px" }}>
+                          ✓
+                        </span>{" "}
+                        Already Enrolled{" "}
+                        <span style={{ color: " #88c742" }}></span>
+                      </Button>
+                    </div>
+                  )
                 ) : (
                   (state?.group !== ROLES.STUDENT ||
-                    state?.group !== ROLES.ALUMNI || state?.group !== ROLES.GROUP) && (
+                    state?.group !== ROLES.ALUMNI ||
+                    state?.group !== ROLES.GROUP) && (
                     <div>
                       <Button
                         className={`mt-3 ${
@@ -382,7 +473,7 @@ ${
             <Dialog open={state?.isOpen} onOpenChange={closeDialog}>
               <DialogContent className="bg-white p-6 rounded-lg w-96">
                 <DialogTitle className="text-lg font-semibold mb-2">
-                  You want to enroll in this event?
+                  You want to enroll in this session?
                 </DialogTitle>
                 <div className="flex justify-between gap-2">
                   <Button

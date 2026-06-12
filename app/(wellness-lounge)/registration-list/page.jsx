@@ -12,6 +12,7 @@ import {
   CalendarCheck2,
   FormInput,
   Sheet,
+  XIcon,
 } from "lucide-react";
 
 import {
@@ -58,6 +59,7 @@ const RegistrationList = () => {
     isOpen: false,
     categoryName: "",
     participatedList: [],
+    eventDateCount: [],
     registrationList: [],
     submitLoading: false,
     search: "",
@@ -74,7 +76,8 @@ const RegistrationList = () => {
   useEffect(() => {
     eventDetail();
     registrationList(state.currentPage);
-  }, [searchParams,state.start_date]);
+  }, [searchParams, state.start_date, state.session_date, state.selected_date]);
+  console.log("✌️state.session_date --->", state.session_date);
 
   const registrationList = async (page) => {
     try {
@@ -89,10 +92,20 @@ const RegistrationList = () => {
           body.start_date = moment(state.start_date).format("YYYY-MM-DD");
         }
 
+        if (state.session_date) {
+          body.session_date = moment(state.session_date).format("YYYY-MM-DD");
+        }
+
+        if (state.selected_date) {
+          body.session_date = moment(state.selected_date).format("YYYY-MM-DD");
+        }
+
         const res = await Models.session.registrationList(page, body);
+        console.log("registrationList", res);
         // const updateObj=res?.results?.map((item)=>({
         //   user:
         // }))
+        setState({ registrationList: [] });
 
         if (res?.results?.length > 0) {
           const data = res?.results?.map((item) => {
@@ -114,14 +127,14 @@ const RegistrationList = () => {
               slotDateOrStartTime: isAyurvedic
                 ? item?.slot?.event_slot?.date
                 : item?.google_event_id
-                  ? moment(item?.start_datetime).format("HH:mm")
-                  : item?.event?.start_time,
+                ? moment(item?.start_datetime).format("HH:mm")
+                : item?.event?.start_time,
 
               slotTimeOrEndTime: isAyurvedic
                 ? item?.slot?.start_time
                 : item?.google_event_id
-                  ? moment(item?.end_datetime).format("HH:mm")
-                  : item?.event?.end_time,
+                ? moment(item?.end_datetime).format("HH:mm")
+                : item?.event?.end_time,
 
               amount: item?.amount,
               email: item?.user?.email,
@@ -136,6 +149,8 @@ const RegistrationList = () => {
           setState({
             registrationList: data,
             next: res.next,
+            eventDateCount: res?.event_date_count || [],
+
             previous: res.previous,
             currentPage: page,
             loading: false,
@@ -193,6 +208,7 @@ const RegistrationList = () => {
         google_event_id: item?.google_event_id,
         deleted: item?.deleted,
       }));
+
       setState({
         participatedList: data,
         loading: false,
@@ -425,6 +441,11 @@ const RegistrationList = () => {
     }
   };
 
+  const handleClick = (date) => {
+    console.log("date", date);
+    setState({ selected_date: date });
+  };
+
   return (
     <div className="container mx-auto pt-4">
       <div className="bg-white rounded-xl shadow-md p-6 mb-6 pt-5">
@@ -498,7 +519,9 @@ const RegistrationList = () => {
           <Tabs
             defaultValue="registered"
             className="lg:flex lg:gap-20 gap-4 w-[100%]"
-            onValueChange={(val) => setState({ start_date: null, activeTab: val })}
+            onValueChange={(val) =>
+              setState({ start_date: null, activeTab: val })
+            }
           >
             <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
               <TabsTrigger
@@ -519,43 +542,154 @@ const RegistrationList = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Registered List</CardTitle>
-                    <div className="md:mb-0 mb-2">
-                      <DatePickers
-                        placeholder="Registration Date"
-                        closeIcon={true}
-                        selectedDate={state.start_date}
-                        onChange={(date) => {
-                          setState({
-                            start_date: date,
-                          });
-                        }}
-                      />
+                    <div className="flex gap-2">
+                      <div className="md:mb-0 mb-2">
+                        <DatePickers
+                          placeholder="Registration Date"
+                          closeIcon={true}
+                          selectedDate={state.start_date}
+                          onChange={(date) => {
+                            setState({
+                              start_date: date,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="md:mb-0 mb-2">
+                        <DatePickers
+                          placeholder="Session Date"
+                          closeIcon={true}
+                          selectedDate={state.session_date}
+                          onChange={(date) => {
+                            setState({
+                              session_date: date,
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {state.loading ? (
+                    {/* {state.loading ? (
                       <div className="flex items-center w-full justify-center">
                         <Loader />
                       </div>
-                    ) : (state?.registrationList ?? []).length > 0 ? (
-                      <div>
-                        <div className="rounded-lg border">
-                          <DataTable
-                            columns={
-                              state.isAyurvedic
-                                ? registerAyurvedicColumn
-                                : registerColumn
-                            }
-                            data={state?.registrationList ?? []}
-                            getRowClassName={(row) =>
-                              row?.deleted ? "opacity-120 text-gray-400" : ""
-                            }
-                          />
-                        </div>
+                    ) : ( */}
+                    <div>
+                      {state.activeTab === "registered" &&
+                        state.eventDetail?.start_date &&
+                        state.eventDetail?.end_date &&
+                        (() => {
+                          const dates = [];
+                          const start = moment(state.eventDetail.start_date);
+                          const end = moment(state.eventDetail.end_date);
+                          for (
+                            let d = start.clone();
+                            d.isSameOrBefore(end, "day");
+                            d.add(1, "day")
+                          ) {
+                            dates.push(d.format("YYYY-MM-DD"));
+                          }
+
+                          return dates.length > 1 ? (
+                            <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
+                              {dates.map((date) => {
+                                const countObj = state.eventDateCount?.find(
+                                  (c) => c.date === date
+                                );
+                                const count = countObj?.count ?? 0;
+                                return (
+                                  <div
+                                    onClick={() => handleClick(date)}
+                                    key={date}
+                                    className={`cursor-pointer flex gap-3 items-center shrink-0 border rounded-xl px-4 py-1 min-w-[70px] ${
+                                      state?.selected_date === date
+                                        ? "bg-[#7f4099] border-[#7f4099]"
+                                        : "bg-purple-50 border-purple-200"
+                                    }`}
+                                  >
+                                    <span
+                                      className={`text-xs font-semibold ${
+                                        state?.selected_date === date
+                                          ? "text-white"
+                                          : "text-purple-700"
+                                      }`}
+                                    >
+                                      {moment(date).format("DD MMM")}
+                                    </span>
+
+                                    <span
+                                      className={`text-md font-bold rounded-full px-3 ${
+                                        state?.selected_date === date
+                                          ? "bg-white text-[#7f4099]"
+                                          : "bg-white text-[#7f4099]"
+                                      }`}
+                                    >
+                                      {count}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : null;
+                        })()}
+                      <div className="text-start gap-2 mb-2 flex">
+                        {state?.session_date && (
+                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">
+                              Session Date :{" "}
+                              {moment(state.session_date).format("YYYY-MM-DD")}
+                            </p>
+                            <XIcon
+                              className="text-white h-4 w-4 ml-2 cursor-pointer"
+                              onClick={() => setState({ session_date: null })}
+                            />
+                          </div>
+                        )}
+
+                        {state?.selected_date && (
+                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">
+                              Session Date :{" "}
+                              {moment(state.selected_date).format("YYYY-MM-DD")}
+                            </p>
+                            <XIcon
+                              className="text-white h-4 w-4 ml-2 cursor-pointer"
+                              onClick={() => setState({ selected_date: null })}
+                            />
+                          </div>
+                        )}
+
+                        {state?.start_date && (
+                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                            <p className=" text-xs text-white">
+                              Reg Date :{" "}
+                              {moment(state.start_date).format("YYYY-MM-DD")}
+                            </p>
+                            <XIcon
+                              className="text-white h-4 w-4 ml-2 cursor-pointer"
+                              onClick={() => setState({ start_date: null })}
+                            />
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      "List Not Found"
-                    )}
+
+                      <div className="rounded-lg border">
+                        <DataTable
+                          columns={
+                            state.isAyurvedic
+                              ? registerAyurvedicColumn
+                              : registerColumn
+                          }
+                          loading={state.loading}
+                          data={state?.registrationList ?? []}
+                          getRowClassName={(row) =>
+                            row?.deleted ? "opacity-120 text-gray-400" : ""
+                          }
+                        />
+                      </div>
+                    </div>
+                    {/* )} */}
                   </CardContent>
                   <div className="mt-5 mb-5 flex justify-center gap-3">
                     <Button
