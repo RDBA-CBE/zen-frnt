@@ -63,44 +63,25 @@ const LoginForm = (props) => {
       const res = await Models.auth.googleAuth(body);
       console.log("Google auth response: ", res);
       if (res.access) {
-        localStorage.setItem("zentoken", res.access);
+      // await updateUserGroup(res);
+      // localStorage.setItem("group", res.groups?.[0]);
+            localStorage.setItem("zentoken", res.access);
         localStorage.setItem("refreshToken", res.refresh);
         localStorage.setItem("userId", res?.user_id || "");
         localStorage.setItem("username", res?.username || res?.email || "");
 
-        if (res.groups?.length > 0) {
-          if (res?.groups?.includes(ROLES.MENTOR) && res?.mentor == true) {
-            localStorage.setItem("group", ROLES.MENTOR);
-            dispatch(
-              setAuthData({
-                tokens: res.access,
-                groups: ROLES.MENTOR,
-                userId: res.user_id,
-                username: res?.username,
-              }),
-            );
-            window.location.href = "/";
-            // Success("Google login successful!");
-          } else if (
-            res?.groups?.includes(ROLES.MENTOR) &&
-            res?.mentor == false
-          ) {
-            localStorage.setItem("group", ROLES.ALUMNI);
-            dispatch(
-              setAuthData({
-                tokens: res.access,
-                groups: ROLES.ALUMNI,
-                userId: res.user_id,
-                username: res?.username,
-              }),
-            );
-            window.location.href = "/";
-            // Success("Google login successful!");
-          } else if (res?.groups?.includes(ROLES.COUNSELOR)) {
-            console.log("✌️res?.groups --->", res?.groups);
-            if (res?.is_active) {
-              localStorage.setItem("group", res.groups?.[0]);
-
+        // if (response.is_verified) {
+          //           localStorage.setItem("group", res.groups?.[0]);
+          //           dispatch(
+          //             setAuthData({
+          //               tokens: res.access,
+          //               groups: res.groups?.[0],
+          //               userId: res.user_id,
+          //               username: res?.username,
+          //             }),
+          //           );
+          //           window.location.href = "/";
+          localStorage.setItem("group", res.groups?.[0]);
               dispatch(
                 setAuthData({
                   tokens: res.access,
@@ -109,67 +90,119 @@ const LoginForm = (props) => {
                   username: res?.username,
                 }),
               );
-              Success("Google login successful!");
-              window.location.href = "/";
-            } else {
-              localStorage.clear();
-              InfinitySuccess("Your account is waiting for approval.", () => {
-                localStorage.clear();
-              });
-            }
-          } else {
-            if (res?.groups?.includes(ROLES.STUDENT)) {
-              const response = await Models.user.getUserId(res.user_id);
-
-              if (response.is_verified) {
-                localStorage.setItem("group", res.groups?.[0]);
-                dispatch(
-                  setAuthData({
-                    tokens: res.access,
-                    groups: res.groups?.[0],
-                    userId: res.user_id,
-                    username: res?.username,
-                  }),
-                );
-                window.location.href = "/";
-              } else {
-                Failure("User not verified");
-                localStorage.clear();
-              }
-            } else {
-              localStorage.setItem("group", res.groups?.[0]);
-              dispatch(
-                setAuthData({
-                  tokens: res.access,
-                  groups: res.groups?.[0],
-                  userId: res.user_id,
-                  username: res?.username,
-                }),
-              );
-              window.location.href = "/";
-            }
-          }
-          //
-          // localStorage.setItem("group", res.groups[0]);
-          // setAuthData({
-          //   tokens: res.access,
-          //   groups: res.groups[0],
-          //   userId: res.user_id,
-          //   username: res?.username || "",
-          // });
-          setState({ googleLoading: false });
-
-          // router.push("/");
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 100);
-        } else {
-          await updateUserGroup(res);
-          // Success("Google login successful!");
-        }
-      } else {
-        Failure("Google login failed: No access token received");
+      // router.push(`/update-user-data/?id=${res?.user_id}`);
+      window.location.href = "/";
       }
+      // if (res.access) {
+      //   localStorage.setItem("zentoken", res.access);
+      //   localStorage.setItem("refreshToken", res.refresh);
+      //   localStorage.setItem("userId", res?.user_id || "");
+      //   localStorage.setItem("username", res?.username || res?.email || "");
+
+      //   if (res.groups?.length > 0) {
+      //     if (res?.groups?.includes(ROLES.MENTOR) && res?.mentor == true) {
+      //       localStorage.setItem("group", ROLES.MENTOR);
+      //       dispatch(
+      //         setAuthData({
+      //           tokens: res.access,
+      //           groups: ROLES.MENTOR,
+      //           userId: res.user_id,
+      //           username: res?.username,
+      //         }),
+      //       );
+      //       window.location.href = "/";
+      //       // Success("Google login successful!");
+      //     } else if (
+      //       res?.groups?.includes(ROLES.MENTOR) &&
+      //       res?.mentor == false
+      //     ) {
+      //       localStorage.setItem("group", ROLES.ALUMNI);
+      //       dispatch(
+      //         setAuthData({
+      //           tokens: res.access,
+      //           groups: ROLES.ALUMNI,
+      //           userId: res.user_id,
+      //           username: res?.username,
+      //         }),
+      //       );
+      //       window.location.href = "/";
+      //       // Success("Google login successful!");
+      //     } else if (res?.groups?.includes(ROLES.COUNSELOR)) {
+      //       console.log("✌️res?.groups --->", res?.groups);
+      //       if (res?.is_active) {
+      //         localStorage.setItem("group", res.groups?.[0]);
+
+      //         dispatch(
+      //           setAuthData({
+      //             tokens: res.access,
+      //             groups: res.groups?.[0],
+      //             userId: res.user_id,
+      //             username: res?.username,
+      //           }),
+      //         );
+      //         Success("Google login successful!");
+      //         window.location.href = "/";
+      //       } else {
+
+
+      //         localStorage.clear();
+      //         InfinitySuccess("Your account is waiting for approval.", () => {
+      //           localStorage.clear();
+      //         });
+      //       }
+      //     } else {
+      //       if (res?.groups?.includes(ROLES.STUDENT)) {
+      //         const response = await Models.user.getUserId(res.user_id);
+
+      //         if (response.is_verified) {
+      //           localStorage.setItem("group", res.groups?.[0]);
+      //           dispatch(
+      //             setAuthData({
+      //               tokens: res.access,
+      //               groups: res.groups?.[0],
+      //               userId: res.user_id,
+      //               username: res?.username,
+      //             }),
+      //           );
+      //           window.location.href = "/";
+      //         } else {
+      //           Failure("User not verified");
+      //           localStorage.clear();
+      //         }
+      //       } else {
+      //         localStorage.setItem("group", res.groups?.[0]);
+      //         dispatch(
+      //           setAuthData({
+      //             tokens: res.access,
+      //             groups: res.groups?.[0],
+      //             userId: res.user_id,
+      //             username: res?.username,
+      //           }),
+      //         );
+      //         window.location.href = "/";
+      //       }
+      //     }
+      //     //
+      //     // localStorage.setItem("group", res.groups[0]);
+      //     // setAuthData({
+      //     //   tokens: res.access,
+      //     //   groups: res.groups[0],
+      //     //   userId: res.user_id,
+      //     //   username: res?.username || "",
+      //     // });
+      //     setState({ googleLoading: false });
+
+      //     // router.push("/");
+      //     // setTimeout(() => {
+      //     //   window.location.reload();
+      //     // }, 100);
+      //   } else {
+      //     await updateUserGroup(res);
+      //     // Success("Google login successful!");
+      //   }
+      // } else {
+      //   Failure("Google login failed: No access token received");
+      // }
     } catch (error) {
       console.error("Google login error:", error);
       if (error.response?.status === 400) {

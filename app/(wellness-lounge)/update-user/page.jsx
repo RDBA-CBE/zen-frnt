@@ -149,7 +149,7 @@ const CreateUser = () => {
         intrested_topics1: res?.lable,
         notify: res?.notify || false,
         address: res.address ? res.address : "",
-        phone_number: res?.phone_number ? res?.phone_number : "",
+        phone_number: res?.phone_number || "",
         year_of_entry: res?.year_of_entry
           ? {
               value: res?.year_of_entry.toString(),
@@ -211,6 +211,7 @@ const CreateUser = () => {
         groupAge: res?.age ? res?.age : "",
         loading: false,
       });
+
     } catch (error) {
       setState({ loading: false });
       console.log("error: ", error);
@@ -312,6 +313,14 @@ const CreateUser = () => {
   const onSubmit = async () => {
     try {
       setState({ submitLoading: true });
+
+      if (state.phone_number && !isValidPhoneNumber(state.phone_number)) {
+        setState({
+          submitLoading: false,
+          errors: { ...state.errors, phone_number: "Please enter a valid phone number" },
+        });
+        return;
+      }
 
       if (isRole(state.user_types)) {
         let body = {
@@ -501,21 +510,22 @@ const CreateUser = () => {
           geo_detail: state?.geo_detail,
           gender: state?.groupGender?.value || "",
           notify: state.notify,
+          phone_number:state.phone_number
         };
         console.log("✌️body --->", body);
 
-         if (state?.user_type?.label === ROLES.GROUP) {
+        //  if (state?.user_type?.label === ROLES.GROUP) {
                    await Validation.groupUser.validate(body, {
                   abortEarly: false,
                 });
-        } else {
+        // } else {
 
-        await Validation.createStudentUser.validate(body, {
-          abortEarly: false,
-        });
-      }
+        // await Validation.createStudentUser.validate(body, {
+        //   abortEarly: false,
+        // });
+      // }
 
-        let groups = [state.user_type?.value];
+        let groups = [8];
         let formData = new FormData();
         formData.append("first_name", body.first_name);
         formData.append("last_name", body.last_name);
@@ -555,6 +565,8 @@ const CreateUser = () => {
           formData.append("geo_detail", body.geo_detail);
           formData.append("gender", body.gender);
           formData.append("age", body.age);
+          formData.append("phone_number", state.phone_number);
+
         }
 
         await Models.user.updateUser(formData, id);
@@ -744,6 +756,28 @@ const CreateUser = () => {
               disabled={state.group != ROLES.ADMIN}
             />
           )}
+
+<div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700">
+                    Phone Number {""} <span className="text-red-500">*</span>
+                  </label>
+                  <div className="phone-input-wrapper pt-1">
+                    <PhoneInput
+                      placeholder="Enter phone number"
+                      country={state.country?.code}
+                      defaultCountry={state.country?.code}
+                      value={state.phone_number || ""}
+                      onChange={handlePhoneChange}
+                      international
+                      className="custom-phone-input"
+                    />
+                    {state.errors?.phone_number && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.phone_number}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
           {/* <DatePicker
             placeholder="Date Of Birth"
@@ -1063,12 +1097,10 @@ const CreateUser = () => {
                       placeholder="Enter phone number"
                       country={state.country?.code}
                       defaultCountry={state.country?.code}
-                      value={state.phone_number}
+                      value={state.phone_number || ""}
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"
-                      //          countryCallingCodeEditable={false} // 🔒 disables editing country code
-                      // countrySelectComponent={() => null}
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

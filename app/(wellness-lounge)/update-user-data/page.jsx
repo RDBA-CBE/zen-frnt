@@ -83,6 +83,7 @@ const CreateUser = () => {
     countryList: [],
     notify: false,
     currentInterestPage: 1,
+    phone_number:""
   });
 
   useEffect(() => {
@@ -182,7 +183,7 @@ const CreateUser = () => {
         intrested_topics1: res?.lable,
         notify: res?.notify || false,
         address: res.address ? res.address : "",
-        phone_number: res?.phone_number ? res?.phone_number : "",
+        phone_number: res?.phone_number || "",
         year_of_entry: res?.year_of_entry
           ? {
               value: res?.year_of_entry.toString(),
@@ -334,10 +335,7 @@ const CreateUser = () => {
           user_type: state.user_type?.value,
           thumbnail_image: state.thumbnail_images || "",
           phone_number:
-            state?.user_type?.label === ROLES.ALUMNI ||
-            state?.user_type?.label === ROLES.COUNSELOR
-              ? state.phone_number
-              : undefined,
+           state.phone_number,
           year_of_entry:
             state?.user_type?.label === "Student"
               ? state.year_of_entry?.value
@@ -491,12 +489,12 @@ const CreateUser = () => {
         setState({submitLoading:false})
         // if (state?.user_type?.label === ROLES.COUNSELOR) {
           InfinitySuccess(
-            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform. Waiting for approval`,
+            `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform`,
             () => {
               window.location.href = "/";
             }
           );
-          localStorage.clear();
+          // localStorage.clear();
         // } else if (state?.user_type?.label === ROLES.GROUP) {
           // InfinitySuccess(
           //   `The account details for ${state.firstname} ${state.lastname} have been updated. All changes are now saved and reflected across the platform.`,
@@ -807,6 +805,30 @@ const CreateUser = () => {
             />
           )}
 
+<div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700">
+                    Phone Number {""} <span className="text-red-500">*</span>
+                  </label>
+                  <div className="phone-input-wrapper pt-1">
+                    <PhoneInput
+                      placeholder="Enter phone number"
+                      country={state.country?.code}
+                      defaultCountry={state.country?.code}
+                      value={state.phone_number || ""}
+                      onChange={handlePhoneChange}
+                      international
+                      className="custom-phone-input"
+                      //          countryCallingCodeEditable={false} // 🔒 disables editing country code
+                      // countrySelectComponent={() => null}
+                    />
+                    {state.errors?.phone_number && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.phone_number}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
           {/* <DatePicker
             placeholder="Date Of Birth"
             title="Date Of Birth"
@@ -945,7 +967,7 @@ const CreateUser = () => {
                       placeholder="Enter phone number"
                       country={state.country?.code}
                       defaultCountry={state.country?.code}
-                      value={state.phone_number}
+                      value={state.phone_number || ""}
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"

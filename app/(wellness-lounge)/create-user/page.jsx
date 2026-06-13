@@ -166,6 +166,15 @@ const CreateUser = () => {
     try {
       // Set loading state to true
       setState({ submitLoading: true });
+
+      if (state.phone_number && !isValidPhoneNumber(state.phone_number)) {
+        setState({
+          submitLoading: false,
+          errors: { ...state.errors, phone_number: "Please enter a valid phone number" },
+        });
+        return;
+      }
+
       if (
         state.user_type?.label === ROLES.ALUMNI ||
         state.user_type?.label === ROLES.COUNSELOR
@@ -180,11 +189,13 @@ const CreateUser = () => {
           dob: state.dob ? moment(state.dob).format("YYYY-MM-DD") : "", // Format dob to YYYY-MM-DD if it exists
           user_type: INDIVIDUAL,
           thumbnail_image: state.thumbnail_images || "", // Default empty string if image doesn't exist
-          phone_number:
-            state.user_type?.label === ROLES.ALUMNI ||
-            state.user_type?.label === ROLES.COUNSELOR
-              ? state.phone_number
-              : undefined,
+          // phone_number:
+          //   state.user_type?.label === ROLES.ALUMNI ||
+          //   state.user_type?.label === ROLES.COUNSELOR
+          //     ? state.phone_number
+          //     : undefined,
+              phone_number:
+             state.phone_number,
           year_of_entry:
             state?.user_type?.label === "Student"
               ? state?.year_of_entry?.value
@@ -357,20 +368,21 @@ Login credentials have been generated, and the user can now access the platform 
           geo_detail: state?.geo_detail,
           gender: state?.groupGender?.value || "",
           notify: state.notify,
+          phone_number:state.phone_number
         };
 
         console.log("body: ", body); // For debugging purposes
 
-        if (state?.user_type?.label === ROLES.GROUP) {
+        // if (state?.user_type?.label === ROLES.GROUP) {
            await Validation.groupUser.validate(body, {
           abortEarly: false,
-        });
-        } else {
-        // Validate the body object using Yup
-        await Validation.createStudentUser.validate(body, {
-          abortEarly: false,
-        });
-      }
+        })
+        // } else {
+        // // Validate the body object using Yup
+        // await Validation.createStudentUser.validate(body, {
+        //   abortEarly: false,
+        // });
+      // }
 
         if (state?.user_type?.label === "Alumni") {
           if (!isValidPhoneNumber(body.phone_number)) {
@@ -384,7 +396,7 @@ Login credentials have been generated, and the user can now access the platform 
           }
         }
         // Prepare the formData to submit
-        let groups = [state.user_type?.value];
+        let groups = [8];
         let formData = new FormData();
         formData.append("first_name", body.first_name);
         formData.append("last_name", body.last_name);
@@ -419,6 +431,8 @@ Login credentials have been generated, and the user can now access the platform 
           formData.append("geo_detail", body.geo_detail);
           formData.append("gender", body.gender);
           formData.append("age", body.age);
+          formData.append("phone_number", state.phone_number);
+
         }
 
         if (body.year_of_entry && state?.user_type?.label === "Student") {
@@ -572,6 +586,27 @@ Login credentials have been generated, and the user can now access the platform 
             error={state.errors?.email}
             required
           />
+           <div className="space-y-1">
+                  <label className="block text-sm font-bold text-gray-700">
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="phone-input-wrapper pt-1">
+                    <PhoneInput
+                      placeholder="Enter phone number"
+                      country={state.country?.code}
+                      defaultCountry={state.country?.code}
+                      value={state.phone_number}
+                      onChange={handlePhoneChange}
+                      international
+                      className="custom-phone-input"
+                    />
+                    {state.errors?.phone_number && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {state.errors?.phone_number}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
           {/* <DatePicker
             placeholder="Date Of Birth"
@@ -740,7 +775,7 @@ Login credentials have been generated, and the user can now access the platform 
                       placeholder="Enter phone number"
                       country={state.country?.code}
                       defaultCountry={state.country?.code}
-                      value={state.phone_number}
+                      value={state.phone_number || ""}
                       onChange={handlePhoneChange}
                       international
                       className="custom-phone-input"

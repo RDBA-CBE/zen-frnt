@@ -1,5 +1,6 @@
 import moment from "moment";
 import * as Yup from "yup";
+// import { isValidPhoneNumber } from "react-phone-number-input";
 import { AYURVEDIC_LOUNGE } from "./constant.utils";
 
 export const createCoupon = Yup.object().shape({
@@ -233,6 +234,9 @@ export const groupUser = Yup.object().shape({
   age: Yup.string().required("Age is required"),
   is_married: Yup.string().required("Marital Status is required"),
   gender : Yup.string().required("Gender is required"),
+  phone_number: Yup.string()
+    .required("Phone number is required")
+   
 });
 
 
