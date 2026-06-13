@@ -243,10 +243,10 @@ const GroupRegForm = () => {
               placeholder="Enter phone number"
               country={state.country?.code}
               defaultCountry={state.country?.code}
-              value={state.phone_number}
+              value={state.phone_number || ""}
               onChange={handlePhoneChange}
               international
-              className="custom-phone-input"
+              className={`custom-phone-input ${state.errors?.phone_number ? "phone-input-error" : ""}`}
             />
             {state.errors?.phone_number && (
               <p className="mt-2 text-sm text-red-600">

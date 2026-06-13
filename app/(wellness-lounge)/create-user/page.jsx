@@ -598,7 +598,8 @@ Login credentials have been generated, and the user can now access the platform 
                       value={state.phone_number}
                       onChange={handlePhoneChange}
                       international
-                      className="custom-phone-input"
+                      className={`custom-phone-input ${state.errors?.phone_number ? "phone-input-error" : ""}`}
+
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

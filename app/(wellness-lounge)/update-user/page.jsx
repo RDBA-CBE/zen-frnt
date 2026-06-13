@@ -757,7 +757,7 @@ const CreateUser = () => {
             />
           )}
 
-<div className="space-y-1">
+                <div className="space-y-1">
                   <label className="block text-sm font-bold text-gray-700">
                     Phone Number {""} <span className="text-red-500">*</span>
                   </label>
@@ -769,7 +769,9 @@ const CreateUser = () => {
                       value={state.phone_number || ""}
                       onChange={handlePhoneChange}
                       international
-                      className="custom-phone-input"
+                      className={`custom-phone-input ${state.errors?.phone_number ? "phone-input-error" : ""}`}
+
+
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">
@@ -1100,7 +1102,10 @@ const CreateUser = () => {
                       value={state.phone_number || ""}
                       onChange={handlePhoneChange}
                       international
-                      className="custom-phone-input"
+                      className={`custom-phone-input ${state.errors?.phone_number ? "phone-input-error" : ""}`}
+
+                       
+                      
                     />
                     {state.errors?.phone_number && (
                       <p className="mt-2 text-sm text-red-600">

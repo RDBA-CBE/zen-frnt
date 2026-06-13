@@ -1034,3 +1034,7 @@ h6 {
   overflow-y: auto !important; /* 👈 enable scroll */
   max-height: 800px; /* adjust as needed */
 }
+
+.phone-input-wrapper .phone-input-error {
+  border: 1px solid #ef4444 !important;
+}
