@@ -160,7 +160,7 @@ const Header = () => {
         { title: "Lounge Session List", url: "/wellness-lounge-list" },
         { title: "Create Lounge Session", url: "/create-wellness-lounge" },
         { title: "Categories", url: "/categories-list" },
-        { title: "Session Approval", url: "/session-approval" },
+        // { title: "Session Approval", url: "/session-approval" },
       ],
     },
     {
@@ -169,7 +169,7 @@ const Header = () => {
       items: [
         { title: "Registered Users", url: "/order-list" },
         { title: "Add User", url: "/create-order" },
-        { title: "Cancelled Users", url: "/cancel-order" },
+        // { title: "Cancelled Users", url: "/cancel-order" },
         // { title: "Booking List", url: "/booking_list" },
       ],
     },
@@ -181,8 +181,8 @@ const Header = () => {
         // { title: "Google Calendar", url: "/google_calendar_user" },
 
         { title: "Create User", url: "/create-user" },
-        { title: "Counselor Approval", url: "/counselor-approval" },
-        { title: "Mentor Approval", url: "/user-approval" },
+        // { title: "Counselor Approval", url: "/counselor-approval" },
+        // { title: "Mentor Approval", url: "/user-approval" },
       ],
     },
     { title: "Payment Gateways", url: "/payment-gateway-list" },
