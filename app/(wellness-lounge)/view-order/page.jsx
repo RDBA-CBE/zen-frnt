@@ -334,7 +334,8 @@ const viewWellnessLounge = () => {
                     {state?.orderData?.event?.lounge_type?.id ==
                     GOOGLE_LOUNGE_ID ? (
                       <p className="mb-3 italic" style={{ fontSize: "16px" }}>
-                        Click the below button to join the meeting
+                        Please check your email for the Zoom meeting link and
+                        join the session
                       </p>
                     ) : (
                       !state.deleted && (
