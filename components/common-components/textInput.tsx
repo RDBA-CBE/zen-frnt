@@ -8,10 +8,11 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  desc?: string;
 }
 
 const TextInput = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = "text", title, required, error, value, onChange, ...props }, ref) => {
+  ({ className, type = "text", title, required, error, value,desc, onChange, ...props }, ref) => {
     // Use a controlled approach by providing a default empty string
     const inputValue = value ?? '';
     
@@ -35,6 +36,9 @@ const TextInput = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
           required={required}
         />
+        {desc &&
+         <p className="text-gray-500 text-sm">{desc}</p>
+}
         {error && (
           <p className="mt-2 text-sm text-red-600" id={`${props.name}-error`}>
             {error}

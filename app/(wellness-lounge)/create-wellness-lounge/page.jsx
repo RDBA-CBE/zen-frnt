@@ -387,13 +387,15 @@ const CreateWellnessLounge = () => {
       const userId = localStorage.getItem("userId");
       let body = {
         title: capitalizeFLetter(state.title),
-        description: state.description ? capitalizeFLetter(state.description) : "",
+        description: state.description
+          ? capitalizeFLetter(state.description)
+          : "",
         lounge_type: state.lounge_type ? state.lounge_type?.value : null,
 
         start_date: state.start_date
           ? moment(state.start_date).format("YYYY-MM-DD")
           : null,
-          start_time: state.start_time
+        start_time: state.start_time
           ? moment(state.start_time).format("HH:mm:ss")
           : null,
         end_date: state.end_date
@@ -402,7 +404,7 @@ const CreateWellnessLounge = () => {
         end_time: state.end_time
           ? moment(state.end_time).format("HH:mm:ss")
           : null,
-      
+
         timezone: state?.timezones,
         moderator: state.moderator?.value,
         intrested_topics:
@@ -418,10 +420,10 @@ const CreateWellnessLounge = () => {
         is_active: true,
         // venue: state.venue?.value,
       };
-      if(state.lounge_type?.value == GOOGLE_LOUNGE_ID){
-        body.sub_title=GOOGLE_LOUNGE
-      }else{
-        body.sub_title=capitalizeFLetter(state.title)
+      if (state.lounge_type?.value == GOOGLE_LOUNGE_ID) {
+        body.sub_title = GOOGLE_LOUNGE;
+      } else {
+        body.sub_title = capitalizeFLetter(state.title);
       }
 
       if (group == ROLES.MENTOR || group == ROLES.COUNSELOR) {
@@ -448,12 +450,14 @@ const CreateWellnessLounge = () => {
       Success(
         `New session ${state.title} has been successfully added to the ${state.lounge_type?.label} category for participants to access and engage as part of their ongoing wellness journey.`
       );
-      if(state.lounge_type?.value == GOOGLE_LOUNGE_ID){
-        window.open('https://calendar.google.com/calendar/u/1/r/appointment/2onrjl7fb5o1s0p6aq3ugq5vgo_aW5mb0B6ZW53ZWxsbmVzc2xvdW5nZS5jb20?pli=1', "_blank");
+      if (state.lounge_type?.value == GOOGLE_LOUNGE_ID) {
+        window.open(
+          "https://calendar.google.com/calendar/u/1/r/appointment/2onrjl7fb5o1s0p6aq3ugq5vgo_aW5mb0B6ZW53ZWxsbmVzc2xvdW5nZS5jb20?pli=1",
+          "_blank"
+        );
         router.push("/wellness-lounge-list");
-      }else{
+      } else {
         router.push("/wellness-lounge-list");
-
       }
     } catch (error) {
       setState({ submitLoading: false });
@@ -913,7 +917,7 @@ const CreateWellnessLounge = () => {
               />
 
               {/* <div className="space-y-1"> */}
-                {/* <MultiSelectDropdown
+              {/* <MultiSelectDropdown
                   label="Topics"
                   value={state.intrested_topics}
                   options={state.intrestedTopicsList || []}
@@ -932,7 +936,7 @@ const CreateWellnessLounge = () => {
                   error={state.errors?.intrested_topics}
                 /> */}
 
-                {/* <label className="block text-sm font-bold text-gray-700 mb-2">
+              {/* <label className="block text-sm font-bold text-gray-700 mb-2">
                   {"Topics"} <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -981,6 +985,11 @@ const CreateWellnessLounge = () => {
                   </div>
                 )} */}
               <TextInput
+                desc={
+                  state.lounge_type?.value == GOOGLE_LOUNGE_ID
+                    ? "You can find the session link in the description area of the Google Calendar invitation"
+                    : ""
+                }
                 value={state.session_link}
                 onChange={(e) => {
                   setState({
@@ -989,10 +998,13 @@ const CreateWellnessLounge = () => {
                   });
                 }}
                 placeholder="Session Link"
-                title="Session Link"
+                title={`Session Link ${
+                  state.lounge_type?.value == GOOGLE_LOUNGE_ID ? " " : ""
+                }`}
                 error={state.errors?.session_link}
                 required
               />
+
               <TextInput
                 value={state.passcode}
                 onChange={(e) => {

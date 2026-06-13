@@ -7,6 +7,7 @@ import {
   Dropdown,
   addHoursToTimeOnly,
   buildFormData,
+  capitalizeFLetter,
   convertUrlToFile,
   getDisplayRole,
   getFileNameFromUrl,
@@ -1103,6 +1104,11 @@ const UpdateWellnessLounge = () => {
               </div>
             )} */}
           <TextInput
+           desc={
+            state.lounge_type?.value == GOOGLE_LOUNGE_ID
+              ? "You can find the session link in the description area of the Google Calendar invitation"
+              : ""
+          }
             value={state.session_link}
             onChange={(e) => {
               setState({

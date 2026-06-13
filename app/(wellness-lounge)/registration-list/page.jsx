@@ -464,8 +464,13 @@ const RegistrationList = () => {
           <div>
             <div className="text-right">
               <p className="text-gray-600">
-                Session Start Date:{" "}
+                 Start Date:{" "}
                 {moment(state?.eventDetail?.start_date).format("DD-MMM-YYYY")}
+              </p>
+
+              <p className="text-gray-600">
+                 End Date:{" "}
+                {moment(state?.eventDetail?.end_date).format("DD-MMM-YYYY")}
               </p>
 
               {/* <p className="text-gray-600">
