@@ -5,6 +5,7 @@ import { DataTable } from "@/components/ui/dataTable";
 import {
   Edit,
   Eye,
+  FileText,
   Loader,
   PlusIcon,
   Trash,
@@ -13,10 +14,12 @@ import {
   FormInput,
   Sheet,
   XIcon,
+  Trash2,
 } from "lucide-react";
 
 import {
   Dropdown,
+  capitalizeFLetter,
   extractZoomMeetingId,
   formatDuration,
   objIsEmpty,
@@ -36,6 +39,7 @@ import PrimaryButton from "@/components/common-components/primaryButton";
 import useDebounce from "@/components/common-components/useDebounce";
 import Loading from "@/components/common-components/Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import {
   Card,
@@ -45,8 +49,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
+import { AYURVEDIC_LOUNGE, GOOGLE_LOUNGE_ID } from "@/utils/constant.utils";
 import { DatePickers } from "@/components/common-components/datePickers";
+
+const GFormSection = ({ title, children }) => (
+  <div className="mb-3">
+    <div className="flex items-center gap-2 mb-2">
+      <div className="w-1.5 h-4 bg-[#7f4099] rounded-full" />
+      <h4 className="text-xs font-bold uppercase tracking-wider text-[#7f4099]">
+        {title}
+      </h4>
+    </div>
+    <div className="bg-gray-50 rounded-lg divide-y divide-gray-100">
+      {children}
+    </div>
+  </div>
+);
+
+const GFormField = ({ label, value }) => {
+  if (!value && value !== 0) return null;
+  return (
+    <div className="flex items-start justify-between px-3 py-2 gap-4">
+      <p className="text-xs text-gray-500 w-1/2 shrink-0">{label}</p>
+      <p className="text-xs text-gray-800 font-semibold text-right">
+        {String(value)}
+      </p>
+    </div>
+  );
+};
 
 const RegistrationList = () => {
   const router = useRouter();
@@ -69,15 +99,51 @@ const RegistrationList = () => {
     deleteLoading: false,
     isAyurvedic: false,
     activeTab: "registered",
+    googleFormModal: false,
+    selectedFormEntry: null,
+    gfe_search: "",
+    gfe_date: null,
   });
 
   const debouncedSearch = useDebounce(state.search, 500);
+  const debouncedGfeSearch = useDebounce(state.gfe_search, 500);
 
   useEffect(() => {
     eventDetail();
     registrationList(state.currentPage);
   }, [searchParams, state.start_date, state.session_date, state.selected_date]);
   console.log("✌️state.session_date --->", state.session_date);
+
+  const google_form_entries = async (page) => {
+    try {
+      setState({ loading: true });
+      const body = {};
+      if (state.gfe_search) body.search = state.gfe_search;
+      if (state.gfe_date)
+        body.date = moment(state.gfe_date).format("YYYY-MM-DD");
+      const res = await Models.session.google_form_entries(page, body);
+      console.log("google_form_entries --->", res);
+      setState({
+        reg_count: res?.count,
+        loading: false,
+        google_form_entries: res?.results,
+        gfe_next: res?.next,
+        gfe_previous: res?.previous,
+        currentPage: page,
+      });
+    } catch (error) {
+      setState({ loading: false });
+      console.log("error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    google_form_entries(state.currentPage);
+  }, []);
+
+  useEffect(() => {
+    google_form_entries(1);
+  }, [debouncedGfeSearch, state.gfe_date]);
 
   const registrationList = async (page) => {
     try {
@@ -221,6 +287,18 @@ const RegistrationList = () => {
     }
   };
 
+  const handleDelete=async(row)=>{
+    try {
+      const res=await Models.session.google_form_entries_delete(row?.row?.id)
+      google_form_entries(state.currentPage)
+console.log('✌️row --->', row?.row);
+      
+    } catch (error) {
+console.log('✌️error --->', error);
+      
+    }
+  }
+
   const registerColumn = [
     {
       Header: "Registration ID",
@@ -287,6 +365,86 @@ const RegistrationList = () => {
         <Label>
           {row?.row?.slotTimeOrEndTime ? row?.row?.slotTimeOrEndTime : "_"}
         </Label>
+      ),
+    },
+    // {
+    //   Header: "Form",
+    //   accessor: "google_form_entries",
+    //   Cell: (row) => {
+    //     const entries = row?.row?.google_form_entries;
+    //     if (!entries?.length) return <Label>-</Label>;
+    //     return (
+    //       <button
+    //         onClick={() => setState({ googleFormModal: true, selectedFormEntry: entries[0] })}
+    //         className="flex items-center gap-1 text-[#7f4099] hover:text-purple-700"
+    //       >
+    //         <FileText size={16} />
+    //         <span className="text-xs">View</span>
+    //       </button>
+    //     );
+    //   },
+    // },
+  ];
+
+  const googleFormEntriesColumn = [
+    {
+      Header: "Date",
+      accessor: "created_date",
+      Cell: (row) => (
+        <Label>
+          {moment(row?.row?.created_date).format("DD-MM-YYYY") || "-"}
+        </Label>
+      ),
+    },
+    {
+      Header: "Name",
+      accessor: "full_name",
+      Cell: (row) => <Label>{row?.row?.full_name || "-"}</Label>,
+    },
+    {
+      Header: "Email",
+      accessor: "email",
+      Cell: (row) => <Label>{row?.row?.email || "-"}</Label>,
+    },
+    {
+      Header: "Phone",
+      accessor: "phone",
+      Cell: (row) => <Label>{row?.row?.phone || "-"}</Label>,
+    },
+    {
+      Header: "Age",
+      accessor: "age",
+      Cell: (row) => <Label>{row?.row?.age || "-"}</Label>,
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
+      Cell: (row) => <Label>{row?.row?.gender || "-"}</Label>,
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: (row) => (
+        <div className="flex gap-2">
+        <button
+          onClick={() =>
+            setState({ googleFormModal: true, selectedFormEntry: row?.row })
+          }
+          className="flex items-center gap-1 text-[#7f4099] hover:text-purple-700"
+        >
+          <FileText size={16} />
+          <span className="text-xs">View</span>
+        </button>
+
+        {/* <button
+          onClick={() =>
+           handleDelete(row)
+          }
+          className="flex items-center gap-1 text-red-500 hover:text-purple-700"
+        >
+          <Trash2 size={16} />
+        </button> */}
+        </div>
       ),
     },
   ];
@@ -448,10 +606,10 @@ const RegistrationList = () => {
 
   return (
     <div className="container mx-auto pt-4">
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6 pt-5">
+      <div className="bg-white rounded-xl shadow-md p-3 mb-6 pt-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h4 className="text-xl font-semibold text-gray-800 mb-2">
+            <h4 className="text-xl font-semibold text-gray-800 mb-1">
               Session :{" "}
               <span className="text-themePurple">
                 {state?.eventDetail?.title}
@@ -461,28 +619,53 @@ const RegistrationList = () => {
               Lounge Type: {state?.eventDetail?.lounge_type?.name}
             </p>
           </div>
-          <div>
-            <div className="text-right">
-              <p className="text-gray-600">
-                 Start Date:{" "}
+          {state.eventDetail?.lounge_type?.id == GOOGLE_LOUNGE_ID ? (
+            <>
+              <div>
+                <div className="text-right">
+                  {/* <p className="text-gray-600">
+                Start Date:{" "}
                 {moment(state?.eventDetail?.start_date).format("DD-MMM-YYYY")}
-              </p>
+              </p> */}
 
-              <p className="text-gray-600">
-                 End Date:{" "}
-                {moment(state?.eventDetail?.end_date).format("DD-MMM-YYYY")}
-              </p>
+                  <p className="text-gray-600">
+                    Total Records: {state?.reg_count}
+                  </p>
 
-              {/* <p className="text-gray-600">
+                  {/* <p className="text-gray-600">
                 Registration End Date:{" "}
                 {moment(state?.ordeeventDetailrData?.end_date).format(
                   "DD-MMM-YYYY"
                 )}
               </p> */}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div className="text-right">
+                <p className="text-gray-600">
+                  Start Date:{" "}
+                  {moment(state?.eventDetail?.start_date).format("DD-MMM-YYYY")}
+                </p>
+
+                <p className="text-gray-600">
+                  End Date:{" "}
+                  {moment(state?.eventDetail?.end_date).format("DD-MMM-YYYY")}
+                </p>
+
+                {/* <p className="text-gray-600">
+                Registration End Date:{" "}
+                {moment(state?.ordeeventDetailrData?.end_date).format(
+                  "DD-MMM-YYYY"
+                )}
+              </p> */}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
+
       <div className="flex flex-1 flex-col gap-2  pt-0">
         {/* <Card className="w-[100%] p-4">
           <div className="block justify-between items-center lg:flex">
@@ -519,218 +702,271 @@ const RegistrationList = () => {
             </div>
           </div>
         </Card> */}
-
-        <div className="flex justify-between items-center w-[100%]">
-          <Tabs
-            defaultValue="registered"
-            className="lg:flex lg:gap-20 gap-4 w-[100%]"
-            onValueChange={(val) =>
-              setState({ start_date: null, activeTab: val })
-            }
-          >
-            <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
-              <TabsTrigger
-                value="registered"
-                className="w-[100%] p-2  md:text-md text-sm lg:justify-start"
-              >
-                Registered List
-              </TabsTrigger>
-              <TabsTrigger
-                value="participated"
-                className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
-              >
-                Participated List
-              </TabsTrigger>
-            </TabsList>
-            <div className="lg:flex-1 lg:w-[75%] w-[100%]">
-              <TabsContent value="registered">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Registered List</CardTitle>
-                    <div className="flex gap-2">
-                      <div className="md:mb-0 mb-2">
-                        <DatePickers
-                          placeholder="Registration Date"
-                          closeIcon={true}
-                          selectedDate={state.start_date}
-                          onChange={(date) => {
-                            setState({
-                              start_date: date,
-                            });
-                          }}
-                        />
+        {state.eventDetail?.lounge_type?.id == GOOGLE_LOUNGE_ID ? (
+          <div className="w-full">
+            <div className="flex items-center  mb-3 w-fit">
+              <TextInput
+                value={state.gfe_search}
+                onChange={(e) => setState({ gfe_search: e.target.value })}
+                placeholder="Search Name / Email"
+                className="w-[220px]"
+              />
+              <div className="w-[220px]">
+                <DatePickers
+                  placeholder="Registration Date"
+                  closeIcon={true}
+                  selectedDate={state.gfe_date}
+                  onChange={(date) => setState({ gfe_date: date })}
+                />
+              </div>
+            </div>
+            {state.loading ? (
+              <div className="flex items-center justify-center py-10 ">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              <>
+                <DataTable
+                  columns={googleFormEntriesColumn}
+                  data={state.google_form_entries || []}
+                />
+                <div className="mt-5 flex justify-center gap-3">
+                  <Button
+                    disabled={!state.gfe_previous}
+                    onClick={() => google_form_entries(state.currentPage - 1)}
+                    className="bg-themeGreen hover:bg-themeGreen disabled:opacity-50"
+                  >
+                    Prev
+                  </Button>
+                  <Button
+                    disabled={!state.gfe_next}
+                    onClick={() => google_form_entries(state.currentPage + 1)}
+                    className="bg-themeGreen hover:bg-themeGreen disabled:opacity-50"
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-between items-center w-[100%]">
+            <Tabs
+              defaultValue="registered"
+              className="lg:flex lg:gap-20 gap-4 w-[100%]"
+              onValueChange={(val) =>
+                setState({ start_date: null, activeTab: val })
+              }
+            >
+              <TabsList className="flex lg:flex-col flex-row lg:w-[20%] w-[100%] h-[100%] overflow-scroll sm:overflow-hidden sm:justify-center justify-start pl-5 lg:space-y-2 space-y-0  lg:space-x-0 space-x-2 lg:p-5 p-2">
+                <TabsTrigger
+                  value="registered"
+                  className="w-[100%] p-2  md:text-md text-sm lg:justify-start"
+                >
+                  Registered List
+                </TabsTrigger>
+                <TabsTrigger
+                  value="participated"
+                  className="w-[100%] p-2 md:text-md text-sm lg:justify-start"
+                >
+                  Participated List
+                </TabsTrigger>
+              </TabsList>
+              <div className="lg:flex-1 lg:w-[75%] w-[100%]">
+                <TabsContent value="registered">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <CardTitle>Registered List</CardTitle>
+                      <div className="flex gap-2">
+                        <div className="md:mb-0 mb-2">
+                          <DatePickers
+                            placeholder="Registration Date"
+                            closeIcon={true}
+                            selectedDate={state.start_date}
+                            onChange={(date) => {
+                              setState({
+                                start_date: date,
+                              });
+                            }}
+                          />
+                        </div>
+                        <div className="md:mb-0 mb-2">
+                          <DatePickers
+                            placeholder="Session Date"
+                            closeIcon={true}
+                            selectedDate={state.session_date}
+                            onChange={(date) => {
+                              setState({
+                                session_date: date,
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
-                      <div className="md:mb-0 mb-2">
-                        <DatePickers
-                          placeholder="Session Date"
-                          closeIcon={true}
-                          selectedDate={state.session_date}
-                          onChange={(date) => {
-                            setState({
-                              session_date: date,
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {/* {state.loading ? (
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {/* {state.loading ? (
                       <div className="flex items-center w-full justify-center">
                         <Loader />
                       </div>
                     ) : ( */}
-                    <div>
-                      {state.activeTab === "registered" &&
-                        state.eventDetail?.start_date &&
-                        state.eventDetail?.end_date &&
-                        (() => {
-                          const dates = [];
-                          const start = moment(state.eventDetail.start_date);
-                          const end = moment(state.eventDetail.end_date);
-                          for (
-                            let d = start.clone();
-                            d.isSameOrBefore(end, "day");
-                            d.add(1, "day")
-                          ) {
-                            dates.push(d.format("YYYY-MM-DD"));
-                          }
+                      <div>
+                        {state.activeTab === "registered" &&
+                          state.eventDetail?.start_date &&
+                          state.eventDetail?.end_date &&
+                          (() => {
+                            const dates = [];
+                            const start = moment(state.eventDetail.start_date);
+                            const end = moment(state.eventDetail.end_date);
+                            for (
+                              let d = start.clone();
+                              d.isSameOrBefore(end, "day");
+                              d.add(1, "day")
+                            ) {
+                              dates.push(d.format("YYYY-MM-DD"));
+                            }
 
-                          return dates.length > 1 ? (
-                            <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
-                              {dates.map((date) => {
-                                const countObj = state.eventDateCount?.find(
-                                  (c) => c.date === date
-                                );
-                                const count = countObj?.count ?? 0;
-                                return (
-                                  <div
-                                    onClick={() => handleClick(date)}
-                                    key={date}
-                                    className={`cursor-pointer flex gap-3 items-center shrink-0 border rounded-xl px-4 py-1 min-w-[70px] ${
-                                      state?.selected_date === date
-                                        ? "bg-[#7f4099] border-[#7f4099]"
-                                        : "bg-purple-50 border-purple-200"
-                                    }`}
-                                  >
-                                    <span
-                                      className={`text-xs font-semibold ${
+                            return dates.length > 1 ? (
+                              <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
+                                {dates.map((date) => {
+                                  const countObj = state.eventDateCount?.find(
+                                    (c) => c.date === date
+                                  );
+                                  const count = countObj?.count ?? 0;
+                                  return (
+                                    <div
+                                      onClick={() => handleClick(date)}
+                                      key={date}
+                                      className={`cursor-pointer flex gap-3 items-center shrink-0 border rounded-xl px-4 py-1 min-w-[70px] ${
                                         state?.selected_date === date
-                                          ? "text-white"
-                                          : "text-purple-700"
+                                          ? "bg-[#7f4099] border-[#7f4099]"
+                                          : "bg-purple-50 border-purple-200"
                                       }`}
                                     >
-                                      {moment(date).format("DD MMM")}
-                                    </span>
+                                      <span
+                                        className={`text-xs font-semibold ${
+                                          state?.selected_date === date
+                                            ? "text-white"
+                                            : "text-purple-700"
+                                        }`}
+                                      >
+                                        {moment(date).format("DD MMM")}
+                                      </span>
 
-                                    <span
-                                      className={`text-md font-bold rounded-full px-3 ${
-                                        state?.selected_date === date
-                                          ? "bg-white text-[#7f4099]"
-                                          : "bg-white text-[#7f4099]"
-                                      }`}
-                                    >
-                                      {count}
-                                    </span>
-                                  </div>
-                                );
-                              })}
+                                      <span
+                                        className={`text-md font-bold rounded-full px-3 ${
+                                          state?.selected_date === date
+                                            ? "bg-white text-[#7f4099]"
+                                            : "bg-white text-[#7f4099]"
+                                        }`}
+                                      >
+                                        {count}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : null;
+                          })()}
+                        <div className="text-start gap-2 mb-2 flex">
+                          {state?.session_date && (
+                            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                              <p className=" text-xs text-white">
+                                Session Date :{" "}
+                                {moment(state.session_date).format(
+                                  "YYYY-MM-DD"
+                                )}
+                              </p>
+                              <XIcon
+                                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                                onClick={() => setState({ session_date: null })}
+                              />
                             </div>
-                          ) : null;
-                        })()}
-                      <div className="text-start gap-2 mb-2 flex">
-                        {state?.session_date && (
-                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-                            <p className=" text-xs text-white">
-                              Session Date :{" "}
-                              {moment(state.session_date).format("YYYY-MM-DD")}
-                            </p>
-                            <XIcon
-                              className="text-white h-4 w-4 ml-2 cursor-pointer"
-                              onClick={() => setState({ session_date: null })}
-                            />
-                          </div>
-                        )}
+                          )}
 
-                        {state?.selected_date && (
-                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-                            <p className=" text-xs text-white">
-                              Session Date :{" "}
-                              {moment(state.selected_date).format("YYYY-MM-DD")}
-                            </p>
-                            <XIcon
-                              className="text-white h-4 w-4 ml-2 cursor-pointer"
-                              onClick={() => setState({ selected_date: null })}
-                            />
-                          </div>
-                        )}
+                          {state?.selected_date && (
+                            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                              <p className=" text-xs text-white">
+                                Session Date :{" "}
+                                {moment(state.selected_date).format(
+                                  "YYYY-MM-DD"
+                                )}
+                              </p>
+                              <XIcon
+                                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                                onClick={() =>
+                                  setState({ selected_date: null })
+                                }
+                              />
+                            </div>
+                          )}
 
-                        {state?.start_date && (
-                          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-                            <p className=" text-xs text-white">
-                              Reg Date :{" "}
-                              {moment(state.start_date).format("YYYY-MM-DD")}
-                            </p>
-                            <XIcon
-                              className="text-white h-4 w-4 ml-2 cursor-pointer"
-                              onClick={() => setState({ start_date: null })}
-                            />
-                          </div>
-                        )}
+                          {state?.start_date && (
+                            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
+                              <p className=" text-xs text-white">
+                                Reg Date :{" "}
+                                {moment(state.start_date).format("YYYY-MM-DD")}
+                              </p>
+                              <XIcon
+                                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                                onClick={() => setState({ start_date: null })}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="rounded-lg border">
+                          <DataTable
+                            columns={
+                              state.isAyurvedic
+                                ? registerAyurvedicColumn
+                                : registerColumn
+                            }
+                            loading={state.loading}
+                            data={state?.registrationList ?? []}
+                            getRowClassName={(row) =>
+                              row?.deleted ? "opacity-120 text-gray-400" : ""
+                            }
+                          />
+                        </div>
                       </div>
-
-                      <div className="rounded-lg border">
-                        <DataTable
-                          columns={
-                            state.isAyurvedic
-                              ? registerAyurvedicColumn
-                              : registerColumn
-                          }
-                          loading={state.loading}
-                          data={state?.registrationList ?? []}
-                          getRowClassName={(row) =>
-                            row?.deleted ? "opacity-120 text-gray-400" : ""
-                          }
-                        />
-                      </div>
+                      {/* )} */}
+                    </CardContent>
+                    <div className="mt-5 mb-5 flex justify-center gap-3">
+                      <Button
+                        disabled={!state.previous}
+                        onClick={handlePreviousPage}
+                        className={`btn ${
+                          !state.previous
+                            ? "btn-disabled bg-themeGreen"
+                            : "bg-themeGreen hover:bg-themeGreen"
+                        }`}
+                      >
+                        Prev
+                      </Button>
+                      <Button
+                        disabled={!state.next}
+                        onClick={handleNextPage}
+                        className={`btn ${
+                          !state.next
+                            ? "btn-disabled bg-themeGreen"
+                            : "bg-themeGreen hover:bg-themeGreen"
+                        }`}
+                      >
+                        Next
+                      </Button>
                     </div>
-                    {/* )} */}
-                  </CardContent>
-                  <div className="mt-5 mb-5 flex justify-center gap-3">
-                    <Button
-                      disabled={!state.previous}
-                      onClick={handlePreviousPage}
-                      className={`btn ${
-                        !state.previous
-                          ? "btn-disabled bg-themeGreen"
-                          : "bg-themeGreen hover:bg-themeGreen"
-                      }`}
-                    >
-                      Prev
-                    </Button>
-                    <Button
-                      disabled={!state.next}
-                      onClick={handleNextPage}
-                      className={`btn ${
-                        !state.next
-                          ? "btn-disabled bg-themeGreen"
-                          : "bg-themeGreen hover:bg-themeGreen"
-                      }`}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </Card>
-              </TabsContent>
+                  </Card>
+                </TabsContent>
 
-              <TabsContent value="participated">
-                <Card>
-                  {/* <CardHeader>
+                <TabsContent value="participated">
+                  <Card>
+                    {/* <CardHeader>
                     <CardTitle>Participated List</CardTitle>
                   </CardHeader> */}
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Participated List</CardTitle>
-                    {/* <div className="md:mb-0 mb-2">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <CardTitle>Participated List</CardTitle>
+                      {/* <div className="md:mb-0 mb-2">
                       <DatePickers
                         placeholder="Registration Date"
                         closeIcon={true}
@@ -742,58 +978,295 @@ const RegistrationList = () => {
                         }}
                       />
                     </div> */}
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {state.loading ? (
-                      <div className="flex items-center w-full justify-center">
-                        <Loader />
-                      </div>
-                    ) : (state?.participatedList ?? []).length > 0 ? (
-                      <div>
-                        <div className="rounded-lg border">
-                          <DataTable
-                            columns={participatedColum}
-                            data={state?.participatedList ?? []}
-                          />
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {state.loading ? (
+                        <div className="flex items-center w-full justify-center">
+                          <Loader />
                         </div>
-                      </div>
-                    ) : (
-                      "List Not Found"
-                    )}
-                  </CardContent>
-                  <div className="mt-5 mb-5 flex justify-center gap-3">
-                    <Button
-                      disabled={!state.previous}
-                      onClick={handlePreviousPage}
-                      className={`btn ${
-                        !state.previous
-                          ? "btn-disabled bg-themeGreen"
-                          : "bg-themeGreen hover:bg-themeGreen"
-                      }`}
-                    >
-                      Prev
-                    </Button>
-                    <Button
-                      disabled={!state.next}
-                      onClick={handleNextPage}
-                      className={`btn ${
-                        !state.next
-                          ? "btn-disabled bg-themeGreen"
-                          : "bg-themeGreen hover:bg-themeGreen"
-                      }`}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </Card>
-              </TabsContent>
-            </div>
-          </Tabs>
-        </div>
+                      ) : (state?.participatedList ?? []).length > 0 ? (
+                        <div>
+                          <div className="rounded-lg border">
+                            <DataTable
+                              columns={participatedColum}
+                              data={state?.participatedList ?? []}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        "List Not Found"
+                      )}
+                    </CardContent>
+                    <div className="mt-5 mb-5 flex justify-center gap-3">
+                      <Button
+                        disabled={!state.previous}
+                        onClick={handlePreviousPage}
+                        className={`btn ${
+                          !state.previous
+                            ? "btn-disabled bg-themeGreen"
+                            : "bg-themeGreen hover:bg-themeGreen"
+                        }`}
+                      >
+                        Prev
+                      </Button>
+                      <Button
+                        disabled={!state.next}
+                        onClick={handleNextPage}
+                        className={`btn ${
+                          !state.next
+                            ? "btn-disabled bg-themeGreen"
+                            : "bg-themeGreen hover:bg-themeGreen"
+                        }`}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </Card>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
+        )}
 
         {/* <div className="items-center justify-center flex">
           <p className="text-gray-500 dark:text-gray-400">No Record Found</p>
         </div> */}
+
+        {/* Google Form Entry Modal */}
+        <Dialog
+          open={state.googleFormModal}
+          onOpenChange={(v) => setState({ googleFormModal: v })}
+        >
+          <DialogContent className="bg-white rounded-xl md:w-[680px] w-full max-h-[85vh] overflow-y-auto p-0">
+            <div className="sticky top-0 bg-[#7f4099] px-6 py-4 rounded-t-xl z-10">
+              <DialogTitle className="text-white text-lg font-bold flex items-center gap-2">
+                <FileText size={18} /> Form Details
+              </DialogTitle>
+              <p className="text-purple-200 text-xs mt-0.5">
+                {state.selectedFormEntry?.form_title}
+              </p>
+            </div>
+            {(() => {
+              const e = state.selectedFormEntry;
+              if (!e) return null;
+              return (
+                <div className="p-4 space-y-4">
+                  <GFormSection title="Basic Information">
+                    <GFormField label="Age" value={e.age} />
+                    <GFormField label="Gender" value={e.gender} />
+                    <GFormField label="Phone" value={e.phone} />
+                    <GFormField label="Consent" value={e.consent} />
+                  </GFormSection>
+
+                  {(e.breakfast ||
+                    e.morning_time_snack ||
+                    e.lunch ||
+                    e.evening_time_snack ||
+                    e.dinner ||
+                    e.bedtime_snack) && (
+                    <GFormSection title="Food Intake Schedule">
+                      <GFormField label="Breakfast" value={e.breakfast} />
+                      <GFormField
+                        label="Morning time snack"
+                        value={e.morning_time_snack}
+                      />
+                      <GFormField label="Lunch" value={e.lunch} />
+                      <GFormField
+                        label="Evening time snack"
+                        value={e.evening_time_snack}
+                      />
+                      <GFormField label="Dinner" value={e.dinner} />
+                      <GFormField
+                        label="Bedtime snack"
+                        value={e.bedtime_snack}
+                      />
+                    </GFormSection>
+                  )}
+
+                  {(e.health_goals ||
+                    e.health_concerns ||
+                    e.medical_conditions ||
+                    e.medications) && (
+                    <GFormSection title="Health Overview">
+                      <GFormField
+                        label="What are your main health goals for this consultation?"
+                        value={e.health_goals}
+                      />
+                      <GFormField
+                        label="Describe your main health concern(s), duration, and severity"
+                        value={e.health_concerns}
+                      />
+                      <GFormField
+                        label="Any diagnosed medical conditions? (If yes, please list)"
+                        value={e.medical_conditions}
+                      />
+                      <GFormField
+                        label="Current medications, supplements, or herbs (name + dose if known)"
+                        value={e.medications}
+                      />
+                    </GFormSection>
+                  )}
+
+                  {(e.appetite ||
+                    e.stress_level ||
+                    e.energy_level ||
+                    e.bowel_movements) && (
+                    <GFormSection title="Vitals">
+                      <GFormField label="Appetite" value={e.appetite} />
+                      <GFormField
+                        label="Stress level (past 7 days)"
+                        value={e.stress_level}
+                      />
+                      <GFormField
+                        label="Energy level (past 7 days)"
+                        value={e.energy_level}
+                      />
+                      <GFormField
+                        label="Bowel Movements"
+                        value={e.bowel_movements}
+                      />
+                    </GFormSection>
+                  )}
+
+                  {(e.body_frame_build || e.skin_type || e.sleep) && (
+                    <GFormSection title="Prakriti / Body Type">
+                      <GFormField
+                        label="Body frame / build"
+                        value={e.body_frame_build}
+                      />
+                      <GFormField label="Skin Type" value={e.skin_type} />
+                      <GFormField label="Hair" value={e.hair} />
+                      <GFormField label="Appetite" value={e.appetite_pattern} />
+                      <GFormField
+                        label="Digestion after meals"
+                        value={e.digestion_after_meals}
+                      />
+                      <GFormField
+                        label="Bowel Movements"
+                        value={e.body_bowel_movements}
+                      />
+                      <GFormField label="Sleep" value={e.sleep} />
+                      <GFormField
+                        label="Body temperature preference"
+                        value={e.body_temperature_preference}
+                      />
+                      <GFormField label="Sweating" value={e.sweating} />
+                      <GFormField
+                        label="Energy Pattern"
+                        value={e.energy_pattern}
+                      />
+                      <GFormField label="Speech Style" value={e.speech_style} />
+                      <GFormField
+                        label="Emotional Tendency"
+                        value={e.emotional_tendency}
+                      />
+                      <GFormField label="Memory" value={e.memory} />
+                    </GFormSection>
+                  )}
+
+                  {(e.general || e.head || e.cardiovascular) && (
+                    <GFormSection title="Systems Review">
+                      <GFormField label="General" value={e.general} />
+                      <GFormField label="Skin & Hair" value={e.skin_and_hair} />
+                      <GFormField label="Head" value={e.head} />
+                      <GFormField
+                        label="Eyes/Ears/Nose/Throat"
+                        value={e.eyes_ears_nose_throat}
+                      />
+                      <GFormField
+                        label="Cardiovascular"
+                        value={e.cardiovascular}
+                      />
+                      <GFormField label="Respiratory" value={e.respiratory} />
+                      <GFormField
+                        label="Musculoskeletal"
+                        value={e.musculoskeletal}
+                      />
+                      <GFormField
+                        label="Gastrointestinal"
+                        value={e.gastrointestinal}
+                      />
+                      <GFormField
+                        label="Genito-Urinary"
+                        value={e.genito_urinary}
+                      />
+                      <GFormField
+                        label="Neuropsychological"
+                        value={e.neuropsychological}
+                      />
+                    </GFormSection>
+                  )}
+
+                  {(e.heaviness_in_body ||
+                    e.groggy_in_morning ||
+                    e.indigestion_common) && (
+                    <GFormSection title="Kapha Scores">
+                      <GFormField
+                        label="I feel heaviness in my body"
+                        value={e.heaviness_in_body}
+                      />
+                      <GFormField
+                        label="In the morning I feel groggy and it takes time to feel awake"
+                        value={e.groggy_in_morning}
+                      />
+                      <GFormField
+                        label="I commonly have indigestion"
+                        value={e.indigestion_common}
+                      />
+                      <GFormField
+                        label="I often have low energy/tiredness"
+                        value={e.low_energy_tiredness}
+                      />
+                      <GFormField
+                        label="I get colds or similar conditions several times a year"
+                        value={e.frequent_colds}
+                      />
+                    </GFormSection>
+                  )}
+
+                  {(e.meals_description ||
+                    e.water_intake ||
+                    e.daily_routine) && (
+                    <GFormSection title="Lifestyle">
+                      <GFormField
+                        label="Describe your typical breakfast, lunch, dinner, and snacks."
+                        value={e.meals_description}
+                      />
+                      <GFormField
+                        label="Water intake (approx cups/day)"
+                        value={e.water_intake}
+                      />
+                      <GFormField
+                        label="Do you skip meals?"
+                        value={e.skip_meals}
+                      />
+                      <GFormField
+                        label="Wake-up time (weekday)"
+                        value={e.wakeup_time_weekday}
+                      />
+                      <GFormField
+                        label="Bedtime (weekday)"
+                        value={e.bedtime_weekday}
+                      />
+                      <GFormField
+                        label="Describe your daily routine (work, movement, stress, self-care)."
+                        value={e.daily_routine}
+                      />
+                    </GFormSection>
+                  )}
+                </div>
+              );
+            })()}
+            <div className="sticky bottom-0 bg-white border-t px-6 py-3">
+              <Button
+                onClick={() => setState({ googleFormModal: false })}
+                className="w-full bg-[#7f4099] hover:bg-purple-700 text-white"
+              >
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

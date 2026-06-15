@@ -192,6 +192,54 @@ const session = {
     return promise;
   },
 
+
+  google_form_entries: (page: any,body) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `auth/google-form-entries/?page=${page}`;
+      if (body?.search) {
+        url += `&search=${encodeURIComponent(body.search)}`;
+      }
+      if (body?.date) {
+        url += `&created_date_gte=${encodeURIComponent(body.date)}`;
+        url += `&created_date_lte=${encodeURIComponent(body.date)}`;
+
+      }
+      instance()
+        .get(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  google_form_entries_delete: (id) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `auth/google-form-entries/${id}/`;
+      
+      instance()
+        .delete(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
   dropdownLoungelist: () => {
     let promise = new Promise((resolve, reject) => {
       let url = `zen/events/?is_active=true&pagination=false`;

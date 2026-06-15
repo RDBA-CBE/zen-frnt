@@ -21,6 +21,7 @@ interface DatePickerProps {
   closeIcon?: boolean;
   fromDate?: Date;
   disabled?: boolean;
+  className?: string;
 }
 
 export const DatePickers: React.FC<DatePickerProps> = ({
@@ -33,11 +34,12 @@ export const DatePickers: React.FC<DatePickerProps> = ({
   closeIcon,
   fromDate,
   disabled,
+  className,
 }) => {
  
 
   return (
-    <div className="w-full relative">
+    <div className={cn("w-full relative", className)}>
       {title && (
         <label className="block text-sm font-bold text-gray-700 mb-2">
           {title} {required && <span className="text-red-500">*</span>}

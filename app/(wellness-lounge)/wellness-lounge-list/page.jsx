@@ -77,6 +77,10 @@ const WellnessLoungeList = () => {
     state.end_date,
   ]);
 
+  useEffect(() => {
+    google_form_entries(state.currentPage);
+  }, [debouncedSearch, state.lounge_type]);
+
   const getLoungeList = async (page) => {
     try {
       setState({ loading: true });
@@ -99,6 +103,21 @@ const WellnessLoungeList = () => {
     } catch (error) {
       setState({ loading: false });
 
+      console.log("error: ", error);
+    }
+  };
+
+  const google_form_entries = async (page) => {
+    try {
+      setState({ loading: true });
+      const res = await Models.session.google_form_entries(page);
+      console.log("google_form_entries --->", res);
+      setState({
+        reg_count: res?.count,
+        loading: false,
+      });
+    } catch (error) {
+      setState({ loading: false });
       console.log("error: ", error);
     }
   };
@@ -294,38 +313,71 @@ const WellnessLoungeList = () => {
       Header: "Start Date",
       accessor: "start_date",
       Cell: (row) => (
-        <Label>{moment(row?.row?.start_date).format("DD-MM-YYYY")}</Label>
+        <Label>
+          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
+            ? "-"
+            : moment(row?.row?.start_date).format("DD-MM-YYYY")}
+        </Label>
       ),
     },
     {
       Header: "End Date",
       accessor: "end_date",
       Cell: (row) => (
-        <Label>{moment(row?.row?.end_date).format("DD-MM-YYYY")}</Label>
+        <Label>
+          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
+            ? "-"
+            : moment(row?.row?.end_date).format("DD-MM-YYYY")}
+        </Label>
       ),
     },
     {
       Header: "Start Time",
       accessor: "start_time",
-      Cell: (row) => <Label>{row?.row?.start_time}</Label>,
+      Cell: (row) => (
+        <Label>
+          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
+            ? "-"
+            : row?.row?.start_time}
+        </Label>
+      ),
     },
     {
       Header: "End Time",
       accessor: "end_time",
-      Cell: (row) => <Label>{row?.row?.end_time}</Label>,
+      Cell: (row) => (
+        <Label>
+          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
+            ? "-"
+            : row?.row?.end_time}
+        </Label>
+      ),
     },
 
     {
       Header: "Registration Count",
       accessor: "event_registrations_count",
-      Cell: (row) => (
-        <Label
-          className="underline cursor-pointer"
-          onClick={() => handleClick(row?.row)}
-        >
-          {row?.row?.event_registrations_count}
-        </Label>
-      ),
+      Cell: (row) => {
+        if (row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID) {
+          return (
+            <Label
+              className="underline cursor-pointer"
+              onClick={() => handleClick(row?.row)}
+            >
+              {state.reg_count}
+            </Label>
+          );
+        }
+
+        return (
+          <Label
+            className="underline cursor-pointer"
+            onClick={() => handleClick(row?.row)}
+          >
+            {row?.row?.event_registrations_count}
+          </Label>
+        );
+      },
     },
     {
       Header: "Action",
@@ -414,7 +466,7 @@ const WellnessLoungeList = () => {
           <div className="block justify-between items-center lg:flex">
             <div className="lg:w-1/6 w-full lg:mb-0 mb-2">
               <h2 className="md:text-[20px] text-sm font-semibold">
-                Lounge Session
+                Lounge Sessions
               </h2>
             </div>
             <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
@@ -492,10 +544,12 @@ const WellnessLoungeList = () => {
 
         <div className="text-start gap-2 mb-0 flex">
           {state.lounge_type && (
-            <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-              <p className=" text-xs text-white">{state.lounge_type?.label}</p>
+            <div className="flex bg-themePurple px-2 py-1 rounded-lg items-center ">
+              <p className=" text-md text-white">
+                Lounge Type : {state.lounge_type?.label}
+              </p>
               <XIcon
-                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                className="text-white h-5 w-5 ml-2 pt-1 cursor-pointer"
                 onClick={() => setState({ lounge_type: null })}
               />
             </div>
@@ -503,11 +557,11 @@ const WellnessLoungeList = () => {
 
           {state?.start_date && (
             <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-              <p className=" text-xs text-white">
+              <p className=" text-md text-white">
                 Start : {moment(state.start_date).format("YYYY-MM-DD")}
               </p>
               <XIcon
-                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                className="text-white h-5 w-5 ml-2 pt-1 cursor-pointer"
                 onClick={() => setState({ start_date: null })}
               />
             </div>
@@ -515,11 +569,11 @@ const WellnessLoungeList = () => {
 
           {state?.end_date && (
             <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center ">
-              <p className=" text-xs text-white">
+              <p className=" text-md text-white">
                 End : {moment(state.end_date).format("YYYY-MM-DD")}
               </p>
               <XIcon
-                className="text-white h-4 w-4 ml-2 cursor-pointer"
+                className="text-white  h-5 w-5 ml-2 pt-1 cursor-pointer"
                 onClick={() => setState({ end_date: null })}
               />
             </div>
