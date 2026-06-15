@@ -201,7 +201,7 @@ const session = {
       }
       if (body?.date) {
         url += `&created_date_gte=${encodeURIComponent(body.date)}`;
-        url += `&created_date_lte=${encodeURIComponent(body.date)}`;
+        // url += `&created_date_lte=${encodeURIComponent(body.date)}`;
 
       }
       instance()
