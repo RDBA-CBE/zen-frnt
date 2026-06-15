@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setAuthData } from "@/store/slice/AuthSlice";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,10 @@ import ReCAPTCHA from "react-google-recaptcha";
 const LoginForm = (props) => {
   const { isRefresh } = props;
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const loungeName = searchParams.get("lounge_name");
+  // console.log('✌️params --->', loungeName);
   const dispatch = useDispatch();
   const loginRecaptchaRef = useRef(null);
 
@@ -278,28 +282,40 @@ const LoginForm = (props) => {
 
       // if (res?.groups?.length > 0) {
       //   if (res?.group?.[0] == "Admin") {
-          dispatch(
-            setAuthData({
-              tokens: res.access,
-              groups: res.group?.[0],
-              userId: res.user_id,
-              username: res?.username,
-            })
-          );
-          if(res?.group?.length>0){
-            if(res?.group?.[0] == "Admin"){
-              router.push("/");
-            }else{
-              window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
-            }
+      dispatch(
+        setAuthData({
+          tokens: res.access,
+          groups: res.group?.[0],
+          userId: res.user_id,
+          username: res?.username,
+        })
+      );
+      if (res?.group?.length > 0) {
+        if (res?.group?.[0] == "Admin") {
+          router.push("/");
+        } else {
+          const returnUrl = localStorage.getItem("returnUrl");
 
+          if (returnUrl) {
+            const url = new URL(returnUrl);
+
+            const loungeName = url.searchParams.get("lounge_name");
+            console.log("✌️loungeName --->", loungeName);
+
+            localStorage.removeItem("returnUrl");
+
+            window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
+            return
           }
-          // router.push("/");
-        // } else {
-          // router.push("/");
+          window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+        }
+      }
+      // router.push("/");
+      // } else {
+      // router.push("/");
 
-          // window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
-        // }
+      // window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+      // }
       // }
       setState({ loading: false });
 
