@@ -288,13 +288,12 @@ const WellnessLoungeList = () => {
       Header: "Session Title",
       accessor: "title",
     },
-
     {
       Header: "Description",
       accessor: "description",
       Cell: ({ row }) => {
         const description = row?.description || "";
-
+  
         return (
           <Label title={description}>
             {description.length > 30
@@ -304,61 +303,49 @@ const WellnessLoungeList = () => {
         );
       },
     },
-    // {
-    //   Header: "Lounge Type",
-    //   accessor: "lounge_type",
-    //   Cell: (row) => <Label>{row?.row?.lounge_type?.name}</Label>,
-    // },
-    {
-      Header: "Start Date",
-      accessor: "start_date",
-      Cell: (row) => (
-        <Label>
-          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
-            ? "-"
-            : moment(row?.row?.start_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
-    },
-    {
-      Header: "End Date",
-      accessor: "end_date",
-      Cell: (row) => (
-        <Label>
-          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
-            ? "-"
-            : moment(row?.row?.end_date).format("DD-MM-YYYY")}
-        </Label>
-      ),
-    },
-    {
-      Header: "Start Time",
-      accessor: "start_time",
-      Cell: (row) => (
-        <Label>
-          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
-            ? "-"
-            : row?.row?.start_time}
-        </Label>
-      ),
-    },
-    {
-      Header: "End Time",
-      accessor: "end_time",
-      Cell: (row) => (
-        <Label>
-          {row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID
-            ? "-"
-            : row?.row?.end_time}
-        </Label>
-      ),
-    },
-
+  
+    ...(state.lounge_type?.value !== GOOGLE_LOUNGE_ID
+      ? [
+          {
+            Header: "Start Date",
+            accessor: "start_date",
+            Cell: (row) => (
+              <Label>
+                {moment(row?.row?.start_date).format("DD-MM-YYYY")}
+              </Label>
+            ),
+          },
+          {
+            Header: "End Date",
+            accessor: "end_date",
+            Cell: (row) => (
+              <Label>
+                {moment(row?.row?.end_date).format("DD-MM-YYYY")}
+              </Label>
+            ),
+          },
+          {
+            Header: "Start Time",
+            accessor: "start_time",
+            Cell: (row) => (
+              <Label>{row?.row?.start_time}</Label>
+            ),
+          },
+          {
+            Header: "End Time",
+            accessor: "end_time",
+            Cell: (row) => (
+              <Label>{row?.row?.end_time}</Label>
+            ),
+          },
+        ]
+      : []),
+  
     {
       Header: "Registration Count",
       accessor: "event_registrations_count",
       Cell: (row) => {
-        if (row?.row?.lounge_type?.id == GOOGLE_LOUNGE_ID) {
+        if (row?.row?.lounge_type?.id === GOOGLE_LOUNGE_ID) {
           return (
             <Label
               className="underline cursor-pointer"
@@ -368,7 +355,7 @@ const WellnessLoungeList = () => {
             </Label>
           );
         }
-
+  
         return (
           <Label
             className="underline cursor-pointer"
@@ -379,6 +366,7 @@ const WellnessLoungeList = () => {
         );
       },
     },
+    ...(state.lounge_type?.value !== GOOGLE_LOUNGE_ID?[
     {
       Header: "Action",
       accessor: "action",
@@ -426,7 +414,7 @@ const WellnessLoungeList = () => {
           )}
         </div>
       ),
-    },
+    }]:[])
   ];
 
   const handleClick = (row) => {
