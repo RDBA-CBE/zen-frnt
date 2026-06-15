@@ -222,7 +222,7 @@ const UserList = () => {
             <Trash size={18} className="mr-2" />
           </div>
 
-          {row?.row?.groups?.includes("Alumni") &&
+          {/* {row?.row?.groups?.includes("Alumni") &&
           !row?.row?.groups?.includes("Mentor") &&
           row?.row?.is_open_to_be_mentor ? (
             <>
@@ -251,7 +251,7 @@ const UserList = () => {
                 />
               </>
             )
-          ) : null}
+          ) : null} */}
           {/* {(row?.row?.is_open_to_be_mentor &&
             row?.row?.groups?.includes("Alumni")) ||
             row?.row?.groups?.includes("Mentor") ||
