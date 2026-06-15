@@ -59,7 +59,6 @@ const LoginForm = (props) => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     setState({ googleLoading: true });
-    localStorage.clear();
     try {
       const body = {
         access_token: credentialResponse.credential,
