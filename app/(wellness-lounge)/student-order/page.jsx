@@ -508,7 +508,7 @@ const WellnessLoungeList = () => {
                       />
                     </div>
                     <Button
-                      onClick={() => router.push("https://zenwellnesslounge.com/")}
+                      onClick={() => router.push("https://zenwellnesslounge.com/#zenlounge-programs")}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
                     >
                       New Session

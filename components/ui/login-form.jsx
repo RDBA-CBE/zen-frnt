@@ -112,7 +112,7 @@ const LoginForm = (props) => {
               window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
               return
             }
-            window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+            window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs`;
           }
         }
       }
@@ -326,7 +326,7 @@ const LoginForm = (props) => {
             window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
             return
           }
-          window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+          window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs`;
         }
       }
       // router.push("/");
