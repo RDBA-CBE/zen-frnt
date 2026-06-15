@@ -63,35 +63,35 @@ const LoginForm = (props) => {
       const res = await Models.auth.googleAuth(body);
       console.log("Google auth response: ", res);
       if (res.access) {
-      // await updateUserGroup(res);
-      // localStorage.setItem("group", res.groups?.[0]);
-            localStorage.setItem("zentoken", res.access);
+        // await updateUserGroup(res);
+        // localStorage.setItem("group", res.groups?.[0]);
+        localStorage.setItem("zentoken", res.access);
         localStorage.setItem("refreshToken", res.refresh);
         localStorage.setItem("userId", res?.user_id || "");
         localStorage.setItem("username", res?.username || res?.email || "");
 
         // if (response.is_verified) {
-          //           localStorage.setItem("group", res.groups?.[0]);
-          //           dispatch(
-          //             setAuthData({
-          //               tokens: res.access,
-          //               groups: res.groups?.[0],
-          //               userId: res.user_id,
-          //               username: res?.username,
-          //             }),
-          //           );
-          //           window.location.href = "/";
-          localStorage.setItem("group", res.groups?.[0]);
-              dispatch(
-                setAuthData({
-                  tokens: res.access,
-                  groups: res.groups?.[0],
-                  userId: res.user_id,
-                  username: res?.username,
-                }),
-              );
-      // router.push(`/update-user-data/?id=${res?.user_id}`);
-      window.location.href = "/";
+        //           localStorage.setItem("group", res.groups?.[0]);
+        //           dispatch(
+        //             setAuthData({
+        //               tokens: res.access,
+        //               groups: res.groups?.[0],
+        //               userId: res.user_id,
+        //               username: res?.username,
+        //             }),
+        //           );
+        //           window.location.href = "/";
+        localStorage.setItem("group", res.groups?.[0]);
+        dispatch(
+          setAuthData({
+            tokens: res.access,
+            groups: res.groups?.[0],
+            userId: res.user_id,
+            username: res?.username,
+          })
+        );
+        // router.push(`/update-user-data/?id=${res?.user_id}`);
+        window.location.href = "/";
       }
       // if (res.access) {
       //   localStorage.setItem("zentoken", res.access);
@@ -143,7 +143,6 @@ const LoginForm = (props) => {
       //         Success("Google login successful!");
       //         window.location.href = "/";
       //       } else {
-
 
       //         localStorage.clear();
       //         InfinitySuccess("Your account is waiting for approval.", () => {
@@ -210,7 +209,7 @@ const LoginForm = (props) => {
       } else {
         Failure(
           error.response?.data?.message ||
-            "Google login failed. Please try again.",
+            "Google login failed. Please try again."
         );
       }
     } finally {
@@ -230,7 +229,7 @@ const LoginForm = (props) => {
           groups: "Student",
           userId: res.user_id,
           username: res?.username || "",
-        }),
+        })
       );
       router.push(`/update-user-data/?id=${res?.user_id}`);
       setState({ googleLoading: false });
@@ -254,7 +253,10 @@ const LoginForm = (props) => {
       if (!state.loginCaptchaToken) {
         setState({
           loading: false,
-          errors: { ...state.errors, loginCaptchaInput: "Please complete the captcha verification." },
+          errors: {
+            ...state.errors,
+            loginCaptchaInput: "Please complete the captcha verification.",
+          },
         });
         return;
       }
@@ -272,62 +274,90 @@ const LoginForm = (props) => {
       localStorage.setItem("refreshToken", res.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("username", res?.username);
+      localStorage.setItem("group", res.group?.[0]);
 
-      if (res?.group?.length > 0) {
-        if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == true) {
-          localStorage.setItem("group", ROLES.MENTOR);
-          dispatch(
-            setAuthData({
-              tokens: res.access,
-              groups: ROLES.MENTOR,
-              userId: res.user_id,
-              username: res?.username,
-            }),
-          );
-        } else if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == false) {
-          localStorage.setItem("group", ROLES.ALUMNI);
-          dispatch(
-            setAuthData({
-              tokens: res.access,
-              groups: ROLES.ALUMNI,
-              userId: res.user_id,
-              username: res?.username,
-            }),
-          );
-        } else {
-          localStorage.setItem("group", res.group?.[0]);
-
+      // if (res?.groups?.length > 0) {
+      //   if (res?.group?.[0] == "Admin") {
           dispatch(
             setAuthData({
               tokens: res.access,
               groups: res.group?.[0],
               userId: res.user_id,
               username: res?.username,
-            }),
+            })
           );
-        }
-      }
-
-      Success("Login Successful");
-      setState({ loading: false, username: "", password: "" });
-
-      setTimeout(() => {
-        if (res?.group?.[0] === "Student") {
-          if (state?.eventid) {
-            router.push(`/view-wellness-lounge?id=${state?.eventid}`);
-          } else {
-            router.push("/");
-            if (isRefresh) {
-              window.location.reload();
+          if(res?.group?.length>0){
+            if(res?.group?.[0] == "Admin"){
+              router.push("/");
+            }else{
+              window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
             }
+
           }
-        } else {
-          router.push("/");
-          if (isRefresh) {
-            window.location.reload();
-          }
-        }
-      }, 500);
+          // router.push("/");
+        // } else {
+          // router.push("/");
+
+          // window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+        // }
+      // }
+      setState({ loading: false });
+
+      // if (res?.group?.length > 0) {
+      //   if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == true) {
+      //     localStorage.setItem("group", ROLES.MENTOR);
+      //     dispatch(
+      //       setAuthData({
+      //         tokens: res.access,
+      //         groups: ROLES.MENTOR,
+      //         userId: res.user_id,
+      //         username: res?.username,
+      //       }),
+      //     );
+      //   } else if (res?.group?.includes(ROLES.MENTOR) && res?.mentor == false) {
+      //     localStorage.setItem("group", ROLES.ALUMNI);
+      //     dispatch(
+      //       setAuthData({
+      //         tokens: res.access,
+      //         groups: ROLES.ALUMNI,
+      //         userId: res.user_id,
+      //         username: res?.username,
+      //       }),
+      //     );
+      //   } else {
+      //     localStorage.setItem("group", res.group?.[0]);
+
+      //     dispatch(
+      //       setAuthData({
+      //         tokens: res.access,
+      //         groups: res.group?.[0],
+      //         userId: res.user_id,
+      //         username: res?.username,
+      //       }),
+      //     );
+      //   }
+      // }
+
+      // Success("Login Successful");
+      // setState({ loading: false, username: "", password: "" });
+
+      // setTimeout(() => {
+      //   if (res?.group?.[0] === "Student") {
+      //     if (state?.eventid) {
+      //       router.push(`/view-wellness-lounge?id=${state?.eventid}`);
+      //     } else {
+      //       router.push("/");
+      //       if (isRefresh) {
+      //         window.location.reload();
+      //       }
+      //     }
+      //   } else {
+      //     router.push("/");
+      //     if (isRefresh) {
+      //       window.location.reload();
+      //     }
+      //   }
+      // }, 500);
     } catch (error) {
       console.log("error: ", error);
       setState({ loading: false });
@@ -443,7 +473,7 @@ const LoginForm = (props) => {
                         </button>
                       </div>
                     </div>
-                 <div className="flex items-center justify-center gap-3 py-0">
+                    <div className="flex items-center justify-center gap-3 py-0">
                       <ReCAPTCHA
                         ref={loginRecaptchaRef}
                         sitekey={CAPTCHA_SITE_KEY}
@@ -463,7 +493,7 @@ const LoginForm = (props) => {
                       <p className="text-sm text-red-600 text-center -mt-2">
                         {state.errors.loginCaptchaInput}
                       </p>
-                    )} 
+                    )}
 
                     <Button
                       type="button"

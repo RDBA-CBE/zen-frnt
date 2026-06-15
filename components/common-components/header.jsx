@@ -223,7 +223,7 @@ const Header = () => {
   ];
 
   const StudentLeftSideMenu = [
-    { title: "The Program", url: "/" },
+    // { title: "The Program", url: "/" },
     { title: "Session", url: "/student-order" },
     { title: "Profile", url: "/profile" },
   ];

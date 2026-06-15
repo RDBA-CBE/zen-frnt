@@ -507,12 +507,12 @@ const WellnessLoungeList = () => {
                         }}
                       />
                     </div>
-                    {/* <Button
-                      onClick={() => redirectGoogleSlot()}
+                    <Button
+                      onClick={() => router.push("https://zenwellnesslounge.com/")}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
                     >
-                      New Booking
-                    </Button> */}
+                      New Session
+                    </Button>
                     {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
                   <TextInput
