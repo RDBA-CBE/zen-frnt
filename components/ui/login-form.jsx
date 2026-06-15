@@ -95,7 +95,27 @@ const LoginForm = (props) => {
           })
         );
         // router.push(`/update-user-data/?id=${res?.user_id}`);
-        window.location.href = "/";
+        // window.location.href = "/";
+        if (res?.groups?.length > 0) {
+          if (res?.groups?.[0] == "Admin") {
+            router.push("/");
+          } else {
+            const returnUrl = localStorage.getItem("returnUrl");
+  
+            if (returnUrl) {
+              const url = new URL(returnUrl);
+  
+              const loungeName = url.searchParams.get("lounge_name");
+              console.log("✌️loungeName --->", loungeName);
+  
+              localStorage.removeItem("returnUrl");
+  
+              window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
+              return
+            }
+            window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+          }
+        }
       }
       // if (res.access) {
       //   localStorage.setItem("zentoken", res.access);
