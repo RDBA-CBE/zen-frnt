@@ -613,10 +613,17 @@ const DashboardCalender = ({ events, setEvents }) => {
         </div>
 
         <div className="flex items-center">
+          <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#e25197]"></span>
+          <span className="text-black text-sm font-medium">
+          Users registered for the session
+          </span>
+        </div>
+
+        <div className="flex items-center">
           <span className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2 bg-[#48badb]"></span>
           <span className="text-black text-sm font-medium">Ongoing Events</span>
         </div>
-        {state.categoryList?.map((item, index) => (
+        {state.categoryList?.filter((val)=>val?.value != GOOGLE_LOUNGE_ID)?.map((item, index) => (
           <div className="flex items-center" key={index}>
             <span
               className="event inline-block w-[15px] h-[15px] border rounded-lg mr-2"
