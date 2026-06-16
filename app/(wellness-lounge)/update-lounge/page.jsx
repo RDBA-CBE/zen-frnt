@@ -222,7 +222,9 @@ const UpdateWellnessLounge = () => {
 
       const res = await Models.category.activeList();
       const Dropdowns = Dropdown(res?.results, "name");
-      setState({ categoryList: Dropdowns, loading: false });
+      const filter = Dropdowns.filter((item) => item.value != GOOGLE_LOUNGE_ID);
+
+      setState({ categoryList: filter, loading: false });
     } catch (error) {
       setState({ loading: false });
 

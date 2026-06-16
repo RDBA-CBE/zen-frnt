@@ -77,12 +77,13 @@ const DashboardCalender = ({ events, setEvents }) => {
   const [token, setToken] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [googleEvents, setGoogleEvents] = useState([]);
+
   const [googleEventModal, setGoogleEventModal] = useState(false);
   const [selectedGoogleEvent, setSelectedGoogleEvent] = useState(null);
   const [state, setState] = useSetState({
     categoryList: [],
     loading: false,
-    lounge_type: null,
+    lounge_type:{value:GOOGLE_LOUNGE_ID, label: GOOGLE_LOUNGE},
     role: null,
     isOpen: false,
     lounge_types: null,
@@ -105,13 +106,98 @@ const DashboardCalender = ({ events, setEvents }) => {
 
   const fetchEvents = async () => {
     try {
+      setState({ loading: true });
       const res = await fetch(
         `${BACKEND_URL}zen/events/google-events/?calendar_id=info@zenwellnesslounge.com`
       );
       const data = await res.json();
       setGoogleEvents(data.events || []);
+
     } catch (err) {
       console.error("Failed to fetch google events", err);
+    } finally {
+      setState({ loading: false });
+    }
+  };
+
+  const fetchAllEvents = async () => {
+    try {
+      setState({ loading: true });
+      const [googleRes, regRes] = await Promise.all([
+        fetch(`${BACKEND_URL}zen/events/google-events/?calendar_id=info@zenwellnesslounge.com`).then((r) => r.json()),
+        Models.session.registrationList(1, { pagination: "No" }),
+      ]);
+      const googleEvts = googleRes.events || [];
+      const calendarEvents = regRes?.map((item) => ({
+        id: item.registration_id,
+        summary: `${item.event.lounge_type.name} (${item.user.username})`,
+        start: { dateTime: item.start_datetime, timeZone: "Asia/Kolkata" },
+        end: { dateTime: item.end_datetime, timeZone: "Asia/Kolkata" },
+        attendees: [
+          { email: item.user.email, responseStatus: "accepted" },
+          { email: "info@zenwellnesslounge.com", responseStatus: "accepted" },
+        ],
+        attendees_count: 2,
+      })) || [];
+      setGoogleEvents([...googleEvts, ...calendarEvents]);
+
+    } catch (err) {
+      console.error("Failed to fetch all events", err);
+    } finally {
+      setState({ loading: false });
+    }
+  };
+
+  const otherLoungeReg = async () => {
+    try {
+      setState({ loading: true });
+      const body = {};
+  
+      if (
+        state.lounge_type?.value &&
+        state.lounge_type?.value !== GOOGLE_LOUNGE_ID
+      ) {
+        body.category = state.lounge_type.value;
+      }
+  
+      body.pagination = "No";
+  
+      const registration = await Models.session.registrationList(1, body);
+  
+      const calendarEvents = registration?.map((item) => ({
+        id: item.registration_id,
+        summary: `${item.event.lounge_type.name} (${item.user.username})`,
+        description: `<b>Booked by</b>\n${
+          item.user.first_name || item.user.username
+        }\n${item.user.email}\n<br>${item.event.title}`,
+        start: {
+          dateTime: item.start_datetime,
+          timeZone: "Asia/Kolkata",
+        },
+        end: {
+          dateTime: item.end_datetime,
+          timeZone: "Asia/Kolkata",
+        },
+        attendees: [
+          {
+            email: item.user.email,
+            responseStatus: "accepted",
+          },
+          {
+            email:'info@zenwellnesslounge.com',
+            responseStatus: "accepted",
+          },
+        ],
+        attendees_count: 2,
+      }));
+  
+      setGoogleEvents((prev) =>
+        !state.lounge_type ? [...prev, ...(calendarEvents || [])] : (calendarEvents || [])
+      );
+    } catch (err) {
+      console.error("Failed to fetch registrations", err);
+    } finally {
+      setState({ loading: false });
     }
   };
 
@@ -121,10 +207,11 @@ const DashboardCalender = ({ events, setEvents }) => {
         fetchEvents();
         getLoungeList();
       } else if (!state.lounge_type) {
-        fetchEvents();
+        fetchAllEvents();
         getLoungeList();
       } else {
         getLoungeList();
+        otherLoungeReg();
       }
     }
   }, [state.lounge_type]);
@@ -164,7 +251,9 @@ const DashboardCalender = ({ events, setEvents }) => {
       const res = await Models.category.catDropDownList();
       const dropdowns = Dropdown(res?.results, "name");
 
-      const filter = dropdowns.filter((item) => item.value != AYURVEDIC_LOUNGE);
+      // const filter = dropdowns.filter((item) => item.value != AYURVEDIC_LOUNGE);
+      const filter = dropdowns.filter((item) => item.value != GOOGLE_LOUNGE_ID);
+
       setState({
         categoryList: dropdowns,
         loading: false,
@@ -375,9 +464,14 @@ const DashboardCalender = ({ events, setEvents }) => {
 
   const handleGoogleDateSubmit = () => {
     const errors = {};
-    if (!state.googleStartDate) errors.googleStartDate = "Start date is required";
+    if (!state.googleStartDate)
+      errors.googleStartDate = "Start date is required";
     if (!state.googleEndDate) errors.googleEndDate = "End date is required";
-    if (state.googleStartDate && state.googleEndDate && state.googleEndDate < state.googleStartDate) {
+    if (
+      state.googleStartDate &&
+      state.googleEndDate &&
+      state.googleEndDate < state.googleStartDate
+    ) {
       errors.googleEndDate = "End date must be after start date";
     }
     if (Object.keys(errors).length > 0) {
@@ -388,9 +482,11 @@ const DashboardCalender = ({ events, setEvents }) => {
   };
 
   const googleStartFormatted = state.googleStartDate
-    ? moment(state.googleStartDate).format("DD MMM YYYY") : null;
+    ? moment(state.googleStartDate).format("DD MMM YYYY")
+    : null;
   const googleEndFormatted = state.googleEndDate
-    ? moment(state.googleEndDate).format("DD MMM YYYY") : null;
+    ? moment(state.googleEndDate).format("DD MMM YYYY")
+    : null;
 
   const createSession = async () => {
     try {
@@ -488,10 +584,10 @@ const DashboardCalender = ({ events, setEvents }) => {
       </div>
       <div className="flex items-center justify-between gap-3">
         {state.lounge_type && (
-          <div className="flex bg-themePurple px-2 py-1 rounded-lg items-center whitespace-nowrap shrink-0">
-            <p className="text-xs text-white">{state.lounge_type?.label}</p>
+          <div className="m-3 flex bg-themePurple px-2 py-1 rounded-lg items-center whitespace-nowrap shrink-0">
+            <p className="text-md text-white">Lounge Type : {state.lounge_type?.label}</p>
             <XIcon
-              className="text-white h-4 w-4 ml-2 cursor-pointer"
+              className="text-white h-5 w-5 ml-2 pt-1 cursor-pointer"
               onClick={() => setState({ lounge_type: null })}
             />
           </div>
@@ -545,7 +641,12 @@ const DashboardCalender = ({ events, setEvents }) => {
         ))}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
+        {state.loading && (
+          <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-themeGreen border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
         <table className="min-w-full border-collapse table-auto">
           <thead>
             <tr>
@@ -576,202 +677,200 @@ const DashboardCalender = ({ events, setEvents }) => {
                           <div className="events-container overflow-y-auto w-full h-full max-h-[100px] flex justify-center items-center flex-wrap  scrollbar-thin">
                             <TooltipProvider>
                               {getEventsForDate(day).map((event) => {
-                                  return (
-                                    <Tooltip key={event.id}>
-                                      <TooltipTrigger>
-                                        <div
-                                          onClick={() => {
-                                            if (day && isFutureEvent(event)) {
-                                              handleDayClick(day, event);
-                                            } else if (isOngoingEvent(event)) {
-                                              Info(
-                                                <>
-                                                  <h2 className="text-black font-bold text-[15px] mb-3">
-                                                    Session is currently in
-                                                    progress
-                                                  </h2>
-                                                  The selected session is{" "}
-                                                  <strong
-                                                    style={{ color: "green" }}
-                                                  >
-                                                    currently in progress{" "}
-                                                  </strong>{" "}
-                                                  and can no longer be accessed.
-                                                  Please select a session
-                                                  scheduled for a future date.
-                                                  For more information or
-                                                  assistance, feel free to
-                                                  contact the admin at
-                                                  viji.zenwellnesslounge@gmail.com.
-                                                </>
-                                              );
-                                            } else if (isPastEvent(event)) {
-                                              Info(
-                                                <>
-                                                  <h2 className="font-bold text-[15px] text-black mb-3">
-                                                    Session has already
-                                                    concluded
-                                                  </h2>
-                                                  The selected session has
-                                                  already{" "}
-                                                  <strong
-                                                    style={{ color: "green" }}
-                                                  >
-                                                    concluded
-                                                  </strong>{" "}
-                                                  and is no longer accessible.
-                                                  Please select a session
-                                                  scheduled for a future date.
-                                                  For more information or
-                                                  assistance, feel free to
-                                                  contact the admin at
-                                                  viji.zenwellnesslounge@gmail.com.
-                                                </>
-                                              );
-                                            }
-                                          }}
-                                          className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
-                                          style={{
-                                            backgroundColor: isPastEvent(event)
-                                              ? "#8f87871f"
-                                              : isOngoingEvent(event)
-                                              ? "#48badb"
-                                              : event.lounge_type?.id === 22
-                                              ? "#e25197"
-                                              : event.lounge_type?.id === 14
-                                              ? "#7f4099"
-                                              : event.lounge_type?.id === 6
-                                              ? "#88c742"
-                                              : event.lounge_type?.id === 7
-                                              ? "#834ae9"
-                                              : "#023e98",
-                                          }}
+                                return (
+                                  <Tooltip key={event.id}>
+                                    <TooltipTrigger>
+                                      <div
+                                        onClick={() => {
+                                          if (day && isFutureEvent(event)) {
+                                            handleDayClick(day, event);
+                                          } else if (isOngoingEvent(event)) {
+                                            Info(
+                                              <>
+                                                <h2 className="text-black font-bold text-[15px] mb-3">
+                                                  Session is currently in
+                                                  progress
+                                                </h2>
+                                                The selected session is{" "}
+                                                <strong
+                                                  style={{ color: "green" }}
+                                                >
+                                                  currently in progress{" "}
+                                                </strong>{" "}
+                                                and can no longer be accessed.
+                                                Please select a session
+                                                scheduled for a future date. For
+                                                more information or assistance,
+                                                feel free to contact the admin
+                                                at
+                                                viji.zenwellnesslounge@gmail.com.
+                                              </>
+                                            );
+                                          } else if (isPastEvent(event)) {
+                                            Info(
+                                              <>
+                                                <h2 className="font-bold text-[15px] text-black mb-3">
+                                                  Session has already concluded
+                                                </h2>
+                                                The selected session has already{" "}
+                                                <strong
+                                                  style={{ color: "green" }}
+                                                >
+                                                  concluded
+                                                </strong>{" "}
+                                                and is no longer accessible.
+                                                Please select a session
+                                                scheduled for a future date. For
+                                                more information or assistance,
+                                                feel free to contact the admin
+                                                at
+                                                viji.zenwellnesslounge@gmail.com.
+                                              </>
+                                            );
+                                          }
+                                        }}
+                                        className="event p-0 border  rounded-lg bg-fuchsia-900 mr-2"
+                                        style={{
+                                          backgroundColor: isPastEvent(event)
+                                            ? "#8f87871f"
+                                            : isOngoingEvent(event)
+                                            ? "#48badb"
+                                            : event.lounge_type?.id === 22
+                                            ? "#e25197"
+                                            : event.lounge_type?.id === 14
+                                            ? "#7f4099"
+                                            : event.lounge_type?.id === 6
+                                            ? "#88c742"
+                                            : event.lounge_type?.id === 7
+                                            ? "#834ae9"
+                                            : "#023e98",
+                                        }}
+                                      >
+                                        <h4
+                                          className={`text-xs ${
+                                            isPastEvent(event)
+                                              ? "text-black"
+                                              : "text-white"
+                                          } py-1 px-2 truncate max-w-[15ch]`}
                                         >
-                                          <h4
-                                            className={`text-xs ${
-                                              isPastEvent(event)
-                                                ? "text-black"
-                                                : "text-white"
-                                            } py-1 px-2 truncate max-w-[15ch]`}
-                                          >
-                                            {event.title}
-                                          </h4>
-                                        </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent className="w-[300px]">
-                                        <div className="flex flex-col flex-wrap mb-3 gap-x-2">
-                                          <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
-                                            {event.title}
-                                          </h4>
-                                          <p className="text-[15px] mt-1">
-                                            {event.lounge_type?.name}
-                                          </p>
+                                          {event.title}
+                                        </h4>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="w-[300px]">
+                                      <div className="flex flex-col flex-wrap mb-3 gap-x-2">
+                                        <h4 className="font-bold text-[18px] leading-[22px]  font-marce">
+                                          {event.title}
+                                        </h4>
+                                        <p className="text-[15px] mt-1">
+                                          {event.lounge_type?.name}
+                                        </p>
+                                      </div>
+
+                                      <blockquote className="mb-2 border-l-2 pl-6 ">
+                                        <div className="flex gap-1 mb-4">
+                                          <span className="flex gap-1 ">
+                                            <Calendar1
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />{" "}
+                                            Start Date -
+                                          </span>
+                                          <span className="font-bold">
+                                            {moment(event.start_date).format(
+                                              "DD MMM YYYY"
+                                            )}
+                                          </span>{" "}
                                         </div>
 
-                                        <blockquote className="mb-2 border-l-2 pl-6 ">
-                                          <div className="flex gap-1 mb-4">
-                                            <span className="flex gap-1 ">
-                                              <Calendar1
-                                                height={14}
-                                                width={14}
-                                                className="relative top-[0px]"
+                                        <div className="flex gap-1 mb-4">
+                                          <span className="flex gap-1 ">
+                                            <Calendar1
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />{" "}
+                                            End Date -
+                                          </span>
+                                          <span className="font-bold">
+                                            {moment(event.end_date).format(
+                                              "DD MMM YYYY"
+                                            )}
+                                          </span>{" "}
+                                        </div>
+
+                                        <div className="flex gap-x-1 mb-4">
+                                          <span className="flex gap-1">
+                                            <Clock
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />
+                                            Start Time -{" "}
+                                          </span>
+                                          <span className="font-bold ">
+                                            {moment(
+                                              event?.start_time,
+                                              "HH:mm:ss"
+                                            ).format("hh:mm A")}{" "}
+                                            (IST)
+                                          </span>
+                                        </div>
+
+                                        <div className="flex gap-x-1 mb-4">
+                                          <span className="flex gap-1">
+                                            <Clock10
+                                              height={14}
+                                              width={14}
+                                              className="relative top-[0px]"
+                                            />
+                                            End Time -{" "}
+                                          </span>
+                                          <span className="font-bold ">
+                                            {moment(
+                                              event?.end_time,
+                                              "HH:mm:ss"
+                                            ).format("hh:mm A")}{" "}
+                                            (IST)
+                                          </span>
+                                        </div>
+
+                                        {event?.venue && (
+                                          <div className="flex gap-x-1">
+                                            <span className="flex gap-1">
+                                              <MapPin
+                                                height={16}
+                                                width={18}
+                                                className="relative "
                                               />{" "}
-                                              Start Date -
+                                              Venue -
                                             </span>
                                             <span className="font-bold">
-                                              {moment(event.start_date).format(
-                                                "DD MMM YYYY"
-                                              )}
+                                              {`${event?.venue?.name}`}
+
+                                              {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
                                             </span>{" "}
                                           </div>
-
-                                          <div className="flex gap-1 mb-4">
-                                            <span className="flex gap-1 ">
-                                              <Calendar1
-                                                height={14}
-                                                width={14}
-                                                className="relative top-[0px]"
-                                              />{" "}
-                                              End Date -
-                                            </span>
-                                            <span className="font-bold">
-                                              {moment(event.end_date).format(
-                                                "DD MMM YYYY"
-                                              )}
-                                            </span>{" "}
-                                          </div>
-
-                                          <div className="flex gap-x-1 mb-4">
-                                            <span className="flex gap-1">
-                                              <Clock
-                                                height={14}
-                                                width={14}
-                                                className="relative top-[0px]"
-                                              />
-                                              Start Time -{" "}
-                                            </span>
-                                            <span className="font-bold ">
-                                              {moment(
-                                                event?.start_time,
-                                                "HH:mm:ss"
-                                              ).format("hh:mm A")}{" "}
-                                              (IST)
-                                            </span>
-                                          </div>
-
-                                          <div className="flex gap-x-1 mb-4">
-                                            <span className="flex gap-1">
-                                              <Clock10
-                                                height={14}
-                                                width={14}
-                                                className="relative top-[0px]"
-                                              />
-                                              End Time -{" "}
-                                            </span>
-                                            <span className="font-bold ">
-                                              {moment(
-                                                event?.end_time,
-                                                "HH:mm:ss"
-                                              ).format("hh:mm A")}{" "}
-                                              (IST)
-                                            </span>
-                                          </div>
-
-                                          {event?.venue && (
-                                            <div className="flex gap-x-1">
-                                              <span className="flex gap-1">
-                                                <MapPin
-                                                  height={16}
-                                                  width={18}
-                                                  className="relative "
-                                                />{" "}
-                                                Venue -
-                                              </span>
-                                              <span className="font-bold">
-                                                {`${event?.venue?.name}`}
-
-                                                {/* {`${event?.venue?.university_name} (${event?.venue?.name})`} */}
-                                              </span>{" "}
-                                            </div>
-                                          )}
-                                        </blockquote>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  );
-                                })}
+                                        )}
+                                      </blockquote>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                );
+                              })}
                             </TooltipProvider>
                             {/* Google Calendar Events */}
-                            {(state.lounge_type?.value == GOOGLE_LOUNGE_ID || !state.lounge_type) &&
-                              getGoogleEventsForDate(day).map((gEvent) => {
+                            {getGoogleEventsForDate(day).map((gEvent,i) => {
                                 const attendee = gEvent.attendees?.find(
-                                  (a) => a.email !== "info@zenwellnesslounge.com"
+                                  (a) =>
+                                    a.email !== "info@zenwellnesslounge.com"
                                 );
                                 const firstName = attendee?.displayName
                                   ? attendee.displayName.split(" ")[0]
                                   : attendee?.email?.split("@")[0];
                                 return (
                                   <div
-                                    key={gEvent.id}
+                                    key={i}
                                     onClick={() => {
                                       setSelectedGoogleEvent(gEvent);
                                       setGoogleEventModal(true);
@@ -781,13 +880,16 @@ const DashboardCalender = ({ events, setEvents }) => {
                                   >
                                     <h4 className="text-xs text-white py-1 px-2 truncate max-w-[15ch]">
                                       {firstName && (
-                                        <span className="font-semibold">{firstName} · </span>
+                                        <span className="font-semibold">
+                                          {firstName} ·{" "}
+                                        </span>
                                       )}
                                       {gEvent.summary}
                                     </h4>
                                   </div>
                                 );
-                              })}
+                              })
+                            }
                           </div>
                         )}
 
@@ -874,11 +976,10 @@ const DashboardCalender = ({ events, setEvents }) => {
                   End Date -
                 </span>
                 <span className="font-bold" style={{ color: "#4a4a4a" }}>
-                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")},{" "}
-                  {""}
+                  {moment(selectedEvent?.end_date).format("DD MMM YYYY")}, {""}
                 </span>{" "}
               </div>
-              
+
               <div className="flex gap-x-1">
                 <span className="flex gap-1">
                   <Clock
@@ -912,23 +1013,23 @@ const DashboardCalender = ({ events, setEvents }) => {
                   (IST)
                 </span>
               </div>
-              {selectedEvent?.venue?.name &&
-              <div className="flex gap-x-1">
-                <span className="flex gap-1">
-                  <MapPin
-                    height={14}
-                    width={14}
-                    className="relative top-[7px]"
-                  />
-                  Venue -{" "}
-                </span>
-                <span className="font-bold" style={{ color: "#4a4a4a" }}>
-                  {`${selectedEvent?.venue?.name}`}
+              {selectedEvent?.venue?.name && (
+                <div className="flex gap-x-1">
+                  <span className="flex gap-1">
+                    <MapPin
+                      height={14}
+                      width={14}
+                      className="relative top-[7px]"
+                    />
+                    Venue -{" "}
+                  </span>
+                  <span className="font-bold" style={{ color: "#4a4a4a" }}>
+                    {`${selectedEvent?.venue?.name}`}
 
-                  {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
-                </span>
-              </div>
-              }
+                    {/* {`${selectedEvent?.venue?.university_name} (${selectedEvent?.venue?.name})`} */}
+                  </span>
+                </div>
+              )}
             </div>
           </DialogTitle>
           <div className="flex gap-4 mt-4 w-full">
@@ -1082,7 +1183,9 @@ const DashboardCalender = ({ events, setEvents }) => {
 
       <Modal
         isOpen={state.dateRangeOpen}
-        setIsOpen={() => setState({ dateRangeOpen: false, googleDateErrors: {} })}
+        setIsOpen={() =>
+          setState({ dateRangeOpen: false, googleDateErrors: {} })
+        }
         title="Select Date Range"
         renderComponent={() => (
           <>
@@ -1092,7 +1195,15 @@ const DashboardCalender = ({ events, setEvents }) => {
                 title="Start Date"
                 closeIcon={true}
                 selectedDate={state.googleStartDate}
-                onChange={(date) => setState({ googleStartDate: date, googleDateErrors: { ...state.googleDateErrors, googleStartDate: "" } })}
+                onChange={(date) =>
+                  setState({
+                    googleStartDate: date,
+                    googleDateErrors: {
+                      ...state.googleDateErrors,
+                      googleStartDate: "",
+                    },
+                  })
+                }
                 error={state.googleDateErrors?.googleStartDate}
                 required
               />
@@ -1102,7 +1213,15 @@ const DashboardCalender = ({ events, setEvents }) => {
                 closeIcon={true}
                 selectedDate={state.googleEndDate}
                 fromDate={state.googleStartDate}
-                onChange={(date) => setState({ googleEndDate: date, googleDateErrors: { ...state.googleDateErrors, googleEndDate: "" } })}
+                onChange={(date) =>
+                  setState({
+                    googleEndDate: date,
+                    googleDateErrors: {
+                      ...state.googleDateErrors,
+                      googleEndDate: "",
+                    },
+                  })
+                }
                 error={state.googleDateErrors?.googleEndDate}
                 required
               />
@@ -1112,7 +1231,9 @@ const DashboardCalender = ({ events, setEvents }) => {
                 variant="outline"
                 className="border-themeGreen text-themeGreen hover:border-themeGreen hover:text-themeGreen"
                 name="Cancel"
-                onClick={() => setState({ dateRangeOpen: false, googleDateErrors: {} })}
+                onClick={() =>
+                  setState({ dateRangeOpen: false, googleDateErrors: {} })
+                }
               />
               <PrimaryButton
                 name="Submit"

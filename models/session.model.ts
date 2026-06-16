@@ -310,6 +310,10 @@ const session = {
       if (body?.include_deleted == "Yes") {
         url += `&include_deleted=${encodeURIComponent(true)}`;
       }
+
+      if (body?.pagination == "No") {
+        url += `&pagination=${encodeURIComponent(false)}`;
+      }
       if (body?.include_deleted == "No") {
         url += `&include_deleted=${encodeURIComponent(false)}`;
       }

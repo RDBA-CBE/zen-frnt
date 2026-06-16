@@ -388,7 +388,7 @@ console.log('✌️error --->', error);
 
   const googleFormEntriesColumn = [
     {
-      Header: "Date",
+      Header: "Submission Date",
       accessor: "created_date",
       Cell: (row) => (
         <Label>
@@ -713,7 +713,7 @@ console.log('✌️error --->', error);
               />
               <div className="w-[220px]">
                 <DatePickers
-                  placeholder="Registration Date"
+                  placeholder="Submission Date"
                   closeIcon={true}
                   selectedDate={state.gfe_date}
                   onChange={(date) => setState({ gfe_date: date })}

@@ -342,7 +342,11 @@ const WellnessLoungeList = () => {
       : []),
   
     {
-      Header: "Registration Count",
+      Header: 
+      state.lounge_type?.value === GOOGLE_LOUNGE_ID
+      ? "Google Form - Submission Count"
+      : "Registration Count",
+  accessor: "event_registrations_count",
       accessor: "event_registrations_count",
       Cell: (row) => {
         if (row?.row?.lounge_type?.id === GOOGLE_LOUNGE_ID) {

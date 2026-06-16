@@ -437,7 +437,7 @@ const WellnessLoungeList = () => {
   );
 
   const redirectGoogleSlot = () => {
-    router.push("/")
+    router.push("https://zenwellnesslounge.com/#zenlounge-programs")
     // if (
     //   state.userData?.google_form_entries &&
     //   state.userData?.google_form_entries?.length > 0
@@ -511,7 +511,7 @@ const WellnessLoungeList = () => {
                       onClick={() => router.push("https://zenwellnesslounge.com/#zenlounge-programs")}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
                     >
-                      New Session
+                      New Booking
                     </Button>
                     {/* <div className="block md:flex justify-between items-center gap-3 lg:w-5/6 w-full">
                 <div className="md:w-1/4 w-full  md:mb-0 mb-2">
