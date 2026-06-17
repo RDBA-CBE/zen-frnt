@@ -437,7 +437,11 @@ const WellnessLoungeList = () => {
   );
 
   const redirectGoogleSlot = () => {
-    router.push("https://zenwellnesslounge.com/#zenlounge-programs")
+    // router.push("https://zenwellnesslounge.com/#zenlounge-programs")
+    const userId = localStorage.getItem("userId");
+
+    window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${userId}`;
+
     // if (
     //   state.userData?.google_form_entries &&
     //   state.userData?.google_form_entries?.length > 0
@@ -454,7 +458,7 @@ const WellnessLoungeList = () => {
     //     "_blank",
     //     "noopener,noreferrer"
     //   );
-     
+
     // }
   };
 
@@ -508,7 +512,13 @@ const WellnessLoungeList = () => {
                       />
                     </div>
                     <Button
-                      onClick={() => router.push("https://zenwellnesslounge.com/#zenlounge-programs")}
+                      onClick={() => {
+                        const userId = localStorage.getItem("userId");
+
+                        router.push(
+                          `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${userId}`
+                        );
+                      }}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
                     >
                       New Booking
