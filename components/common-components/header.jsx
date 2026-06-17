@@ -135,7 +135,8 @@ const Header = () => {
       localStorage.clear();
       setDialogOpen(false);
       dispatch(clearAuthData());
-      router.push("/login");
+      https://zenwellnesslounge.com/?logout=1"
+      router.push("https://zenwellnesslounge.com/?logout=1");
       window.location.reload();
     } catch (error) {
       dispatch(clearAuthData());
