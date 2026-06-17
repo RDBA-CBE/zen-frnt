@@ -339,7 +339,10 @@ window.location.href = redirectUrl;
 
             return
           }
-          window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${res?.user_id}`;
+          //  `https://zenwellnesslounge.com/?user_id=${userId}`
+          // window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${res?.user_id}`;
+          window.location.href = `https://zenwellnesslounge.com/?user_id=${res?.user_id}`;
+
           
         }
       }

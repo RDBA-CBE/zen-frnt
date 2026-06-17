@@ -440,7 +440,11 @@ const WellnessLoungeList = () => {
     // router.push("https://zenwellnesslounge.com/#zenlounge-programs")
     const userId = localStorage.getItem("userId");
 
-    window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${userId}`;
+    // window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${userId}`;
+    window.location.href =  `https://zenwellnesslounge.com/?user_id=${userId}`;
+
+   
+
 
     // if (
     //   state.userData?.google_form_entries &&
@@ -517,6 +521,8 @@ const WellnessLoungeList = () => {
 
                         router.push(
                           `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${userId}`
+                          `https://zenwellnesslounge.com/?user_id=${userId}`
+
                         );
                       }}
                       className={`p-2 rounded rounded-sm transition-all duration-200 bg-themePurple text-white hover:bg-purple-700 hover:text-white`}
