@@ -314,6 +314,8 @@ const LoginForm = (props) => {
           router.push("/");
         } else {
           const returnUrl = localStorage.getItem("returnUrl");
+          console.log('✌️returnUrl --->', returnUrl);
+
 
           if (returnUrl) {
             const url = new URL(returnUrl);
@@ -322,11 +324,23 @@ const LoginForm = (props) => {
             console.log("✌️loungeName --->", loungeName);
 
             localStorage.removeItem("returnUrl");
+            console.log('✌️res?.user_id --->', res?.user_id);
 
-            window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
+
+            // window.location.href = `https://zenwellnesslounge.com/${loungeName}`;
+            // window.location.href = `https://zenwellnesslounge.com/lounge_name=${loungeName}/?user_id=${res?.user_id}/`;
+            // window.location.href = `https://zenwellnesslounge.com/?lounge_name=${loungeName}&user_id=${res?.user_id}`;
+            // window.location.href = `https://zenwellnesslounge.com/${loungeName}/?user_id=${res?.user_id}`;
+            // window.location.href = `https://zenwellnesslounge.com/${loungeName}/?user_id=${res?.user_id}`;
+            const redirectUrl = `https://zenwellnesslounge.com/${loungeName}/?user_id=${res?.user_id}`;
+
+console.log("Redirect URL:", redirectUrl);
+window.location.href = redirectUrl;
+
             return
           }
-          window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs`;
+          window.location.href = `https://zenwellnesslounge.com/#zenlounge-programs/?user_id=${res?.user_id}`;
+          
         }
       }
       // router.push("/");
